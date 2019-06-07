@@ -21,7 +21,7 @@ const App = () => (
       </main>
       <footer>
         <div className="wrapper">
-          <p>Copyright © 2019 BHKLab</p>
+          <p>Copyright © 2019. All rights reserved</p>
         </div>
       </footer>
     </div>
