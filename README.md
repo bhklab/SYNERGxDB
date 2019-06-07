@@ -24,6 +24,7 @@ cd SYNERGxDB-Web-App
 - React
 - React-Dom
 - React-Router
+- Styled-Components
 - Express
 
 ## Dev Dependenices
