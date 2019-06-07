@@ -13,14 +13,20 @@ cd SYNERGxDB-Web-App
 
 - Start the client (development mode) by running `npm start`
 
-- Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
 - Install all client dependencies `cd server && npm i`
 
-- Start the server (development mode) by running `npm start`
+- Start the server by running `npm start` or `npm run devstart`(development mode) command
+
+- Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
 ## Dependencies
 
 - React
-- React-dom
+- React-Dom
+- React-Router
 - Express
+
+## Dev Dependenices
+
+- Nodemon
+- Eslint
