@@ -1,18 +1,39 @@
-import React from 'react';
-import logo from '../logo.svg';
+import React, { Component } from 'react';
+import {Route, Switch} from 'react-router-dom';
 import '../styles/App.css';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          SYNERGYxDB Web App
-        </p>
-      </header>
-    </div>
-  );
+import Home from './Home';
+
+class App extends Component {
+  render() {
+    const App = () => (
+      <div>
+        <Switch>
+          <Route exact path='/' component={Home} />
+        </Switch>
+      </div>
+    )
+    return (
+      <div className='app'>
+        <header>
+          <div className='wrapper'>
+          </div>
+        </header>
+        <main>
+          <div className='wrapper'>
+            <Switch>
+              <App />
+            </Switch>
+          </div>
+        </main>
+        <footer>
+          <div className='wrapper'>
+            <p>Copyright © 2019 BHKLab</p>
+          </div>
+        </footer>
+      </div>
+    );
+  }
 }
 
 export default App;
