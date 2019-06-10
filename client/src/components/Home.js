@@ -13,6 +13,12 @@ class Home extends Component {
     };
   }
 
+  componentDidMount() {
+    fetch('/getItems')
+      .then(response => response.json())
+      .then(data => console.log(data));
+  }
+
   render() {
     return (
       <div className="home">
