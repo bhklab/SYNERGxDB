@@ -1,16 +1,23 @@
 import React, { Component } from 'react';
+import SearchItems from './SearchItems';
 import '../styles/Home.css';
 
 class Home extends Component {
   constructor() {
     super();
     this.state = {
+      toggleForm: false,
+      searchDrug1: '',
+      searchDrug2: '',
+      searchCell: '',
       drugsData: [],
       cellLineData: [],
       filteredDrugs1: [],
       filteredDrugs2: [],
       filteredCellLines: [],
     };
+    this.handleDrugSearch = this.handleDrugSearch.bind(this);
+    this.handleCellSearch = this.handleCellSearch.bind(this);
   }
 
   componentDidMount() {
@@ -26,14 +33,25 @@ class Home extends Component {
       });
   }
 
+  handleDrugSearch(event) {
+    const { value } = event.target;
+  }
+
+  handleCellSearch(event) {
+    const { value } = event.target;
+  }
+
   render() {
+    const { searchDrug1, searchDrug2, searchCell } = this.state;
+    const { handleCellSearch, handleDrugSearch } = this;
+
     return (
       <div className="home">
         <h1>Landing page for SynergxDB</h1>
         <form>
-          <input className="drug-select-1" placeholder="Please Select Drug1" />
-          <input className="drug-select-2" placeholder="Please Select Drug2" />
-          <input className="cell-line-select" placeholder="Please Select Cell Line" />
+          <SearchItems searchType="Drug 1" value={searchDrug1} handleSearch={handleDrugSearch} />
+          <SearchItems searchType="Drug 2" value={searchDrug2} handleSearch={handleDrugSearch} />
+          <SearchItems searchType="Cell Line" value={searchCell} handleSearch={handleCellSearch} />
         </form>
       </div>
     );
