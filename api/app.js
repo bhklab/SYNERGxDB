@@ -27,7 +27,7 @@ app.use(knexLogger(db));
 // Serve the static files from the React app
 app.use(express.static(path.join(__dirname, 'client/build')));
 
-app.use('/', indexRouter);
+app.use('/api/', indexRouter);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

@@ -5,18 +5,25 @@ class Home extends Component {
   constructor() {
     super();
     this.state = {
-    //   drugsData: [],
-    //   cellLineData: [],
-    //   filteredDrugs1: [],
-    //   filteredDrugs2: [],
-    //   filteredCellLines: [],
+      drugsData: [],
+      cellLineData: [],
+      filteredDrugs1: [],
+      filteredDrugs2: [],
+      filteredCellLines: [],
     };
   }
 
   componentDidMount() {
-    fetch('/getItems')
+    fetch('/api/getDrugs')
       .then(response => response.json())
-      .then(data => console.log(data));
+      .then((data) => {
+        this.setState({ drugsData: data });
+      });
+    fetch('/api/getCellLines')
+      .then(response => response.json())
+      .then((data) => {
+        this.setState({ cellLineData: data });
+      });
   }
 
   render() {
