@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import Select from 'react-select';
 import SearchItems from './SearchItems';
 
 import '../styles/Home.css';
@@ -43,7 +42,7 @@ class SearchCombos extends Component {
     this.setState({ [inputType]: value });
 
     // Due to large number of drugs, filtering starts after 3 characters have been entered
-    if (value.length > 2) this.setState({ [dataset]: filteredDrugs });
+    value.length > 2 ? this.setState({ [dataset]: filteredDrugs }) : this.setState({ [dataset]: [] });
   }
 
   handleCellSearch(event) {
@@ -54,22 +53,20 @@ class SearchCombos extends Component {
     this.setState({ searchCell: value });
 
     // Due to large number of cell lines, filtering starts once at least 2 characters have been entered
-    if (value.length > 1) this.setState({ filteredCells });
+    value.length > 1 ? this.setState({ filteredCells }) : this.setState({ filteredCells: [] });
   }
 
   render() {
     const {
-      searchDrug1, searchDrug2, searchCell, drugsData, cellData, filteredDrugs1,
+      searchDrug1, searchDrug2, searchCell, filteredDrugs1, filteredDrugs2, filteredCells,
     } = this.state;
     const { handleCellSearch, handleDrugSearch } = this;
 
     return (
       <form className="search-combos">
-        <SearchItems searchType="drug-1" value={searchDrug1} handleSearch={e => handleDrugSearch('filteredDrugs1', 'searchDrug1', e)} filteredData={filteredDrugs1} />
-        {/* <SearchItems searchType="Drug 2" value={searchDrug2} handleSearch={e => handleDrugSearch('filteredDrugs2', 'searchDrug2', e)} />
-        <SearchItems searchType="Cell Line" value={searchCell} handleSearch={handleCellSearch} />
-        <Select isSearchable options={drugsData} /> */}
-
+        <SearchItems placeholder="Enter drug name" searchType="drug-1-input" value={searchDrug1} handleSearch={e => handleDrugSearch('filteredDrugs1', 'searchDrug1', e)} filteredData={filteredDrugs1} />
+        <SearchItems placeholder="Enter second drug name" searchType="drug-2-input" value={searchDrug2} handleSearch={e => handleDrugSearch('filteredDrugs2', 'searchDrug2', e)} filteredData={filteredDrugs2} />
+        <SearchItems placeholder="Enter cell line" searchType="cell-line-input" value={searchCell} handleSearch={handleCellSearch} filteredData={filteredCells} />
       </form>
     );
   }

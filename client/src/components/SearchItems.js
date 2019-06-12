@@ -2,14 +2,14 @@ import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 
 const SearchItems = ({
-  value, handleSearch, searchType, filteredData,
+  placeholder, value, handleSearch, searchType, filteredData,
 }) => {
-  const options = filtredData.map(item => (
+  const options = filteredData.map(item => (
     <option value={item} />
   ));
   return (
     <Fragment>
-      <input type="text" placeholder={`Enter ${searchType}`} value={value} onChange={handleSearch} list={searchType} />
+      <input type="text" placeholder={placeholder} value={value} onChange={handleSearch} list={searchType} />
       <datalist id={searchType}>
         {options}
       </datalist>
