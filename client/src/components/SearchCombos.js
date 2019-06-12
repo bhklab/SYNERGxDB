@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
+import Select from 'react-select';
 import SearchItems from './SearchItems';
+
 import '../styles/Home.css';
 
 class SearchCombos extends Component {
@@ -56,14 +58,18 @@ class SearchCombos extends Component {
   }
 
   render() {
-    const { searchDrug1, searchDrug2, searchCell } = this.state;
+    const {
+      searchDrug1, searchDrug2, searchCell, drugsData, cellData, filteredDrugs1,
+    } = this.state;
     const { handleCellSearch, handleDrugSearch } = this;
 
     return (
       <form className="search-combos">
-        <SearchItems searchType="Drug 1" value={searchDrug1} handleSearch={e => handleDrugSearch('filteredDrugs1', 'searchDrug1', e)} />
-        <SearchItems searchType="Drug 2" value={searchDrug2} handleSearch={e => handleDrugSearch('filteredDrugs2', 'searchDrug2', e)} />
+        <SearchItems searchType="drug-1" value={searchDrug1} handleSearch={e => handleDrugSearch('filteredDrugs1', 'searchDrug1', e)} filteredData={filteredDrugs1} />
+        {/* <SearchItems searchType="Drug 2" value={searchDrug2} handleSearch={e => handleDrugSearch('filteredDrugs2', 'searchDrug2', e)} />
         <SearchItems searchType="Cell Line" value={searchCell} handleSearch={handleCellSearch} />
+        <Select isSearchable options={drugsData} /> */}
+
       </form>
     );
   }
