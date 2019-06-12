@@ -1,9 +1,18 @@
 import React, { Component } from 'react';
-import '../styles/Home.css';
+import styled from 'styled-components';
+import '../styles/colors';
+
+const StyledNav = styled.nav`
+  position: fixed;
+  top: 0;
+  height: 100vh;
+  width: 30%
+  background-color: rgba(190, 144, 99, 0.75);
+`;
 
 const Home = () => (
 
-  <nav className="side-nav">
+  <StyledNav className="side-nav">
     <ul>
       <li><a href="#">Cell lines</a></li>
       <li><a href="#">Drugs</a></li>
@@ -12,7 +21,7 @@ const Home = () => (
       <li><a href="#">Drug Response Curves</a></li>
       <li><a href="#">Download</a></li>
     </ul>
-  </nav>
+  </StyledNav>
 );
 
 export default Home;

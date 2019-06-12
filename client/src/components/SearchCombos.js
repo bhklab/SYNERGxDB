@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import SearchItems from './SearchItems';
 
-import '../styles/Home.css';
-
 class SearchCombos extends Component {
   constructor() {
     super();
