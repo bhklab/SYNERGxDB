@@ -10,18 +10,19 @@ const StyledNav = styled.nav`
   max-width: 250px;
   height: 100vh;
   width: 30%
-  background-color: rgba(190, 144, 99, 0.75);
+  background-color: rgba(82,91,86, 0.5);
 
   li {
-    margin-top: 10px;
-    font-size: 1.5em;
+    margin-top: 20px;
+    font-size: 1.25em;
+    font-weight: bold;
 
     a {
       color: ${colors.color_main_1};
       transition: ${transitions.main_trans}
 
       &:hover {
-        color: ${colors.color_main_3};
+        color: ${colors.color_main_4};
       }
     }
   }

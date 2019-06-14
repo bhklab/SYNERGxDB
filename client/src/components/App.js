@@ -4,7 +4,7 @@ import styled, { createGlobalStyle } from 'styled-components';
 import { Normalize } from 'styled-normalize';
 import SideNav from './SideNav';
 import heroImg from '../images/hero-image.jpg';
-import styles from '../styles/colors';
+import colors from '../styles/colors';
 
 import Home from './Home';
 
@@ -18,8 +18,8 @@ const GlobalStyles = createGlobalStyle`
     display: flex;
     background: linear-gradient(
       to right top,
-      rgba(164, 151, 142, 0.5), 
-      rgba(164, 151, 142, 0.5)
+      rgba(164, 151, 142, 0.75), 
+      rgba(164, 151, 142, 0.75)
     ),
     url(${heroImg});
     background-size: cover;
@@ -44,23 +44,26 @@ const GlobalStyles = createGlobalStyle`
     display: block;
   }
   h1 {
-    font-size: 2em;
+    margin-top: 30% 0 0;
+    font-size: 3em;
+    color: ${colors.color_main_2}
+  }
+  h2 {
+    
   }
 `;
 
 const StyledApp = styled.div`
-  margin: 0 50px;
+  margin: 0 auto;
+  padding: 0 25px;
   height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
   flex-grow: 1;
-  min-width: 500px;
-`;
-
-const StyledWrapper = styled.div`
-  display: flex;
+  min-width: 300px;
+  max-width: 800px;
 `;
 
 const App = () => (
@@ -70,21 +73,9 @@ const App = () => (
     <body>
       <SideNav />
       <StyledApp className="app">
-        <header>
-          <div className="wrapper" />
-        </header>
-        <main>
-          <StyledWrapper className="wrapper">
-            <Switch>
-              <Route exact path="/" component={Home} />
-            </Switch>
-          </StyledWrapper>
-        </main>
-        <footer>
-          <div className="wrapper">
-            <p>Copyright © 2019. All rights reserved</p>
-          </div>
-        </footer>
+        <Switch>
+          <Route exact path="/" component={Home} />
+        </Switch>
       </StyledApp>
     </body>
   </Fragment>

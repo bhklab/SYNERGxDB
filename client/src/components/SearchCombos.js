@@ -5,7 +5,6 @@ class SearchCombos extends Component {
   constructor() {
     super();
     this.state = {
-      toggleForm: false,
       searchDrug1: '',
       searchDrug2: '',
       searchCell: '',
