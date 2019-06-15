@@ -48,8 +48,8 @@ const GlobalStyles = createGlobalStyle`
     font-size: 3em;
     color: ${colors.color_main_2}
   }
-  h2 {
-    
+  .ReactCollapse--collapse {
+    width: 100%;
   }
 `;
 

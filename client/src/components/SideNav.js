@@ -10,7 +10,7 @@ const StyledNav = styled.nav`
   max-width: 250px;
   height: 100vh;
   width: 30%
-  background-color: rgba(82,91,86, 0.5);
+  background-color: ${colors.trans_color_main_3};
 
   li {
     margin-top: 20px;
