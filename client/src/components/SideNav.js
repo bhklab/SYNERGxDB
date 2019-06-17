@@ -6,12 +6,12 @@ import colors from '../styles/colors';
 import transitions from '../styles/transitions';
 
 const StyledNav = styled.nav`
-  padding: 20px;   
-  width: 100%  
-  max-width: 250px;
+  padding: 20px;    
+  max-width: 300px;
   height: 100vh;
   width: 30%
   background-color: ${colors.trans_color_main_3};
+  position: fixed;
 
   li {
     margin-top: 20px;

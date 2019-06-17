@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import styled from 'styled-components';
-// import colors from '../styles/colors';
+import colors from '../styles/colors';
 // import transitions from '../styles/transitions';
 
 
@@ -10,6 +10,32 @@ const StyledWrapper = styled.div`
   justify-content: center;
   align-items: center;
   text-align: center;
+`;
+
+
+const StyledTable = styled.table`
+  width: 100%;
+  table-layout: fixed;
+  text-align: left;
+  border-spacing: 0;
+
+  th,
+  td {
+    overflow: hidden;
+    margin: 0;
+    padding: 5px;
+    border-bottom: 2px solid ${colors.color_main_1}
+  }
+
+  th:nth-child(3),
+  th:nth-child(4) {
+    max-width: calc(50% - 200px);
+  }
+  
+  td:nth-child(3),
+  td:nth-child(4) {
+    max-width: 100px;
+  }
 `;
 
 class Drugs extends Component {
@@ -34,10 +60,10 @@ class Drugs extends Component {
     const listOfDrugs = drugsData.map((drug, index) => (
       // eslint-disable-next-line react/no-array-index-key
       <tr key={index}>
-        <td>{drug.name}</td>
-        <td>{drug.atcCode}</td>
-        <td>{drug.idPubChem}</td>
-        <td>{drug.idDrugBank}</td>
+        <td><div>{drug.name}</div></td>
+        <td><div>{drug.atcCode}</div></td>
+        <td><div>{drug.idPubChem}</div></td>
+        <td><div>{drug.idDrugBank}</div></td>
       </tr>
     ));
     return (
@@ -49,7 +75,8 @@ class Drugs extends Component {
         </header>
         <main>
           <StyledWrapper className="wrapper">
-            <table>
+            <StyledTable>
+
               <tbody>
                 <tr>
                   <th>Name</th>
@@ -59,7 +86,7 @@ class Drugs extends Component {
                 </tr>
                 {listOfDrugs}
               </tbody>
-            </table>
+            </StyledTable>
 
           </StyledWrapper>
         </main>

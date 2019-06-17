@@ -16,20 +16,6 @@ const GlobalStyles = createGlobalStyle`
     box-sizing: border-box;
     line-height: 1.15;
   }
-  #root {
-    width: 100vw;
-    display: flex;
-    background: linear-gradient(
-      to right top,
-      rgba(220, 220, 220, 0.75), 
-      rgba(220, 220, 220, 0.75)
-    ),
-    url(${heroImg});
-    background-size: cover;
-    background-attachment: fixed;
-    background-position: center;
-    flex-wrap: wrap;
-  }
   ul {
     padding: 0;
     list-style: none;
@@ -51,8 +37,29 @@ const GlobalStyles = createGlobalStyle`
     font-size: 3em;
     color: ${colors.color_main_2}
   }
-  .ReactCollapse--collapse {
+  main {
     width: 100%;
+  }
+  table {
+    max-width: 100%
+  }
+  .main-wrapper {
+    width: calc(100% - 300px);
+    margin-left: 300px; 
+  }
+  #root {
+    width: 100vw;
+    display: flex;
+    background: linear-gradient(
+      to right top,
+      rgba(220, 220, 220, 0.75), 
+      rgba(220, 220, 220, 0.75)
+    ),
+    url(${heroImg});
+    background-size: cover;
+    background-attachment: fixed;
+    background-position: center;
+    flex-wrap: wrap;
   }
 `;
 
@@ -74,14 +81,16 @@ const App = () => (
     <Normalize />
     <GlobalStyles />
     <SideNav />
-    <StyledApp className="app">
-      <Switch>
-        <Route exact path="/" component={Home} />
-        <Route exact path="/cell-lines/" component={CellLines} />
-        <Route exact path="/drugs/" component={Drugs} />
-        <Route exact path="/databases/" component={Databases} />
-      </Switch>
-    </StyledApp>
+    <div className="main-wrapper">
+      <StyledApp className="app">
+        <Switch>
+          <Route exact path="/" component={Home} />
+          <Route exact path="/cell-lines/" component={CellLines} />
+          <Route exact path="/drugs/" component={Drugs} />
+          <Route exact path="/databases/" component={Databases} />
+        </Switch>
+      </StyledApp>
+    </div>
   </Fragment>
 );
 
