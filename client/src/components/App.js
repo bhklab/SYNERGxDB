@@ -7,6 +7,7 @@ import heroImg from '../images/hero-image.jpg';
 import colors from '../styles/colors';
 
 import Home from './Home';
+import Statistics from './Statistics';
 
 const GlobalStyles = createGlobalStyle`
   html {
@@ -18,8 +19,8 @@ const GlobalStyles = createGlobalStyle`
     display: flex;
     background: linear-gradient(
       to right top,
-      rgba(164, 151, 142, 0.75), 
-      rgba(164, 151, 142, 0.75)
+      rgba(220, 220, 220, 0.75), 
+      rgba(220, 220, 220, 0.75)
     ),
     url(${heroImg});
     background-size: cover;
@@ -75,6 +76,7 @@ const App = () => (
       <StyledApp className="app">
         <Switch>
           <Route exact path="/" component={Home} />
+          <Route exact path="/statistics/" component={Statistics} />
         </Switch>
       </StyledApp>
     </body>
