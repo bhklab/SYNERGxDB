@@ -12,32 +12,6 @@ const StyledWrapper = styled.div`
   text-align: center;
 `;
 
-
-const StyledTable = styled.table`
-  width: 100%;
-  table-layout: fixed;
-  text-align: left;
-  border-spacing: 0;
-
-  th,
-  td {
-    overflow: hidden;
-    margin: 0;
-    padding: 5px;
-    border-bottom: 2px solid ${colors.color_main_1}
-  }
-
-  th:nth-child(3),
-  th:nth-child(4) {
-    max-width: calc(50% - 200px);
-  }
-  
-  td:nth-child(3),
-  td:nth-child(4) {
-    max-width: 100px;
-  }
-`;
-
 class Drugs extends Component {
   constructor() {
     super();
@@ -60,10 +34,10 @@ class Drugs extends Component {
     const listOfDrugs = drugsData.map((drug, index) => (
       // eslint-disable-next-line react/no-array-index-key
       <tr key={index}>
-        <td><div>{drug.name}</div></td>
-        <td><div>{drug.atcCode}</div></td>
-        <td><div>{drug.idPubChem}</div></td>
-        <td><div>{drug.idDrugBank}</div></td>
+        <td>{drug.name}</td>
+        <td>{drug.atcCode}</td>
+        <td>{drug.idPubChem}</td>
+        <td>{drug.idDrugBank}</td>
       </tr>
     ));
     return (
@@ -75,7 +49,7 @@ class Drugs extends Component {
         </header>
         <main>
           <StyledWrapper className="wrapper">
-            <StyledTable>
+            <table>
 
               <tbody>
                 <tr>
@@ -86,7 +60,7 @@ class Drugs extends Component {
                 </tr>
                 {listOfDrugs}
               </tbody>
-            </StyledTable>
+            </table>
 
           </StyledWrapper>
         </main>

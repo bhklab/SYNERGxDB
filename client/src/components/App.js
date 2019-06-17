@@ -41,8 +41,31 @@ const GlobalStyles = createGlobalStyle`
     width: 100%;
   }
   table {
-    max-width: 100%
+    max-width: 100%;
+    width: 100%;
+    table-layout: fixed;
+    text-align: left;
+    border-spacing: 0;
+
+    th,
+    td {
+      overflow: hidden;
+      margin: 0;
+      padding: 5px;
+      border-bottom: 2px solid ${colors.color_main_1}
+    }
+
+    th:nth-child(3),
+    th:nth-child(4) {
+      max-width: calc(50% - 200px);
+    }
+    
+    td:nth-child(3),
+    td:nth-child(4) {
+      max-width: 100px;
+    }
   }
+  
   .main-wrapper {
     width: calc(100% - 300px);
     margin-left: 300px; 
