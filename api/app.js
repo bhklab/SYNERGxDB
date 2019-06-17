@@ -9,6 +9,7 @@ const db = require('./db');
 
 const indexRouter = require('./routes/index');
 const databaseRouter = require('./routes/databases');
+const drugRouter = require('./routes/drugs');
 
 const app = express();
 
@@ -30,6 +31,7 @@ app.use(express.static(path.join(__dirname, 'client/build')));
 
 app.use('/api/', indexRouter);
 app.use('/api/databases/', databaseRouter);
+app.use('/api/drugs/', drugRouter);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import styled from 'styled-components';
-import colors from '../styles/colors';
-import transitions from '../styles/transitions';
+// import colors from '../styles/colors';
+// import transitions from '../styles/transitions';
 
 
 const StyledWrapper = styled.div`
@@ -31,8 +31,9 @@ class Databases extends Component {
 
   render() {
     const { databaseData } = this.state;
-    const listOfSources = databaseData.map(item => (
-      <tr>
+    const listOfSources = databaseData.map((item, index) => (
+      // eslint-disable-next-line react/no-array-index-key
+      <tr key={index}>
         <td>{item.name}</td>
         <td>{item.author}</td>
         <td>{item.no_samples}</td>

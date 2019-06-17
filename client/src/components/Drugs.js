@@ -1,11 +1,7 @@
 import React, { Component, Fragment } from 'react';
-import { Collapse } from 'react-collapse';
 import styled from 'styled-components';
-import SearchCombos from './SearchCombos';
-import colors from '../styles/colors';
-import transitions from '../styles/transitions';
-import banner from '../images/banner.png';
-import arrow from '../images/arrow.svg';
+// import colors from '../styles/colors';
+// import transitions from '../styles/transitions';
 
 
 const StyledWrapper = styled.div`
@@ -16,49 +12,34 @@ const StyledWrapper = styled.div`
   text-align: center;
 `;
 
-const StyledBanner = styled.img`
-  max-width: 500px;
-`;
-
-const StyledButton = styled.button`
-  
-  font-size: 1.5em;
-  font-weight: bold;
-  border-radius: 5px;
-  color: ${colors.color_main_3};
-  background-color: ${colors.color_main_1};
-  border: 2px solid ${colors.color_main_1};
-  transition: ${transitions.main_trans};
-  outline-style: none;
-  
-  img {
-    height: 1em;
-    display: inline;
-    transition: ${transitions.main_trans};
-    filter: invert(0.5) sepia(1) hue-rotate(114deg) saturate(0.3) brightness(0.5)
-  }
-
-  &:hover {
-    background-color: ${colors.color_main_3};
-    color: ${colors.color_main_1};
-
-    img {
-      filter: none;
-    }
-  }
- 
-`;
-
-class Home extends Component {
+class Drugs extends Component {
   constructor() {
     super();
     this.state = {
-      isOpen: false,
+      drugsData: [],
     };
   }
 
+  componentDidMount() {
+    fetch('/api/drugs/')
+      .then(response => response.json())
+      .then((drugsData) => {
+        console.log(drugsData);
+        this.setState({ drugsData });
+      });
+  }
+
   render() {
-    const { isOpen } = this.state;
+    const { drugsData } = this.state;
+    const listOfDrugs = drugsData.map((drug, index) => (
+      // eslint-disable-next-line react/no-array-index-key
+      <tr key={index}>
+        <td>{drug.name}</td>
+        <td>{drug.atcCode}</td>
+        <td>{drug.idPubChem}</td>
+        <td>{drug.idDrugBank}</td>
+      </tr>
+    ));
     return (
       <Fragment>
         <header>
@@ -68,20 +49,18 @@ class Home extends Component {
         </header>
         <main>
           <StyledWrapper className="wrapper">
-            <StyledBanner src={banner} alt="banner" />
-            <h2>
-            SYNERGxDB is a database that allows users to ... drug combinations.
-            Synergistic drug combination ... in chemotherapy of cancer.
-            </h2>
-            <Collapse isOpened={!isOpen} springConfig={{ stiffness: 100, damping: 10 }}>
-              <StyledButton type="button" onClick={() => this.setState({ isOpen: true })}>
-                Get Started
-                <img src={arrow} alt="" />
-              </StyledButton>
-            </Collapse>
-            <Collapse isOpened={isOpen} springConfig={{ stiffness: 150, damping: 50 }}>
-              <SearchCombos />
-            </Collapse>
+            <table>
+              <tbody>
+                <tr>
+                  <th>Name</th>
+                  <th>ATC Code</th>
+                  <th>PubChem CID</th>
+                  <th>DrugBank ID</th>
+                </tr>
+                {listOfDrugs}
+              </tbody>
+            </table>
+
           </StyledWrapper>
         </main>
         <footer>
@@ -95,4 +74,4 @@ class Home extends Component {
 }
 
 
-export default Home;
+export default Drugs;
