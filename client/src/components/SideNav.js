@@ -1,4 +1,5 @@
-import React, { Component } from 'react';
+import React from 'react';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import logo from '../images/logo.png';
 import colors from '../styles/colors';
@@ -36,11 +37,11 @@ const Home = () => (
   <StyledNav className="side-nav">
     <StyledLogo src={logo} alt="logo" className="logo" />
     <ul>
-      <li><a href="#">Cell lines</a></li>
-      <li><a href="#">Drugs</a></li>
-      <li><a href="#">Databases</a></li>
-      <li><a href="#">Synergy Scores</a></li>
-      <li><a href="#">Documentation</a></li>
+      <li><Link to="/cell-lines/">Cell lines</Link></li>
+      <li><Link to="/drugs/">Drugs</Link></li>
+      <li><Link to="/databases/">Databases</Link></li>
+      <li><Link to="/">Synergy Scores</Link></li>
+      <li><Link to="/">Doucumentation</Link></li>
     </ul>
   </StyledNav>
 );

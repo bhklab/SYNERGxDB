@@ -8,6 +8,7 @@ const knexLogger = require('knex-logger');
 const db = require('./db');
 
 const indexRouter = require('./routes/index');
+const databaseRouter = require('./routes/databases');
 
 const app = express();
 
@@ -28,6 +29,7 @@ app.use(knexLogger(db));
 app.use(express.static(path.join(__dirname, 'client/build')));
 
 app.use('/api/', indexRouter);
+app.use('/api/databases/', databaseRouter);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

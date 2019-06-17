@@ -7,14 +7,16 @@ import heroImg from '../images/hero-image.jpg';
 import colors from '../styles/colors';
 
 import Home from './Home';
-import Statistics from './Statistics';
+import CellLines from './CellLines';
+import Databases from './Databases';
+import Drugs from './Drugs';
 
 const GlobalStyles = createGlobalStyle`
   html {
     box-sizing: border-box;
     line-height: 1.15;
   }
-  body {
+  #root {
     width: 100vw;
     display: flex;
     background: linear-gradient(
@@ -71,15 +73,15 @@ const App = () => (
   <Fragment>
     <Normalize />
     <GlobalStyles />
-    <body>
-      <SideNav />
-      <StyledApp className="app">
-        <Switch>
-          <Route exact path="/" component={Home} />
-          <Route exact path="/statistics/" component={Statistics} />
-        </Switch>
-      </StyledApp>
-    </body>
+    <SideNav />
+    <StyledApp className="app">
+      <Switch>
+        <Route exact path="/" component={Home} />
+        <Route exact path="/cell-lines/" component={CellLines} />
+        <Route exact path="/drugs/" component={Drugs} />
+        <Route exact path="/databases/" component={Databases} />
+      </Switch>
+    </StyledApp>
   </Fragment>
 );
 
