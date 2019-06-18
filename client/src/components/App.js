@@ -10,6 +10,7 @@ import Home from './Home';
 import CellLines from './CellLines';
 import Databases from './Databases';
 import Drugs from './Drugs';
+import Plots from './Plots';
 
 const GlobalStyles = createGlobalStyle`
   * {
@@ -117,6 +118,7 @@ const App = () => (
           <Route exact path="/cell-lines/" component={CellLines} />
           <Route exact path="/drugs/" component={Drugs} />
           <Route exact path="/databases/" component={Databases} />
+          <Route exact path="/plots/" component={Plots} />
         </Switch>
       </StyledApp>
     </div>

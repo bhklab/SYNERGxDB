@@ -42,6 +42,7 @@ const Home = () => (
       <li><Link to="/databases/">Databases</Link></li>
       <li><Link to="/">Synergy Scores</Link></li>
       <li><Link to="/">Doucumentation</Link></li>
+      <li><Link to="/plots/">Plots</Link></li>
     </ul>
   </StyledNav>
 );

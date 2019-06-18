@@ -123,7 +123,7 @@ class SearchCombos extends Component {
         {/* <SearchItems placeholder="Enter cell line" searchType="cell-line-input" value={searchCell} handleSearch={handleCellSearch} filteredData={filteredCells} />
         <SearchItems placeholder="Enter drug name" searchType="drug-1-input" value={searchDrug1} handleSearch={e => handleDrugSearch('filteredDrugs1', 'searchDrug1', e)} filteredData={filteredDrugs1} />
         <SearchItems placeholder="Enter second drug name" searchType="drug-2-input" value={searchDrug2} handleSearch={e => handleDrugSearch('filteredDrugs2', 'searchDrug2', e)} filteredData={filteredDrugs2} /> */}
-        <Select options={drugsData} filterOption={createFilter({ ignoreAccents: false })} />
+        <Select options={drugsData} />
         <Select options={cellsData} />
         <div className="button-container">
           <StyledButton type="submit">Search</StyledButton>
