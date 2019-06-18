@@ -5,17 +5,15 @@ const router = express.Router();
 
 /* GET home page. */
 router.get('/getDrugs', (req, res, next) => {
-  db('Drug').select('name')
-    .then((data) => {
-      const drugList = data.map(item => item.name);
+  db('Drug').select('name', 'idDrug')
+    .then((drugList) => {
       res.json(drugList);
     });
 });
 
 router.get('/getCellLines', (req, res, next) => {
-  db('Sample').select('name')
-    .then((data) => {
-      const cellList = data.map(item => item.name);
+  db('Sample').select('name', 'idSample')
+    .then((cellList) => {
       res.json(cellList);
     });
 });
