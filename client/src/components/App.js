@@ -75,6 +75,7 @@ const GlobalStyles = createGlobalStyle`
     width: calc(100% - 300px);
     margin-left: 300px; 
   }
+  
   #root {
     width: 100vw;
     display: flex;
