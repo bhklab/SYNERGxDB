@@ -12,7 +12,7 @@ router.get('/getDrugs', (req, res, next) => {
 });
 
 router.get('/getCellLines', (req, res, next) => {
-  db('Sample').select('name', 'idSample')
+  db('Sample').select('name', 'idSample', 'tissue')
     .then((cellList) => {
       res.json(cellList);
     });
