@@ -12,6 +12,11 @@ import Databases from './Databases';
 import Drugs from './Drugs';
 
 const GlobalStyles = createGlobalStyle`
+  * {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  }  
   html {
     box-sizing: border-box;
     line-height: 1.15;
