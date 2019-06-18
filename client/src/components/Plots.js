@@ -7,23 +7,28 @@ export default class Plots extends React.Component {
     box1: {
       y: [],
       type: 'box', 
-      name: 'Box 1'
+      name: 'Box 1',
+      marker: {color: '#132226'}
     },
     box2: {
       y: [],
       type: 'box',
-      name: 'Box 2'
+      name: 'Box 2',
+      marker: {color: '#A4978E'}
     },     
     box3: {
       y: [],
       type: 'box',
-      name: 'Box 3'
+      name: 'Box 3',
+      marker: {color: '#BE9063'}
     }, 
     layout: { 
       datarevision: 0,
       width: 640,
       height: 480,
-      title: 'A Fancy Plot'
+      title: 'A Fancy Plot',
+      //paper_bgcolor='rgba(0,0,0,0)', 
+      //plot_bgcolor='#040C0E'
     },
     revision: 0,
   }
