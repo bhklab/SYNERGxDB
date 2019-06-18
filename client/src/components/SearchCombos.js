@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 import Select from 'react-select';
 import { FixedSizeList as List } from 'react-window';
+import VirtualizedSelect from 'react-virtualized-select';
 import SearchItems from './SearchItems';
-import MenuList from './MenuList';
+// import MenuList from './MenuList';
 import colors from '../styles/colors';
 import transitions from '../styles/transitions';
 
@@ -60,6 +61,30 @@ const StyledButton = styled.button`
   }
 `;
 
+
+const height = 50;
+
+class MenuList extends Component {
+  render() {
+    const {
+      options, children, maxHeight, getValue,
+    } = this.props;
+    const [value] = getValue();
+    const initialOffset = options.indexOf(value) * height;
+
+    return (
+      <List
+        height={maxHeight}
+        itemCount={children.length}
+        itemSize={height}
+        initialScrollOffset={initialOffset}
+      >
+        {({ index, style }) => <div style={style}>{children[index]}</div>}
+      </List>
+    );
+  }
+}
+
 class SearchCombos extends Component {
   constructor() {
     super();
@@ -104,14 +129,15 @@ class SearchCombos extends Component {
   }
 
   handleCellSearch(event) {
-    const { value } = event.target;
-    const processedCell = value.toLowerCase();
-    const { cellsData } = this.state;
-    const filteredCells = cellsData.filter(cell => cell.toLowerCase().includes(processedCell));
-    this.setState({ searchCell: value });
+    console.log(event.value);
+    // const { value } = event.target;
+    // const processedCell = value.toLowerCase();
+    // const { cellsData } = this.state;
+    // const filteredCells = cellsData.filter(cell => cell.toLowerCase().includes(processedCell));
+    // this.setState({ searchCell: value });
 
-    // Due to large number of cell lines, filtering starts once at least 2 characters have been entered
-    value.length > 1 ? this.setState({ filteredCells }) : this.setState({ filteredCells: [] });
+    // // Due to large number of cell lines, filtering starts once at least 2 characters have been entered
+    // value.length > 1 ? this.setState({ filteredCells }) : this.setState({ filteredCells: [] });
   }
 
   render() {
@@ -125,8 +151,10 @@ class SearchCombos extends Component {
         {/* <SearchItems placeholder="Enter cell line" searchType="cell-line-input" value={searchCell} handleSearch={handleCellSearch} filteredData={filteredCells} />
         <SearchItems placeholder="Enter drug name" searchType="drug-1-input" value={searchDrug1} handleSearch={e => handleDrugSearch('filteredDrugs1', 'searchDrug1', e)} filteredData={filteredDrugs1} />
         <SearchItems placeholder="Enter second drug name" searchType="drug-2-input" value={searchDrug2} handleSearch={e => handleDrugSearch('filteredDrugs2', 'searchDrug2', e)} filteredData={filteredDrugs2} /> */}
+        {/* <Select components={{ MenuList }} options={cellsData} placeholder="Cell Line..." onChange={handleCellSearch} /> */}
         <Select components={{ MenuList }} options={drugsData} />
-        <Select options={cellsData} />
+        {/* <Select components={{ MenuList }} options={drugsData} placeholder="Drug Name..." />
+        <Select components={{ MenuList }} options={cellsData} placeholder="Tissue..." /> */}
         <div className="button-container">
           <StyledButton type="submit">Search</StyledButton>
           <StyledButton type="button">Example query</StyledButton>
