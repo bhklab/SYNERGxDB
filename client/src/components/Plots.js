@@ -2,7 +2,7 @@ import React, { Fragment } from 'react';
 import Plot from 'react-plotly.js';
 
 export default class Plots extends React.Component {
-  // Defining initial state
+  // Defining initial state and layout
   state = {
     box1: {
       y: [],
@@ -27,8 +27,13 @@ export default class Plots extends React.Component {
       width: 640,
       height: 480,
       title: 'A Fancy Plot',
-      //paper_bgcolor='rgba(0,0,0,0)', 
-      //plot_bgcolor='#040C0E'
+      paper_bgcolor: 'rgba(82,91,86, 0.5)', 
+      plot_bgcolor: 'rgba(82,91,86,0.9)',
+      font: {
+      //   style: '',
+      color: '#000000',
+      size: "16"
+      }
     },
     revision: 0,
   }
