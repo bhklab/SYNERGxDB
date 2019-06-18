@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
+import Select from 'react-select';
 import SearchItems from './SearchItems';
 import colors from '../styles/colors';
 import transitions from '../styles/transitions';
@@ -15,7 +16,7 @@ const StyledForm = styled.form`
   flex-direction: column;
   align-items: center;
   
-  div {
+  .button-container {
     min-width: 300px;
     width: 50%;
     display: flex;
@@ -65,7 +66,7 @@ class SearchCombos extends Component {
       searchDrug2: '',
       searchCell: '',
       drugsData: [],
-      cellData: [],
+      cellsData: [],
       filteredDrugs1: [],
       filteredDrugs2: [],
       filteredCells: [],
@@ -78,12 +79,14 @@ class SearchCombos extends Component {
     fetch('/api/getDrugs')
       .then(response => response.json())
       .then((data) => {
-        this.setState({ drugsData: data });
+        const drugsData = data.map(item => ({ value: item, label: item }));
+        this.setState({ drugsData });
       });
     fetch('/api/getCellLines')
       .then(response => response.json())
       .then((data) => {
-        this.setState({ cellData: data });
+        const cellsData = data.map(item => ({ value: item, label: item }));
+        this.setState({ cellsData });
       });
   }
 
@@ -101,8 +104,8 @@ class SearchCombos extends Component {
   handleCellSearch(event) {
     const { value } = event.target;
     const processedCell = value.toLowerCase();
-    const { cellData } = this.state;
-    const filteredCells = cellData.filter(cell => cell.toLowerCase().includes(processedCell));
+    const { cellsData } = this.state;
+    const filteredCells = cellsData.filter(cell => cell.toLowerCase().includes(processedCell));
     this.setState({ searchCell: value });
 
     // Due to large number of cell lines, filtering starts once at least 2 characters have been entered
@@ -111,15 +114,17 @@ class SearchCombos extends Component {
 
   render() {
     const {
-      searchDrug1, searchDrug2, searchCell, filteredDrugs1, filteredDrugs2, filteredCells,
+      searchDrug1, searchDrug2, searchCell, filteredDrugs1, filteredDrugs2, filteredCells, cellsData, drugsData,
     } = this.state;
     const { handleCellSearch, handleDrugSearch } = this;
 
     return (
       <StyledForm className="search-combos">
-        <SearchItems placeholder="Enter cell line" searchType="cell-line-input" value={searchCell} handleSearch={handleCellSearch} filteredData={filteredCells} />
+        {/* <SearchItems placeholder="Enter cell line" searchType="cell-line-input" value={searchCell} handleSearch={handleCellSearch} filteredData={filteredCells} />
         <SearchItems placeholder="Enter drug name" searchType="drug-1-input" value={searchDrug1} handleSearch={e => handleDrugSearch('filteredDrugs1', 'searchDrug1', e)} filteredData={filteredDrugs1} />
-        <SearchItems placeholder="Enter second drug name" searchType="drug-2-input" value={searchDrug2} handleSearch={e => handleDrugSearch('filteredDrugs2', 'searchDrug2', e)} filteredData={filteredDrugs2} />
+        <SearchItems placeholder="Enter second drug name" searchType="drug-2-input" value={searchDrug2} handleSearch={e => handleDrugSearch('filteredDrugs2', 'searchDrug2', e)} filteredData={filteredDrugs2} /> */}
+        <Select options={drugsData} filterOption={createFilter({ ignoreAccents: false })} />
+        <Select options={cellsData} />
         <div className="button-container">
           <StyledButton type="submit">Search</StyledButton>
           <StyledButton type="button">Example query</StyledButton>
