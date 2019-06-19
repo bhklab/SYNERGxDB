@@ -1,3 +1,4 @@
+/* eslint-disable no-plusplus */
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import Select from 'react-select';
@@ -109,8 +110,17 @@ class SearchCombos extends Component {
       .then(response => response.json())
       .then((data) => {
         // Generates an array of unique tissue names
-        const tissueList = [...new Set(data.map(item => item.tissue))];
-        const tissueData = tissueList.map(item => ({ value: item, label: item }));
+        // const tissueList = [...new Set(data.map(item => item.tissue))];
+        const tissueObject = {};
+        data.forEach((item) => {
+          if (!tissueObject[item.tissue]) {
+            tissueObject[item.tissue] = 1;
+          } else {
+            tissueObject[item.tissue]++;
+          }
+        });
+        // const tissueData = tissueList.map(item => ({ value: item, label: item }));
+        const tissueData = Object.keys(tissueObject).map(tissue => ({ value: tissue, label: `${tissue} (${tissueObject[tissue]} cell lines)` }));
         const cellsData = data.map(item => ({ value: item.idSample, label: `${item.name} (${item.tissue})` }));
         this.setState({ sampleData: [...tissueData, ...cellsData] });
       });
