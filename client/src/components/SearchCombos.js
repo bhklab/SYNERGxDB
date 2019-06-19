@@ -82,31 +82,13 @@ const MenuList = (props) => {
   );
 };
 
-// const updateDrug2Data = (sample, drugId) => {
-//   fetch('/api/getDrugs', {
-//     method: 'POST',
-//     headers: {
-//       Accept: 'application/json',
-//       'Content-Type': 'application/json',
-//     },
-//     body: JSON.stringify({
-//       sample,
-//       drugId,
-//     }),
-//   })
-//     .then(response => response.json())
-//     .then((data) => {
-//       const drugsData = data.map(item => ({ value: item.idDrug, label: item.name }));
-//       this.setState({ drugsData2: [{ value: 'Any', label: 'Any Drug' }, ...drugsData] });
-//     });
-// };
-
 class SearchCombos extends Component {
   constructor() {
     super();
     this.state = {
       drugId1: null,
       drugId2: null,
+      drugName2: null,
       sample: null,
       drugsData1: [],
       drugsData2: [],
@@ -161,8 +143,13 @@ class SearchCombos extends Component {
     })
       .then(response => response.json())
       .then((data) => {
-        const drugsData = data.map(item => ({ value: item.idDrug, label: item.name }));
-        this.setState({ drugsData2: [{ value: 'Any', label: 'Any Drug' }, ...drugsData] });
+        this.setState({drugId2: null, drugName2: null, drugsData2: []})
+        if (data.length > 0) {
+          const drugsData = data.map(item => ({ value: item.idDrug, label: item.name }));
+          this.setState({ drugsData2: [{ value: 'Any', label: 'Any Drug' }, ...drugsData], drug2Placeholder: 'Enter Drug 2' });
+        } else {
+          this.setState({drug2Placeholder: "No drug combos for this cell line and drug"})
+        }
       });
   }
 
@@ -173,19 +160,19 @@ class SearchCombos extends Component {
     const { sample } = this.state;
 
     // Sends a post request to the API to retrieve relevant combo drugs for drugsData2
-    if (sample) {
-      this.updateDrug2Data(sample, value);
-    }
+    if (sample) this.updateDrug2Data(sample, value);
   }
 
   handleDrug2Search(event) {
-    const { value } = event;
-    this.setState({ drugId2: value });
+    const { value, label } = event;
+    this.setState({ drugId2: value, drugName2: {value, label} });
   }
 
   handleSampleSearch(event) {
     const { value } = event;
     this.setState({ sample: value });
+    const { drugId1 } = this.state;
+    if (drugId1) this.updateDrug2Data(value, drugId1);
   }
 
   handleSubmit(event) {
@@ -200,19 +187,19 @@ class SearchCombos extends Component {
 
   render() {
     const {
-      drugId1, drugId2, drugsData1, showResults, drugsData2, sampleData, sample, drug2Placeholder,
+      drugId1, drugId2, drugsData1, showResults, drugsData2, sampleData, sample, drug2Placeholder, drugName2
     } = this.state;
     const {
       handleSampleSearch, handleDrug1Search, handleDrug2Search, handleSubmit,
     } = this;
 
-    const isDisabled = !(drugId1 && sample);
+    const isDisabled = !(drugId1 && sample && drugsData2.length > 0);
 
     const searchForm = (
       <StyledForm className="search-combos" onSubmit={handleSubmit}>
         <Select components={{ MenuList }} options={sampleData} placeholder="Enter Cell Line or Tissue" onChange={handleSampleSearch} />
         <Select components={{ MenuList }} options={drugsData1} placeholder="Enter Drug 1" onChange={e => handleDrug1Search('drugId1', e)} />
-        <Select components={{ MenuList }} options={drugsData2} isDisabled={isDisabled} placeholder={drug2Placeholder} onChange={handleDrug2Search} />
+        <Select components={{ MenuList }} options={drugsData2} value={drugName2} isDisabled={isDisabled} placeholder={drug2Placeholder} onChange={handleDrug2Search} />
         <div className="button-container">
           <StyledButton type="submit">Search</StyledButton>
           <StyledButton type="button">Example query</StyledButton>

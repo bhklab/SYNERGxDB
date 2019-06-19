@@ -26,14 +26,23 @@ router.post('/getDrugs', (req, res, next) => {
   const { sample, drugId } = req.body;
   // Query when sample is a cell line
 
-  function subquery() {
+  function subqueryDrugA() {
+    this.select('idDrugA')
+      .from('Combo_Design')
+      .where({ idSample: sample, idDrugB: drugId })
+      .as('a1');
+  }
+  function subqueryDrugB() {
     this.select('idDrugB')
       .from('Combo_Design')
       .where({ idSample: sample, idDrugA: drugId })
-      .as('t1');
+      .as('b1');
   }
-  db.select('idDrug', 'name').from(subquery).join('Drug', 't1.idDrugB', '=', 'Drug.idDrug')
-    .as('t2')
+  function queryB() {
+    this.select('idDrug', 'name').from(subqueryDrugB).join('Drug', 'b1.idDrugB', '=', 'Drug.idDrug');
+  }
+  db.select('idDrug', 'name').from(subqueryDrugA).join('Drug', 'a1.idDrugA', '=', 'Drug.idDrug')
+    .union(queryB)
     .then((drugList) => {
       res.json(drugList);
     });
