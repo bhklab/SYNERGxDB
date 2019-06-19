@@ -25,11 +25,28 @@ router.post('/getDrugs', (req, res, next) => {
 
   const { sample, drugId } = req.body;
   // Query when sample is a cell line
-  db('Combo_Design').select('idDrugB')
-    .where({ idSample: sample, idDrugA: drugId })
+
+  function subquery() {
+    this.select('idDrugB')
+      .from('Combo_Design')
+      .where({ idSample: sample, idDrugA: drugId })
+      .as('t1');
+  }
+  db.select('idDrug', 'name').from(subquery).join('Drug', 't1.idDrugB', '=', 'Drug.idDrug')
+    .as('t2')
     .then((drugList) => {
       res.json(drugList);
     });
+  // db('Drug').select('idDrug', 'name').join(() => {
+  //     this.select('idDrugB')
+  //       .from('Combo_Design')
+  //       .where({ idSample: sample, idDrugA: drugId })
+  //       .as('t1');
+  //   }).join('Drug', 't1.idDrugB', '=', 'Drug.idDrug')
+  //     .as('t2')
+  //     .then((drugList) => {
+  //       res.json(drugList);
+  //     });
 });
 
 module.exports = router;

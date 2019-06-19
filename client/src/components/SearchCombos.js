@@ -82,6 +82,25 @@ const MenuList = (props) => {
   );
 };
 
+// const updateDrug2Data = (sample, drugId) => {
+//   fetch('/api/getDrugs', {
+//     method: 'POST',
+//     headers: {
+//       Accept: 'application/json',
+//       'Content-Type': 'application/json',
+//     },
+//     body: JSON.stringify({
+//       sample,
+//       drugId,
+//     }),
+//   })
+//     .then(response => response.json())
+//     .then((data) => {
+//       const drugsData = data.map(item => ({ value: item.idDrug, label: item.name }));
+//       this.setState({ drugsData2: [{ value: 'Any', label: 'Any Drug' }, ...drugsData] });
+//     });
+// };
+
 class SearchCombos extends Component {
   constructor() {
     super();
@@ -90,11 +109,13 @@ class SearchCombos extends Component {
       drugId2: null,
       sample: null,
       drugsData1: [],
-      drugsData2: [{ value: 'Any', label: 'Any' }],
+      drugsData2: [],
       sampleData: [],
       showResults: false,
+      drug2Placeholder: 'Enter Drug 2',
     };
     this.handleDrug1Search = this.handleDrug1Search.bind(this);
+    this.handleDrug2Search = this.handleDrug2Search.bind(this);
     this.handleSampleSearch = this.handleSampleSearch.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
@@ -126,6 +147,25 @@ class SearchCombos extends Component {
       });
   }
 
+  updateDrug2Data(sample, drugId) {
+    fetch('/api/getDrugs', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        sample,
+        drugId,
+      }),
+    })
+      .then(response => response.json())
+      .then((data) => {
+        const drugsData = data.map(item => ({ value: item.idDrug, label: item.name }));
+        this.setState({ drugsData2: [{ value: 'Any', label: 'Any Drug' }, ...drugsData] });
+      });
+  }
+
   handleDrug1Search(drugId, event) {
     const { value } = event;
     this.setState({ drugId1: value });
@@ -134,22 +174,13 @@ class SearchCombos extends Component {
 
     // Sends a post request to the API to retrieve relevant combo drugs for drugsData2
     if (sample) {
-      fetch('/api/getDrugs', {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          sample,
-          drugId: value,
-        }),
-      })
-        .then(response => response.json())
-        .then((data) => {
-          console.log(data);
-        });
+      this.updateDrug2Data(sample, value);
     }
+  }
+
+  handleDrug2Search(event) {
+    const { value } = event;
+    this.setState({ drugId2: value });
   }
 
   handleSampleSearch(event) {
@@ -169,15 +200,19 @@ class SearchCombos extends Component {
 
   render() {
     const {
-      drugId1, drugId2, drugsData1, showResults, drugsData2, sampleData, sample,
+      drugId1, drugId2, drugsData1, showResults, drugsData2, sampleData, sample, drug2Placeholder,
     } = this.state;
-    const { handleSampleSearch, handleDrug1Search, handleSubmit } = this;
+    const {
+      handleSampleSearch, handleDrug1Search, handleDrug2Search, handleSubmit,
+    } = this;
+
+    const isDisabled = !(drugId1 && sample);
 
     const searchForm = (
       <StyledForm className="search-combos" onSubmit={handleSubmit}>
         <Select components={{ MenuList }} options={sampleData} placeholder="Enter Cell Line or Tissue" onChange={handleSampleSearch} />
         <Select components={{ MenuList }} options={drugsData1} placeholder="Enter Drug 1" onChange={e => handleDrug1Search('drugId1', e)} />
-        <Select components={{ MenuList }} options={drugsData2} placeholder="Enter Drug 2" onChange={e => handleDrug1Search('drugId2', e)} />
+        <Select components={{ MenuList }} options={drugsData2} isDisabled={isDisabled} placeholder={drug2Placeholder} onChange={handleDrug2Search} />
         <div className="button-container">
           <StyledButton type="submit">Search</StyledButton>
           <StyledButton type="button">Example query</StyledButton>
