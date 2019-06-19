@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import Select from 'react-select';
-import SearchItems from './SearchItems';
+import { FixedSizeList as List } from 'react-window';
 import colors from '../styles/colors';
 import transitions from '../styles/transitions';
+
+import ComboResults from './ComboResults';
 
 const StyledForm = styled.form`
   max-width: 700px;
@@ -58,79 +60,110 @@ const StyledButton = styled.button`
   }
 `;
 
+
+const MenuList = (props) => {
+  const height = 50;
+  const {
+    options, children, maxHeight, getValue,
+  } = props;
+  const [value] = getValue();
+  const initialOffset = options.indexOf(value) * height;
+
+  return (
+    <List
+      height={maxHeight}
+      itemCount={children.length}
+      itemSize={height}
+      initialScrollOffset={initialOffset}
+    >
+      {({ index, style }) => <div style={style}>{children[index]}</div>}
+    </List>
+  );
+};
+
 class SearchCombos extends Component {
   constructor() {
     super();
     this.state = {
-      searchDrug1: '',
-      searchDrug2: '',
-      searchCell: '',
+      drugId1: null,
+      drugId2: null,
+      cellId: null,
+      selectedTissue: null,
       drugsData: [],
       cellsData: [],
-      filteredDrugs1: [],
-      filteredDrugs2: [],
-      filteredCells: [],
+      tissueData: [],
+      showResults: false,
     };
     this.handleDrugSearch = this.handleDrugSearch.bind(this);
     this.handleCellSearch = this.handleCellSearch.bind(this);
+    this.handleTissueSearch = this.handleTissueSearch.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   componentDidMount() {
     fetch('/api/getDrugs')
       .then(response => response.json())
       .then((data) => {
-        const drugsData = data.map(item => ({ value: item, label: item }));
+        const drugsData = data.map(item => ({ value: item.idDrug, label: item.name }));
         this.setState({ drugsData });
       });
     fetch('/api/getCellLines')
       .then(response => response.json())
       .then((data) => {
-        const cellsData = data.map(item => ({ value: item, label: item }));
-        this.setState({ cellsData });
+        const cellsData = data.map(item => ({ value: item.idSample, label: item.name }));
+
+        // Generates an array of unique tissue names
+        const tissueList = [...new Set(data.map(item => item.tissue))];
+        const tissueData = tissueList.map(item => ({ value: item, label: item }));
+        this.setState({ cellsData, tissueData });
       });
   }
 
-  handleDrugSearch(dataset, inputType, event) {
-    const { value } = event.target;
-    const processedDrug = value.toLowerCase();
-    const { drugsData } = this.state;
-    const filteredDrugs = drugsData.filter(drug => drug.toLowerCase().includes(processedDrug));
-    this.setState({ [inputType]: value });
-
-    // Due to large number of drugs, filtering starts after 3 characters have been entered
-    value.length > 2 ? this.setState({ [dataset]: filteredDrugs }) : this.setState({ [dataset]: [] });
+  handleDrugSearch(drugId, event) {
+    const { value } = event;
+    this.setState({ [drugId]: value });
   }
 
   handleCellSearch(event) {
-    const { value } = event.target;
-    const processedCell = value.toLowerCase();
-    const { cellsData } = this.state;
-    const filteredCells = cellsData.filter(cell => cell.toLowerCase().includes(processedCell));
-    this.setState({ searchCell: value });
+    const { value } = event;
+    this.setState({ cellId: value });
+  }
 
-    // Due to large number of cell lines, filtering starts once at least 2 characters have been entered
-    value.length > 1 ? this.setState({ filteredCells }) : this.setState({ filteredCells: [] });
+  handleTissueSearch(event) {
+    const { value } = event;
+    this.setState({ selectedTissue: value });
+  }
+
+  handleSubmit(event) {
+    event.preventDefault();
+    const {
+      drugId1, drugId2, cellId, showResults, selectedTissue,
+    } = this.state;
+    if (drugId1 && drugId2 && cellId && selectedTissue) {
+      this.setState({ showResults: !showResults });
+    }
   }
 
   render() {
     const {
-      searchDrug1, searchDrug2, searchCell, filteredDrugs1, filteredDrugs2, filteredCells, cellsData, drugsData,
+      drugId1, drugId2, cellId, selectedTissue, cellsData, drugsData, tissueData, showResults,
     } = this.state;
-    const { handleCellSearch, handleDrugSearch } = this;
+    const { handleCellSearch, handleDrugSearch, handleSubmit } = this;
 
-    return (
-      <StyledForm className="search-combos">
-        {/* <SearchItems placeholder="Enter cell line" searchType="cell-line-input" value={searchCell} handleSearch={handleCellSearch} filteredData={filteredCells} />
-        <SearchItems placeholder="Enter drug name" searchType="drug-1-input" value={searchDrug1} handleSearch={e => handleDrugSearch('filteredDrugs1', 'searchDrug1', e)} filteredData={filteredDrugs1} />
-        <SearchItems placeholder="Enter second drug name" searchType="drug-2-input" value={searchDrug2} handleSearch={e => handleDrugSearch('filteredDrugs2', 'searchDrug2', e)} filteredData={filteredDrugs2} /> */}
-        <Select options={drugsData} />
-        <Select options={cellsData} />
+    const searchForm = (
+      <StyledForm className="search-combos" onSubmit={handleSubmit}>
+        <Select components={{ MenuList }} options={cellsData} placeholder="Cell Line..." onChange={handleCellSearch} />
+        <Select components={{ MenuList }} options={drugsData} placeholder="Drug Name..." onChange={e => handleDrugSearch('drugId1', e)} />
+        <Select components={{ MenuList }} options={drugsData} placeholder="Drug Name..." onChange={e => handleDrugSearch('drugId2', e)} />
+        <Select components={{ MenuList }} options={tissueData} placeholder="Tissue..." onChange={this.handleTissueSearch} />
         <div className="button-container">
           <StyledButton type="submit">Search</StyledButton>
           <StyledButton type="button">Example query</StyledButton>
         </div>
       </StyledForm>
     );
+
+    return showResults ? <ComboResults /> : searchForm;
   }
 }
 
