@@ -8,7 +8,7 @@ class ComboResults extends Component {
   constructor() {
     super();
     this.state = {
-      cellLineId: 0,
+      sample: 0,
       drugId1: 0,
       drugId2: 0,
       tissue: '',

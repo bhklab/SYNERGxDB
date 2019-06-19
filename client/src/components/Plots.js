@@ -3,39 +3,42 @@ import Plot from 'react-plotly.js';
 
 export default class Plots extends React.Component {
   // Defining initial state and layout
-  state = {
-    box1: {
-      y: [],
-      type: 'box', 
-      name: 'Box 1',
-      marker: {color: '#132226'}
-    },
-    box2: {
-      y: [],
-      type: 'box',
-      name: 'Box 2',
-      marker: {color: '#A4978E'}
-    },     
-    box3: {
-      y: [],
-      type: 'box',
-      name: 'Box 3',
-      marker: {color: '#BE9063'}
-    }, 
-    layout: { 
-      datarevision: 0,
-      width: 640,
-      height: 480,
-      title: 'A Fancy Plot',
-      paper_bgcolor: 'rgba(82,91,86, 0.5)', 
-      plot_bgcolor: 'rgba(82,91,86,0.9)',
-      font: {
-      //   style: '',
-      color: '#000000',
-      size: "16"
+  constructor() {
+      super()
+      this.state = {
+        box1: {
+          y: [],
+          type: 'box', 
+          name: 'Box 1',
+          marker: {color: '#132226'}
+        },
+        box2: {
+          y: [],
+          type: 'box',
+          name: 'Box 2',
+          marker: {color: '#A4978E'}
+        },     
+        box3: {
+          y: [],
+          type: 'box',
+          name: 'Box 3',
+          marker: {color: '#BE9063'}
+        }, 
+        layout: { 
+          datarevision: 0,
+          width: 640,
+          height: 480,
+          title: 'A Fancy Plot',
+          paper_bgcolor: 'rgba(82,91,86, 0.5)', 
+          plot_bgcolor: 'rgba(82,91,86,0.9)',
+          font: {
+          //   style: '',
+          color: '#000000',
+          size: "16"
+          }
+        },
+        revision: 0,
       }
-    },
-    revision: 0,
   }
   // Function defining interval for updating graph with random number
   componentDidMount() {

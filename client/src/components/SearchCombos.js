@@ -87,16 +87,14 @@ class SearchCombos extends Component {
     this.state = {
       drugId1: null,
       drugId2: null,
-      cellId: null,
-      selectedTissue: null,
-      drugsData: [],
-      cellsData: [],
-      tissueData: [],
+      sample: null,
+      drugsData1: [],
+      drugsData2: [{ value: 'Any', label: 'Any' }],
+      sampleData: [],
       showResults: false,
     };
-    this.handleDrugSearch = this.handleDrugSearch.bind(this);
-    this.handleCellSearch = this.handleCellSearch.bind(this);
-    this.handleTissueSearch = this.handleTissueSearch.bind(this);
+    this.handleDrug1Search = this.handleDrug1Search.bind(this);
+    this.handleSampleSearch = this.handleSampleSearch.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
@@ -104,34 +102,49 @@ class SearchCombos extends Component {
     fetch('/api/getDrugs')
       .then(response => response.json())
       .then((data) => {
-        const drugsData = data.map(item => ({ value: item.idDrug, label: item.name }));
-        this.setState({ drugsData });
+        const drugsData1 = data.map(item => ({ value: item.idDrug, label: item.name }));
+        this.setState({ drugsData1 });
       });
     fetch('/api/getCellLines')
       .then(response => response.json())
       .then((data) => {
-        const cellsData = data.map(item => ({ value: item.idSample, label: item.name }));
-
         // Generates an array of unique tissue names
         const tissueList = [...new Set(data.map(item => item.tissue))];
         const tissueData = tissueList.map(item => ({ value: item, label: item }));
-        this.setState({ cellsData, tissueData });
+        const cellsData = data.map(item => ({ value: item.idSample, label: `${item.name} (${item.tissue})` }));
+        this.setState({ sampleData: [...tissueData, ...cellsData] });
       });
   }
 
-  handleDrugSearch(drugId, event) {
+  handleDrug1Search(drugId, event) {
     const { value } = event;
-    this.setState({ [drugId]: value });
+    this.setState({ drugId1: value });
+
+    const { sample } = this.state;
+
+    // Sends a post request to the API to retrieve relevant combo drugs for drugsData2
+    if (sample) {
+      fetch('/api/getDrugs', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          sample,
+          drugId: value,
+        }),
+      })
+        .then(response => response.json())
+        .then((data) => {
+          console.log(data);
+        });
+    }
   }
 
-  handleCellSearch(event) {
+  handleSampleSearch(event) {
     const { value } = event;
-    this.setState({ cellId: value });
-  }
-
-  handleTissueSearch(event) {
-    const { value } = event;
-    this.setState({ selectedTissue: value });
+    this.setState({ sample: value });
   }
 
   handleSubmit(event) {
@@ -146,16 +159,15 @@ class SearchCombos extends Component {
 
   render() {
     const {
-      drugId1, drugId2, cellId, selectedTissue, cellsData, drugsData, tissueData, showResults,
+      drugId1, drugId2, drugsData1, showResults, drugsData2, sampleData, sample,
     } = this.state;
-    const { handleCellSearch, handleDrugSearch, handleSubmit } = this;
+    const { handleSampleSearch, handleDrug1Search, handleSubmit } = this;
 
     const searchForm = (
       <StyledForm className="search-combos" onSubmit={handleSubmit}>
-        <Select components={{ MenuList }} options={cellsData} placeholder="Cell Line..." onChange={handleCellSearch} />
-        <Select components={{ MenuList }} options={drugsData} placeholder="Drug Name..." onChange={e => handleDrugSearch('drugId1', e)} />
-        <Select components={{ MenuList }} options={drugsData} placeholder="Drug Name..." onChange={e => handleDrugSearch('drugId2', e)} />
-        <Select components={{ MenuList }} options={tissueData} placeholder="Tissue..." onChange={this.handleTissueSearch} />
+        <Select components={{ MenuList }} options={sampleData} placeholder="Enter Cell Line or Tissue" onChange={handleSampleSearch} />
+        <Select components={{ MenuList }} options={drugsData1} placeholder="Enter Drug 1" onChange={e => handleDrug1Search('drugId1', e)} />
+        <Select components={{ MenuList }} options={drugsData2} placeholder="Enter Drug 2" onChange={e => handleDrug1Search('drugId2', e)} />
         <div className="button-container">
           <StyledButton type="submit">Search</StyledButton>
           <StyledButton type="button">Example query</StyledButton>
@@ -163,7 +175,7 @@ class SearchCombos extends Component {
       </StyledForm>
     );
 
-    return showResults ? <ComboResults /> : searchForm;
+    return showResults ? <ComboResults sample={sample} drugId1={drugId1} drugId2={drugId2} /> : searchForm;
   }
 }
 
