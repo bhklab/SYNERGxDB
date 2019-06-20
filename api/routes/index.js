@@ -92,13 +92,14 @@ router.post('/getCombos', (req, res, next) => {
 
     if (typeof (sample) === 'number') baseQuery = baseQuery.andWhere({ idSample: sample });
     if (typeof (drugId2) === 'number') baseQuery = baseQuery.andWhere({ idDrugB: drug2 });
-
     return baseQuery.as('CD');
   }
   // Subquery to get cell line name(s) and tissue name
   function subqueryS() {
-    this.select('idCombo_Design', 'idDrugA', 'idDrugB', 'name as sampleName', 'tissue')
-      .from(subqueryCD)
+    let baseQuery = this.select('idCombo_Design', 'idDrugA', 'idDrugB', 'name as sampleName', 'tissue')
+      .from(subqueryCD);
+    if (typeof (sample) === 'string') baseQuery = baseQuery.where({ tissue: sample });
+    return baseQuery
       .join('Sample', 'CD.idSample', '=', 'Sample.idSample')
       .as('S');
   }
