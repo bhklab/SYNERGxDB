@@ -55,16 +55,27 @@ router.post('/getCombos', (req, res, next) => {
 
   const { sample, drugId1, drugId2 } = req.body;
 
-  // idDrugA should always be smaller than idDrugB when database is queried
-  const drug1 = drugId1 < drugId2 ? drugId1 : drugId2;
-  const drug2 = drugId1 < drugId2 ? drugId2 : drugId1;
 
   // Subquery to link combo designs to respective synergy scores
   function subqueryCD() {
-    this.select('*')
+    let drug1;
+    let drug2;
+    // Checks if drugId2 is set to 'Any'
+    if (typeof (drugId2) === 'number') {
+      // idDrugA should always be smaller than idDrugB when database is queried
+      drug1 = drugId1 < drugId2 ? drugId1 : drugId2;
+      drug2 = drugId1 < drugId2 ? drugId2 : drugId1;
+    } else {
+      drug1 = drugId1;
+    }
+    let baseQuery = this.select('*')
       .from('Combo_Design')
-      .where({ idSample: sample, idDrugA: drug1, idDrugB: drug2 })
-      .as('CD');
+      .where({ idDrugA: drug1 });
+
+    if (typeof (sample) === 'number') baseQuery = baseQuery.andWhere({ idSample: sample });
+    if (typeof (drugId2) === 'number') baseQuery = baseQuery.andWhere({ idDrugB: drug2 });
+
+    return baseQuery.as('CD');
   }
   // Subquery to get cell line name(s) and tissue name
   function subqueryS() {

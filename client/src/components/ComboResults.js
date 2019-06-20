@@ -29,8 +29,8 @@ class ComboResults extends Component {
     })
     .then(response => response.json())
     .then((data) => {
-      console.log('Response from the server');
       console.log(data);
+      this.setState({results: data})
     })
 
   }
