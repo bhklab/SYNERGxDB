@@ -24,8 +24,9 @@ router.post('/getDrugs', (req, res, next) => {
   console.log(req.body);
 
   const { sample, drugId } = req.body;
-  // Query when sample is a cell line
 
+  // Query to get relevant cell lines that have drug combo for them
+  // When sample is a cell line
   function subqueryDrugA() {
     this.select('idDrugA')
       .from('Combo_Design')
@@ -46,16 +47,31 @@ router.post('/getDrugs', (req, res, next) => {
     .then((drugList) => {
       res.json(drugList);
     });
-  // db('Drug').select('idDrug', 'name').join(() => {
-  //     this.select('idDrugB')
-  //       .from('Combo_Design')
-  //       .where({ idSample: sample, idDrugA: drugId })
-  //       .as('t1');
-  //   }).join('Drug', 't1.idDrugB', '=', 'Drug.idDrug')
-  //     .as('t2')
-  //     .then((drugList) => {
-  //       res.json(drugList);
-  //     });
 });
+
+
+router.post('/getCombos', (req, res, next) => {
+  console.log(req.body);
+
+  const { sample, drugId1, drugId2 } = req.body;
+
+  // idDrugA should always be smaller than idDrugB when database is queried
+  const drug1 = drugId1 < drugId2 ? drugId1 : drugId2;
+  const drug2 = drugId1 < drugId2 ? drugId2 : drugId1;
+
+
+  function subqueryCD() {
+    this.select('idCombo_Design')
+      .from('Combo_Design')
+      .where({ idSample: sample, idDrugA: drug1, idDrugB: drug2 })
+      .as('CD');
+  }
+  db.select('bliss', 'loewe', 'hsa', 'zip', 'idSource')
+    .from(subqueryCD).join('Synergy_Score', 'CD.idCombo_Design', '=', 'Synergy_Score.idSynergy_Score')
+    .then((data) => {
+      res.json(data);
+    });
+});
+
 
 module.exports = router;

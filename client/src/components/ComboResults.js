@@ -8,14 +8,31 @@ class ComboResults extends Component {
   constructor() {
     super();
     this.state = {
-      sample: 0,
-      drugId1: 0,
-      drugId2: 0,
-      tissue: '',
+      results: []
     };
   }
 
   componentDidMount() {
+    const { sample, drugId1, drugId2} = this.props
+
+    fetch('/api/getCombos', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        sample,
+        drugId1, 
+        drugId2
+      }),
+    })
+    .then(response => response.json())
+    .then((data) => {
+      console.log('Response from the server');
+      console.log(data);
+    })
+
   }
 
   render() {

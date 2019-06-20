@@ -95,6 +95,7 @@ class SearchCombos extends Component {
       sampleData: [],
       showResults: false,
       drug2Placeholder: 'Enter Drug 2',
+      selectedTissue: null
     };
     this.handleDrug1Search = this.handleDrug1Search.bind(this);
     this.handleDrug2Search = this.handleDrug2Search.bind(this);
@@ -178,9 +179,9 @@ class SearchCombos extends Component {
   handleSubmit(event) {
     event.preventDefault();
     const {
-      drugId1, drugId2, cellId, showResults, selectedTissue,
+      drugId1, drugId2, sample, showResults
     } = this.state;
-    if (drugId1 && drugId2 && cellId && selectedTissue) {
+    if (drugId1 && drugId2 && sample) {
       this.setState({ showResults: !showResults });
     }
   }
