@@ -3,8 +3,6 @@ const db = require('../db');
 
 const router = express.Router();
 
-/* GET home page. */
-
 
 router.get('/getCellLines', (req, res, next) => {
   db('Sample').select('name', 'idSample', 'tissue')
@@ -23,16 +21,16 @@ router.get('/getDrugs', (req, res, next) => {
 router.post('/getDrugs', (req, res, next) => {
   const { sample, drugId } = req.body;
 
-
   function subqueryTissue() {
     return this.select('idSample')
       .from('Sample')
       .where({ tissue: sample }).as('t');
   }
   // Query to get relevant cell lines that have drug combo for them
-  // When sample is a cell line
+  // Checks for all drugs that go after the drugId
   function subqueryDrugA() {
     let baseQuery;
+    // Checks if the query cell line or tissue specific
     if (typeof (sample) === 'number') {
       baseQuery = this.select('idDrugA')
         .from('Combo_Design')
@@ -45,7 +43,7 @@ router.post('/getDrugs', (req, res, next) => {
     }
     return baseQuery.as('a1');
   }
-
+  // Checks for all drugs that go before the drugId (subquery)
   function subqueryDrugB() {
     let baseQuery;
     if (typeof (sample) === 'number') {
@@ -60,6 +58,7 @@ router.post('/getDrugs', (req, res, next) => {
     }
     return baseQuery.as('b1');
   }
+  // Checks for all drugs that go before the drugId (main query)
   function queryB() {
     this.select('idDrug', 'name').from(subqueryDrugB).join('Drug', 'b1.idDrugB', '=', 'Drug.idDrug');
   }
@@ -72,7 +71,6 @@ router.post('/getDrugs', (req, res, next) => {
 
 
 router.post('/getCombos', (req, res, next) => {
-  console.log(req.body);
   const { sample, drugId1, drugId2 } = req.body;
   // Subquery to link combo designs to respective synergy scores
   function subqueryCD() {
@@ -90,6 +88,7 @@ router.post('/getCombos', (req, res, next) => {
       .from('Combo_Design')
       .where({ idDrugA: drug1 });
 
+    // Checks type of the request and modifies the query accordingly
     if (typeof (sample) === 'number') baseQuery = baseQuery.andWhere({ idSample: sample });
     if (typeof (drugId2) === 'number') baseQuery = baseQuery.andWhere({ idDrugB: drug2 });
     return baseQuery.as('CD');
@@ -98,6 +97,7 @@ router.post('/getCombos', (req, res, next) => {
   function subqueryS() {
     let baseQuery = this.select('idCombo_Design', 'idDrugA', 'idDrugB', 'name as sampleName', 'tissue')
       .from(subqueryCD);
+    // Tissue specific requests
     if (typeof (sample) === 'string') baseQuery = baseQuery.where({ tissue: sample });
     return baseQuery
       .join('Sample', 'CD.idSample', '=', 'Sample.idSample')
