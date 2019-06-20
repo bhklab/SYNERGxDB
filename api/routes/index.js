@@ -21,23 +21,44 @@ router.get('/getDrugs', (req, res, next) => {
 });
 
 router.post('/getDrugs', (req, res, next) => {
-  console.log(req.body);
-
   const { sample, drugId } = req.body;
 
+
+  function subqueryTissue() {
+    return this.select('idSample')
+      .from('Sample')
+      .where({ tissue: sample }).as('t');
+  }
   // Query to get relevant cell lines that have drug combo for them
   // When sample is a cell line
   function subqueryDrugA() {
-    this.select('idDrugA')
-      .from('Combo_Design')
-      .where({ idSample: sample, idDrugB: drugId })
-      .as('a1');
+    let baseQuery;
+    if (typeof (sample) === 'number') {
+      baseQuery = this.select('idDrugA')
+        .from('Combo_Design')
+        .where({ idSample: sample, idDrugB: drugId });
+    } else {
+      baseQuery = this.select('idDrugA')
+        .from(subqueryTissue)
+        .where({ idDrugB: drugId })
+        .join('Combo_Design', 't.idSample', '=', 'Combo_Design.idSample');
+    }
+    return baseQuery.as('a1');
   }
+
   function subqueryDrugB() {
-    this.select('idDrugB')
-      .from('Combo_Design')
-      .where({ idSample: sample, idDrugA: drugId })
-      .as('b1');
+    let baseQuery;
+    if (typeof (sample) === 'number') {
+      baseQuery = this.select('idDrugB')
+        .from('Combo_Design')
+        .where({ idSample: sample, idDrugA: drugId });
+    } else {
+      baseQuery = this.select('idDrugB')
+        .from(subqueryTissue)
+        .where({ idDrugA: drugId })
+        .join('Combo_Design', 't.idSample', '=', 'Combo_Design.idSample');
+    }
+    return baseQuery.as('b1');
   }
   function queryB() {
     this.select('idDrug', 'name').from(subqueryDrugB).join('Drug', 'b1.idDrugB', '=', 'Drug.idDrug');
@@ -52,10 +73,7 @@ router.post('/getDrugs', (req, res, next) => {
 
 router.post('/getCombos', (req, res, next) => {
   console.log(req.body);
-
   const { sample, drugId1, drugId2 } = req.body;
-
-
   // Subquery to link combo designs to respective synergy scores
   function subqueryCD() {
     let drug1;
