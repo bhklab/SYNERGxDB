@@ -6,7 +6,7 @@ import SideNav from './SideNav';
 import heroImg from '../images/hero-image.jpg';
 import colors from '../styles/colors';
 
-import Home from './Home';
+import SearchCombos from './SearchCombos';
 import CellLines from './CellLines';
 import Databases from './Databases';
 import Drugs from './Drugs';
@@ -114,7 +114,7 @@ const App = () => (
     <div className="main-wrapper">
       <StyledApp className="app">
         <Switch>
-          <Route exact path="/" component={Home} />
+          <Route exact path="/" component={SearchCombos} />
           <Route exact path="/cell-lines/" component={CellLines} />
           <Route exact path="/drugs/" component={Drugs} />
           <Route exact path="/databases/" component={Databases} />

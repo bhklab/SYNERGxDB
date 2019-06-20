@@ -1,5 +1,5 @@
 /* eslint-disable no-plusplus */
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import styled from 'styled-components';
 import Select from 'react-select';
 import { FixedSizeList as List } from 'react-window';
@@ -7,6 +7,24 @@ import colors from '../styles/colors';
 import transitions from '../styles/transitions';
 
 import ComboResults from './ComboResults';
+import banner from '../images/banner.png';
+
+
+const StyledWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+
+  h2 {
+    color: ${colors.color_main_2};
+  }
+`;
+
+const StyledBanner = styled.img`
+  max-width: 500px;
+`;
 
 const StyledForm = styled.form`
   max-width: 700px;
@@ -71,12 +89,7 @@ const MenuList = (props) => {
   const initialOffset = options.indexOf(value) * height;
 
   return (
-    <List
-      height={maxHeight}
-      itemCount={children.length}
-      itemSize={height}
-      initialScrollOffset={initialOffset}
-    >
+    <List height={maxHeight} itemCount={children.length} itemSize={height} initialScrollOffset={initialOffset}>
       {({ index, style }) => <div style={style}>{children[index]}</div>}
     </List>
   );
@@ -195,20 +208,45 @@ class SearchCombos extends Component {
     } = this;
 
     const isDisabled = !(drugId1 && sample && drugsData2.length > 0);
-
     const searchForm = (
-      <StyledForm className="search-combos" onSubmit={handleSubmit}>
-        <Select components={{ MenuList }} options={sampleData} placeholder="Enter Cell Line or Tissue" onChange={handleSampleSearch} />
-        <Select components={{ MenuList }} options={drugsData1} placeholder="Enter Drug 1" onChange={e => handleDrug1Search('drugId1', e)} />
-        <Select components={{ MenuList }} options={drugsData2} value={drugName2} isDisabled={isDisabled} placeholder={drug2Placeholder} onChange={handleDrug2Search} />
-        <div className="button-container">
-          <StyledButton type="submit">Search</StyledButton>
-          <StyledButton type="button">Example query</StyledButton>
-        </div>
-      </StyledForm>
+      <Fragment>
+        <StyledBanner src={banner} alt="banner" />
+          <h2>
+              SYNERGxDB is a database that allows users to ... drug combinations.
+              Synergistic drug combination ... in chemotherapy of cancer.
+          </h2>
+        <StyledForm className="search-combos" onSubmit={handleSubmit}>
+          <Select components={{ MenuList }} options={sampleData} placeholder="Enter Cell Line or Tissue" onChange={handleSampleSearch} />
+          <Select components={{ MenuList }} options={drugsData1} placeholder="Enter Drug 1" onChange={e => handleDrug1Search('drugId1', e)} />
+          <Select components={{ MenuList }} options={drugsData2} value={drugName2} isDisabled={isDisabled} placeholder={drug2Placeholder} onChange={handleDrug2Search} />
+          <div className="button-container">
+            <StyledButton type="submit">Search</StyledButton>
+            <StyledButton type="button">Example query</StyledButton>
+          </div>
+        </StyledForm>
+      </Fragment>
     );
+    const displayedComponent = showResults ? <ComboResults sample={sample} drugId1={drugId1} drugId2={drugId2} /> : searchForm;
 
-    return showResults ? <ComboResults sample={sample} drugId1={drugId1} drugId2={drugId2} /> : searchForm;
+    return (
+      <Fragment>
+        <header>
+          <div className="wrapper">
+            <h1>SYNERGxDB</h1>
+          </div>
+        </header>
+        <main>
+          <StyledWrapper className="wrapper">
+            {displayedComponent}
+          </StyledWrapper>
+        </main>
+        <footer>
+          <div className="wrapper">
+            <p>Copyright © 2019. All rights reserved</p>
+          </div>
+        </footer>
+      </Fragment>
+    )
   }
 }
 

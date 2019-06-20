@@ -36,7 +36,8 @@ class ComboResults extends Component {
   }
 
   render() {
-    return (<div>Test</div>);
+   
+    return <div>Table</div>
   }
 }
 
