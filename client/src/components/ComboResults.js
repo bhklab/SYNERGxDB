@@ -1,11 +1,13 @@
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable no-console */
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 // import styled from 'styled-components';
 // import colors from '../styles/colors';
 // import transitions from '../styles/transitions';
 
 import ResultRow from './ResultRow';
+import Plots from './Plots';
+import Biomarkers from './Biomarkers';
 
 
 class ComboResults extends Component {
@@ -46,27 +48,35 @@ class ComboResults extends Component {
 
   render() {
     const { results } = this.state;
+    const totalSynergyScores = results.length;
     const resultRows = results.map((synergyResult, index) => <ResultRow synergyResult={synergyResult} key={index} />);
     return (
-      <table>
-        <thead>
-          <tr>
-            <th>Tissue</th>
-            <th>Cell line</th>
-            <th>Drug A</th>
-            <th>Drug B</th>
-            <th>ZIP</th>
-            <th>Bliss</th>
-            <th>Loewe</th>
-            <th>HSA</th>
-            <th>Source</th>
-            <th />
-          </tr>
-        </thead>
-        <tbody>
-          {resultRows}
-        </tbody>
-      </table>
+      <Fragment>
+        <div className="synergy-scores">
+          <h2>
+            Synergy Scores, N=
+            {totalSynergyScores}
+          </h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Tissue</th>
+                <th>Cell line</th>
+                <th>Drug A</th>
+                <th>Drug B</th>
+                <th>ZIP</th>
+                <th>Bliss</th>
+                <th>Loewe</th>
+                <th>HSA</th>
+                <th>Source</th>
+              </tr>
+            </thead>
+            <tbody>
+              {resultRows}
+            </tbody>
+          </table>
+        </div>
+      </Fragment>
     );
   }
 }

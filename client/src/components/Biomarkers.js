@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 // import transitions from '../styles/transitions';
 
 
-const ResultRow = (props) => {
+const Biomarker = (props) => {
   const {
     tissue, sampleName, drugNameA, drugNameB, zip, bliss, loewe, hsa, sourceName,
   } = props.synergyResult;
@@ -23,4 +23,4 @@ const ResultRow = (props) => {
   );
 };
 
-export default ResultRow;
+export default Biomarker;

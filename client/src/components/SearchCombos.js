@@ -89,7 +89,12 @@ const MenuList = (props) => {
   const initialOffset = options.indexOf(value) * height;
 
   return (
-    <List height={maxHeight} itemCount={children.length} itemSize={height} initialScrollOffset={initialOffset}>
+    <List
+      height={maxHeight}
+      itemCount={children.length}
+      itemSize={height}
+      initialScrollOffset={initialOffset}
+    >
       {({ index, style }) => <div style={style}>{children[index]}</div>}
     </List>
   );
@@ -108,7 +113,7 @@ class SearchCombos extends Component {
       sampleData: [],
       showResults: false,
       drug2Placeholder: 'Enter Drug 2',
-      selectedTissue: null
+      selectedTissue: null,
     };
     this.handleDrug1Search = this.handleDrug1Search.bind(this);
     this.handleDrug2Search = this.handleDrug2Search.bind(this);
@@ -157,12 +162,12 @@ class SearchCombos extends Component {
     })
       .then(response => response.json())
       .then((data) => {
-        this.setState({drugId2: null, drugName2: null, drugsData2: []})
+        this.setState({ drugId2: null, drugName2: null, drugsData2: [] });
         if (data.length > 0) {
           const drugsData = data.map(item => ({ value: item.idDrug, label: item.name }));
           this.setState({ drugsData2: [{ value: 'Any', label: 'Any Drug' }, ...drugsData], drug2Placeholder: 'Enter Drug 2' });
         } else {
-          this.setState({drug2Placeholder: "No drug combos for this cell line and drug"})
+          this.setState({ drug2Placeholder: 'No drug combos for this cell line and drug' });
         }
       });
   }
@@ -179,7 +184,7 @@ class SearchCombos extends Component {
 
   handleDrug2Search(event) {
     const { value, label } = event;
-    this.setState({ drugId2: value, drugName2: {value, label} });
+    this.setState({ drugId2: value, drugName2: { value, label } });
   }
 
   handleSampleSearch(event) {
@@ -192,7 +197,7 @@ class SearchCombos extends Component {
   handleSubmit(event) {
     event.preventDefault();
     const {
-      drugId1, drugId2, sample, showResults
+      drugId1, drugId2, sample, showResults,
     } = this.state;
     if (drugId1 && drugId2 && sample) {
       this.setState({ showResults: !showResults });
@@ -201,7 +206,7 @@ class SearchCombos extends Component {
 
   render() {
     const {
-      drugId1, drugId2, drugsData1, showResults, drugsData2, sampleData, sample, drug2Placeholder, drugName2
+      drugId1, drugId2, drugsData1, showResults, drugsData2, sampleData, sample, drug2Placeholder, drugName2,
     } = this.state;
     const {
       handleSampleSearch, handleDrug1Search, handleDrug2Search, handleSubmit,
@@ -211,18 +216,22 @@ class SearchCombos extends Component {
     const searchForm = (
       <Fragment>
         <StyledBanner src={banner} alt="banner" />
-          <h2>
+        <h2>
               SYNERGxDB is a database that allows users to ... drug combinations.
               Synergistic drug combination ... in chemotherapy of cancer.
-          </h2>
+        </h2>
         <StyledForm className="search-combos" onSubmit={handleSubmit}>
           <Select components={{ MenuList }} options={sampleData} placeholder="Enter Cell Line or Tissue" onChange={handleSampleSearch} />
           <Select components={{ MenuList }} options={drugsData1} placeholder="Enter Drug 1" onChange={e => handleDrug1Search('drugId1', e)} />
-          <Select components={{ MenuList }} options={drugsData2} value={drugName2} isDisabled={isDisabled} placeholder={drug2Placeholder} onChange={handleDrug2Search} />
-          <div className="button-container">
-            <StyledButton type="submit">Search</StyledButton>
-            <StyledButton type="button">Example query</StyledButton>
-          </div>
+          <Select
+            components={{ MenuList }}
+            options={drugsData2}
+            value={drugName2}
+            isDisabled={isDisabled}
+            placeholder={drug2Placeholder}
+            onChange={handleDrug2Search}
+          />
+          <StyledButton type="submit">Search</StyledButton>
         </StyledForm>
       </Fragment>
     );
@@ -246,7 +255,7 @@ class SearchCombos extends Component {
           </div>
         </footer>
       </Fragment>
-    )
+    );
   }
 }
 
