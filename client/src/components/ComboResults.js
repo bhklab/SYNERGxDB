@@ -15,6 +15,11 @@ class ComboResults extends Component {
       results: [],
       selected: {},
     };
+    this.handleCheck = this.handleCheck.bind(this);
+  }
+
+  handleCheck(event) {
+    event.preventDefault();
   }
 
   componentDidMount() {
@@ -55,6 +60,7 @@ class ComboResults extends Component {
             <th>Loewe</th>
             <th>HSA</th>
             <th>Source</th>
+            <th />
           </tr>
         </thead>
         <tbody>

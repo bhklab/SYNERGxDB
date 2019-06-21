@@ -80,10 +80,12 @@ router.post('/getCombos', (req, res) => {
     let baseQuery = this.select('*')
       .from('Combo_Design');
 
+    // Checks type of the request and modifies the query accordingly
+    if (typeof (sample) === 'number') baseQuery = baseQuery.where({ idSample: sample });
     // Checks if drugId2 is set to 'Any'
     if (typeof (drugId2) === 'number') {
       // Subquery to include all possible idDrugA and idDrugB combinations
-      baseQuery = baseQuery.where(function () {
+      baseQuery = baseQuery.andWhere(function () {
         this.where({ idDrugA: drugId1, idDrugB: drugId2 });
       })
         .orWhere(function () {
@@ -93,8 +95,6 @@ router.post('/getCombos', (req, res) => {
       baseQuery = baseQuery.where({ idDrugA: drugId1 });
     }
 
-    // Checks type of the request and modifies the query accordingly
-    if (typeof (sample) === 'number') baseQuery = baseQuery.andWhere({ idSample: sample });
     return baseQuery.as('CD');
   }
   // Subquery to get cell line name(s) and tissue name
