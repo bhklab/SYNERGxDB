@@ -16,7 +16,6 @@ class ResultRow extends Component {
   }
 
   render() {
-    console.log(this.props);
     const {
       tissue, sampleName, drugNameA, drugNameB, zip, bliss, loewe, hsa, sourceName,
     } = this.props.synergyResult;

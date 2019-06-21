@@ -1,3 +1,4 @@
+/* eslint-disable react/no-array-index-key */
 /* eslint-disable no-console */
 import React, { Component } from 'react';
 // import styled from 'styled-components';
@@ -40,7 +41,7 @@ class ComboResults extends Component {
 
   render() {
     const { results } = this.state;
-    const resultRows = results.map(synergyResult => <ResultRow synergyResult={synergyResult} />);
+    const resultRows = results.map((synergyResult, index) => <ResultRow synergyResult={synergyResult} key={index} />);
     return (
       <table>
         <thead>

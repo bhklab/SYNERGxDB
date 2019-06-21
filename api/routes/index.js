@@ -1,24 +1,25 @@
+/* eslint-disable func-names */
 const express = require('express');
 const db = require('../db');
 
 const router = express.Router();
 
 
-router.get('/getCellLines', (req, res, next) => {
+router.get('/getCellLines', (req, res) => {
   db('Sample').select('name', 'idSample', 'tissue')
     .then((cellList) => {
       res.json(cellList);
     });
 });
 
-router.get('/getDrugs', (req, res, next) => {
+router.get('/getDrugs', (req, res) => {
   db('Drug').select('name', 'idDrug')
     .then((drugList) => {
       res.json(drugList);
     });
 });
 
-router.post('/getDrugs', (req, res, next) => {
+router.post('/getDrugs', (req, res) => {
   const { sample, drugId } = req.body;
 
   function subqueryTissue() {
@@ -70,27 +71,30 @@ router.post('/getDrugs', (req, res, next) => {
 });
 
 
-router.post('/getCombos', (req, res, next) => {
+router.post('/getCombos', (req, res) => {
   const { sample, drugId1, drugId2 } = req.body;
+
+
   // Subquery to link combo designs to respective synergy scores
   function subqueryCD() {
-    let drug1;
-    let drug2;
+    let baseQuery = this.select('*')
+      .from('Combo_Design');
+
     // Checks if drugId2 is set to 'Any'
     if (typeof (drugId2) === 'number') {
-      // idDrugA should always be smaller than idDrugB when database is queried
-      drug1 = drugId1 < drugId2 ? drugId1 : drugId2;
-      drug2 = drugId1 < drugId2 ? drugId2 : drugId1;
+      // Subquery to include all possible idDrugA and idDrugB combinations
+      baseQuery = baseQuery.where(function () {
+        this.where({ idDrugA: drugId1, idDrugB: drugId2 });
+      })
+        .orWhere(function () {
+          this.where({ idDrugA: drugId2, idDrugB: drugId1 });
+        });
     } else {
-      drug1 = drugId1;
+      baseQuery = baseQuery.where({ idDrugA: drugId1 });
     }
-    let baseQuery = this.select('*')
-      .from('Combo_Design')
-      .where({ idDrugA: drug1 });
 
     // Checks type of the request and modifies the query accordingly
     if (typeof (sample) === 'number') baseQuery = baseQuery.andWhere({ idSample: sample });
-    if (typeof (drugId2) === 'number') baseQuery = baseQuery.andWhere({ idDrugB: drug2 });
     return baseQuery.as('CD');
   }
   // Subquery to get cell line name(s) and tissue name
