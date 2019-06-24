@@ -52,6 +52,7 @@ class ComboResults extends Component {
     const resultRows = results.map((synergyResult, index) => <ResultRow synergyResult={synergyResult} key={index} />);
     return (
       <Fragment>
+        <Biomarkers synergyResult={results} />
         <div className="synergy-scores">
           <h2>
             Synergy Scores, N=

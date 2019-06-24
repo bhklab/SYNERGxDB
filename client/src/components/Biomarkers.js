@@ -4,23 +4,53 @@ import React, { Component } from 'react';
 // import transitions from '../styles/transitions';
 
 
-const Biomarker = (props) => {
-  const {
-    tissue, sampleName, drugNameA, drugNameB, zip, bliss, loewe, hsa, sourceName,
-  } = props.synergyResult;
-  return (
-    <tr>
-      <td>{tissue}</td>
-      <td>{sampleName}</td>
-      <td>{drugNameA}</td>
-      <td>{drugNameB}</td>
-      <td>{zip}</td>
-      <td>{bliss}</td>
-      <td>{loewe}</td>
-      <td>{hsa}</td>
-      <td>{sourceName}</td>
-    </tr>
-  );
-};
+class Biomarkers extends Component {
+  constructor() {
+    super();
+    this.state = {
+      results: [],
+      selected: {},
+    };
+  }
 
-export default Biomarker;
+  componentDidMount() {
+    const { sample, drugId1, drugId2 } = this.props;
+
+    fetch('/api/getCombos', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        sample,
+        drugId1,
+        drugId2,
+      }),
+    })
+      .then(response => response.json())
+      .then((data) => {
+        console.log(data);
+        this.setState({ results: data });
+      });
+  }
+
+  render() {
+    return (
+      <div className="biomarkers">
+        <h2>Potential Biomarkers, Top 10</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Gene Symbol</th>
+              <th>One-way ANOVA P</th>
+              <th>Source</th>
+            </tr>
+          </thead>
+          <tbody />
+        </table>
+      </div>
+    );
+  }
+}
+export default Biomarkers;
