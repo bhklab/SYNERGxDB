@@ -28,16 +28,16 @@ export default class Plots extends React.Component {
         datarevision: 0,
         width: 640,
         height: 480,
-        title: 'A Fancy Plot',
-        paper_bgcolor: 'rgba(82,91,86, 0.5)',
-        plot_bgcolor: 'rgba(82,91,86,0.9)',
-        font: {
-          //   style: '',
-          color: '#000000',
-          size: '16',
-        },
+        title: 'A Fancy Plot'
+        // paper_bgcolor: 'rgba(82,91,86, 0.5)',
+        // plot_bgcolor: 'rgba(82,91,86,0.9)',
+        // font: {
+        //   //   style: '',
+        //   color: '#000000',
+        //   size: '16',
+        // },
       },
-      revision: 0,
+      revision: 0
     };
   }
 
