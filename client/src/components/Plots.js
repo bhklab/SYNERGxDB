@@ -46,6 +46,8 @@ export default class Plots extends React.Component {
     // const gene_id='SIDG41212'
     
     this.fetchFPKM(idSource, idDrugA, idDrugB, gene, 'SYN')
+    this.fetchFPKM(idSource, idDrugA, idDrugB, gene, 'MOD')
+    this.fetchFPKM(idSource, idDrugA, idDrugB, gene, 'ANT')
 
   }
 
@@ -72,26 +74,38 @@ export default class Plots extends React.Component {
         const dataProcessed = data.map(item => item.FPKM)  
         console.log("Database call")
         console.log(dataProcessed.length)
-         this.setState({
-           box1: {
-            y: dataProcessed, 
-            type: this.state.box1.type,
-            name: "Synergy, N=".concat(dataProcessed.length),
-            marker: this.state.box1.marker
-          },
-           box2: {
-            y: dataProcessed, 
-            type: this.state.box2.type,
-            name: "Moderate, N=".concat(dataProcessed.length),
-            marker: this.state.box2.marker
-          },
-          box3: {
-            y: dataProcessed, 
-            type: this.state.box3.type,
-            name: "None or antagonism, N=".concat(dataProcessed.length),
-            marker: this.state.box3.marker
-          },
-       });
+        switch(interaction){
+          case 'SYN':
+            this.setState({
+              box1: {
+               y: dataProcessed, 
+               type: this.state.box1.type,
+               name: "Synergy, N=".concat(dataProcessed.length),
+               marker: this.state.box1.marker
+              }
+            })
+            break;
+          case 'MOD':
+            this.setState({
+              box2: {
+               y: dataProcessed, 
+               type: this.state.box2.type,
+               name: "Moderate, N=".concat(dataProcessed.length),
+               marker: this.state.box2.marker
+              }
+            })
+            break;
+          case 'ANT':
+            this.setState({
+              box3: {
+               y: dataProcessed, 
+               type: this.state.box3.type,
+               name: "None or antagonism, N=".concat(dataProcessed.length),
+               marker: this.state.box3.marker
+              }
+            })
+            break;
+        }
     })
   }
 
