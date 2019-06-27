@@ -152,7 +152,7 @@ router.post('/getFPKM', (req, res) => {
 
   // // Subquery to get list of idSample from idSource, idDrugA, idDrugB
   function subquerySL() {  
-    db.distinct('cd.idSample')
+    this.distinct('cd.idSample')
       .from('Combo_Design as cd')
       .join('Synergy_Score as ss', 'cd.idCombo_Design','=','ss.idCombo_Design')
       .where({
@@ -160,9 +160,6 @@ router.post('/getFPKM', (req, res) => {
         idDrugA: idDrugA,
         idDrugB: idDrugB
       })
-      .then((data) => {
-        res.json(data)
-      });
   }
 
   // Subquery to get gene_id from hgnc_symbol
