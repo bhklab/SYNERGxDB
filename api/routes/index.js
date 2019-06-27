@@ -137,12 +137,12 @@ router.post('/getCombos', (req, res) => {
     });
 });
 
-
+// Database call to get data for Plot.js box plots
 router.post('/getFPKM', (req, res) => {
-  // const { idSource, idDrugA, idDrugB } = req.body;
+
   const { idSource, idDrugA, idDrugB, gene, interaction } = req.body;
 
-  // // Subquery to get list of idSample from idSource, idDrugA, idDrugB
+  // Subquery to get list of idSample from idSource, idDrugA, idDrugB
   function subquerySL() {  
     let allSample = this.distinct('cd.idSample')
       .from('Combo_Design as cd')
@@ -180,6 +180,23 @@ router.post('/getFPKM', (req, res) => {
       res.json(data)
     });
   
+  })
+
+  router.post('/getANOVAp', (req, res) => {
+    const {idSource, idDrugA, idDrugB, gene } = req.body;
+
+    db.select('anova.p')
+      .from('anova')
+      .where({
+        idSource: idSource,
+        idDrugA: idDrugA,
+        idDrugB: idDrugB,
+        gene: gene
+      })
+      .then((data) =>{
+        res.json(data)
+      })
+
   })
 
 module.exports = router;

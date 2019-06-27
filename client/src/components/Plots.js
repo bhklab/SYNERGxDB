@@ -26,9 +26,8 @@ export default class Plots extends React.Component {
         marker: { color: '#BE9063' },
       },
       layout: {
-        datarevision: 0,
-        width: 800,
-        height: 600,
+        // width: 800,
+        // height: 600,
         title: 'A Fancy Plot',
         //paper_bgcolor: '#aaa9a9',
         //plot_bgcolor: '#aaa9a9',
@@ -47,12 +46,12 @@ export default class Plots extends React.Component {
     this.fetchFPKM(idSource, idDrugA, idDrugB, gene, 'SYN')
     this.fetchFPKM(idSource, idDrugA, idDrugB, gene, 'MOD')
     this.fetchFPKM(idSource, idDrugA, idDrugB, gene, 'ANT')
+    this.fetchANOVAp(idSource, idDrugA, idDrugB, gene)
 
   }
 
-  // Fetch FPKM method
+  // Fetch FPKM values from the database
   fetchFPKM(idSource, idDrugA, idDrugB, gene, interaction) {
-    console.log("Fetch call")
     fetch('/api/getFPKM', {
       method: 'POST',
       headers: {
@@ -67,49 +66,78 @@ export default class Plots extends React.Component {
         interaction
       }),
     })
-      .then(response => response.json())
-      .then((data) => {
-        console.log(data)
-        const dataProcessed = data.map(item => item.FPKM)  
-        console.log("Database call")
-        console.log(dataProcessed.length)
-        switch(interaction){
-          case 'SYN':
-            this.setState({
-              box1: {
-               y: dataProcessed, 
-               type: this.state.box1.type,
-               name: "Synergy, N=".concat(dataProcessed.length),
-               marker: this.state.box1.marker
-              }
-            })
-            break;
-          case 'MOD':
-            this.setState({
-              box2: {
-               y: dataProcessed, 
-               type: this.state.box2.type,
-               name: "Moderate, N=".concat(dataProcessed.length),
-               marker: this.state.box2.marker
-              }
-            })
-            break;
-          case 'ANT':
-            this.setState({
-              box3: {
-               y: dataProcessed, 
-               type: this.state.box3.type,
-               name: "None/Antagonism, N=".concat(dataProcessed.length),
-               marker: this.state.box3.marker
-              }
-            })
-            break;
-        }
+    .then(response => response.json())
+    .then((data) => {
+      // Convert JSON array to int array
+      const dataProcessed = data.map(item => item.FPKM)  
+      // Selecting boxplot to update
+      switch(interaction){
+        case 'SYN':
+          this.setState({
+            box1: {
+             y: dataProcessed, 
+             type: this.state.box1.type,
+             name: "Synergy, N=".concat(dataProcessed.length),
+             marker: this.state.box1.marker
+            }
+          })
+          break;
+        case 'MOD':
+          this.setState({
+            box2: {
+             y: dataProcessed, 
+             type: this.state.box2.type,
+             name: "Moderate, N=".concat(dataProcessed.length),
+             marker: this.state.box2.marker
+            }
+          })
+          break;
+        case 'ANT':
+          this.setState({
+            box3: {
+             y: dataProcessed, 
+             type: this.state.box3.type,
+             name: "None/Antagonism, N=".concat(dataProcessed.length),
+             marker: this.state.box3.marker
+            }
+          })
+          break;
+      }
     })
   }
 
-  // Fetch p-value method
-
+  // Fetch ANOVA p-value from the database 
+  fetchANOVAp(idSource, idDrugA, idDrugB, gene) {
+    fetch('/api/getANOVAp', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        idSource,
+        idDrugA,
+        idDrugB,
+        gene
+      })
+    })
+    .then(response => response.json())
+    .then((data) => {
+      this.setState({
+        layout: {
+          width: 1000,
+          height: 800,
+          title: 'One-way ANOVA, p-val='.concat(data.p),
+          font: {
+            size: 14,
+            color: '#000000'
+          },
+          yaxis: { title: 'FPKM'},
+          xaxis: { title: 'Interaction Type'}
+        }
+      })
+    })
+  }
 
   // Render this compoenent
   render() {
