@@ -140,7 +140,7 @@ router.post('/getCombos', (req, res) => {
 
 router.post('/getFPKM', (req, res) => {
   // const { idSource, idDrugA, idDrugB } = req.body;
-  const { gene_id } = req.body;
+  const { gene } = req.body;
 
   // db.select('rna.FPKM')
   //   .from('RNAseq as rna')
@@ -163,20 +163,21 @@ router.post('/getFPKM', (req, res) => {
   //     res.json(data)
   //   });
 
-  // // Subquery to get gene_id from hgnc_symbol
-  // db.select('gene_id')
-  //   .from('gene_identifiers')
-  //   .where({hgnc_symbol: gene})
-  //   .then((data) => {
-  //     res.json(data)
-  //   });
-
+  // Subquery to get gene_id from hgnc_symbol
+  function subqueryGI() {  
+    this.select('gene_id')
+      .from('gene_identifiers')
+      .where({hgnc_symbol: gene})
+      .then((data) => {
+        res.json(data)
+      });
+  }
   
   db.select('rna.FPKM')
     .from('RNAseq as rna')
     .join('model_identifiers as mi', 'rna.model_id', '=', 'mi.model_id')
     .whereIn('idSample', [42,44,46,47,18,15,16] )
-    .andWhere({gene_id: gene_id})
+    .andWhere({gene_id: subqueryGI})
     .andWhere('rna.FPKM','>', 0)
     .then((data) => {
       res.json(data)

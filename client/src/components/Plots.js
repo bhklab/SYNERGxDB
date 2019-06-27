@@ -42,15 +42,16 @@ export default class Plots extends React.Component {
 
   // Methods called on loading
   componentDidMount() {
-    // const idSource = 2, idDrugA = 18, idDrugB = 96, gene='XBP1'
-    const gene_id='SIDG41212'
+    // const idSource = 2, idDrugA = 18, idDrugB = 96, 
+    const gene='XBP1'
+    // const gene_id='SIDG41212'
     
-    this.fetchFPKM(gene_id)
+    this.fetchFPKM(gene)
 
   }
 
   // Fetch FPKM method
-  fetchFPKM(gene_id) {
+  fetchFPKM(gene) {
     console.log("Fetch call")
     fetch('/api/getFPKM', {
       method: 'POST',
@@ -59,7 +60,7 @@ export default class Plots extends React.Component {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        gene_id
+        gene
       }),
     })
       .then(response => response.json())
