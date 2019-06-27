@@ -169,6 +169,7 @@ router.post('/getFPKM', (req, res) => {
       .where({hgnc_symbol: gene})
   }
   
+  // Select statement to return FPKM
   db.select('rna.FPKM')
     .from('RNAseq as rna')
     .join('model_identifiers as mi', 'rna.model_id', '=', 'mi.model_id')
@@ -178,7 +179,6 @@ router.post('/getFPKM', (req, res) => {
     .then((data) => {
       res.json(data)
     });
-
   
   })
 

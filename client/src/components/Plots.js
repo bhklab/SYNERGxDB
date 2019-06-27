@@ -43,7 +43,6 @@ export default class Plots extends React.Component {
   // Methods called on loading
   componentDidMount() {
    const idSource = 2, idDrugA = 18, idDrugB = 96, gene='XBP1'
-    // const gene_id='SIDG41212'
     
     this.fetchFPKM(idSource, idDrugA, idDrugB, gene, 'SYN')
     this.fetchFPKM(idSource, idDrugA, idDrugB, gene, 'MOD')
@@ -100,7 +99,7 @@ export default class Plots extends React.Component {
               box3: {
                y: dataProcessed, 
                type: this.state.box3.type,
-               name: "None or antagonism, N=".concat(dataProcessed.length),
+               name: "None/Antagonism, N=".concat(dataProcessed.length),
                marker: this.state.box3.marker
               }
             })
