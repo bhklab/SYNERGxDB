@@ -139,16 +139,29 @@ router.post('/getCombos', (req, res) => {
 
 
 router.post('/getFPKM', (req, res) => {
-  const { gene_id } = req.body;
+  const { idSource, idDrugA, idDrugB } = req.body;
   // const { idSource } = req.body;
 
-  db.select('rna.FPKM')
-    .from('RNAseq as rna')
-    .where({ gene_id: gene_id })
-    .andWhere('rna.FPKM','>',0)
-    .then((data) => {
-      res.json(data);
-    });
+  // db.select('rna.FPKM')
+  //   .from('RNAseq as rna')
+  //   .where({ gene_id: gene_id })
+  //   .andWhere('rna.FPKM','>',0)
+  //   .then((data) => {
+  //     res.json(data);
+  //   });
+
+    db.distinct('cd.idSample')
+      .from('Combo_Design as cd')
+      .join('Synergy_Score as ss', 'cd.idCombo_Design','=','ss.idCombo_Design')
+      .where({
+        idSource: idSource, 
+        idDrugA: idDrugA,
+        idDrugB: idDrugB
+      })
+      .then((data) => {
+        res.json(data)
+      });
+  
   })
 
 
@@ -159,23 +172,10 @@ router.post('/getFPKM', (req, res) => {
   //     .where('hgnc_symbol', gene)
   // }
   // Subquery to get list of idSample from idSource, idDrugA, idDrugB and ZIP
-  // function subquerySL() {
-  // function subqueryCDSS() {
-  //   this.select('cd.idSample')
-  //   .from('Combo_Design as cd')
-  //   .join('Synergy_Score as ss', 'cd.idCombo_Design','=','ss.idCombo_Design')
-  // }
 
-  //   db.select('cd.idSample')
-  //     .from(subqueryCDSS)
-  //     .where(
-  //       'ss.idSource', idSource, 
-  //       'cd.idDrugA', idDrugA,
-  //       'cd.idDrugB', idDrugB
-  //       )
-  //     .then((data) => {
-  //       res.json(data)
-  //     })
+
+
+
   // }
   // Subqery to get all FPKM values
   // function subqueryAF() {

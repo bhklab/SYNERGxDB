@@ -42,15 +42,15 @@ export default class Plots extends React.Component {
 
   // Methods called on loading
   componentDidMount() {
-    //const idSource = 2, idDrugA = 18, idDrugB = 96
-    const gene='SIDG41212'
+    const idSource = 2, idDrugA = 18, idDrugB = 96
+    // const gene='SIDG41212'
     
-    this.fetchFPKM(gene)
+    this.fetchFPKM(idSource, idDrugA, idDrugB)
 
   }
 
   // Fetch FPKM method
-  fetchFPKM(gene_id) {
+  fetchFPKM(idSource, idDrugA, idDrugB) {
     console.log("Fetch call")
     fetch('/api/getFPKM', {
       method: 'POST',
@@ -59,35 +59,37 @@ export default class Plots extends React.Component {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        gene_id
+        idSource,
+        idDrugA,
+        idDrugB
       }),
     })
       .then(response => response.json())
       .then((data) => {
         console.log(data)
-        const dataProcessed = data.map(item => item.FPKM)  
-        console.log("Database call")
-        console.log(dataProcessed.length)
-         this.setState({
-           box1: {
-            y: dataProcessed, 
-            type: this.state.box1.type,
-            name: "Synergy, N=".concat(dataProcessed.length),
-            marker: this.state.box1.marker
-          },
-           box2: {
-            y: dataProcessed, 
-            type: this.state.box2.type,
-            name: "Moderate, N=".concat(dataProcessed.length),
-            marker: this.state.box2.marker
-          },
-          box3: {
-            y: dataProcessed, 
-            type: this.state.box3.type,
-            name: "None or antagonism, N=".concat(dataProcessed.length),
-            marker: this.state.box3.marker
-          },
-       });
+      //   const dataProcessed = data.map(item => item.FPKM)  
+      //   console.log("Database call")
+      //   console.log(dataProcessed.length)
+      //    this.setState({
+      //      box1: {
+      //       y: dataProcessed, 
+      //       type: this.state.box1.type,
+      //       name: "Synergy, N=".concat(dataProcessed.length),
+      //       marker: this.state.box1.marker
+      //     },
+      //      box2: {
+      //       y: dataProcessed, 
+      //       type: this.state.box2.type,
+      //       name: "Moderate, N=".concat(dataProcessed.length),
+      //       marker: this.state.box2.marker
+      //     },
+      //     box3: {
+      //       y: dataProcessed, 
+      //       type: this.state.box3.type,
+      //       name: "None or antagonism, N=".concat(dataProcessed.length),
+      //       marker: this.state.box3.marker
+      //     },
+      //  });
     })
   }
 
