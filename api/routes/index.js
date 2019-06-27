@@ -140,19 +140,11 @@ router.post('/getCombos', (req, res) => {
 
 router.post('/getFPKM', (req, res) => {
   // const { idSource, idDrugA, idDrugB } = req.body;
-  const { idSource, idDrugA, idDrugB, gene } = req.body;
-
-  // db.select('rna.FPKM')
-  //   .from('RNAseq as rna')
-  //   .where({ gene_id: gene_id })
-  //   .andWhere('rna.FPKM','>',0)
-  //   .then((data) => {
-  //     res.json(data);
-  //   });
+  const { idSource, idDrugA, idDrugB, gene, interaction } = req.body;
 
   // // Subquery to get list of idSample from idSource, idDrugA, idDrugB
   function subquerySL() {  
-    this.distinct('cd.idSample')
+    let allSample = this.distinct('cd.idSample')
       .from('Combo_Design as cd')
       .join('Synergy_Score as ss', 'cd.idCombo_Design','=','ss.idCombo_Design')
       .where({
@@ -160,6 +152,14 @@ router.post('/getFPKM', (req, res) => {
         idDrugA: idDrugA,
         idDrugB: idDrugB
       })
+      switch(interaction){
+        case 'SYN':
+          return allSample.andWhere('ZIP', '>', 0.2);
+        case 'MOD':
+          return allSample.andWhere(0.2, '>=', 'ZIP', '>=', 0);
+        case 'ANT':
+          return allSample.andWhere('ZIP', '<', 0);
+      }
   }
 
   // Subquery to get gene_id from hgnc_symbol
@@ -181,44 +181,5 @@ router.post('/getFPKM', (req, res) => {
 
   
   })
-
-
-
-
-
-
-
-
-  // }
-  // Subqery to get all FPKM values
-  // function subqueryAF() {
-    // this.select('rna.FPKM')
-    // .from('RNAseq as rna')
-    // .join('model_identifiers as mi', 'rna.model_id', '=', 'mi.model_id')
-    // .whereIn('idSample', subquerySL)
-    // .andWhere('gene_id', subqueryGI)
-    // .andWhere('rna.FPKM', '>', 0)
-  // }
-
-  // // Select type of interaction
-  // function interactionType() {
-  //   switch(interaction) {
-  //     case 'SYN':
-  //       return ('ZIP','>',0.2)
-  //     case 'MOD':
-  //       return (0.2, '>=', 'ZIP', '>=', 0)
-  //     case 'ANT':
-  //       return ('ZIP', '<', 0)
-  //   }
-  // }
-
-  // Final select
-  // db.select('rna.FPKM')
-  //   .from(subqueryAF)
-  //   //.where(interactionType)
-  //   .then((data) => {
-  //     res.json(data)
-  //   })
-// });
 
 module.exports = router;

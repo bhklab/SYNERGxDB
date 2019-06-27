@@ -45,12 +45,12 @@ export default class Plots extends React.Component {
    const idSource = 2, idDrugA = 18, idDrugB = 96, gene='XBP1'
     // const gene_id='SIDG41212'
     
-    this.fetchFPKM(idSource, idDrugA, idDrugB, gene)
+    this.fetchFPKM(idSource, idDrugA, idDrugB, gene, 'SYN')
 
   }
 
   // Fetch FPKM method
-  fetchFPKM(idSource, idDrugA, idDrugB, gene) {
+  fetchFPKM(idSource, idDrugA, idDrugB, gene, interaction) {
     console.log("Fetch call")
     fetch('/api/getFPKM', {
       method: 'POST',
@@ -62,35 +62,36 @@ export default class Plots extends React.Component {
         idSource,
         idDrugA,
         idDrugB,
-        gene
+        gene,
+        interaction
       }),
     })
       .then(response => response.json())
       .then((data) => {
         console.log(data)
-      //   const dataProcessed = data.map(item => item.FPKM)  
-      //   console.log("Database call")
-      //   console.log(dataProcessed.length)
-      //    this.setState({
-      //      box1: {
-      //       y: dataProcessed, 
-      //       type: this.state.box1.type,
-      //       name: "Synergy, N=".concat(dataProcessed.length),
-      //       marker: this.state.box1.marker
-      //     },
-      //      box2: {
-      //       y: dataProcessed, 
-      //       type: this.state.box2.type,
-      //       name: "Moderate, N=".concat(dataProcessed.length),
-      //       marker: this.state.box2.marker
-      //     },
-      //     box3: {
-      //       y: dataProcessed, 
-      //       type: this.state.box3.type,
-      //       name: "None or antagonism, N=".concat(dataProcessed.length),
-      //       marker: this.state.box3.marker
-      //     },
-      //  });
+        const dataProcessed = data.map(item => item.FPKM)  
+        console.log("Database call")
+        console.log(dataProcessed.length)
+         this.setState({
+           box1: {
+            y: dataProcessed, 
+            type: this.state.box1.type,
+            name: "Synergy, N=".concat(dataProcessed.length),
+            marker: this.state.box1.marker
+          },
+           box2: {
+            y: dataProcessed, 
+            type: this.state.box2.type,
+            name: "Moderate, N=".concat(dataProcessed.length),
+            marker: this.state.box2.marker
+          },
+          box3: {
+            y: dataProcessed, 
+            type: this.state.box3.type,
+            name: "None or antagonism, N=".concat(dataProcessed.length),
+            marker: this.state.box3.marker
+          },
+       });
     })
   }
 
