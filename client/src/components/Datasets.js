@@ -12,7 +12,7 @@ const StyledWrapper = styled.div`
   text-align: center;
 `;
 
-class Databases extends Component {
+class Datasets extends Component {
   constructor() {
     super();
     this.state = {
@@ -76,4 +76,4 @@ class Databases extends Component {
 }
 
 
-export default Databases;
+export default Datasets;
