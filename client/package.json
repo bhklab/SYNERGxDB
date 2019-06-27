@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "fs-extra": "^8.0.1",
     "plotly.js": "^1.48.3",
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
@@ -20,7 +21,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "postbuild": "node iisConfig/copyIISConfig.js"
   },
   "eslintConfig": {
     "extends": "react-app"
