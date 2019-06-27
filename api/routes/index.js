@@ -4,7 +4,6 @@ const db = require('../db');
 
 const router = express.Router();
 
-
 router.get('/getCellLines', (req, res) => {
   db('Sample').select('name', 'idSample', 'tissue')
     .then((cellList) => {
@@ -18,6 +17,7 @@ router.get('/getDrugs', (req, res) => {
       res.json(drugList);
     });
 });
+
 
 router.post('/getDrugs', (req, res) => {
   const { sample, drugId } = req.body;
@@ -137,5 +137,75 @@ router.post('/getCombos', (req, res) => {
     });
 });
 
+
+router.post('/getFPKM', (req, res) => {
+  const { gene_id } = req.body;
+  // const { idSource } = req.body;
+
+  db.select('rna.FPKM')
+    .from('RNAseq as rna')
+    .where({ gene_id: gene_id })
+    .andWhere('rna.FPKM','>',0)
+    .then((data) => {
+      res.json(data);
+    });
+  })
+
+
+  // Subquery to get gene_id from hgnc_symbol
+  // function subqueryGI() {
+  //   this.select('gene_id')
+  //     .from('gene_identifiers')
+  //     .where('hgnc_symbol', gene)
+  // }
+  // Subquery to get list of idSample from idSource, idDrugA, idDrugB and ZIP
+  // function subquerySL() {
+  // function subqueryCDSS() {
+  //   this.select('cd.idSample')
+  //   .from('Combo_Design as cd')
+  //   .join('Synergy_Score as ss', 'cd.idCombo_Design','=','ss.idCombo_Design')
+  // }
+
+  //   db.select('cd.idSample')
+  //     .from(subqueryCDSS)
+  //     .where(
+  //       'ss.idSource', idSource, 
+  //       'cd.idDrugA', idDrugA,
+  //       'cd.idDrugB', idDrugB
+  //       )
+  //     .then((data) => {
+  //       res.json(data)
+  //     })
+  // }
+  // Subqery to get all FPKM values
+  // function subqueryAF() {
+  //   this.select('rna.FPKM')
+  //   .from('RNAseq as rna')
+  //   .join('model_identifiers as mi', 'rna.model_id', '=', 'mi.model_id')
+  //   .whereIn('idSample', subquerySL)
+  //   .andWhere('gene_id', subqueryGI)
+  //   .andWhere('rna.FPKM', '>', 0)
+  // }
+
+  // // Select type of interaction
+  // function interactionType() {
+  //   switch(interaction) {
+  //     case 'SYN':
+  //       return ('ZIP','>',0.2)
+  //     case 'MOD':
+  //       return (0.2, '>=', 'ZIP', '>=', 0)
+  //     case 'ANT':
+  //       return ('ZIP', '<', 0)
+  //   }
+  // }
+
+  // Final select
+  // db.select('rna.FPKM')
+  //   .from(subqueryAF)
+  //   //.where(interactionType)
+  //   .then((data) => {
+  //     res.json(data)
+  //   })
+// });
 
 module.exports = router;
