@@ -13,7 +13,7 @@ cd SYNERGxDB-Web-App
 
 - Start the client (development mode) by running `npm start`
 
-- Install all client dependencies `cd server && npm i`
+- Install all client dependencies `cd api && npm i`
 
 - Start the server by running `npm start` or `npm run devstart`(development mode) command
 
