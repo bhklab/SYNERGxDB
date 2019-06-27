@@ -139,8 +139,8 @@ router.post('/getCombos', (req, res) => {
 
 
 router.post('/getFPKM', (req, res) => {
-  const { idSource, idDrugA, idDrugB } = req.body;
-  // const { idSource } = req.body;
+  // const { idSource, idDrugA, idDrugB } = req.body;
+  const { gene } = req.body;
 
   // db.select('rna.FPKM')
   //   .from('RNAseq as rna')
@@ -150,28 +150,32 @@ router.post('/getFPKM', (req, res) => {
   //     res.json(data);
   //   });
 
-    db.distinct('cd.idSample')
-      .from('Combo_Design as cd')
-      .join('Synergy_Score as ss', 'cd.idCombo_Design','=','ss.idCombo_Design')
-      .where({
-        idSource: idSource, 
-        idDrugA: idDrugA,
-        idDrugB: idDrugB
-      })
-      .then((data) => {
-        res.json(data)
-      });
+  // // Subquery to get list of idSample from idSource, idDrugA, idDrugB
+  // db.distinct('cd.idSample')
+  //   .from('Combo_Design as cd')
+  //   .join('Synergy_Score as ss', 'cd.idCombo_Design','=','ss.idCombo_Design')
+  //   .where({
+  //     idSource: idSource, 
+  //     idDrugA: idDrugA,
+  //     idDrugB: idDrugB
+  //   })
+  //   .then((data) => {
+  //     res.json(data)
+  //   });
+
+  // Subquery to get gene_id from hgnc_symbol
+  db.select('gene_id')
+    .from('gene_identifiers')
+    .where({hgnc_symbol: gene})
+    .then((data) => {
+      res.json(data)
+    });
   
   })
 
 
-  // Subquery to get gene_id from hgnc_symbol
-  // function subqueryGI() {
-  //   this.select('gene_id')
-  //     .from('gene_identifiers')
-  //     .where('hgnc_symbol', gene)
-  // }
-  // Subquery to get list of idSample from idSource, idDrugA, idDrugB and ZIP
+
+
 
 
 
