@@ -69,7 +69,10 @@ export default class Plots extends React.Component {
     .then(response => response.json())
     .then((data) => {
       // Convert JSON array to int array
-      const dataProcessed = data.map(item => item.FPKM)  
+      let dataProcessed = data.map(item => item.FPKM)
+      if (dataProcessed.length < 3 ) {
+        dataProcessed = [];
+      }
       // Selecting boxplot to update
       switch(interaction){
         case 'SYN':
