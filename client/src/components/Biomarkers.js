@@ -5,6 +5,10 @@ import styled from 'styled-components';
 
 import Plots from './Plots';
 
+const StyledBiomarkers = styled.div`
+  margin: 20px auto;
+`;
+
 
 class Biomarkers extends Component {
   constructor() {
@@ -39,16 +43,16 @@ class Biomarkers extends Component {
   render() {
     const { biomarkerData, results } = this.state;
     if (biomarkerData) {
-      const listOfBiomarkers = results.map(biomarker => (
+      const listOfBiomarkers = results.reverse().map(biomarker => (
         <tr>
-          <th>{biomarker.gene}</th>
-          <th>{biomarker.p}</th>
-          <th>{biomarker.name}</th>
+          <td>{biomarker.gene}</td>
+          <td>{biomarker.p}</td>
+          <td>{biomarker.name}</td>
         </tr>
       ));
       return (
         <Fragment>
-          <div className="biomarkers">
+          <StyledBiomarkers className="biomarkers">
             <h2>Potential Biomarkers, Top 10</h2>
             <table>
               <thead>
@@ -62,7 +66,7 @@ class Biomarkers extends Component {
                 {listOfBiomarkers}
               </tbody>
             </table>
-          </div>
+          </StyledBiomarkers>
           <Plots />
         </Fragment>
       );
