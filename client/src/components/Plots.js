@@ -1,12 +1,12 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import Plot from 'react-plotly.js';
 
 export default class Plots extends React.Component {
   // Defining initial state and layout
-  constructor (props) {
+  constructor(props) {
     super(props);
 
-  this.state = {
+    this.state = {
       box1: {
         y: null,
         type: 'box',
@@ -43,13 +43,13 @@ export default class Plots extends React.Component {
 
   // Methods called on loading
   componentDidMount() {
-   const idSource = 2, idDrugA = 18, idDrugB = 96, gene='XBP1'
-    
-    this.fetchFPKM(idSource, idDrugA, idDrugB, gene, 'SYN')
-    this.fetchFPKM(idSource, idDrugA, idDrugB, gene, 'MOD')
-    this.fetchFPKM(idSource, idDrugA, idDrugB, gene, 'ANT')
-    this.fetchANOVAp(idSource, idDrugA, idDrugB, gene)
+    const idSource = 2; const idDrugA = 18; const idDrugB = 96; const
+      gene = 'XBP1';
 
+    this.fetchFPKM(idSource, idDrugA, idDrugB, gene, 'SYN');
+    this.fetchFPKM(idSource, idDrugA, idDrugB, gene, 'MOD');
+    this.fetchFPKM(idSource, idDrugA, idDrugB, gene, 'ANT');
+    this.fetchANOVAp(idSource, idDrugA, idDrugB, gene);
   }
 
   // Fetch FPKM values from the database
@@ -65,9 +65,10 @@ export default class Plots extends React.Component {
         idDrugA,
         idDrugB,
         gene,
-        interaction
+        interaction,
       }),
     })
+<<<<<<< HEAD
     .then(response => response.json())
     .then((data) => {
       // Convert JSON array to int array
@@ -109,9 +110,56 @@ export default class Plots extends React.Component {
           break;
       }
     })
+=======
+      .then(response => response.json())
+      .then((data) => {
+        const {
+          box1, box2, box3,
+        } = this.state;
+        // Convert JSON array to int array
+        let dataProcessed = data.map(item => item.FPKM);
+        if (dataProcessed.length < 3) {
+          dataProcessed = [];
+        }
+        // Selecting boxplot to update
+        // eslint-disable-next-line default-case
+        switch (interaction) {
+          case 'SYN':
+            this.setState({
+              box1: {
+                y: dataProcessed,
+                type: box1.type,
+                name: 'Synergy, N='.concat(dataProcessed.length),
+                marker: box1.marker,
+              },
+            });
+            break;
+          case 'MOD':
+            this.setState({
+              box2: {
+                y: dataProcessed,
+                type: box2.type,
+                name: 'Moderate, N='.concat(dataProcessed.length),
+                marker: box2.marker,
+              },
+            });
+            break;
+          case 'ANT':
+            this.setState({
+              box3: {
+                y: dataProcessed,
+                type: box3.type,
+                name: 'None/Antagonism, N='.concat(dataProcessed.length),
+                marker: box3.marker,
+              },
+            });
+            break;
+        }
+      });
+>>>>>>> master
   }
 
-  // Fetch ANOVA p-value from the database 
+  // Fetch ANOVA p-value from the database
   fetchANOVAp(idSource, idDrugA, idDrugB, gene) {
     fetch('/api/getANOVAp', {
       method: 'POST',
@@ -123,9 +171,10 @@ export default class Plots extends React.Component {
         idSource,
         idDrugA,
         idDrugB,
-        gene
-      })
+        gene,
+      }),
     })
+<<<<<<< HEAD
     .then(response => response.json())
     .then((data) => {
       this.setState({
@@ -145,37 +194,41 @@ export default class Plots extends React.Component {
         }
       })
     })
+=======
+      .then(response => response.json())
+      .then((data) => {
+        this.setState({
+          layout: {
+            width: 1000,
+            height: 800,
+            title: 'One-way ANOVA, p-val='.concat(data.p),
+            font: {
+              size: 14,
+              color: '#000000',
+            },
+            yaxis: { title: 'FPKM' },
+            xaxis: { title: 'Interaction Type' },
+          },
+        });
+      });
+>>>>>>> master
   }
 
   // Render this compoenent
   render() {
-    // const {
-    //   box1, box2, box3, layout
-    // } = this.state;
+    const {
+      box1, box2, box3, layout,
+    } = this.state;
     return (
-      <Fragment>
-        <header>
-          <div className="wrapper">
-            <h1>SYNERGxDB</h1>
-          </div>
-        </header>
-        <main>
-          <Plot
-            data={[
-              this.state.box1,
-              this.state.box2,
-              this.state.box3,
-            ]}
-            layout={this.state.layout}
-            graphDiv="graph"
-          />
-        </main>
-        <footer>
-          <div className="wrapper">
-            <p>Copyright © 2019. All rights reserved</p>
-          </div>
-        </footer>
-      </Fragment>
+      <Plot
+        data={[
+          box1,
+          box2,
+          box3,
+        ]}
+        layout={layout}
+        graphDiv="graph"
+      />
     );
   }
 }

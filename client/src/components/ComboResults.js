@@ -1,3 +1,5 @@
+/* eslint-disable max-len */
+/* eslint-disable react/prop-types */
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable no-console */
 import React, { Component, Fragment } from 'react';
@@ -6,7 +8,6 @@ import React, { Component, Fragment } from 'react';
 // import transitions from '../styles/transitions';
 
 import ResultRow from './ResultRow';
-import Plots from './Plots';
 import Biomarkers from './Biomarkers';
 
 
@@ -15,18 +16,11 @@ class ComboResults extends Component {
     super();
     this.state = {
       results: [],
-      selected: {},
     };
-    this.handleCheck = this.handleCheck.bind(this);
-  }
-
-  handleCheck(event) {
-    event.preventDefault();
   }
 
   componentDidMount() {
     const { sample, drugId1, drugId2 } = this.props;
-
     fetch('/api/getCombos', {
       method: 'POST',
       headers: {
@@ -48,11 +42,13 @@ class ComboResults extends Component {
 
   render() {
     const { results } = this.state;
+    const { drugId1, drugId2 } = this.props;
+    const showBiomarker = typeof drugId2 === 'number' && <Biomarkers drugId1={drugId1} drugId2={drugId2} />;
     const totalSynergyScores = results.length;
     const resultRows = results.map((synergyResult, index) => <ResultRow synergyResult={synergyResult} key={index} />);
     return (
       <Fragment>
-        <Biomarkers synergyResult={results} />
+        {showBiomarker}
         <div className="synergy-scores">
           <h2>
             Synergy Scores, N=

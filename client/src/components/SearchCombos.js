@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable no-plusplus */
 import React, { Component, Fragment } from 'react';
 import styled from 'styled-components';
@@ -24,6 +25,7 @@ const StyledWrapper = styled.div`
 
 const StyledBanner = styled.img`
   max-width: 500px;
+  max-height: 400px;
 `;
 
 const StyledForm = styled.form`
@@ -46,7 +48,7 @@ const StyledForm = styled.form`
   input {
     color: ${colors.color_main_1};
     border: 2px solid ${colors.trans_color_main_5};
-    min-width: 300px;
+    min-width: 350px;
     width: 50%;
     padding: 10px;
     margin: 10px auto;
@@ -59,6 +61,7 @@ const StyledForm = styled.form`
     &:focus {
       border: 2px solid ${colors.color_main_2};
       background-color: ${colors.trans_color_main_4};
+      
       &::placeholder {
       color: ${colors.color_main_3};
     }
@@ -113,7 +116,6 @@ class SearchCombos extends Component {
       sampleData: [],
       showResults: false,
       drug2Placeholder: 'Enter Drug 2',
-      selectedTissue: null,
     };
     this.handleDrug1Search = this.handleDrug1Search.bind(this);
     this.handleDrug2Search = this.handleDrug2Search.bind(this);
@@ -217,8 +219,7 @@ class SearchCombos extends Component {
       <Fragment>
         <StyledBanner src={banner} alt="banner" />
         <h2>
-              SYNERGxDB is a database that allows users to ... drug combinations.
-              Synergistic drug combination ... in chemotherapy of cancer.
+          SYNERGxDB is a comprehensive database to explore synergistic drug combinations for biomarker discovery.
         </h2>
         <StyledForm className="search-combos" onSubmit={handleSubmit}>
           <Select components={{ MenuList }} options={sampleData} placeholder="Enter Cell Line or Tissue" onChange={handleSampleSearch} />
