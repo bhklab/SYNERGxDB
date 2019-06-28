@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import Plot from 'react-plotly.js';
 
 export default class Plots extends React.Component {
@@ -68,20 +68,24 @@ export default class Plots extends React.Component {
     })
       .then(response => response.json())
       .then((data) => {
-      // Convert JSON array to int array
+        const {
+          box1, box2, box3,
+        } = this.state;
+        // Convert JSON array to int array
         let dataProcessed = data.map(item => item.FPKM);
         if (dataProcessed.length < 3) {
           dataProcessed = [];
         }
         // Selecting boxplot to update
+        // eslint-disable-next-line default-case
         switch (interaction) {
           case 'SYN':
             this.setState({
               box1: {
                 y: dataProcessed,
-                type: this.state.box1.type,
+                type: box1.type,
                 name: 'Synergy, N='.concat(dataProcessed.length),
-                marker: this.state.box1.marker,
+                marker: box1.marker,
               },
             });
             break;
@@ -89,9 +93,9 @@ export default class Plots extends React.Component {
             this.setState({
               box2: {
                 y: dataProcessed,
-                type: this.state.box2.type,
+                type: box2.type,
                 name: 'Moderate, N='.concat(dataProcessed.length),
-                marker: this.state.box2.marker,
+                marker: box2.marker,
               },
             });
             break;
@@ -99,9 +103,9 @@ export default class Plots extends React.Component {
             this.setState({
               box3: {
                 y: dataProcessed,
-                type: this.state.box3.type,
+                type: box3.type,
                 name: 'None/Antagonism, N='.concat(dataProcessed.length),
-                marker: this.state.box3.marker,
+                marker: box3.marker,
               },
             });
             break;
@@ -144,33 +148,19 @@ export default class Plots extends React.Component {
 
   // Render this compoenent
   render() {
-    // const {
-    //   box1, box2, box3, layout
-    // } = this.state;
+    const {
+      box1, box2, box3, layout,
+    } = this.state;
     return (
-      <Fragment>
-        <header>
-          <div className="wrapper">
-            <h1>SYNERGxDB</h1>
-          </div>
-        </header>
-        <main>
-          <Plot
-            data={[
-              this.state.box1,
-              this.state.box2,
-              this.state.box3,
-            ]}
-            layout={this.state.layout}
-            graphDiv="graph"
-          />
-        </main>
-        <footer>
-          <div className="wrapper">
-            <p>Copyright © 2019. All rights reserved</p>
-          </div>
-        </footer>
-      </Fragment>
+      <Plot
+        data={[
+          box1,
+          box2,
+          box3,
+        ]}
+        layout={layout}
+        graphDiv="graph"
+      />
     );
   }
 }

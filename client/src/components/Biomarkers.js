@@ -16,7 +16,7 @@ class Biomarkers extends Component {
   }
 
   componentDidMount() {
-    const { sample, drugId1, drugId2 } = this.props;
+    const { drugId1, drugId2 } = this.props;
 
     fetch('/api/getBiomarkers', {
       method: 'POST',
@@ -25,7 +25,6 @@ class Biomarkers extends Component {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        sample,
         drugId1,
         drugId2,
       }),

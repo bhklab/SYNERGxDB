@@ -201,7 +201,8 @@ router.post('/getANOVAp', (req, res) => {
 
 // Route to retrieve list of potential biomarkers
 router.post('/getBiomarkers', (req, res) => {
-  const { sample, drugId1, drugId2 } = req.body;
+  const { drugId1, drugId2 } = req.body;
+  console.log(drugId1, drugId2);
 });
 
 module.exports = router;
