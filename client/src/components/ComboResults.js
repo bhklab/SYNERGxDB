@@ -21,17 +21,19 @@ class ComboResults extends Component {
 
   componentDidMount() {
     const { sample, drugId1, drugId2 } = this.props;
+    const requestBody = {
+      drugId1,
+      drugId2,
+    };
+    if (sample !== 'Any') requestBody.sample = sample;
+
     fetch('/api/getCombos', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        sample,
-        drugId1,
-        drugId2,
-      }),
+      body: JSON.stringify(requestBody),
     })
       .then(response => response.json())
       .then((data) => {

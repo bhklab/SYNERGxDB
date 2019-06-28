@@ -22,21 +22,29 @@ router.get('/getDrugs', (req, res) => {
 router.post('/getDrugs', (req, res) => {
   const { sample, drugId } = req.body;
 
+  // query to get relevant cell lines
   function subqueryTissue() {
+    if (sample) {
+      return this.select('idSample')
+        .from('Sample')
+        .where({ tissue: sample }).as('t');
+    }
+    // query for all sample
     return this.select('idSample')
-      .from('Sample')
-      .where({ tissue: sample }).as('t');
+      .from('Sample').as('t');
   }
   // Query to get relevant cell lines that have drug combo for them
   // Checks for all drugs that go after the drugId
   function subqueryDrugA() {
     let baseQuery;
-    // Checks if the query cell line or tissue specific
+    // Checks if the query cell line or tissue specific/no sample specified
     if (typeof (sample) === 'number') {
+      // query with cell line
       baseQuery = this.select('idDrugA')
         .from('Combo_Design')
         .where({ idSample: sample, idDrugB: drugId });
     } else {
+      // query with tissue
       baseQuery = this.select('idDrugA')
         .from(subqueryTissue)
         .where({ idDrugB: drugId })
@@ -48,10 +56,12 @@ router.post('/getDrugs', (req, res) => {
   function subqueryDrugB() {
     let baseQuery;
     if (typeof (sample) === 'number') {
+      // query with cell line
       baseQuery = this.select('idDrugB')
         .from('Combo_Design')
         .where({ idSample: sample, idDrugA: drugId });
     } else {
+      // query with tissue
       baseQuery = this.select('idDrugB')
         .from(subqueryTissue)
         .where({ idDrugA: drugId })
