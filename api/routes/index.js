@@ -202,7 +202,25 @@ router.post('/getANOVAp', (req, res) => {
 // Route to retrieve list of potential biomarkers
 router.post('/getBiomarkers', (req, res) => {
   const { drugId1, drugId2 } = req.body;
-  console.log(drugId1, drugId2);
+  function subqueryAnova() {
+    this.select('gene', 'p', 'idSource as id')
+      .from('anova')
+      .where({
+        idDrugA: drugId1, idDrugB: drugId2,
+      })
+      .orWhere({
+        idDrugA: drugId2, idDrugB: drugId1,
+      })
+      .orderBy('p', 'desc')
+      .limit(10)
+      .as('biomarker');
+  }
+  db.select('gene', 'p', 'idSource', 'name')
+    .from(subqueryAnova)
+    .join('source', 'source.idSource', '=', 'biomarker.id')
+    .then((data) => {
+      res.json(data);
+    });
 });
 
 module.exports = router;
