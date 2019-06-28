@@ -8,33 +8,35 @@ export default class Plots extends React.Component {
 
   this.state = {
       box1: {
-        y: [],
+        y: null,
         type: 'box',
-        name: '',
-        marker: { color: '#132226' },
+        name: null,
+        marker: { color: '#fb2b06' },
       },
       box2: {
-        y: [],
+        y: null,
         type: 'box',
         name: '',
-        marker: { color: '#A4978E' },
+        marker: { color: '#be9063' },
       },
       box3: {
-        y: [],
+        y: null,
         type: 'box',
         name: '',
-        marker: { color: '#BE9063' },
+        marker: { color: '#595959' },
       },
       layout: {
-        // width: 800,
-        // height: 600,
-        title: 'A Fancy Plot',
-        //paper_bgcolor: '#aaa9a9',
-        //plot_bgcolor: '#aaa9a9',
-        // font: {
-        //   size: 14,
-        //   color: '#000000'
-        // }
+        width: 1000,
+        height: 800,
+        title: null,
+        paper_bgcolor: 'f0f0f0',
+        plot_bgcolor: '#f0f0f0',
+        yaxis: { title: 'FPKM'},
+        xaxis: { title: 'Interaction Type'},
+        font: {
+          size: null,
+          color: null
+        }
       }
     }
   }
@@ -70,9 +72,9 @@ export default class Plots extends React.Component {
     .then((data) => {
       // Convert JSON array to int array
       let dataProcessed = data.map(item => item.FPKM)
-      if (dataProcessed.length < 3 ) {
-        dataProcessed = [];
-      }
+      // if (dataProcessed.length < 3 ) {
+      //   dataProcessed = [];
+      // }
       // Selecting boxplot to update
       switch(interaction){
         case 'SYN':
@@ -98,7 +100,7 @@ export default class Plots extends React.Component {
         case 'ANT':
           this.setState({
             box3: {
-             y: dataProcessed, 
+             y: [60, 80, 100],//dataProcessed, 
              type: this.state.box3.type,
              name: "None/Antagonism, N=".concat(dataProcessed.length),
              marker: this.state.box3.marker
@@ -132,9 +134,12 @@ export default class Plots extends React.Component {
           height: 800,
           title: 'One-way ANOVA, p-val='.concat(data.p),
           font: {
-            size: 14,
-            color: '#000000'
+            size: 18,
+            color: '#000000',
+            family: 'Raleway'
           },
+          plot_bgcolor: this.state.layout.plot_bgcolor,
+          paper_bgcolor: this.state.layout.paper_bgcolor,
           yaxis: { title: 'FPKM'},
           xaxis: { title: 'Interaction Type'}
         }
