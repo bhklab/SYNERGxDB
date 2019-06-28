@@ -1,6 +1,8 @@
 import React from 'react';
 import Plot from 'react-plotly.js';
 
+import colors from '../styles/colors';
+
 export default class Plots extends React.Component {
   // Defining initial state and layout
   constructor(props) {
@@ -11,19 +13,19 @@ export default class Plots extends React.Component {
         y: null,
         type: 'box',
         name: null,
-        marker: { color: '#fb2b06' },
+        marker: { color: colors.color_accent_1 },
       },
       box2: {
         y: null,
         type: 'box',
         name: '',
-        marker: { color: '#be9063' },
+        marker: { color: colors.color_accent_2 },
       },
       box3: {
         y: null,
         type: 'box',
         name: '',
-        marker: { color: '#595959' },
+        marker: { color: colors.color_main_4 },
       },
       layout: {
         width: 1000,
@@ -68,7 +70,6 @@ export default class Plots extends React.Component {
         interaction,
       }),
     })
-<<<<<<< HEAD
       .then(response => response.json())
       .then((data) => {
         const {
@@ -114,49 +115,6 @@ export default class Plots extends React.Component {
             break;
         }
       });
-=======
-    .then(response => response.json())
-    .then((data) => {
-      // Convert JSON array to int array
-      let dataProcessed = data.map(item => item.FPKM)
-      // if (dataProcessed.length < 3 ) {
-      //   dataProcessed = [];
-      // }
-      // Selecting boxplot to update
-      switch(interaction){
-        case 'SYN':
-          this.setState({
-            box1: {
-             y: dataProcessed, 
-             type: this.state.box1.type,
-             name: "Synergy, N=".concat(dataProcessed.length),
-             marker: this.state.box1.marker
-            }
-          })
-          break;
-        case 'MOD':
-          this.setState({
-            box2: {
-             y: dataProcessed, 
-             type: this.state.box2.type,
-             name: "Moderate, N=".concat(dataProcessed.length),
-             marker: this.state.box2.marker
-            }
-          })
-          break;
-        case 'ANT':
-          this.setState({
-            box3: {
-             y: [60, 80, 100],//dataProcessed, 
-             type: this.state.box3.type,
-             name: "None/Antagonism, N=".concat(dataProcessed.length),
-             marker: this.state.box3.marker
-            }
-          })
-          break;
-      }
-    })
->>>>>>> [Merge] straggler
   }
 
   // Fetch ANOVA p-value from the database
@@ -174,7 +132,6 @@ export default class Plots extends React.Component {
         gene,
       }),
     })
-<<<<<<< HEAD
       .then(response => response.json())
       .then((data) => {
         this.setState({
@@ -191,27 +148,6 @@ export default class Plots extends React.Component {
           },
         });
       });
-=======
-    .then(response => response.json())
-    .then((data) => {
-      this.setState({
-        layout: {
-          width: 1000,
-          height: 800,
-          title: 'One-way ANOVA, p-val='.concat(data.p),
-          font: {
-            size: 18,
-            color: '#000000',
-            family: 'Raleway'
-          },
-          plot_bgcolor: this.state.layout.plot_bgcolor,
-          paper_bgcolor: this.state.layout.paper_bgcolor,
-          yaxis: { title: 'FPKM'},
-          xaxis: { title: 'Interaction Type'}
-        }
-      })
-    })
->>>>>>> [Merge] straggler
   }
 
   // Render this compoenent

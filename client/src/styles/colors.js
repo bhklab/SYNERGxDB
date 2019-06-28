@@ -7,4 +7,6 @@ export default {
   trans_color_main_4: 'rgba(190, 144, 99, 0.5)',
   color_main_5: '#A4978E',
   trans_color_main_5: 'rgba(164,151,142, 0.5)',
+  color_accent_1: '#fb2b06',
+  color_accent_2: '#f0f0f0'
 };
