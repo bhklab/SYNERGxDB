@@ -68,7 +68,6 @@ export default class Plots extends React.Component {
         interaction,
       }),
     })
-<<<<<<< HEAD
     .then(response => response.json())
     .then((data) => {
       // Convert JSON array to int array
@@ -110,53 +109,6 @@ export default class Plots extends React.Component {
           break;
       }
     })
-=======
-      .then(response => response.json())
-      .then((data) => {
-        const {
-          box1, box2, box3,
-        } = this.state;
-        // Convert JSON array to int array
-        let dataProcessed = data.map(item => item.FPKM);
-        if (dataProcessed.length < 3) {
-          dataProcessed = [];
-        }
-        // Selecting boxplot to update
-        // eslint-disable-next-line default-case
-        switch (interaction) {
-          case 'SYN':
-            this.setState({
-              box1: {
-                y: dataProcessed,
-                type: box1.type,
-                name: 'Synergy, N='.concat(dataProcessed.length),
-                marker: box1.marker,
-              },
-            });
-            break;
-          case 'MOD':
-            this.setState({
-              box2: {
-                y: dataProcessed,
-                type: box2.type,
-                name: 'Moderate, N='.concat(dataProcessed.length),
-                marker: box2.marker,
-              },
-            });
-            break;
-          case 'ANT':
-            this.setState({
-              box3: {
-                y: dataProcessed,
-                type: box3.type,
-                name: 'None/Antagonism, N='.concat(dataProcessed.length),
-                marker: box3.marker,
-              },
-            });
-            break;
-        }
-      });
->>>>>>> master
   }
 
   // Fetch ANOVA p-value from the database
@@ -174,7 +126,6 @@ export default class Plots extends React.Component {
         gene,
       }),
     })
-<<<<<<< HEAD
     .then(response => response.json())
     .then((data) => {
       this.setState({
@@ -194,24 +145,6 @@ export default class Plots extends React.Component {
         }
       })
     })
-=======
-      .then(response => response.json())
-      .then((data) => {
-        this.setState({
-          layout: {
-            width: 1000,
-            height: 800,
-            title: 'One-way ANOVA, p-val='.concat(data.p),
-            font: {
-              size: 14,
-              color: '#000000',
-            },
-            yaxis: { title: 'FPKM' },
-            xaxis: { title: 'Interaction Type' },
-          },
-        });
-      });
->>>>>>> master
   }
 
   // Render this compoenent
