@@ -13,6 +13,10 @@ import Drugs from './Drugs';
 import Plots from './Plots';
 
 const GlobalStyles = createGlobalStyle`
+  body {
+    @import url('https://fonts.googleapis.com/css?family=Paytone+One|Raleway:400,400i,700&display=swap');
+    font-family: 'Raleway', sans-serif;
+  }
   * {
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
@@ -32,6 +36,7 @@ const GlobalStyles = createGlobalStyle`
   a {
     text-decoration: none;
     color: black;
+    font-family: 'Raleway', sans-serif;
   }
   img {
     width: 100%;
@@ -39,9 +44,15 @@ const GlobalStyles = createGlobalStyle`
     display: block;
   }
   h1 {
-    margin-top: 30% 0 0;
+    margin: 30% 0 0;
     font-size: 3em;
-    color: ${colors.color_main_2}
+    color: ${colors.color_main_2};
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: 'Paytone One', sans-serif;
   }
   main {
     width: 100%;
@@ -71,10 +82,18 @@ const GlobalStyles = createGlobalStyle`
       max-width: 100px;
     }
   }
+  p,
+  button {
+    font-family: 'Raleway', sans-serif;
+  }
   
   .main-wrapper {
     width: calc(100% - 300px);
     margin-left: 300px; 
+  }
+  .app,
+  .js-plotly-plot {
+    width: 100%;
   }
   
   #root {
@@ -82,8 +101,8 @@ const GlobalStyles = createGlobalStyle`
     display: flex;
     background: linear-gradient(
       to right top,
-      rgba(220, 220, 220, 0.75), 
-      rgba(220, 220, 220, 0.75)
+      rgba(255, 255, 255, 0.85), 
+      rgba(255, 255, 255, 0.85)
     ),
     url(${heroImg});
     background-size: cover;
