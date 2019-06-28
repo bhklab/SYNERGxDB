@@ -72,7 +72,7 @@ router.post('/getDrugs', (req, res) => {
 
 
 router.post('/getCombos', (req, res) => {
-  const { sample, drugId1, drugId2 } = req.body;
+  const {  sample, drugId1, drugId2 } = req.body;
 
   // Subquery to link combo designs to respective synergy scores
   function subqueryCD() {

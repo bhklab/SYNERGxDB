@@ -42,6 +42,7 @@ class Biomarkers extends Component {
 
   render() {
     const { biomarkerData, results } = this.state;
+    const { drugId1, drugId2, sourceName } = this.props
     if (biomarkerData) {
       const listOfBiomarkers = results.reverse().map(biomarker => (
         <tr>
@@ -66,8 +67,8 @@ class Biomarkers extends Component {
                 {listOfBiomarkers}
               </tbody>
             </table>
-          </StyledBiomarkers>
-          <Plots />
+          </StyledBiomarkers >
+          <Plots idDrugA={drugId1} idDrugB={drugId2} sourceName={sourceName} />
         </Fragment>
       );
     }

@@ -49,13 +49,16 @@ export default class Plots extends React.Component {
 
   // Methods called on loading
   componentDidMount() {
-    const idSource = 2; const idDrugA = 18; const idDrugB = 96; const
-      gene = 'XBP1';
+    //const gene = 'XBP1';
+    const { idDrugA, idDrugB, sourceName } = this.props 
 
-    this.fetchFPKM(idSource, idDrugA, idDrugB, gene, 'SYN');
-    this.fetchFPKM(idSource, idDrugA, idDrugB, gene, 'MOD');
-    this.fetchFPKM(idSource, idDrugA, idDrugB, gene, 'ANT');
-    this.fetchANOVAp(idSource, idDrugA, idDrugB, gene);
+    console.log(idDrugA)
+    console.log(idDrugB)
+    console.log(sourceName)
+    // this.fetchFPKM(idSource, idDrugA, idDrugB, gene, 'SYN');
+    // this.fetchFPKM(idSource, idDrugA, idDrugB, gene, 'MOD');
+    // this.fetchFPKM(idSource, idDrugA, idDrugB, gene, 'ANT');
+    // this.fetchANOVAp(idSource, idDrugA, idDrugB, gene);
   }
 
   // Fetch FPKM values from the database
