@@ -8,7 +8,7 @@ import colors from '../styles/colors';
 
 import SearchCombos from './SearchCombos';
 import CellLines from './CellLines';
-import Databases from './Databases';
+import Datasets from './Datasets';
 import Drugs from './Drugs';
 import Plots from './Plots';
 
@@ -117,7 +117,7 @@ const App = () => (
           <Route exact path="/" component={SearchCombos} />
           <Route exact path="/cell-lines/" component={CellLines} />
           <Route exact path="/drugs/" component={Drugs} />
-          <Route exact path="/databases/" component={Databases} />
+          <Route exact path="/datasets/" component={Datasets} />
           <Route exact path="/plots/" component={Plots} />
         </Switch>
       </StyledApp>
