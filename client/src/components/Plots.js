@@ -1,6 +1,8 @@
 import React from 'react';
 import Plot from 'react-plotly.js';
 
+import colors from '../styles/colors';
+
 export default class Plots extends React.Component {
   // Defining initial state and layout
   constructor(props) {
@@ -11,31 +13,35 @@ export default class Plots extends React.Component {
         y: null,
         type: 'box',
         name: null,
-        marker: { color: '#fb2b06' },
+        marker: { color: colors.color_accent_1 },
       },
       box2: {
         y: null,
         type: 'box',
         name: '',
-        marker: { color: '#be9063' },
+        marker: { color: colors.color_accent_2 },
       },
       box3: {
         y: null,
         type: 'box',
         name: '',
-        marker: { color: '#595959' },
+        marker: { color: colors.color_main_4 },
       },
       layout: {
-        width: 1000,
-        height: 800,
-        title: null,
-        paper_bgcolor: 'f0f0f0',
-        plot_bgcolor: '#f0f0f0',
+        height: 600,
+        paper_bgcolor: colors.trans_color_main_3,
+        plot_bgcolor: colors.trans_color_main_3,
         yaxis: { title: 'FPKM'},
         xaxis: { title: 'Interaction Type'},
+        showlegend: false,
         font: {
-          size: null,
-          color: null
+          size: 16,
+          color: '#000000',
+          family: 'Raleway'
+        },
+        title: {
+          text: 'One-way ANOVA, p-val=',
+          size: 18
         }
       }
     }
@@ -130,18 +136,17 @@ export default class Plots extends React.Component {
     .then((data) => {
       this.setState({
         layout: {
-          width: 1000,
-          height: 800,
-          title: 'One-way ANOVA, p-val='.concat(data.p),
-          font: {
-            size: 18,
-            color: '#000000',
-            family: 'Raleway'
+          height: 600,
+          title: {
+            text: 'One-way ANOVA, p-val='.concat(data.p),
+            size: this.state.layout.title.size
           },
           plot_bgcolor: this.state.layout.plot_bgcolor,
           paper_bgcolor: this.state.layout.paper_bgcolor,
-          yaxis: { title: 'FPKM'},
-          xaxis: { title: 'Interaction Type'}
+          font: this.state.layout.font,
+          showlegend: this.state.layout.showlegend,
+          yaxis: this.state.layout.yaxis,
+          xaxis: this.state.layout.xaxis
         }
       })
     })
