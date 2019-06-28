@@ -80,6 +80,9 @@ const StyledButton = styled.button`
   &:hover {
     color: ${colors.color_main_4}
   }
+  &[type="button"] {
+    font-size: 1.2em;
+  }
 `;
 
 
@@ -110,17 +113,20 @@ class SearchCombos extends Component {
       drugId1: null,
       drugId2: null,
       drugName2: null,
-      sample: null,
+      sample: 'Any',
       drugsData1: [],
       drugsData2: [],
       sampleData: [],
       showResults: false,
-      drug2Placeholder: 'Enter Drug 2',
+      selectedSample: { value: 'Any', label: 'Any Sample' },
+      selectedDrug1: null,
+      selectedDrug2: null,
     };
     this.handleDrug1Search = this.handleDrug1Search.bind(this);
     this.handleDrug2Search = this.handleDrug2Search.bind(this);
     this.handleSampleSearch = this.handleSampleSearch.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleExample = this.handleExample.bind(this);
   }
 
   componentDidMount() {
@@ -174,9 +180,9 @@ class SearchCombos extends Component {
   }
 
   handleDrug1Search(drugId, event) {
-    const { value } = event;
-    this.setState({ drugId1: value });
-
+    console.log(event)
+    const { value, label } = event;
+    this.setState({ drugId1: value, selectedDrug1: {value, label} });
     const { sample } = this.state;
 
     // Sends a post request to the API to retrieve relevant combo drugs for drugsData2
@@ -185,12 +191,12 @@ class SearchCombos extends Component {
 
   handleDrug2Search(event) {
     const { value, label } = event;
-    this.setState({ drugId2: value, drugName2: { value, label } });
+    this.setState({ drugId2: value, drugName2: { value, label }, selectedDrug2: {value, label}  });
   }
 
   handleSampleSearch(event) {
-    const { value } = event;
-    this.setState({ sample: value });
+    const { value, label } = event;
+    this.setState({ sample: value, selectedSample: {value, label}  });
     const { drugId1 } = this.state;
     if (drugId1) this.updateDrug2Data(value, drugId1);
   }
@@ -204,13 +210,36 @@ class SearchCombos extends Component {
       this.setState({ showResults: !showResults });
     }
   }
+  // Generates an example for user and updates react component
+  handleExample() {
+    const { selectedSample, selectedDrug1, selectedDrug2 } = this.state
+    this.updateDrug2Data('Any', 11)
+
+    // updateDrug2Data is asynchronous function and drugId2 can only be updated after it executes
+    setTimeout(
+      function() {
+        this.setState({
+          selectedSample: { value: 'Any', label: 'Any Sample' },
+          selectedDrug1: { label: "Bortezomib", value: 11 },
+          selectedDrug2: { label: "Topotecan",  value: 97 },
+          drugId1: 11,
+          drugId2: 97
+        })
+      }
+      .bind(this),
+      500
+  );
+    
+    
+  }
 
   render() {
     const {
-      drugId1, drugId2, drugsData1, showResults, drugsData2, sampleData, sample, drug2Placeholder, drugName2,
+      drugId1, drugId2, drugsData1, showResults, drugsData2, sampleData, sample, drugName2,
+      selectedSample, selectedDrug1, selectedDrug2
     } = this.state;
     const {
-      handleSampleSearch, handleDrug1Search, handleDrug2Search, handleSubmit,
+      handleSampleSearch, handleDrug1Search, handleDrug2Search, handleSubmit, handleExample
     } = this;
 
     const isDisabled = !(drugId1 && sample && drugsData2.length > 0);
@@ -221,16 +250,30 @@ class SearchCombos extends Component {
           SYNERGxDB is a comprehensive database to explore synergistic drug combinations for biomarker discovery.
         </h2>
         <StyledForm className="search-combos" onSubmit={handleSubmit}>
-          <Select components={{ MenuList }} options={sampleData} placeholder="Enter Cell Line or Tissue" onChange={handleSampleSearch} />
-          <Select components={{ MenuList }} options={drugsData1} placeholder="Enter Drug 1" onChange={e => handleDrug1Search('drugId1', e)} />
+          <Select 
+           components={{ MenuList }}
+           options={sampleData}
+           placeholder="Enter Cell Line or Tissue"
+           onChange={handleSampleSearch}
+           value={selectedSample}
+            />
+          <Select 
+           components={{ MenuList }} 
+           options={drugsData1} 
+           placeholder="Enter Drug 1" 
+           onChange={e => handleDrug1Search('drugId1', e)}
+           value={selectedDrug1} 
+          />
           <Select
             components={{ MenuList }}
             options={drugsData2}
             value={drugName2}
             isDisabled={isDisabled}
-            placeholder={drug2Placeholder}
+            placeholder="Enter Drug 2"
+            value={selectedDrug2}
             onChange={handleDrug2Search}
           />
+          <StyledButton onClick={handleExample} type="button">Example Query</StyledButton>
           <StyledButton type="submit">Search</StyledButton>
         </StyledForm>
       </Fragment>
