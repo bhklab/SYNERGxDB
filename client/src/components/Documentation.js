@@ -2,22 +2,29 @@ import React, { Fragment } from 'react';
 
 export class Documentation extends React.Component {
   render() {
+    var divStyle = {
+      fontSize: '20px'
+    }
+    var noStyle = {
+      listStyleType: 'none'
+    }
     return (
-      <div >
+      <div>
         <header>
-          <div>
-            <br />
-            <h1>Documentation</h1>
+          <div className="wrapper">
+            <h1 align='center'>SYNERGxDB</h1>
           </div>
         </header>
         <main>
-          <ol type='A'>
-            <li>
+          <h2>Documentation</h2>
+          <ol type='A' style={divStyle} align='justify'>
+            <li >
               <b>SYNERGxDB</b> is a comprehensive database to explore synergistic drug combinations for biomarker discovery.
             </li><br/>
             <li>
-              <b>Overview</b><br/>
-              <p align='justify'>
+              <b>Overview</b>
+              <ol>
+              <li style = {noStyle}>
                 Many studies have highlighted the use of drug combination approaches in the treatment of tumors, which have been shown to provide aid
                 in <b>overcoming cancer treatment failures.</b> However, the impact of genetics on variability in combo responses for discovering predictive 
                 and prognostic biomarkers is currently unknown. To help solve this issue, we created <b>SYNERGxDB</b>, a web-application that possesses the 
@@ -25,11 +32,13 @@ export class Documentation extends React.Component {
                 tissue types and 1,965 unique drugs/compounds - 14,634 unique combos). This application allows researchers and clinicians to identify
                 novel synergistic drug combinations, in order to discover potential prognostic and predictive biomarkers that can help improve 
                 patient prognosis and selection.
-              </p>
+              </li>
+              </ol>
+
             </li><br/>
             <li>
-              <b>Features</b><br/><br/>
-                <ol align='justify'type='i'>
+              <b>Features</b><br/>
+                <ol type='i'>
                   <li>
                     Search: The SYNERGxDB search engine allows users to identify potential biomarkers and novel drug combinations according to 
                     the predicted synergy scores, by querying for a subset of cell lines or one cell line, first drug in combo, second drug in 
@@ -39,7 +48,7 @@ export class Documentation extends React.Component {
                     Samples: All of the cell lines in SYNERGxDB are visually represented in a pie-chart based upon the following categories: (age, sex, 
                     tissues, biopsy). By hovering over each slice of a chart, users can gain additional information about the cell lines (e.g. number 
                     of cell lines derived from a male). Metadata is provided for each cell line in SYNERGxDB (N = 123), which includes: (cell line name, 
-                    tissue origin, sex, age, associated disease, and Cellosaurus accession ID).
+                    tissue origin, sex, age, associated disease, and <i>Cellosaurus</i> accession ID).
                   </li><br/>
                   <li>
                     Drugs: Metadata is provided for each drug compound in SYNERGxDB (N = 1,965), which includes: (compound name, ATC code, PubChem CID,
@@ -59,11 +68,9 @@ export class Documentation extends React.Component {
                     for the others), with the following characteristics provided: (HUGO gene symbol and P-value).
                   </li><br/>
                   <li>
-                    <p>
                     Detailed synergy scores: Users are able to delve into the synergy scores calculated for each drug combo experiment through a 
                     detailed synergy pane. Cumulative density is plotted across all of the synergy scores for a drug combo experiment of interest. 
-                    Experiment consists of sample, drug combo one (drugA) and drug combo two (drugB).
-                    </p>
+                    Experiment consists of sample, drug combo one (drugA) and drug combo two (drugB). <br/>
                     Synergy matrices are provided for each score that is calculated for an experiment, where concentrations of drugA and drugB and 
                     corresponding inhibition values (%) are presented. Users are able to further investigate the relationship between each drug 
                     combination and synergy score through 3D-surface plots, where synergism is depicted through colour intensity. In addition, the 
@@ -74,6 +81,11 @@ export class Documentation extends React.Component {
             </li>
           </ol>
         </main>
+        <footer>
+          <div className="wrapper">
+            <p align='center'>Copyright © 2019. All rights reserved</p>
+          </div>
+        </footer>
       </div>
       )
     }

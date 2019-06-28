@@ -31,10 +31,10 @@ export default class Plots extends React.Component {
         title: 'A Fancy Plot',
         //paper_bgcolor: '#aaa9a9',
         //plot_bgcolor: '#aaa9a9',
-        font: {
-          size: 14,
-          color: '#000000'
-        }
+        // font: {
+        //   size: 14,
+        //   color: '#000000'
+        // }
       }
     }
   }
