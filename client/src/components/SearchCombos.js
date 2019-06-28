@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable no-plusplus */
 import React, { Component, Fragment } from 'react';
 import styled from 'styled-components';
@@ -60,6 +61,7 @@ const StyledForm = styled.form`
     &:focus {
       border: 2px solid ${colors.color_main_2};
       background-color: ${colors.trans_color_main_4};
+      
       &::placeholder {
       color: ${colors.color_main_3};
     }
@@ -114,7 +116,6 @@ class SearchCombos extends Component {
       sampleData: [],
       showResults: false,
       drug2Placeholder: 'Enter Drug 2',
-      selectedTissue: null,
     };
     this.handleDrug1Search = this.handleDrug1Search.bind(this);
     this.handleDrug2Search = this.handleDrug2Search.bind(this);

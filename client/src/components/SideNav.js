@@ -43,7 +43,6 @@ const Home = () => (
       <li><Link to="/datasets/">Datasets</Link></li>
       <li><Link to="/">Synergy Scores</Link></li>
       <li><Link to="/documentation/">Documentation</Link></li>
-      <li><Link to="/plots/">Plots</Link></li>
     </ul>
   </StyledNav>
 );
