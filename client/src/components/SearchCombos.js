@@ -146,21 +146,20 @@ class SearchCombos extends Component {
         // const tissueData = tissueList.map(item => ({ value: item, label: item }));
         const tissueData = Object.keys(tissueObject).map(tissue => ({ value: tissue, label: `${tissue} (${tissueObject[tissue]} cell lines)` }));
         const cellsData = data.map(item => ({ value: item.idSample, label: `${item.name} (${item.tissue})` }));
-        this.setState({ sampleData: [...tissueData, ...cellsData] });
+        this.setState({ sampleData: [{ value: 'Any', label: 'Any Sample' }, ...tissueData, ...cellsData] });
       });
   }
 
   updateDrug2Data(sample, drugId) {
+    const requestBody = { drugId };
+    if (sample !== 'Any') requestBody.sample = sample;
     fetch('/api/getDrugs', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        sample,
-        drugId,
-      }),
+      body: JSON.stringify(requestBody),
     })
       .then(response => response.json())
       .then((data) => {

@@ -41,7 +41,6 @@ const Home = () => (
       <li><Link to="/cell-lines/">Cell lines</Link></li>
       <li><Link to="/drugs/">Drugs</Link></li>
       <li><Link to="/datasets/">Datasets</Link></li>
-      <li><Link to="/">Synergy Scores</Link></li>
       <li><Link to="/documentation/">Documentation</Link></li>
     </ul>
   </StyledNav>
