@@ -74,7 +74,6 @@ router.post('/getDrugs', (req, res) => {
 router.post('/getCombos', (req, res) => {
   const { sample, drugId1, drugId2 } = req.body;
 
-
   // Subquery to link combo designs to respective synergy scores
   function subqueryCD() {
     let baseQuery = this.select('*')
@@ -139,64 +138,70 @@ router.post('/getCombos', (req, res) => {
 
 // Database call to get data for Plot.js box plots
 router.post('/getFPKM', (req, res) => {
-
-  const { idSource, idDrugA, idDrugB, gene, interaction } = req.body;
+  const {
+    idSource, idDrugA, idDrugB, gene, interaction,
+  } = req.body;
 
   // Subquery to get list of idSample from idSource, idDrugA, idDrugB
-  function subquerySL() {  
-    let allSample = this.distinct('cd.idSample')
+  function subquerySL() {
+    const allSample = this.distinct('cd.idSample')
       .from('Combo_Design as cd')
-      .join('Synergy_Score as ss', 'cd.idCombo_Design','=','ss.idCombo_Design')
+      .join('Synergy_Score as ss', 'cd.idCombo_Design', '=', 'ss.idCombo_Design')
       .where({
-        idSource: idSource, 
-        idDrugA: idDrugA,
-        idDrugB: idDrugB
-      })
-      switch(interaction){
-        case 'SYN':
-          return allSample.andWhere('ZIP', '>', 0.2);
-        case 'MOD':
-          return allSample.andWhere(0.2, '>=', 'ZIP', '>=', 0);
-        case 'ANT':
-          return allSample.andWhere('ZIP', '<', 0);
-      }
+        idSource,
+        idDrugA,
+        idDrugB,
+      });
+    switch (interaction) {
+      case 'SYN':
+        return allSample.andWhere('ZIP', '>', 0.2);
+      case 'MOD':
+        return allSample.andWhere(0.2, '>=', 'ZIP', '>=', 0);
+      case 'ANT':
+        return allSample.andWhere('ZIP', '<', 0);
+    }
   }
 
   // Subquery to get gene_id from hgnc_symbol
-  function subqueryGI() {  
+  function subqueryGI() {
     this.select('gene_id')
       .from('gene_identifiers')
-      .where({hgnc_symbol: gene})
+      .where({ hgnc_symbol: gene });
   }
-  
+
   // Select statement to return FPKM
   db.select('rna.FPKM')
     .from('RNAseq as rna')
     .join('model_identifiers as mi', 'rna.model_id', '=', 'mi.model_id')
-    .whereIn('idSample', subquerySL )
-    .andWhere({gene_id: subqueryGI})
-    .andWhere('rna.FPKM','>', 0)
+    .whereIn('idSample', subquerySL)
+    .andWhere({ gene_id: subqueryGI })
+    .andWhere('rna.FPKM', '>', 0)
     .then((data) => {
-      res.json(data)
+      res.json(data);
     });
-  
-  })
+});
 
-  router.post('/getANOVAp', (req, res) => {
-    const {idSource, idDrugA, idDrugB, gene } = req.body;
+router.post('/getANOVAp', (req, res) => {
+  const {
+    idSource, idDrugA, idDrugB, gene,
+  } = req.body;
 
-    db.select('anova.p')
-      .from('anova')
-      .where({
-        idSource: idSource,
-        idDrugA: idDrugA,
-        idDrugB: idDrugB,
-        gene: gene
-      })
-      .then((data) =>{
-        res.json(data)
-      })
+  db.select('anova.p')
+    .from('anova')
+    .where({
+      idSource,
+      idDrugA,
+      idDrugB,
+      gene,
+    })
+    .then((data) => {
+      res.json(data);
+    });
+});
 
-  })
+// Route to retrieve list of potential biomarkers
+router.post('/getBiomarkers', (req, res) => {
+  const { sample, drugId1, drugId2 } = req.body;
+});
 
 module.exports = router;

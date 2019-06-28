@@ -118,7 +118,6 @@ const App = () => (
           <Route exact path="/cell-lines/" component={CellLines} />
           <Route exact path="/drugs/" component={Drugs} />
           <Route exact path="/datasets/" component={Datasets} />
-          <Route exact path="/plots/" component={Plots} />
         </Switch>
       </StyledApp>
     </div>
