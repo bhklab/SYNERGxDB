@@ -16,9 +16,9 @@ class Biomarkers extends Component {
     this.state = {
       results: [],
       biomarkerData: false,
-      selectedIdSource: null,
-      selectedGene: null,
+      selectedBiomarker: '0',
     };
+    this.handleSelect = this.handleSelect.bind(this);
   }
 
   componentDidMount() {
@@ -40,24 +40,36 @@ class Biomarkers extends Component {
         if (data.length > 0) {
           this.setState({
             biomarkerData: true,
-            selectedGene: data[0].gene,
-            selectedIdSource: data[0].idSource,
           });
         }
       });
   }
 
+  handleSelect(e) {
+    this.setState({
+      selectedBiomarker: e.target.value,
+    });
+  }
+
   render() {
     const {
-      biomarkerData, results, selectedGene, selectedIdSource,
+      biomarkerData, results, selectedBiomarker,
     } = this.state;
     const { drugId1, drugId2, sourceName } = this.props;
     if (biomarkerData) {
-      const listOfBiomarkers = results.map(biomarker => (
+      const listOfBiomarkers = results.map((biomarker, index) => (
         <tr>
           <td>{biomarker.gene}</td>
           <td>{biomarker.p}</td>
           <td>{biomarker.name}</td>
+          <td>
+            <input
+              type="radio"
+              value={index}
+              checked={index.toString() === selectedBiomarker}
+              onChange={this.handleSelect}
+            />
+          </td>
         </tr>
       ));
       return (
@@ -70,6 +82,7 @@ class Biomarkers extends Component {
                   <th>Gene Symbol</th>
                   <th>One-way ANOVA P</th>
                   <th>Source</th>
+                  <th>Select</th>
                 </tr>
               </thead>
               <tbody>
@@ -80,8 +93,8 @@ class Biomarkers extends Component {
           <Plots
             idDrugA={drugId1}
             idDrugB={drugId2}
-            idSource={selectedIdSource}
-            gene={selectedGene}
+            idSource={results[selectedBiomarker].idSource}
+            gene={results[selectedBiomarker].gene}
           />
         </Fragment>
       );
