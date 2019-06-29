@@ -51,30 +51,31 @@ export default class Plots extends React.Component {
   // Methods called on loading
   componentDidMount() {
     const {
-      idDrugA, idDrugB, sourceName, gene,
+      idDrugA, idDrugB, idSource, gene,
     } = this.props;
-    this.fetchFPKM(sourceName, idDrugA, idDrugB, gene, 'SYN');
-    this.fetchFPKM(sourceName, idDrugA, idDrugB, gene, 'MOD');
-    this.fetchFPKM(sourceName, idDrugA, idDrugB, gene, 'ANT');
-    // this.fetchANOVAp(idSource, idDrugA, idDrugB, gene);
+    this.fetchFPKM(idSource, idDrugA, idDrugB, gene, 'SYN');
+    this.fetchFPKM(idSource, idDrugA, idDrugB, gene, 'MOD');
+    this.fetchFPKM(idSource, idDrugA, idDrugB, gene, 'ANT');
+    this.fetchANOVAp(idSource, idDrugA, idDrugB, gene);
   }
 
   componentDidUpdate(prevProps) {
     console.log('componentDidUpdate');
     const {
-      gene, sourceName, idDrugA, idDrugB,
+      gene, idSource, idDrugA, idDrugB,
     } = this.props;
     // Always check if new props are different bedore updating state to avoid infinite loops
-    // idDrugA and idDrugB are not gonna change, we just need check for gene and sourceName
-    if (gene !== prevProps.gene || sourceName !== prevProps.sourceName) {
-      this.fetchFPKM(sourceName, idDrugA, idDrugB, gene, 'SYN');
-      this.fetchFPKM(sourceName, idDrugA, idDrugB, gene, 'MOD');
-      this.fetchFPKM(sourceName, idDrugA, idDrugB, gene, 'ANT');
+    // idDrugA and idDrugB are not gonna change, we just need check for gene and idSource
+    if (gene !== prevProps.gene || idSource !== prevProps.idSource) {
+      this.fetchFPKM(idSource, idDrugA, idDrugB, gene, 'SYN');
+      this.fetchFPKM(idSource, idDrugA, idDrugB, gene, 'MOD');
+      this.fetchFPKM(idSource, idDrugA, idDrugB, gene, 'ANT');
     }
   }
 
   // Fetch FPKM values from the database
   fetchFPKM(idSource, idDrugA, idDrugB, gene, interaction) {
+    const { box1, box2, box3 } = this.state;
     fetch('/api/getFPKM', {
       method: 'POST',
       headers: {
@@ -102,9 +103,9 @@ export default class Plots extends React.Component {
             this.setState({
               box1: {
                 y: dataProcessed,
-                type: this.state.box1.type,
+                type: box1.type,
                 name: 'Synergy, N='.concat(dataProcessed.length),
-                marker: this.state.box1.marker,
+                marker: box1.marker,
               },
             });
             break;
@@ -112,19 +113,19 @@ export default class Plots extends React.Component {
             this.setState({
               box2: {
                 y: dataProcessed,
-                type: this.state.box2.type,
+                type: box2.type,
                 name: 'Moderate, N='.concat(dataProcessed.length),
-                marker: this.state.box2.marker,
+                marker: box2.marker,
               },
             });
             break;
           case 'ANT':
             this.setState({
               box3: {
-                y: [60, 80, 100], // dataProcessed,
-                type: this.state.box3.type,
+                y: dataProcessed,
+                type: box3.type,
                 name: 'None/Antagonism, N='.concat(dataProcessed.length),
-                marker: this.state.box3.marker,
+                marker: box3.marker,
               },
             });
             break;
@@ -153,7 +154,7 @@ export default class Plots extends React.Component {
           layout: {
             height: 600,
             title: {
-              text: 'One-way ANOVA, p-val='.concat(data.p),
+              text: `One-way ANOVA, p-val=${data.p}`,
               size: this.state.layout.title.size,
             },
             plot_bgcolor: this.state.layout.plot_bgcolor,

@@ -53,7 +53,7 @@ class Biomarkers extends Component {
     } = this.state;
     const { drugId1, drugId2, sourceName } = this.props;
     if (biomarkerData) {
-      const listOfBiomarkers = results.reverse().map(biomarker => (
+      const listOfBiomarkers = results.map(biomarker => (
         <tr>
           <td>{biomarker.gene}</td>
           <td>{biomarker.p}</td>
