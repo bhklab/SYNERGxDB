@@ -16,12 +16,13 @@ class Biomarkers extends Component {
     this.state = {
       results: [],
       biomarkerData: false,
+      selectedBiomarker: '0',
     };
+    this.handleSelect = this.handleSelect.bind(this);
   }
 
   componentDidMount() {
     const { drugId1, drugId2 } = this.props;
-
     fetch('/api/getBiomarkers', {
       method: 'POST',
       headers: {
@@ -36,18 +37,39 @@ class Biomarkers extends Component {
       .then(response => response.json())
       .then((data) => {
         this.setState({ results: data });
-        if (data.length > 0) this.setState({ biomarkerData: true });
+        if (data.length > 0) {
+          this.setState({
+            biomarkerData: true,
+          });
+        }
       });
   }
 
+  handleSelect(e) {
+    this.setState({
+      selectedBiomarker: e.target.value,
+    });
+  }
+
   render() {
-    const { biomarkerData, results } = this.state;
+    const {
+      biomarkerData, results, selectedBiomarker,
+    } = this.state;
+    const { drugId1, drugId2, sourceName } = this.props;
     if (biomarkerData) {
-      const listOfBiomarkers = results.reverse().map(biomarker => (
+      const listOfBiomarkers = results.map((biomarker, index) => (
         <tr>
           <td>{biomarker.gene}</td>
           <td>{biomarker.p}</td>
           <td>{biomarker.name}</td>
+          <td>
+            <input
+              type="radio"
+              value={index}
+              checked={index.toString() === selectedBiomarker}
+              onChange={this.handleSelect}
+            />
+          </td>
         </tr>
       ));
       return (
@@ -60,6 +82,7 @@ class Biomarkers extends Component {
                   <th>Gene Symbol</th>
                   <th>One-way ANOVA P</th>
                   <th>Source</th>
+                  <th>Select</th>
                 </tr>
               </thead>
               <tbody>
@@ -67,7 +90,12 @@ class Biomarkers extends Component {
               </tbody>
             </table>
           </StyledBiomarkers>
-          <Plots />
+          <Plots
+            idDrugA={drugId1}
+            idDrugB={drugId2}
+            idSource={results[selectedBiomarker].idSource}
+            gene={results[selectedBiomarker].gene}
+          />
         </Fragment>
       );
     }

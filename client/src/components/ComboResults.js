@@ -37,7 +37,6 @@ class ComboResults extends Component {
     })
       .then(response => response.json())
       .then((data) => {
-        console.log(data);
         this.setState({ results: data });
       });
   }
@@ -45,7 +44,7 @@ class ComboResults extends Component {
   render() {
     const { results } = this.state;
     const { drugId1, drugId2 } = this.props;
-    const showBiomarker = typeof drugId2 === 'number' && <Biomarkers drugId1={drugId1} drugId2={drugId2} />;
+    const showBiomarker = typeof drugId2 === 'number' && <Biomarkers drugId1={drugId1} drugId2={drugId2} sourceName={results} />;
     const totalSynergyScores = results.length;
     const resultRows = results.map((synergyResult, index) => <ResultRow synergyResult={synergyResult} key={index} />);
     return (

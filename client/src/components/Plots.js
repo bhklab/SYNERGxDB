@@ -1,5 +1,8 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
 import Plot from 'react-plotly.js';
+
+import colors from '../styles/colors';
 
 export default class Plots extends React.Component {
   // Defining initial state and layout
@@ -8,50 +11,70 @@ export default class Plots extends React.Component {
 
     this.state = {
       box1: {
-        y: [],
+        y: null,
         type: 'box',
         name: '',
-        marker: { color: '#132226' },
+        marker: { color: colors.color_accent_1 },
       },
       box2: {
-        y: [],
+        y: null,
         type: 'box',
         name: '',
-        marker: { color: '#A4978E' },
+        marker: { color: colors.color_accent_2 },
       },
       box3: {
-        y: [],
+        y: null,
         type: 'box',
         name: '',
-        marker: { color: '#BE9063' },
+        marker: { color: colors.color_main_4 },
       },
       layout: {
-        // width: 800,
-        // height: 600,
-        title: 'A Fancy Plot',
-        //paper_bgcolor: '#aaa9a9',
-        //plot_bgcolor: '#aaa9a9',
-        // font: {
-        //   size: 14,
-        //   color: '#000000'
-        // }
-      }
-    }
+        height: 600,
+        paper_bgcolor: colors.trans_color_main_3,
+        plot_bgcolor: colors.trans_color_main_3,
+        yaxis: { title: 'FPKM' },
+        xaxis: { title: 'Interaction Type' },
+        showlegend: false,
+        font: {
+          size: 16,
+          color: '#000000',
+          family: 'Raleway',
+        },
+        title: {
+          text: 'One-way ANOVA, p-val=',
+          size: 18,
+        },
+      },
+    };
   }
 
   // Methods called on loading
   componentDidMount() {
-    const idSource = 2; const idDrugA = 18; const idDrugB = 96; const
-      gene = 'XBP1';
-
+    const {
+      idDrugA, idDrugB, idSource, gene,
+    } = this.props;
     this.fetchFPKM(idSource, idDrugA, idDrugB, gene, 'SYN');
     this.fetchFPKM(idSource, idDrugA, idDrugB, gene, 'MOD');
     this.fetchFPKM(idSource, idDrugA, idDrugB, gene, 'ANT');
     this.fetchANOVAp(idSource, idDrugA, idDrugB, gene);
   }
 
+  componentDidUpdate(prevProps) {
+    const {
+      gene, idSource, idDrugA, idDrugB,
+    } = this.props;
+    // Always check if new props are different bedore updating state to avoid infinite loops
+    // idDrugA and idDrugB are not gonna change, we just need check for gene and idSource
+    if (gene !== prevProps.gene || idSource !== prevProps.idSource) {
+      this.fetchFPKM(idSource, idDrugA, idDrugB, gene, 'SYN');
+      this.fetchFPKM(idSource, idDrugA, idDrugB, gene, 'MOD');
+      this.fetchFPKM(idSource, idDrugA, idDrugB, gene, 'ANT');
+    }
+  }
+
   // Fetch FPKM values from the database
   fetchFPKM(idSource, idDrugA, idDrugB, gene, interaction) {
+    const { box1, box2, box3 } = this.state;
     fetch('/api/getFPKM', {
       method: 'POST',
       headers: {
@@ -68,16 +91,13 @@ export default class Plots extends React.Component {
     })
       .then(response => response.json())
       .then((data) => {
-        const {
-          box1, box2, box3,
-        } = this.state;
-        // Convert JSON array to int array
-        let dataProcessed = data.map(item => item.FPKM);
-        if (dataProcessed.length < 3) {
-          dataProcessed = [];
-        }
+      // Convert JSON array to int array
+        const dataProcessed = data.map(item => item.FPKM);
+        // if (dataProcessed.length < 3 ) {
+        //   dataProcessed = [];
+        // }
         // Selecting boxplot to update
-        // eslint-disable-next-line default-case
+        console.log(dataProcessed, interaction);
         switch (interaction) {
           case 'SYN':
             this.setState({
@@ -132,15 +152,17 @@ export default class Plots extends React.Component {
       .then((data) => {
         this.setState({
           layout: {
-            width: 1000,
-            height: 800,
-            title: 'One-way ANOVA, p-val='.concat(data.p),
-            font: {
-              size: 14,
-              color: '#000000',
+            height: 600,
+            title: {
+              text: `One-way ANOVA, p-val=${data.p}`,
+              size: this.state.layout.title.size,
             },
-            yaxis: { title: 'FPKM' },
-            xaxis: { title: 'Interaction Type' },
+            plot_bgcolor: this.state.layout.plot_bgcolor,
+            paper_bgcolor: this.state.layout.paper_bgcolor,
+            font: this.state.layout.font,
+            showlegend: this.state.layout.showlegend,
+            yaxis: this.state.layout.yaxis,
+            xaxis: this.state.layout.xaxis,
           },
         });
       });
