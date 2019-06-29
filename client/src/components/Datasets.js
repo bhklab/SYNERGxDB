@@ -43,11 +43,7 @@ class Datasets extends Component {
     ));
     return (
       <Fragment>
-        <header>
-          <div className="wrapper">
-            <h1>SYNERGxDB</h1>
-          </div>
-        </header>
+        <header />
         <main>
           <StyledWrapper className="wrapper">
             <table>

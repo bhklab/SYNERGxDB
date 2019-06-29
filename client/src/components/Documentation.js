@@ -13,7 +13,7 @@ const Documentation = () => {
     <div>
       <header>
         <div className="wrapper">
-          <h1 salign="center">SYNERGxDB</h1>
+          <h1>SYNERGxDB</h1>
         </div>
       </header>
       <main>

@@ -24,7 +24,6 @@ class Databases extends Component {
     fetch('/api/cell_lines/')
       .then(response => response.json())
       .then((cellLineData) => {
-        console.log(cellLineData);
         this.setState({ cellLineData });
       });
   }
@@ -43,11 +42,7 @@ class Databases extends Component {
     ));
     return (
       <Fragment>
-        <header>
-          <div className="wrapper">
-            <h1>SYNERGxDB</h1>
-          </div>
-        </header>
+        <header />
         <main>
           <StyledWrapper className="wrapper">
             <table>

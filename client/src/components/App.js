@@ -63,6 +63,7 @@ const GlobalStyles = createGlobalStyle`
     table-layout: fixed;
     text-align: left;
     border-spacing: 0;
+    margin: 20px 0;
 
     th,
     td {
