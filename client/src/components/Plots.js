@@ -29,16 +29,20 @@ export default class Plots extends React.Component {
         marker: { color: colors.color_main_4 },
       },
       layout: {
-        width: 1000,
-        height: 800,
-        title: null,
-        paper_bgcolor: 'f0f0f0',
-        plot_bgcolor: '#f0f0f0',
+        height: 600,
+        paper_bgcolor: colors.trans_color_main_3,
+        plot_bgcolor: colors.trans_color_main_3,
         yaxis: { title: 'FPKM' },
         xaxis: { title: 'Interaction Type' },
+        showlegend: false,
         font: {
-          size: null,
-          color: null,
+          size: 16,
+          color: '#000000',
+          family: 'Raleway',
+        },
+        title: {
+          text: 'One-way ANOVA, p-val=',
+          size: 18,
         },
       },
     };
@@ -87,24 +91,20 @@ export default class Plots extends React.Component {
     })
       .then(response => response.json())
       .then((data) => {
-        const {
-          box1, box2, box3,
-        } = this.state;
-        // Convert JSON array to int array
-        let dataProcessed = data.map(item => item.FPKM);
-        if (dataProcessed.length < 3) {
-          dataProcessed = [];
-        }
+      // Convert JSON array to int array
+        const dataProcessed = data.map(item => item.FPKM);
+        // if (dataProcessed.length < 3 ) {
+        //   dataProcessed = [];
+        // }
         // Selecting boxplot to update
-        // eslint-disable-next-line default-case
         switch (interaction) {
           case 'SYN':
             this.setState({
               box1: {
                 y: dataProcessed,
-                type: box1.type,
+                type: this.state.box1.type,
                 name: 'Synergy, N='.concat(dataProcessed.length),
-                marker: box1.marker,
+                marker: this.state.box1.marker,
               },
             });
             break;
@@ -112,19 +112,19 @@ export default class Plots extends React.Component {
             this.setState({
               box2: {
                 y: dataProcessed,
-                type: box2.type,
+                type: this.state.box2.type,
                 name: 'Moderate, N='.concat(dataProcessed.length),
-                marker: box2.marker,
+                marker: this.state.box2.marker,
               },
             });
             break;
           case 'ANT':
             this.setState({
               box3: {
-                y: dataProcessed,
-                type: box3.type,
+                y: [60, 80, 100], // dataProcessed,
+                type: this.state.box3.type,
                 name: 'None/Antagonism, N='.concat(dataProcessed.length),
-                marker: box3.marker,
+                marker: this.state.box3.marker,
               },
             });
             break;
@@ -151,15 +151,17 @@ export default class Plots extends React.Component {
       .then((data) => {
         this.setState({
           layout: {
-            width: 1000,
-            height: 800,
-            title: 'One-way ANOVA, p-val='.concat(data.p),
-            font: {
-              size: 14,
-              color: '#000000',
+            height: 600,
+            title: {
+              text: 'One-way ANOVA, p-val='.concat(data.p),
+              size: this.state.layout.title.size,
             },
-            yaxis: { title: 'FPKM' },
-            xaxis: { title: 'Interaction Type' },
+            plot_bgcolor: this.state.layout.plot_bgcolor,
+            paper_bgcolor: this.state.layout.paper_bgcolor,
+            font: this.state.layout.font,
+            showlegend: this.state.layout.showlegend,
+            yaxis: this.state.layout.yaxis,
+            xaxis: this.state.layout.xaxis,
           },
         });
       });
