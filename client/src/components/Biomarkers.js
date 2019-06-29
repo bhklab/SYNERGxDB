@@ -16,12 +16,13 @@ class Biomarkers extends Component {
     this.state = {
       results: [],
       biomarkerData: false,
+      selectedIdSource: null,
+      selectedGene: null,
     };
   }
 
   componentDidMount() {
     const { drugId1, drugId2 } = this.props;
-
     fetch('/api/getBiomarkers', {
       method: 'POST',
       headers: {
@@ -36,13 +37,21 @@ class Biomarkers extends Component {
       .then(response => response.json())
       .then((data) => {
         this.setState({ results: data });
-        if (data.length > 0) this.setState({ biomarkerData: true });
+        if (data.length > 0) {
+          this.setState({
+            biomarkerData: true,
+            selectedGene: data[0].gene,
+            selectedIdSource: data[0].idSource,
+          });
+        }
       });
   }
 
   render() {
-    const { biomarkerData, results } = this.state;
-    const { drugId1, drugId2, sourceName } = this.props
+    const {
+      biomarkerData, results, selectedGene, selectedIdSource,
+    } = this.state;
+    const { drugId1, drugId2, sourceName } = this.props;
     if (biomarkerData) {
       const listOfBiomarkers = results.reverse().map(biomarker => (
         <tr>
@@ -67,8 +76,13 @@ class Biomarkers extends Component {
                 {listOfBiomarkers}
               </tbody>
             </table>
-          </StyledBiomarkers >
-          <Plots idDrugA={drugId1} idDrugB={drugId2} sourceName={sourceName} />
+          </StyledBiomarkers>
+          <Plots
+            idDrugA={drugId1}
+            idDrugB={drugId2}
+            idSource={selectedIdSource}
+            gene={selectedGene}
+          />
         </Fragment>
       );
     }

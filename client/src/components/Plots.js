@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
 import Plot from 'react-plotly.js';
 
@@ -45,16 +46,27 @@ export default class Plots extends React.Component {
 
   // Methods called on loading
   componentDidMount() {
-    //const gene = 'XBP1';
-    const { idDrugA, idDrugB, sourceName } = this.props 
-
-    console.log(idDrugA)
-    console.log(idDrugB)
-    console.log(sourceName)
-    // this.fetchFPKM(idSource, idDrugA, idDrugB, gene, 'SYN');
-    // this.fetchFPKM(idSource, idDrugA, idDrugB, gene, 'MOD');
-    // this.fetchFPKM(idSource, idDrugA, idDrugB, gene, 'ANT');
+    const {
+      idDrugA, idDrugB, sourceName, gene,
+    } = this.props;
+    this.fetchFPKM(sourceName, idDrugA, idDrugB, gene, 'SYN');
+    this.fetchFPKM(sourceName, idDrugA, idDrugB, gene, 'MOD');
+    this.fetchFPKM(sourceName, idDrugA, idDrugB, gene, 'ANT');
     // this.fetchANOVAp(idSource, idDrugA, idDrugB, gene);
+  }
+
+  componentDidUpdate(prevProps) {
+    console.log('componentDidUpdate');
+    const {
+      gene, sourceName, idDrugA, idDrugB,
+    } = this.props;
+    // Always check if new props are different bedore updating state to avoid infinite loops
+    // idDrugA and idDrugB are not gonna change, we just need check for gene and sourceName
+    if (gene !== prevProps.gene || sourceName !== prevProps.sourceName) {
+      this.fetchFPKM(sourceName, idDrugA, idDrugB, gene, 'SYN');
+      this.fetchFPKM(sourceName, idDrugA, idDrugB, gene, 'MOD');
+      this.fetchFPKM(sourceName, idDrugA, idDrugB, gene, 'ANT');
+    }
   }
 
   // Fetch FPKM values from the database
