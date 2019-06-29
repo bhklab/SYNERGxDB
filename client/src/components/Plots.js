@@ -29,7 +29,6 @@ export default class Plots extends React.Component {
         marker: { color: colors.color_main_4 }
       },
       layout: {
-        autosize: true,
         //height: 600,
         paper_bgcolor: colors.trans_color_main_3,
         plot_bgcolor: colors.trans_color_main_3,
@@ -154,7 +153,6 @@ export default class Plots extends React.Component {
       .then(data => {
         this.setState({
           layout: {
-            autosize: layout.autosize,
             //height: 600,
             title: {
               text: `One-way ANOVA, p-val=${data.p}`,
