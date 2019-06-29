@@ -13,7 +13,7 @@ export default class Plots extends React.Component {
       box1: {
         y: null,
         type: 'box',
-        name: null,
+        name: '',
         marker: { color: colors.color_accent_1 },
       },
       box2: {
@@ -60,7 +60,6 @@ export default class Plots extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    console.log('componentDidUpdate');
     const {
       gene, idSource, idDrugA, idDrugB,
     } = this.props;
@@ -98,6 +97,7 @@ export default class Plots extends React.Component {
         //   dataProcessed = [];
         // }
         // Selecting boxplot to update
+        console.log(dataProcessed, interaction);
         switch (interaction) {
           case 'SYN':
             this.setState({
