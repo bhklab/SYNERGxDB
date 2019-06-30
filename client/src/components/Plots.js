@@ -29,7 +29,7 @@ export default class Plots extends React.Component {
         marker: { color: colors.color_main_4 },
       },
       layout: {
-        // height: 600,
+        height: 450,
         paper_bgcolor: colors.trans_color_main_3,
         plot_bgcolor: colors.trans_color_main_3,
         yaxis: { title: 'FPKM' },
@@ -157,7 +157,7 @@ export default class Plots extends React.Component {
       .then((data) => {
         this.setState({
           layout: {
-            // height: 600,
+            height: 450,
             title: {
               text: `One-way ANOVA, p-val=${data.p}`,
               size: layout.title.size,
@@ -169,7 +169,7 @@ export default class Plots extends React.Component {
             yaxis: layout.yaxis,
             xaxis: layout.xaxis,
           },
-          resize: resize + 1,
+          // resize: resize + 1,
         });
       });
   }
@@ -179,6 +179,6 @@ export default class Plots extends React.Component {
     const {
       box1, box2, box3, layout,
     } = this.state;
-    return <Plot data={[box1, box2, box3]} layout={layout} graphDiv="graph" />;
+    return <Plot data={[box1, box2, box3]} layout={layout} graphDiv="graph" config={{ responsive: true }} />;
   }
 }

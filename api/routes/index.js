@@ -82,7 +82,7 @@ router.post('/getDrugs', (req, res) => {
 
 
 router.post('/getCombos', (req, res) => {
-  const {  sample, drugId1, drugId2 } = req.body;
+  const { sample, drugId1, drugId2 } = req.body;
 
   // Subquery to link combo designs to respective synergy scores
   function subqueryCD() {
@@ -216,10 +216,10 @@ router.post('/getBiomarkers', (req, res) => {
     this.select('gene', 'p', 'idSource as id')
       .from('anova')
       .where({
-        idDrugA: drugId1, idDrugB: drugId2,
+        idDrugA: drugId1, idDrugB: drugId2, idSource: 2,
       })
       .orWhere({
-        idDrugA: drugId2, idDrugB: drugId1,
+        idDrugA: drugId2, idDrugB: drugId1, idSource: 2,
       })
       .orderBy('p', 'desc')
       .limit(10)
