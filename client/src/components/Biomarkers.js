@@ -95,6 +95,7 @@ class Biomarkers extends Component {
             idDrugB={drugId2}
             idSource={results[selectedBiomarker].idSource}
             gene={results[selectedBiomarker].gene}
+            pValue={results[selectedBiomarker].p}
           />
         </Fragment>
       );

@@ -52,17 +52,18 @@ export default class Plots extends React.Component {
   // Methods called on loading
   componentDidMount() {
     const {
-      idDrugA, idDrugB, idSource, gene,
+      idDrugA, idDrugB, idSource, gene, pValue,
     } = this.props;
     this.fetchFPKM(idSource, idDrugA, idDrugB, gene, 'SYN');
     this.fetchFPKM(idSource, idDrugA, idDrugB, gene, 'MOD');
     this.fetchFPKM(idSource, idDrugA, idDrugB, gene, 'ANT');
-    this.fetchANOVAp(idSource, idDrugA, idDrugB, gene);
+    this.setPValue(pValue);
+    // this.fetchANOVAp(idSource, idDrugA, idDrugB, gene);
   }
 
   componentDidUpdate(prevProps) {
     const {
-      gene, idSource, idDrugA, idDrugB,
+      gene, idSource, idDrugA, idDrugB, pValue,
     } = this.props;
     console.log(idSource);
     // Always check if new props are different before updating state to avoid infinite loops
@@ -71,7 +72,8 @@ export default class Plots extends React.Component {
       this.fetchFPKM(idSource, idDrugA, idDrugB, gene, 'SYN');
       this.fetchFPKM(idSource, idDrugA, idDrugB, gene, 'MOD');
       this.fetchFPKM(idSource, idDrugA, idDrugB, gene, 'ANT');
-      this.fetchANOVAp(idSource, idDrugA, idDrugB, gene);
+      this.setPValue(pValue);
+      // this.fetchANOVAp(idSource, idDrugA, idDrugB, gene);
     }
   }
 
@@ -137,42 +139,62 @@ export default class Plots extends React.Component {
       });
   }
 
-  // Fetch ANOVA p-value from the database
-  fetchANOVAp(idSource, idDrugA, idDrugB, gene) {
-    const { layout, resize } = this.state;
-    fetch('/api/getANOVAp', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
+  setPValue(pValue) {
+    const { layout } = this.state;
+    this.setState({
+      layout: {
+        height: 450,
+        title: {
+          text: `One-way ANOVA, p-val=${pValue}`,
+          size: layout.title.size,
+        },
+        plot_bgcolor: layout.plot_bgcolor,
+        paper_bgcolor: layout.paper_bgcolor,
+        font: layout.font,
+        showlegend: layout.showlegend,
+        yaxis: layout.yaxis,
+        xaxis: layout.xaxis,
       },
-      body: JSON.stringify({
-        idSource,
-        idDrugA,
-        idDrugB,
-        gene,
-      }),
-    })
-      .then(response => response.json())
-      .then((data) => {
-        this.setState({
-          layout: {
-            height: 450,
-            title: {
-              text: `One-way ANOVA, p-val=${data.p}`,
-              size: layout.title.size,
-            },
-            plot_bgcolor: layout.plot_bgcolor,
-            paper_bgcolor: layout.paper_bgcolor,
-            font: layout.font,
-            showlegend: layout.showlegend,
-            yaxis: layout.yaxis,
-            xaxis: layout.xaxis,
-          },
-          // resize: resize + 1,
-        });
-      });
+      // resize: resize + 1,
+    });
   }
+
+  // Fetch ANOVA p-value from the database
+  // fetchANOVAp(idSource, idDrugA, idDrugB, gene) {
+  //   const { layout, resize } = this.state;
+  //   fetch('/api/getANOVAp', {
+  //     method: 'POST',
+  //     headers: {
+  //       Accept: 'application/json',
+  //       'Content-Type': 'application/json',
+  //     },
+  //     body: JSON.stringify({
+  //       idSource,
+  //       idDrugA,
+  //       idDrugB,
+  //       gene,
+  //     }),
+  //   })
+  //     .then(response => response.json())
+  //     .then((data) => {
+  //       this.setState({
+  //         layout: {
+  //           height: 450,
+  //           title: {
+  //             text: `One-way ANOVA, p-val=${data.p}`,
+  //             size: layout.title.size,
+  //           },
+  //           plot_bgcolor: layout.plot_bgcolor,
+  //           paper_bgcolor: layout.paper_bgcolor,
+  //           font: layout.font,
+  //           showlegend: layout.showlegend,
+  //           yaxis: layout.yaxis,
+  //           xaxis: layout.xaxis,
+  //         },
+  //         // resize: resize + 1,
+  //       });
+  //     });
+  // }
 
   // Render this compoenent
   render() {
