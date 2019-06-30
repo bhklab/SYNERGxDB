@@ -34,6 +34,7 @@ const StyledForm = styled.form`
   background-color: ${colors.trans_color_main_3};
   margin: 5px;
   padding: 10px;
+  padding-top: 25px;
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -112,7 +113,6 @@ class SearchCombos extends Component {
     this.state = {
       drugId1: null,
       drugId2: null,
-      drugName2: null,
       sample: 'Any',
       drugsData1: [],
       drugsData2: [],
@@ -121,6 +121,7 @@ class SearchCombos extends Component {
       selectedSample: { value: 'Any', label: 'Any Sample' },
       selectedDrug1: null,
       selectedDrug2: null,
+      drug2Placeholder: 'Enter Drug 2',
     };
     this.handleDrug1Search = this.handleDrug1Search.bind(this);
     this.handleDrug2Search = this.handleDrug2Search.bind(this);
@@ -169,7 +170,7 @@ class SearchCombos extends Component {
     })
       .then(response => response.json())
       .then((data) => {
-        this.setState({ drugId2: null, drugName2: null, drugsData2: [] });
+        this.setState({ drugId2: null, selectedDrug2: null, drugsData2: [] });
         if (data.length > 0) {
           const drugsData = data.map(item => ({ value: item.idDrug, label: item.name }));
           this.setState({ drugsData2: [{ value: 'Any', label: 'Any Drug' }, ...drugsData], drug2Placeholder: 'Enter Drug 2' });
@@ -190,7 +191,7 @@ class SearchCombos extends Component {
 
   handleDrug2Search(event) {
     const { value, label } = event;
-    this.setState({ drugId2: value, drugName2: { value, label }, selectedDrug2: { value, label } });
+    this.setState({ drugId2: value, selectedDrug2: { value, label } });
   }
 
   handleSampleSearch(event) {
@@ -232,8 +233,8 @@ class SearchCombos extends Component {
 
   render() {
     const {
-      drugId1, drugId2, drugsData1, showResults, drugsData2, sampleData, sample, drugName2,
-      selectedSample, selectedDrug1, selectedDrug2,
+      drugId1, drugId2, drugsData1, showResults, drugsData2, sampleData, sample,
+      selectedSample, selectedDrug1, selectedDrug2, drug2Placeholder,
     } = this.state;
     const {
       handleSampleSearch, handleDrug1Search, handleDrug2Search, handleSubmit, handleExample,
@@ -264,9 +265,8 @@ class SearchCombos extends Component {
           <Select
             components={{ MenuList }}
             options={drugsData2}
-            value={drugName2}
             isDisabled={isDisabled}
-            placeholder="Enter Drug 2"
+            placeholder={drug2Placeholder}
             value={selectedDrug2}
             onChange={handleDrug2Search}
           />

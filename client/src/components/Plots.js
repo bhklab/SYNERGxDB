@@ -1,8 +1,8 @@
 /* eslint-disable react/prop-types */
-import React from "react";
-import Plot from "react-plotly.js";
+import React from 'react';
+import Plot from 'react-plotly.js';
 
-import colors from "../styles/colors";
+import colors from '../styles/colors';
 
 export default class Plots extends React.Component {
   // Defining initial state and layout
@@ -12,61 +12,65 @@ export default class Plots extends React.Component {
     this.state = {
       box1: {
         y: null,
-        type: "box",
-        name: "",
-        marker: { color: colors.color_accent_1 }
+        type: 'box',
+        name: '',
+        marker: { color: colors.color_accent_1 },
       },
       box2: {
         y: null,
-        type: "box",
-        name: "",
-        marker: { color: colors.color_accent_2 }
+        type: 'box',
+        name: '',
+        marker: { color: colors.color_accent_2 },
       },
       box3: {
         y: null,
-        type: "box",
-        name: "",
-        marker: { color: colors.color_main_4 }
+        type: 'box',
+        name: '',
+        marker: { color: colors.color_main_4 },
       },
       layout: {
-        //height: 600,
+        // height: 600,
         paper_bgcolor: colors.trans_color_main_3,
         plot_bgcolor: colors.trans_color_main_3,
-        yaxis: { title: "FPKM" },
-        xaxis: { title: "Interaction Type" },
+        yaxis: { title: 'FPKM' },
+        xaxis: { title: 'Interaction Type' },
         showlegend: false,
         font: {
           size: 16,
-          color: "#000000",
-          family: "Raleway"
+          color: '#000000',
+          family: 'Raleway',
         },
         title: {
-          text: "One-way ANOVA, p-val=",
-          size: 18
-        }
+          text: 'One-way ANOVA, p-val=',
+          size: 18,
+        },
       },
-      resize: 0
+      resize: 0,
     };
   }
 
   // Methods called on loading
   componentDidMount() {
-    const { idDrugA, idDrugB, idSource, gene } = this.props;
-    this.fetchFPKM(idSource, idDrugA, idDrugB, gene, "SYN");
-    this.fetchFPKM(idSource, idDrugA, idDrugB, gene, "MOD");
-    this.fetchFPKM(idSource, idDrugA, idDrugB, gene, "ANT");
+    const {
+      idDrugA, idDrugB, idSource, gene,
+    } = this.props;
+    this.fetchFPKM(idSource, idDrugA, idDrugB, gene, 'SYN');
+    this.fetchFPKM(idSource, idDrugA, idDrugB, gene, 'MOD');
+    this.fetchFPKM(idSource, idDrugA, idDrugB, gene, 'ANT');
     this.fetchANOVAp(idSource, idDrugA, idDrugB, gene);
   }
 
   componentDidUpdate(prevProps) {
-    const { gene, idSource, idDrugA, idDrugB } = this.props;
+    const {
+      gene, idSource, idDrugA, idDrugB,
+    } = this.props;
     console.log(idSource);
     // Always check if new props are different before updating state to avoid infinite loops
     // idDrugA and idDrugB are not gonna change, we just need check for gene and idSource
     if (gene !== prevProps.gene || idSource !== prevProps.idSource) {
-      this.fetchFPKM(idSource, idDrugA, idDrugB, gene, "SYN");
-      this.fetchFPKM(idSource, idDrugA, idDrugB, gene, "MOD");
-      this.fetchFPKM(idSource, idDrugA, idDrugB, gene, "ANT");
+      this.fetchFPKM(idSource, idDrugA, idDrugB, gene, 'SYN');
+      this.fetchFPKM(idSource, idDrugA, idDrugB, gene, 'MOD');
+      this.fetchFPKM(idSource, idDrugA, idDrugB, gene, 'ANT');
       this.fetchANOVAp(idSource, idDrugA, idDrugB, gene);
     }
   }
@@ -74,24 +78,24 @@ export default class Plots extends React.Component {
   // Fetch FPKM values from the database
   fetchFPKM(idSource, idDrugA, idDrugB, gene, interaction) {
     const { box1, box2, box3 } = this.state;
-    fetch("/api/getFPKM", {
-      method: "POST",
+    fetch('/api/getFPKM', {
+      method: 'POST',
       headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         idSource,
         idDrugA,
         idDrugB,
         gene,
-        interaction
-      })
+        interaction,
+      }),
     })
       .then(response => response.json())
-      .then(data => {
+      .then((data) => {
         // Convert JSON array to int array
-        let dataProcessed = data.map(item => item.FPKM);
+        const dataProcessed = data.map(item => item.FPKM);
         // Set plot data to none if there are less than three data points
         // if (dataProcessed.length < 3) {
         //   dataProcessed = [];
@@ -99,34 +103,34 @@ export default class Plots extends React.Component {
         // Selecting boxplot to update
         console.log(dataProcessed, interaction);
         switch (interaction) {
-          case "SYN":
+          case 'SYN':
             this.setState({
               box1: {
                 y: dataProcessed,
                 type: box1.type,
-                name: "Synergy, N=".concat(dataProcessed.length),
-                marker: box1.marker
-              }
+                name: 'Synergy, N='.concat(dataProcessed.length),
+                marker: box1.marker,
+              },
             });
             break;
-          case "MOD":
+          case 'MOD':
             this.setState({
               box2: {
                 y: dataProcessed,
                 type: box2.type,
-                name: "Moderate, N=".concat(dataProcessed.length),
-                marker: box2.marker
-              }
+                name: 'Moderate, N='.concat(dataProcessed.length),
+                marker: box2.marker,
+              },
             });
             break;
-          case "ANT":
+          case 'ANT':
             this.setState({
               box3: {
                 y: dataProcessed,
                 type: box3.type,
-                name: "None/Antagonism, N=".concat(dataProcessed.length),
-                marker: box3.marker
-              }
+                name: 'None/Antagonism, N='.concat(dataProcessed.length),
+                marker: box3.marker,
+              },
             });
             break;
         }
@@ -136,43 +140,45 @@ export default class Plots extends React.Component {
   // Fetch ANOVA p-value from the database
   fetchANOVAp(idSource, idDrugA, idDrugB, gene) {
     const { layout, resize } = this.state;
-    fetch("/api/getANOVAp", {
-      method: "POST",
+    fetch('/api/getANOVAp', {
+      method: 'POST',
       headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         idSource,
         idDrugA,
         idDrugB,
-        gene
-      })
+        gene,
+      }),
     })
       .then(response => response.json())
-      .then(data => {
+      .then((data) => {
         this.setState({
           layout: {
-            //height: 600,
+            // height: 600,
             title: {
               text: `One-way ANOVA, p-val=${data.p}`,
-              size: layout.title.size
+              size: layout.title.size,
             },
             plot_bgcolor: layout.plot_bgcolor,
             paper_bgcolor: layout.paper_bgcolor,
             font: layout.font,
             showlegend: layout.showlegend,
             yaxis: layout.yaxis,
-            xaxis: layout.xaxis
+            xaxis: layout.xaxis,
           },
-          resize: resize + 1
+          resize: resize + 1,
         });
       });
   }
 
   // Render this compoenent
   render() {
-    const { box1, box2, box3, layout } = this.state;
+    const {
+      box1, box2, box3, layout,
+    } = this.state;
     return <Plot data={[box1, box2, box3]} layout={layout} graphDiv="graph" />;
   }
 }
