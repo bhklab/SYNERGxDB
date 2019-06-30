@@ -14,7 +14,6 @@ import Documentation from './Documentation';
 
 const GlobalStyles = createGlobalStyle`
   body {
-    @import url('//fonts.googleapis.com/css?family=Paytone+One|Raleway:400,400i,700&display=swap');
     font-family: 'Raleway', sans-serif;
   }
   * {
