@@ -213,6 +213,7 @@ router.post('/getANOVAp', (req, res) => {
 router.post('/getBiomarkers', (req, res) => {
   const { drugId1, drugId2 } = req.body;
   function subqueryAnova() {
+    // remove idSource: 2 when more data analyzed (this is a temporary fix)
     this.select('gene', 'p', 'idSource as id')
       .from('anova')
       .where({
