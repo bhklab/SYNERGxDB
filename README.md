@@ -1,4 +1,4 @@
-# SYNERGYxDB Web App
+# SYNERGxDB Web App
 
 ## Setup Instructions
 
