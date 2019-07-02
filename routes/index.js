@@ -4,6 +4,22 @@ const db = require('../db');
 
 const router = express.Router();
 
+
+router.get('/stats', (req, res) => {
+  // Get num of cell lines and tissues
+  // db('Sample')
+  //   .count('idSample as num_cells')
+  //   .countDistinct('tissue as num_tissue')
+  //   .then((cellList) => {
+  //     res.json(cellList);
+  //   });
+  db('combo_design')
+    .countDistinct('idDrugA', 'idDrugB as num_combos')
+    .then((cellList) => {
+      res.json(cellList);
+    });
+});
+
 router.get('/getCellLines', (req, res) => {
   db('Sample').select('name', 'idSample', 'tissue')
     .then((cellList) => {
