@@ -27,7 +27,7 @@ class ComboResults extends Component {
     };
     if (sample !== 'Any') requestBody.sample = sample;
 
-    fetch('/api/getCombos', {
+    fetch('/api/combos', {
       method: 'POST',
       headers: {
         Accept: 'application/json',

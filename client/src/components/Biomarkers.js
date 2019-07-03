@@ -3,7 +3,7 @@ import styled from 'styled-components';
 // import colors from '../styles/colors';
 // import transitions from '../styles/transitions';
 
-import Plots from './Plots';
+import BiomarkerPlot from './BiomarkerPlot';
 
 const StyledBiomarkers = styled.div`
   margin: 20px auto;
@@ -23,7 +23,7 @@ class Biomarkers extends Component {
 
   componentDidMount() {
     const { drugId1, drugId2 } = this.props;
-    fetch('/api/getBiomarkers', {
+    fetch('/api/biomarkers', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -58,7 +58,7 @@ class Biomarkers extends Component {
     const { drugId1, drugId2, sourceName } = this.props;
     if (biomarkerData) {
       const listOfBiomarkers = results.map((biomarker, index) => (
-        <tr>
+        <tr key={index}>
           <td>{biomarker.gene}</td>
           <td>{biomarker.p}</td>
           <td>{biomarker.name}</td>
@@ -90,7 +90,7 @@ class Biomarkers extends Component {
               </tbody>
             </table>
           </StyledBiomarkers>
-          <Plots
+          <BiomarkerPlot
             idDrugA={drugId1}
             idDrugB={drugId2}
             idSource={results[selectedBiomarker].idSource}

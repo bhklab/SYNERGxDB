@@ -8,9 +8,9 @@ const knexLogger = require('knex-logger');
 const db = require('./db');
 
 const indexRouter = require('./routes/index');
-const databaseRouter = require('./routes/databases');
 const drugRouter = require('./routes/drugs');
-const cellLineRouter = require('./routes/cell_lines');
+const comboRouter = require('./routes/combos');
+const biomarkerRouter = require('./routes/biomarkers');
 
 const app = express();
 
@@ -31,9 +31,9 @@ app.use(knexLogger(db));
 app.use(express.static(path.join(__dirname, 'client/build')));
 
 app.use('/api/', indexRouter);
-app.use('/api/databases/', databaseRouter);
 app.use('/api/drugs/', drugRouter);
-app.use('/api/cell_lines/', cellLineRouter);
+app.use('/api/combos/', comboRouter);
+app.use('/api/biomarkers/', biomarkerRouter);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

@@ -29,7 +29,6 @@ class Stats extends Component {
     fetch('/api/stats/')
       .then(response => response.json())
       .then((stats) => {
-        console.log(stats);
         this.setState({ stats });
       });
   }

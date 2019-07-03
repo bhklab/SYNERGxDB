@@ -4,7 +4,7 @@ import Plot from 'react-plotly.js';
 
 import colors from '../styles/colors';
 
-export default class Plots extends React.Component {
+export default class BiomarkerPlot extends React.Component {
   // Defining initial state and layout
   constructor(props) {
     super(props);
@@ -45,7 +45,6 @@ export default class Plots extends React.Component {
           size: 18,
         },
       },
-      resize: 0,
     };
   }
 
@@ -58,14 +57,13 @@ export default class Plots extends React.Component {
     this.fetchFPKM(idSource, idDrugA, idDrugB, gene, 'MOD');
     this.fetchFPKM(idSource, idDrugA, idDrugB, gene, 'ANT');
     this.setPValue(pValue);
-    // this.fetchANOVAp(idSource, idDrugA, idDrugB, gene);
   }
+
 
   componentDidUpdate(prevProps) {
     const {
       gene, idSource, idDrugA, idDrugB, pValue,
     } = this.props;
-    console.log(idSource);
     // Always check if new props are different before updating state to avoid infinite loops
     // idDrugA and idDrugB are not gonna change, we just need check for gene and idSource
     if (gene !== prevProps.gene || idSource !== prevProps.idSource) {
@@ -73,14 +71,33 @@ export default class Plots extends React.Component {
       this.fetchFPKM(idSource, idDrugA, idDrugB, gene, 'MOD');
       this.fetchFPKM(idSource, idDrugA, idDrugB, gene, 'ANT');
       this.setPValue(pValue);
-      // this.fetchANOVAp(idSource, idDrugA, idDrugB, gene);
     }
+  }
+
+
+  setPValue(pValue) {
+    const { layout } = this.state;
+    this.setState({
+      layout: {
+        height: 450,
+        title: {
+          text: `One-way ANOVA, p-val=${pValue}`,
+          size: layout.title.size,
+        },
+        plot_bgcolor: layout.plot_bgcolor,
+        paper_bgcolor: layout.paper_bgcolor,
+        font: layout.font,
+        showlegend: layout.showlegend,
+        yaxis: layout.yaxis,
+        xaxis: layout.xaxis,
+      },
+    });
   }
 
   // Fetch FPKM values from the database
   fetchFPKM(idSource, idDrugA, idDrugB, gene, interaction) {
     const { box1, box2, box3 } = this.state;
-    fetch('/api/getFPKM', {
+    fetch('/api/biomarkers/fpkm', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -98,12 +115,6 @@ export default class Plots extends React.Component {
       .then((data) => {
         // Convert JSON array to int array
         const dataProcessed = data.map(item => item.FPKM);
-        // Set plot data to none if there are less than three data points
-        // if (dataProcessed.length < 3) {
-        //   dataProcessed = [];
-        // }
-        // Selecting boxplot to update
-        console.log(dataProcessed, interaction);
         switch (interaction) {
           case 'SYN':
             this.setState({
@@ -138,63 +149,6 @@ export default class Plots extends React.Component {
         }
       });
   }
-
-  setPValue(pValue) {
-    const { layout } = this.state;
-    this.setState({
-      layout: {
-        height: 450,
-        title: {
-          text: `One-way ANOVA, p-val=${pValue}`,
-          size: layout.title.size,
-        },
-        plot_bgcolor: layout.plot_bgcolor,
-        paper_bgcolor: layout.paper_bgcolor,
-        font: layout.font,
-        showlegend: layout.showlegend,
-        yaxis: layout.yaxis,
-        xaxis: layout.xaxis,
-      },
-      // resize: resize + 1,
-    });
-  }
-
-  // Fetch ANOVA p-value from the database
-  // fetchANOVAp(idSource, idDrugA, idDrugB, gene) {
-  //   const { layout, resize } = this.state;
-  //   fetch('/api/getANOVAp', {
-  //     method: 'POST',
-  //     headers: {
-  //       Accept: 'application/json',
-  //       'Content-Type': 'application/json',
-  //     },
-  //     body: JSON.stringify({
-  //       idSource,
-  //       idDrugA,
-  //       idDrugB,
-  //       gene,
-  //     }),
-  //   })
-  //     .then(response => response.json())
-  //     .then((data) => {
-  //       this.setState({
-  //         layout: {
-  //           height: 450,
-  //           title: {
-  //             text: `One-way ANOVA, p-val=${data.p}`,
-  //             size: layout.title.size,
-  //           },
-  //           plot_bgcolor: layout.plot_bgcolor,
-  //           paper_bgcolor: layout.paper_bgcolor,
-  //           font: layout.font,
-  //           showlegend: layout.showlegend,
-  //           yaxis: layout.yaxis,
-  //           xaxis: layout.xaxis,
-  //         },
-  //         // resize: resize + 1,
-  //       });
-  //     });
-  // }
 
   // Render this compoenent
   render() {

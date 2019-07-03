@@ -132,13 +132,13 @@ class SearchCombos extends Component {
   }
 
   componentDidMount() {
-    fetch('/api/getDrugs')
+    fetch('/api/drugs')
       .then(response => response.json())
       .then((data) => {
         const drugsData1 = data.map(item => ({ value: item.idDrug, label: item.name }));
         this.setState({ drugsData1 });
       });
-    fetch('/api/getCellLines')
+    fetch('/api/cell_lines')
       .then(response => response.json())
       .then((data) => {
         // Generates an array of unique tissue names
@@ -161,7 +161,7 @@ class SearchCombos extends Component {
   updateDrug2Data(sample, drugId) {
     const requestBody = { drugId };
     if (sample !== 'Any') requestBody.sample = sample;
-    fetch('/api/getDrugs', {
+    fetch('/api/drugs', {
       method: 'POST',
       headers: {
         Accept: 'application/json',

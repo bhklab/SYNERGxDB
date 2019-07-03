@@ -21,7 +21,7 @@ class Datasets extends Component {
   }
 
   componentDidMount() {
-    fetch('/api/databases/')
+    fetch('/api/datasets/')
       .then(response => response.json())
       .then((databaseData) => {
         this.setState({ databaseData });
