@@ -3,13 +3,6 @@ const db = require('../db');
 
 const router = express.Router();
 
-router.get('/cell_lines', (req, res) => {
-  db('Sample').select('name', 'idSample', 'tissue', 'sex', 'age', 'disease')
-    .then((cellList) => {
-      res.json(cellList);
-    });
-});
-
 router.get('/datasets', (req, res, next) => {
   db('Source')
     .select('name', 'no_samples', 'no_drugs', 'author', 'combo')
