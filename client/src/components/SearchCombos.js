@@ -8,6 +8,7 @@ import colors from '../styles/colors';
 import transitions from '../styles/transitions';
 
 import ComboResults from './ComboResults';
+import Stats from './Stats';
 import banner from '../images/banner.png';
 
 
@@ -243,6 +244,7 @@ class SearchCombos extends Component {
     const isDisabled = !(drugId1 && sample && drugsData2.length > 0);
     const searchForm = (
       <Fragment>
+        <Stats />
         <StyledBanner src={banner} alt="banner" />
         <h2>
           SYNERGxDB is a comprehensive database to explore synergistic drug combinations for biomarker discovery.

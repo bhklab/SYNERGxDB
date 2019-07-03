@@ -122,7 +122,7 @@ const StyledApp = styled.div`
   align-items: center;
   flex-grow: 1;
   min-width: 300px;
-  max-width: 800px;
+  max-width: 1200px;
 `;
 
 const App = () => (

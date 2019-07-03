@@ -24,7 +24,6 @@ class Datasets extends Component {
     fetch('/api/databases/')
       .then(response => response.json())
       .then((databaseData) => {
-        console.log(databaseData);
         this.setState({ databaseData });
       });
   }
