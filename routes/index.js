@@ -4,17 +4,31 @@ const db = require('../db');
 const router = express.Router();
 
 router.get('/datasets', (req, res, next) => {
-  db('Source')
-    .select('name', 'no_samples', 'no_drugs', 'author', 'combo')
+  const {
+    idSource,
+  } = req.query;
+  const baseQuery = db('Source')
+    .select('name', 'no_samples', 'no_drugs', 'author', 'combo', 'pmID');
+
+  if (idSource) {
+    baseQuery
+      .first()
+      .where({ idSource })
+      .then((data) => {
+        res.json(data);
+      });
+  } else {
+    baseQuery
     // This condition should be removed later
-    .whereNot({ name: 'AstraZeneca' })
-    .orderBy([
-      { column: 'no_samples', order: 'desc' },
-      { column: 'no_drugs', order: 'desc' },
-    ])
-    .then((data) => {
-      res.json(data);
-    });
+      .whereNot({ name: 'AstraZeneca' })
+      .orderBy([
+        { column: 'no_samples', order: 'desc' },
+        { column: 'no_drugs', order: 'desc' },
+      ])
+      .then((data) => {
+        res.json(data);
+      });
+  }
 });
 
 router.get('/stats', (req, res) => {

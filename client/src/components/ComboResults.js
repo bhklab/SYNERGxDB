@@ -63,11 +63,11 @@ class ComboResults extends Component {
     const totalSynergyScores = results.length;
     const resultRows = results.map((synergyResult, index) => {
       const {
-        idSample, tissue, sampleName, drugNameA, drugNameB, zip, bliss, loewe, hsa, sourceName, sourceId, idDrugA, idDrugB,
+        idSample, tissue, sampleName, drugNameA, drugNameB, zip, bliss, loewe, hsa, sourceName, idSource, idDrugA, idDrugB,
       } = synergyResult;
       const url = {
         pathname: '/drug_combo',
-        search: `?sourceId=${sourceId}&idDrugA=${idDrugA}&idDrugB=${idDrugB}&idSample=${idSample}`,
+        search: `?idSource=${idSource}&idDrugA=${idDrugA}&idDrugB=${idDrugB}&idSample=${idSample}`,
       };
       return (
         <Fragment key={index}>
@@ -75,10 +75,10 @@ class ComboResults extends Component {
           <span><Link to={url}>{sampleName}</Link></span>
           <span><Link to={url}>{drugNameA}</Link></span>
           <span><Link to={url}>{drugNameB}</Link></span>
-          <span><Link to={url}>{zip}</Link></span>
-          <span><Link to={url}>{bliss}</Link></span>
-          <span><Link to={url}>{loewe}</Link></span>
-          <span><Link to={url}>{hsa}</Link></span>
+          {zip >= 0.2 ? <span className="high-score"><Link to={url}>{zip}</Link></span> : <span><Link to={url}>{zip}</Link></span>}
+          {bliss >= 0.2 ? <span className="high-score"><Link to={url}>{bliss}</Link></span> : <span><Link to={url}>{bliss}</Link></span>}
+          {loewe >= 0.2 ? <span className="high-score"><Link to={url}>{loewe}</Link></span> : <span><Link to={url}>{loewe}</Link></span>}
+          {hsa >= 0.2 ? <span className="high-score"><Link to={url}>{hsa}</Link></span> : <span><Link to={url}>{hsa}</Link></span>}
           <span><Link to={url}>{sourceName}</Link></span>
         </Fragment>
       );

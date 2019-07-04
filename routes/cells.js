@@ -10,4 +10,18 @@ router.get('/', (req, res) => {
     });
 });
 
+// Information necessary for ComboDetails component
+router.get('/info', (req, res) => {
+  const {
+    idSample,
+  } = req.query;
+  db.select('name', 'idCellosaurus', 'disease')
+    .first()
+    .from('Sample')
+    .where({ idSample })
+    .then((data) => {
+      res.json(data);
+    });
+});
+
 module.exports = router;
