@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import styled from 'styled-components';
-// import colors from '../styles/colors';
+import colors from '../styles/colors';
 // import transitions from '../styles/transitions';
 
 
@@ -10,6 +10,21 @@ const StyledWrapper = styled.div`
   justify-content: center;
   align-items: center;
   text-align: center;
+`;
+
+const StyledTable = styled.div`
+    
+  grid-template-columns: repeat(5, 1fr);
+
+  span {
+    &:nth-child(10n-4),
+    &:nth-child(10n-3),
+    &:nth-child(10n-2),
+    &:nth-child(10n-1),
+    &:nth-child(10n) {
+      background-color: ${colors.trans_color_main_5};
+    }
+  }
 `;
 
 class Datasets extends Component {
@@ -32,31 +47,27 @@ class Datasets extends Component {
     const { databaseData } = this.state;
     const listOfSources = databaseData.map((item, index) => (
       // eslint-disable-next-line react/no-array-index-key
-      <tr key={index}>
-        <td>{item.name}</td>
-        <td>{item.author}</td>
-        <td>{item.no_samples}</td>
-        <td>{item.no_drugs}</td>
-        <td>{item.combo}</td>
-      </tr>
+      <Fragment key={index}>
+        <span>{item.name}</span>
+        <span>{item.author}</span>
+        <span>{item.no_samples}</span>
+        <span>{item.no_drugs}</span>
+        <span>{item.combo}</span>
+      </Fragment>
     ));
     return (
       <Fragment>
         <header />
         <main>
           <StyledWrapper className="wrapper">
-            <table>
-              <tbody>
-                <tr>
-                  <th>Name</th>
-                  <th>Source</th>
-                  <th># of cell lines</th>
-                  <th># of drugs</th>
-                  <th>Design</th>
-                </tr>
-                {listOfSources}
-              </tbody>
-            </table>
+            <StyledTable className="grid-container">
+              <span className="table-header">Name</span>
+              <span className="table-header">Source</span>
+              <span className="table-header"># of cell lines</span>
+              <span className="table-header"># of drugs</span>
+              <span className="table-header">Design</span>
+              {listOfSources}
+            </StyledTable>
 
           </StyledWrapper>
         </main>

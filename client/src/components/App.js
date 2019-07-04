@@ -96,6 +96,22 @@ const GlobalStyles = createGlobalStyle`
   .js-plotly-plot {
     width: 100%;
   }
+
+  .grid-container {
+    width: 100%;  
+    display: grid;
+    height: auto;
+
+    span {
+      padding: 8px 4px;
+      overflow: hidden;
+    }
+  }
+
+  .table-header {
+    font-weight: bold;
+    border-bottom: 2px solid black;
+  }
   
   #root {
     width: 100vw;

@@ -12,6 +12,20 @@ const StyledWrapper = styled.div`
   text-align: center;
 `;
 
+const StyledTable = styled.div`
+    
+  grid-template-columns: minmax(25%, 400px) minmax(25%, 400px) auto auto;
+
+  span {
+    &:nth-child(8n-3),
+    &:nth-child(8n-2),
+    &:nth-child(8n-1),
+    &:nth-child(8n) {
+      background-color: ${colors.trans_color_main_5};
+    }
+  }
+`;
+
 class Drugs extends Component {
   constructor() {
     super();
@@ -24,7 +38,6 @@ class Drugs extends Component {
     fetch('/api/drugs/')
       .then(response => response.json())
       .then((drugsData) => {
-        console.log(drugsData);
         this.setState({ drugsData });
       });
   }
@@ -33,31 +46,25 @@ class Drugs extends Component {
     const { drugsData } = this.state;
     const listOfDrugs = drugsData.map((drug, index) => (
       // eslint-disable-next-line react/no-array-index-key
-      <tr key={index}>
-        <td>{drug.name}</td>
-        <td>{drug.atcCode}</td>
-        <td>{drug.idPubChem}</td>
-        <td>{drug.idDrugBank}</td>
-      </tr>
+      <Fragment key={index}>
+        <span>{drug.name}</span>
+        <span>{drug.atcCode}</span>
+        <span>{drug.idPubChem}</span>
+        <span>{drug.idDrugBank}</span>
+      </Fragment>
     ));
     return (
       <Fragment>
         <header />
         <main>
           <StyledWrapper className="wrapper">
-            <table>
-
-              <tbody>
-                <tr>
-                  <th>Name</th>
-                  <th>ATC Code</th>
-                  <th>PubChem CID</th>
-                  <th>DrugBank ID</th>
-                </tr>
-                {listOfDrugs}
-              </tbody>
-            </table>
-
+            <StyledTable className="grid-container">
+              <span className="table-header">Name</span>
+              <span className="table-header">ATC Code</span>
+              <span className="table-header">PubChem CID</span>
+              <span className="table-header">DrugBank ID</span>
+              {listOfDrugs}
+            </StyledTable>
           </StyledWrapper>
         </main>
         <footer>

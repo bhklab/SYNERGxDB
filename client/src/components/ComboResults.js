@@ -10,18 +10,8 @@ import colors from '../styles/colors';
 import Biomarkers from './Biomarkers';
 
 const SynergyDiv = styled.div`
-  width: 100%;   
-  display: grid;
   grid-template-columns: repeat(9, 1fr);
-
-  .table-header {
-    font-weight: bold;
-    border-bottom: 2px solid black;
-  }
-
   span {
-    padding: 8px 4px;
-
     &:nth-child(18n-8),
     &:nth-child(18n-7),
     &:nth-child(18n-6),
@@ -101,7 +91,7 @@ class ComboResults extends Component {
             Synergy Scores, N=
             {totalSynergyScores}
           </h2>
-          <SynergyDiv>
+          <SynergyDiv className="grid-container">
             <span className="table-header">Tissue</span>
             <span className="table-header">Cell line</span>
             <span className="table-header">Drug A</span>

@@ -11,18 +11,10 @@ const StyledBiomarkers = styled.div`
 `;
 
 const BiomarkerDiv = styled.div`
-  width: 100%;  
-  display: grid;
+  
   grid-template-columns: repeat(4, 1fr);
 
-  .table-header {
-    font-weight: bold;
-    border-bottom: 2px solid black;
-  }
-
   span {
-    padding: 8px 4px;
-
     &:nth-child(8n-3),
     &:nth-child(8n-2),
     &:nth-child(8n-1),
@@ -99,7 +91,7 @@ class Biomarkers extends Component {
         <Fragment>
           <StyledBiomarkers className="biomarkers">
             <h2>Potential Biomarkers, Top 10</h2>
-            <BiomarkerDiv>
+            <BiomarkerDiv className="grid-container">
               <span className="table-header">Gene Symbol</span>
               <span className="table-header">One-way ANOVA P</span>
               <span className="table-header">Source</span>
