@@ -8,5 +8,6 @@ export default {
   color_main_5: '#A4978E',
   trans_color_main_5: 'rgba(164,151,142, 0.5)',
   color_accent_1: '#fb2b06',
-  color_accent_2: '#f0f0f0'
+  trans_color_accent_1: 'rgba(251,43,6, 0.5)',
+  color_accent_2: '#f0f0f0',
 };

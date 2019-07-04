@@ -9,17 +9,30 @@ import colors from '../styles/colors';
 
 import Biomarkers from './Biomarkers';
 
-const GridDiv = styled.div`
+const SynergyDiv = styled.div`
+  width: 100%;   
   display: grid;
   grid-template-columns: repeat(9, 1fr);
 
   .table-header {
     font-weight: bold;
+    border-bottom: 2px solid black;
   }
 
   span {
     padding: 8px 4px;
-    border-bottom: 2px solid black;
+
+    &:nth-child(18n-8),
+    &:nth-child(18n-7),
+    &:nth-child(18n-6),
+    &:nth-child(18n-5),
+    &:nth-child(18n-4),
+    &:nth-child(18n-3),
+    &:nth-child(18n-2),
+    &:nth-child(18n-1),
+    &:nth-child(18n) {
+      background-color: ${colors.trans_color_main_4};
+    }
   }
 `;
 
@@ -60,19 +73,23 @@ class ComboResults extends Component {
     const totalSynergyScores = results.length;
     const resultRows = results.map((synergyResult, index) => {
       const {
-        tissue, sampleName, drugNameA, drugNameB, zip, bliss, loewe, hsa, sourceName,
+        idSample, tissue, sampleName, drugNameA, drugNameB, zip, bliss, loewe, hsa, sourceName, sourceId, idDrugA, idDrugB,
       } = synergyResult;
+      const url = {
+        pathname: '/drug_combo',
+        search: `?sourceId=${sourceId}&idDrugA=${idDrugA}&idDrugB=${idDrugB}&idSample=${idSample}`,
+      };
       return (
         <Fragment key={index}>
-          <span><Link to="/drug_combo">{tissue}</Link></span>
-          <span><Link to="/drug_combo">{sampleName}</Link></span>
-          <span><Link to="/drug_combo">{drugNameA}</Link></span>
-          <span><Link to="/drug_combo">{drugNameB}</Link></span>
-          <span><Link to="/drug_combo">{zip}</Link></span>
-          <span><Link to="/drug_combo">{bliss}</Link></span>
-          <span><Link to="/drug_combo">{loewe}</Link></span>
-          <span><Link to="/drug_combo">{hsa}</Link></span>
-          <span><Link to="/drug_combo">{sourceName}</Link></span>
+          <span><Link to={url}>{tissue}</Link></span>
+          <span><Link to={url}>{sampleName}</Link></span>
+          <span><Link to={url}>{drugNameA}</Link></span>
+          <span><Link to={url}>{drugNameB}</Link></span>
+          <span><Link to={url}>{zip}</Link></span>
+          <span><Link to={url}>{bliss}</Link></span>
+          <span><Link to={url}>{loewe}</Link></span>
+          <span><Link to={url}>{hsa}</Link></span>
+          <span><Link to={url}>{sourceName}</Link></span>
         </Fragment>
       );
     });
@@ -84,7 +101,7 @@ class ComboResults extends Component {
             Synergy Scores, N=
             {totalSynergyScores}
           </h2>
-          <GridDiv>
+          <SynergyDiv>
             <span className="table-header">Tissue</span>
             <span className="table-header">Cell line</span>
             <span className="table-header">Drug A</span>
@@ -95,7 +112,7 @@ class ComboResults extends Component {
             <span className="table-header">HSA</span>
             <span className="table-header">Source</span>
             {resultRows}
-          </GridDiv>
+          </SynergyDiv>
         </div>
       </Fragment>
     );

@@ -16,8 +16,9 @@ export default class DrugComboDetails extends Component {
     const requestParams = queryString.parse(this.props.location.search);
     this.setState({ requestParams });
     const {
-      drug1, drug2, source, cell,
+      sourceId, idDrugA, idDrugB, idSample,
     } = requestParams;
+    console.log(sourceId, idDrugA, idDrugB, idSample);
   }
 
   render() {

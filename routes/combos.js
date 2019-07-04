@@ -9,7 +9,7 @@ router.post('/', (req, res) => {
 
   // Subquery to link combo designs to respective synergy scores
   function subqueryCD() {
-    let baseQuery = this.select('*')
+    let baseQuery = this.select('idCombo_Design', 'idDrugA', 'idDrugB', 'idSample as sampleId')
       .from('Combo_Design');
 
     // Checks type of the request and modifies the query accordingly
@@ -31,39 +31,39 @@ router.post('/', (req, res) => {
   }
   // Subquery to get cell line name(s) and tissue name
   function subqueryS() {
-    let baseQuery = this.select('idCombo_Design', 'idDrugA', 'idDrugB', 'name as sampleName', 'tissue')
+    let baseQuery = this.select('idCombo_Design', 'idSample', 'idDrugA', 'idDrugB', 'name as sampleName', 'tissue')
       .from(subqueryCD);
       // Tissue specific requests
     if (typeof (sample) === 'string') baseQuery = baseQuery.where({ tissue: sample });
     return baseQuery
-      .join('Sample', 'CD.idSample', '=', 'Sample.idSample')
+      .join('Sample', 'CD.sampleId', '=', 'Sample.idSample')
       .as('S');
   }
   // Subquery to get idDrugA name(s)
   function subqueryD1() {
-    this.select('idCombo_Design', 'name as drugNameA', 'idDrugB', 'sampleName', 'tissue')
+    this.select('idCombo_Design', 'idSample', 'name as drugNameA', 'idDrugA', 'idDrugB', 'sampleName', 'tissue')
       .from(subqueryS)
       .join('Drug', 'S.idDrugA', '=', 'Drug.idDrug')
       .as('D1');
   }
   // Subquery to get idDrugB name(s)
   function subqueryD2() {
-    this.select('idCombo_Design', 'drugNameA', 'name as drugNameB', 'sampleName', 'tissue')
+    this.select('idCombo_Design', 'idSample', 'drugNameA', 'idDrugA', 'name as drugNameB', 'idDrugB', 'sampleName', 'tissue')
       .from(subqueryD1)
       .join('Drug', 'D1.idDrugB', '=', 'Drug.idDrug')
       .as('D2');
   }
   // Links synergy scores to existing data
   function subquerySS() {
-    this.select('bliss', 'loewe', 'hsa', 'zip', 'idSource', 'sampleName', 'drugNameA', 'drugNameB', 'tissue')
+    this.select('idSample', 'bliss', 'loewe', 'hsa', 'zip', 'idSource', 'sampleName', 'drugNameA', 'drugNameB', 'tissue', 'idSource as sourceId', 'idDrugA', 'idDrugB')
       .from(subqueryD2)
       .join('Synergy_Score', 'D2.idCombo_Design', '=', 'Synergy_Score.idSynergy_Score')
       .as('SS');
   }
   // Adds source name to the results and sends it to the client
-  db.select('bliss', 'loewe', 'hsa', 'zip', 'name as sourceName', 'sampleName', 'drugNameA', 'drugNameB', 'tissue')
+  db.select('idSample', 'bliss', 'loewe', 'hsa', 'zip', 'name as sourceName', 'sampleName', 'drugNameA', 'drugNameB', 'tissue', 'sourceId', 'idDrugA', 'idDrugB')
     .from(subquerySS)
-    .join('Source', 'SS.idSource', '=', 'Source.idSource')
+    .join('Source', 'SS.sourceId', '=', 'Source.idSource')
     .then((data) => {
       res.json(data);
     });

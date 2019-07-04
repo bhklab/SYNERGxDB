@@ -1,12 +1,35 @@
 import React, { Component, Fragment } from 'react';
 import styled from 'styled-components';
-// import colors from '../styles/colors';
+import colors from '../styles/colors';
 // import transitions from '../styles/transitions';
 
 import BiomarkerPlot from './BiomarkerPlot';
 
 const StyledBiomarkers = styled.div`
-  margin: 20px auto;
+  width: 100%;
+  height: auto;
+`;
+
+const BiomarkerDiv = styled.div`
+  width: 100%;  
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+
+  .table-header {
+    font-weight: bold;
+    border-bottom: 2px solid black;
+  }
+
+  span {
+    padding: 8px 4px;
+
+    &:nth-child(8n-3),
+    &:nth-child(8n-2),
+    &:nth-child(8n-1),
+    &:nth-child(8n) {
+      background-color: ${colors.trans_color_accent_1};
+    }
+  }
 `;
 
 
@@ -58,37 +81,31 @@ class Biomarkers extends Component {
     const { drugId1, drugId2, sourceName } = this.props;
     if (biomarkerData) {
       const listOfBiomarkers = results.map((biomarker, index) => (
-        <tr key={index}>
-          <td>{biomarker.gene}</td>
-          <td>{biomarker.p}</td>
-          <td>{biomarker.name}</td>
-          <td>
+        <Fragment key={index}>
+          <span>{biomarker.gene}</span>
+          <span>{biomarker.p}</span>
+          <span>{biomarker.name}</span>
+          <span>
             <input
               type="radio"
               value={index}
               checked={index.toString() === selectedBiomarker}
               onChange={this.handleSelect}
             />
-          </td>
-        </tr>
+          </span>
+        </Fragment>
       ));
       return (
         <Fragment>
           <StyledBiomarkers className="biomarkers">
             <h2>Potential Biomarkers, Top 10</h2>
-            <table>
-              <thead>
-                <tr>
-                  <th>Gene Symbol</th>
-                  <th>One-way ANOVA P</th>
-                  <th>Source</th>
-                  <th>Select</th>
-                </tr>
-              </thead>
-              <tbody>
-                {listOfBiomarkers}
-              </tbody>
-            </table>
+            <BiomarkerDiv>
+              <span className="table-header">Gene Symbol</span>
+              <span className="table-header">One-way ANOVA P</span>
+              <span className="table-header">Source</span>
+              <span className="table-header">Select</span>
+              {listOfBiomarkers}
+            </BiomarkerDiv>
           </StyledBiomarkers>
           <BiomarkerPlot
             idDrugA={drugId1}
