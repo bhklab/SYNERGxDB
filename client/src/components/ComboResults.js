@@ -1,15 +1,27 @@
 /* eslint-disable max-len */
 /* eslint-disable react/prop-types */
 /* eslint-disable react/no-array-index-key */
-/* eslint-disable no-console */
 import React, { Component, Fragment } from 'react';
-// import styled from 'styled-components';
-// import colors from '../styles/colors';
+import { Link } from 'react-router-dom';
+import styled from 'styled-components';
+import colors from '../styles/colors';
 // import transitions from '../styles/transitions';
 
-import ResultRow from './ResultRow';
 import Biomarkers from './Biomarkers';
 
+const GridDiv = styled.div`
+  display: grid;
+  grid-template-columns: repeat(9, 1fr);
+
+  .table-header {
+    font-weight: bold;
+  }
+
+  span {
+    padding: 8px 4px;
+    border-bottom: 2px solid black;
+  }
+`;
 
 class ComboResults extends Component {
   constructor() {
@@ -46,7 +58,24 @@ class ComboResults extends Component {
     const { drugId1, drugId2 } = this.props;
     const showBiomarker = typeof drugId2 === 'number' && <Biomarkers drugId1={drugId1} drugId2={drugId2} sourceName={results} />;
     const totalSynergyScores = results.length;
-    const resultRows = results.map((synergyResult, index) => <ResultRow synergyResult={synergyResult} key={index} />);
+    const resultRows = results.map((synergyResult, index) => {
+      const {
+        tissue, sampleName, drugNameA, drugNameB, zip, bliss, loewe, hsa, sourceName,
+      } = synergyResult;
+      return (
+        <Fragment key={index}>
+          <span><Link to="/drug_combo">{tissue}</Link></span>
+          <span><Link to="/drug_combo">{sampleName}</Link></span>
+          <span><Link to="/drug_combo">{drugNameA}</Link></span>
+          <span><Link to="/drug_combo">{drugNameB}</Link></span>
+          <span><Link to="/drug_combo">{zip}</Link></span>
+          <span><Link to="/drug_combo">{bliss}</Link></span>
+          <span><Link to="/drug_combo">{loewe}</Link></span>
+          <span><Link to="/drug_combo">{hsa}</Link></span>
+          <span><Link to="/drug_combo">{sourceName}</Link></span>
+        </Fragment>
+      );
+    });
     return (
       <Fragment>
         {showBiomarker}
@@ -55,24 +84,18 @@ class ComboResults extends Component {
             Synergy Scores, N=
             {totalSynergyScores}
           </h2>
-          <table>
-            <thead>
-              <tr>
-                <th>Tissue</th>
-                <th>Cell line</th>
-                <th>Drug A</th>
-                <th>Drug B</th>
-                <th>ZIP</th>
-                <th>Bliss</th>
-                <th>Loewe</th>
-                <th>HSA</th>
-                <th>Source</th>
-              </tr>
-            </thead>
-            <tbody>
-              {resultRows}
-            </tbody>
-          </table>
+          <GridDiv>
+            <span className="table-header">Tissue</span>
+            <span className="table-header">Cell line</span>
+            <span className="table-header">Drug A</span>
+            <span className="table-header">Drug B</span>
+            <span className="table-header">ZIP</span>
+            <span className="table-header">Bliss</span>
+            <span className="table-header">Loewe</span>
+            <span className="table-header">HSA</span>
+            <span className="table-header">Source</span>
+            {resultRows}
+          </GridDiv>
         </div>
       </Fragment>
     );
