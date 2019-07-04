@@ -1,3 +1,4 @@
+/* eslint-disable react/no-array-index-key */
 import React, { Component, Fragment } from 'react';
 import styled from 'styled-components';
 import colors from '../styles/colors';
@@ -38,21 +39,46 @@ class Drugs extends Component {
     fetch('/api/drugs/')
       .then(response => response.json())
       .then((drugsData) => {
+        drugsData.sort((a, b) => {
+          if (a.name > b.name) return 1;
+          if (a.name < b.name) return -1;
+          return 0;
+        });
         this.setState({ drugsData });
       });
   }
 
   render() {
     const { drugsData } = this.state;
-    const listOfDrugs = drugsData.map((drug, index) => (
-      // eslint-disable-next-line react/no-array-index-key
+    // splits data into chunks, css grid collapses data if more than ~990 rows
+    const drugChunks = [];
+    for (let i = 0; i < drugsData.length; i += 9051) {
+      drugChunks.push(drugsData.slice(i, i + 901));
+    }
+    const listOfDrugs = drugChunks.length > 0 ? drugChunks[0].map((drug, index) => (
       <Fragment key={index}>
         <span>{drug.name}</span>
         <span>{drug.atcCode}</span>
         <span>{drug.idPubChem}</span>
         <span>{drug.idDrugBank}</span>
       </Fragment>
-    ));
+    )) : null;
+    drugChunks.shift();
+    const restDrugs = drugChunks.map((chunk, index) => {
+      const chunkData = chunk.map((drug, i) => (
+        <Fragment key={i}>
+          <span>{drug.name}</span>
+          <span>{drug.atcCode}</span>
+          <span>{drug.idPubChem}</span>
+          <span>{drug.idDrugBank}</span>
+        </Fragment>
+      ));
+      return (
+        <StyledTable key={index} className="grid-container">
+          {chunkData}
+        </StyledTable>
+      );
+    });
     return (
       <Fragment>
         <header />
@@ -65,6 +91,7 @@ class Drugs extends Component {
               <span className="table-header">DrugBank ID</span>
               {listOfDrugs}
             </StyledTable>
+            {restDrugs}
           </StyledWrapper>
         </main>
         <footer>
