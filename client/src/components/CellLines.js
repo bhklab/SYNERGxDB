@@ -14,14 +14,15 @@ const StyledWrapper = styled.div`
 
 const StyledTable = styled.div`
     
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(6, auto);
 
   span {
-    &:nth-child(10n-4),
-    &:nth-child(10n-3),
-    &:nth-child(10n-2),
-    &:nth-child(10n-1),
-    &:nth-child(10n) {
+    &:nth-child(12n-5),
+    &:nth-child(12n-4),
+    &:nth-child(12n-3),
+    &:nth-child(12n-2),
+    &:nth-child(12n-1),
+    &:nth-child(12n) {
       background-color: ${colors.trans_color_main_5};
     }
   }
@@ -52,7 +53,11 @@ class Databases extends Component {
         <span>{cellLine.tissue}</span>
         <span>{cellLine.sex}</span>
         <span>{cellLine.age}</span>
-        <span>{cellLine.disease}</span>
+        <span>
+          {cellLine.disease}
+          {cellLine.origin ? (<em> (metastasis)</em>) : null}
+        </span>
+        <span><a className="hover" href={`https://web.expasy.org/cellosaurus/${cellLine.idCellosaurus}`}>{cellLine.idCellosaurus}</a></span>
       </Fragment>
     ));
     return (
@@ -66,6 +71,7 @@ class Databases extends Component {
               <span className="table-header">Sex</span>
               <span className="table-header">Age</span>
               <span className="table-header">Disease</span>
+              <span className="table-header">Cellosaurus</span>
               {listOfCells}
             </StyledTable>
 
