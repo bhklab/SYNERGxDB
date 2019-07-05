@@ -39,7 +39,24 @@ class Drugs extends Component {
     fetch('/api/drugs/')
       .then(response => response.json())
       .then((drugsData) => {
+        // Sorts by presence of ATC code, then by presence of DrugBank id, then by presence of PubChem id
+        // and lastly it sorts drug names alphabetically
         drugsData.sort((a, b) => {
+          if (a.atcCode && !b.atcCode) {
+            return -1;
+          } if (!a.atcCode && b.atcCode) {
+            return 1;
+          }
+          if (a.idDrugBank && !b.idDrugBank) {
+            return -1;
+          } if (!a.idDrugBank && b.idDrugBank) {
+            return 1;
+          }
+          if (a.idPubChem && !b.idPubChem) {
+            return -1;
+          } if (!a.idPubChem && b.idPubChem) {
+            return 1;
+          }
           if (a.name > b.name) return 1;
           if (a.name < b.name) return -1;
           return 0;
@@ -52,7 +69,7 @@ class Drugs extends Component {
     const { drugsData } = this.state;
     // splits data into chunks, css grid collapses data if more than ~990 rows
     const drugChunks = [];
-    for (let i = 0; i < drugsData.length; i += 9051) {
+    for (let i = 0; i < drugsData.length; i += 901) {
       drugChunks.push(drugsData.slice(i, i + 901));
     }
     const listOfDrugs = drugChunks.length > 0 ? drugChunks[0].map((drug, index) => (
