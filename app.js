@@ -37,14 +37,15 @@ app.use('/api/drugs/', drugRouter);
 app.use('/api/combos/', comboRouter);
 app.use('/api/biomarkers/', biomarkerRouter);
 
+app.get('/*', (req, res) => {
+  res.sendFile('index.html', { root: './client/build' });
+});
+
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
   next(createError(404));
 });
 
-app.get('/*', (req, res) => {
-  res.sendfile('index.html', { root: './client/build' });
-});
 
 const port = process.env.PORT || 5000;
 app.listen(port);
