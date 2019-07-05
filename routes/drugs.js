@@ -3,8 +3,21 @@ const db = require('../db');
 
 const router = express.Router();
 
-router.get('/', (req, res, next) => {
+router.get('/', (req, res) => {
   db('Drug').select('name', 'atcCode', 'idDrugBank', 'idPubChem', 'idDrug')
+    .then((data) => {
+      res.json(data);
+    });
+});
+
+// Information necessary for ComboDetails component
+router.get('/info', (req, res) => {
+  const {
+    idDrugA, idDrugB,
+  } = req.query;
+  db('Drug').select('name', 'idPubChem', 'idDrugBank', 'description')
+    .where({ idDrug: idDrugA })
+    .orWhere({ idDrug: idDrugB })
     .then((data) => {
       res.json(data);
     });

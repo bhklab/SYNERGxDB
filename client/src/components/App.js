@@ -5,12 +5,14 @@ import { Normalize } from 'styled-normalize';
 import SideNav from './SideNav';
 import heroImg from '../images/hero-image.jpg';
 import colors from '../styles/colors';
+import transitions from '../styles/transitions';
 
 import SearchCombos from './SearchCombos';
 import CellLines from './CellLines';
 import Datasets from './Datasets';
 import Drugs from './Drugs';
 import Documentation from './Documentation';
+import ComboDetails from './ComboDetails';
 
 const GlobalStyles = createGlobalStyle`
   body {
@@ -95,6 +97,33 @@ const GlobalStyles = createGlobalStyle`
   .js-plotly-plot {
     width: 100%;
   }
+
+  .grid-container {
+    width: 100%;  
+    display: grid;
+    height: auto;
+
+    span {
+      padding: 8px 4px;
+      overflow: hidden;
+    }
+  }
+
+  .table-header {
+    font-weight: bold;
+    border-bottom: 2px solid black;
+  }
+  .high-score {
+    font-weight: bold;
+  }
+  .hover {
+    color: ${colors.color_main_1}
+    transition: ${transitions.main_trans};
+
+    &:hover {
+      color: ${colors.color_main_4}
+    }
+  }
   
   #root {
     width: 100vw;
@@ -137,7 +166,8 @@ const App = () => (
           <Route exact path="/cell-lines/" component={CellLines} />
           <Route exact path="/drugs/" component={Drugs} />
           <Route exact path="/datasets/" component={Datasets} />
-          <Route exact path="/documentation" component={Documentation} />
+          <Route exact path="/documentation/" component={Documentation} />
+          <Route path="/drug_combo" component={ComboDetails} />
         </Switch>
       </StyledApp>
     </div>

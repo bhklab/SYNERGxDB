@@ -115,6 +115,7 @@ export default class BiomarkerPlot extends React.Component {
       .then((data) => {
         // Convert JSON array to int array
         const dataProcessed = data.map(item => item.FPKM);
+        // eslint-disable-next-line default-case
         switch (interaction) {
           case 'SYN':
             this.setState({

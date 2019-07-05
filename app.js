@@ -9,6 +9,7 @@ const db = require('./db');
 
 const indexRouter = require('./routes/index');
 const drugRouter = require('./routes/drugs');
+const cellRouter = require('./routes/cells');
 const comboRouter = require('./routes/combos');
 const biomarkerRouter = require('./routes/biomarkers');
 
@@ -31,6 +32,7 @@ app.use(knexLogger(db));
 app.use(express.static(path.join(__dirname, 'client/build')));
 
 app.use('/api/', indexRouter);
+app.use('/api/cell_lines/', cellRouter);
 app.use('/api/drugs/', drugRouter);
 app.use('/api/combos/', comboRouter);
 app.use('/api/biomarkers/', biomarkerRouter);
