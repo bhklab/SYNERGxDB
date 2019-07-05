@@ -5,24 +5,23 @@ import React, { Component, Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import colors from '../styles/colors';
-// import transitions from '../styles/transitions';
+import transitions from '../styles/transitions';
 
 import Biomarkers from './Biomarkers';
 
 const SynergyDiv = styled.div`
   grid-template-columns: repeat(9, 1fr);
-  span {
-    &:nth-child(18n-8),
-    &:nth-child(18n-7),
-    &:nth-child(18n-6),
-    &:nth-child(18n-5),
-    &:nth-child(18n-4),
-    &:nth-child(18n-3),
-    &:nth-child(18n-2),
-    &:nth-child(18n-1),
-    &:nth-child(18n) {
-      background-color: ${colors.trans_color_main_4};
-    }
+  div:nth-child(2n) span {
+    background-color: ${colors.trans_color_main_4};
+  }
+`;
+
+const StyledRow = styled.div`
+  display: contents;
+  transition: ${transitions.main_trans};
+  
+  &:nth-child(n):hover span {
+    background-color: ${colors.trans_color_main_3};
   }
 `;
 
@@ -70,7 +69,7 @@ class ComboResults extends Component {
         search: `?idSource=${idSource}&idDrugA=${idDrugA}&idDrugB=${idDrugB}&idSample=${idSample}`,
       };
       return (
-        <Fragment key={index}>
+        <StyledRow key={index}>
           <span><Link to={url}>{tissue}</Link></span>
           <span><Link to={url}>{sampleName}</Link></span>
           <span><Link to={url}>{drugNameA}</Link></span>
@@ -80,7 +79,7 @@ class ComboResults extends Component {
           {loewe >= 0.2 ? <span className="high-score"><Link to={url}>{loewe}</Link></span> : <span><Link to={url}>{loewe}</Link></span>}
           {hsa >= 0.2 ? <span className="high-score"><Link to={url}>{hsa}</Link></span> : <span><Link to={url}>{hsa}</Link></span>}
           <span><Link to={url}>{sourceName}</Link></span>
-        </Fragment>
+        </StyledRow>
       );
     });
     return (

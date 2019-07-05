@@ -15,7 +15,8 @@ export default class ComboDetails extends Component {
   }
 
   componentDidMount() {
-    const requestParams = queryString.parse(this.props.location.search);
+    const { location } = this.props;
+    const requestParams = queryString.parse(location.search);
     this.setState({ requestParams });
     const {
       idSource, idDrugA, idDrugB, idSample,
