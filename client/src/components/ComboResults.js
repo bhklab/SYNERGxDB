@@ -12,7 +12,7 @@ import Biomarkers from './Biomarkers';
 const SynergyDiv = styled.div`
   grid-template-columns: repeat(9, 1fr);
   div:nth-child(2n) span {
-    background-color: ${colors.trans_color_main_4};
+    background-color: ${colors.trans_color_main_3};
   }
 `;
 
@@ -21,7 +21,7 @@ const StyledRow = styled.div`
   transition: ${transitions.main_trans};
   
   &:nth-child(n):hover span {
-    background-color: ${colors.trans_color_main_3};
+    background-color: ${colors.trans_color_main_4};
   }
 `;
 
@@ -70,15 +70,17 @@ class ComboResults extends Component {
       };
       return (
         <StyledRow key={index}>
-          <span><Link to={url}>{tissue}</Link></span>
-          <span><Link to={url}>{sampleName}</Link></span>
-          <span><Link to={url}>{drugNameA}</Link></span>
-          <span><Link to={url}>{drugNameB}</Link></span>
-          {zip >= 0.2 ? <span className="high-score"><Link to={url}>{zip}</Link></span> : <span><Link to={url}>{zip}</Link></span>}
-          {bliss >= 0.2 ? <span className="high-score"><Link to={url}>{bliss}</Link></span> : <span><Link to={url}>{bliss}</Link></span>}
-          {loewe >= 0.2 ? <span className="high-score"><Link to={url}>{loewe}</Link></span> : <span><Link to={url}>{loewe}</Link></span>}
-          {hsa >= 0.2 ? <span className="high-score"><Link to={url}>{hsa}</Link></span> : <span><Link to={url}>{hsa}</Link></span>}
-          <span><Link to={url}>{sourceName}</Link></span>
+          <Link to={url} style={{ display: 'contents' }}>
+            <span>{tissue}</span>
+            <span>{sampleName}</span>
+            <span>{drugNameA}</span>
+            <span>{drugNameB}</span>
+            {zip >= 0.2 ? <span className="high-score">{zip}</span> : <span>{zip}</span>}
+            {bliss >= 0.2 ? <span className="high-score">{bliss}</span> : <span>{bliss}</span>}
+            {loewe >= 0.2 ? <span className="high-score">{loewe}</span> : <span>{loewe}</span>}
+            {hsa >= 0.2 ? <span className="high-score">{hsa}</span> : <span>{hsa}</span>}
+            <span>{sourceName}</span>
+          </Link>
         </StyledRow>
       );
     });

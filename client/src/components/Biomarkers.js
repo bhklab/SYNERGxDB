@@ -19,7 +19,7 @@ const BiomarkerDiv = styled.div`
     &:nth-child(8n-2),
     &:nth-child(8n-1),
     &:nth-child(8n) {
-      background-color: ${colors.trans_color_accent_1};
+      background-color: ${colors.trans_color_main_3};
     }
   }
 `;
