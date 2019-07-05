@@ -15,14 +15,19 @@ const StyledDiv = styled.div`
         min-width: 150px;
         margin: 20px
     }
+    h2 {
+      text-transform: uppercase;
+    }
 `;
 
 class Stats extends Component {
   constructor() {
     super();
     this.state = {
-      cells: 0,
+      datasets: 0,
       tissues: 0,
+      compounds: 0,
+      // cells: 0,
       combos: 0,
       experiments: 0,
       datapoints: 0,
@@ -42,17 +47,19 @@ class Stats extends Component {
     //     });
     //   });
     this.setState({
-      cells: 184,
-      tissues: 13,
+      datasets: 7,
+      tissues: 11,
+      compounds: 1965,
+      // cells: 184,
       combos: 14634,
-      experiments: 477608,
+      experiments: 475278,
       datapoints: 6059248,
     });
   }
 
   render() {
     const {
-      cells, tissues, combos, experiments, datapoints,
+      cells, datasets, tissues, compounds, combos, experiments, datapoints,
     } = this.state;
     const easeInOut = (t, b, c, d) => {
       if (t === 0) return b;
@@ -63,6 +70,17 @@ class Stats extends Component {
     return (
       <StyledDiv className="stasts">
         <div>
+          <h2>Datasets</h2>
+          <h2>
+            <CountUp
+              start={0}
+              end={datasets}
+              duration={3}
+              easingFn={easeInOut}
+            />
+          </h2>
+        </div>
+        {/* <div>
           <h2>Cell Lines</h2>
           <h2>
             <CountUp
@@ -72,7 +90,7 @@ class Stats extends Component {
               easingFn={easeInOut}
             />
           </h2>
-        </div>
+        </div> */}
         <div>
           <h2>Tissues</h2>
           <h2>
@@ -85,7 +103,18 @@ class Stats extends Component {
           </h2>
         </div>
         <div>
-          <h2>Drug Combinations</h2>
+          <h2>Compounds</h2>
+          <h2>
+            <CountUp
+              start={0}
+              end={compounds}
+              duration={3}
+              easingFn={easeInOut}
+            />
+          </h2>
+        </div>
+        <div>
+          <h2>Combinations</h2>
           <h2>
             <CountUp
               start={0}
@@ -107,7 +136,7 @@ class Stats extends Component {
           </h2>
         </div>
         <div>
-          <h2>Datapoints</h2>
+          <h2>Data points</h2>
           <h2>
             <CountUp
               start={0}

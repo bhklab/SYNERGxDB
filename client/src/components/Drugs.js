@@ -2,7 +2,7 @@
 import React, { Component, Fragment } from 'react';
 import styled from 'styled-components';
 import colors from '../styles/colors';
-// import transitions from '../styles/transitions';
+import transitions from '../styles/transitions';
 
 
 const StyledWrapper = styled.div`
@@ -76,8 +76,8 @@ class Drugs extends Component {
       <Fragment key={index}>
         <span>{drug.name}</span>
         <span>{drug.atcCode}</span>
-        <span>{drug.idPubChem}</span>
-        <span>{drug.idDrugBank}</span>
+        <span><a className="hover" href={`https://pubchem.ncbi.nlm.nih.gov/compound/${drug.idPubChem}`}>{drug.idPubChem}</a></span>
+        <span><a className="hover" href={`https://www.drugbank.ca/drugs/${drug.idDrugBank}`}>{drug.idDrugBank}</a></span>
       </Fragment>
     )) : null;
     drugChunks.shift();
@@ -86,8 +86,8 @@ class Drugs extends Component {
         <Fragment key={i}>
           <span>{drug.name}</span>
           <span>{drug.atcCode}</span>
-          <span>{drug.idPubChem}</span>
-          <span>{drug.idDrugBank}</span>
+          <span><a className="hover" href={`https://pubchem.ncbi.nlm.nih.gov/compound/${drug.idPubChem}`}>{drug.idPubChem}</a></span>
+          <span><a className="hover" href={`https://www.drugbank.ca/drugs/${drug.idDrugBank}`}>{drug.idDrugBank}</a></span>
         </Fragment>
       ));
       return (

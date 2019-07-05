@@ -57,7 +57,6 @@ class Datasets extends Component {
     ));
     return (
       <Fragment>
-        <header />
         <main>
           <StyledWrapper className="wrapper">
             <StyledTable className="grid-container">
