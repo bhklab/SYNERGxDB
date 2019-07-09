@@ -98,7 +98,9 @@ class Drugs extends Component {
     });
     return (
       <Fragment>
-        <header />
+        <header>
+          <h1>List of Drugs</h1>
+        </header>
         <main>
           <StyledWrapper className="wrapper">
             <StyledTable className="grid-container">

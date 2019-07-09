@@ -46,7 +46,8 @@ const GlobalStyles = createGlobalStyle`
     display: block;
   }
   h1 {
-    margin: 30% 0 0;
+    margin: 3rem 0;
+    text-transform: uppercase;
     font-size: 3em;
     color: ${colors.color_main_2};
   }

@@ -35,7 +35,9 @@ const StyledLogo = styled.img`
 const Home = () => (
 
   <StyledNav className="side-nav">
-    <StyledLogo src={logo} alt="logo" className="logo" />
+    <Link to="/">
+      <StyledLogo src={logo} alt="logo" className="logo" />
+    </Link>
     <ul>
       <li><Link to="/">Synergy Scores</Link></li>
       <li><Link to="/cell-lines/">Cell lines</Link></li>

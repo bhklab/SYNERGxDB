@@ -62,7 +62,9 @@ class Databases extends Component {
     ));
     return (
       <Fragment>
-        <header />
+        <header>
+          <h1>List of Cell Lines</h1>
+        </header>
         <main>
           <StyledWrapper className="wrapper">
             <StyledTable className="grid-container">
