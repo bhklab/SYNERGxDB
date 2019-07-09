@@ -6,6 +6,7 @@ const router = express.Router();
 
 router.post('/', (req, res) => {
   const { sample, drugId1, drugId2 } = req.body;
+  console.log(sample, drugId1, drugId2);
 
   // Subquery to link combo designs to respective synergy scores
   function subqueryCD() {

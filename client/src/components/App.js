@@ -13,6 +13,7 @@ import Datasets from './Datasets';
 import Drugs from './Drugs';
 import Documentation from './Documentation';
 import ComboDetails from './ComboDetails';
+import ComboResults from './ComboResults';
 
 const GlobalStyles = createGlobalStyle`
   body {
@@ -168,6 +169,7 @@ const App = () => (
           <Route exact path="/datasets/" component={Datasets} />
           <Route exact path="/documentation/" component={Documentation} />
           <Route path="/drug_combo" component={ComboDetails} />
+          <Route path="/synergy_score" component={ComboResults} />
         </Switch>
       </StyledApp>
     </div>

@@ -3,6 +3,7 @@
 /* eslint-disable react/no-array-index-key */
 import React, { Component, Fragment } from 'react';
 import { Link } from 'react-router-dom';
+import queryString from 'query-string';
 import styled from 'styled-components';
 import colors from '../styles/colors';
 import transitions from '../styles/transitions';
@@ -30,17 +31,25 @@ class ComboResults extends Component {
     super();
     this.state = {
       results: [],
+      drugId1: null,
+      drugId2: null,
     };
   }
 
   componentDidMount() {
-    const { sample, drugId1, drugId2 } = this.props;
+    const { location } = this.props;
+    const requestParams = queryString.parse(location.search);
+    const { sample, drugId1, drugId2 } = requestParams;
     const requestBody = {
-      drugId1,
-      drugId2,
+      drugId1: parseInt(drugId1, 10),
+      drugId2: parseInt(drugId2, 10),
     };
-    if (sample !== 'Any') requestBody.sample = sample;
-
+    this.setState({
+      drugId1: parseInt(drugId1, 10),
+      drugId2: parseInt(drugId2, 10),
+    });
+    if (sample !== 'Any') requestBody.sample = parseInt(sample, 10);
+    console.log(requestBody);
     fetch('/api/combos', {
       method: 'POST',
       headers: {
@@ -56,8 +65,8 @@ class ComboResults extends Component {
   }
 
   render() {
-    const { results } = this.state;
-    const { drugId1, drugId2 } = this.props;
+    const { results, drugId1, drugId2 } = this.state;
+    console.log(drugId1, drugId2);
     const showBiomarker = typeof drugId2 === 'number' && <Biomarkers drugId1={drugId1} drugId2={drugId2} sourceName={results} />;
     const totalSynergyScores = results.length;
     const resultRows = results.map((synergyResult, index) => {

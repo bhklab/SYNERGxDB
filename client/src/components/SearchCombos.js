@@ -1,6 +1,7 @@
 /* eslint-disable max-len */
 /* eslint-disable no-plusplus */
 import React, { Component, Fragment } from 'react';
+import { withRouter } from 'react-router-dom';
 import styled from 'styled-components';
 import Select from 'react-select';
 import { FixedSizeList as List } from 'react-window';
@@ -127,7 +128,7 @@ class SearchCombos extends Component {
     this.handleDrug1Search = this.handleDrug1Search.bind(this);
     this.handleDrug2Search = this.handleDrug2Search.bind(this);
     this.handleSampleSearch = this.handleSampleSearch.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
+    this.userRedirect = this.userRedirect.bind(this);
     this.handleExample = this.handleExample.bind(this);
   }
 
@@ -158,6 +159,38 @@ class SearchCombos extends Component {
       });
   }
 
+  userRedirect() {
+    const {
+      drugId1, drugId2, sample,
+    } = this.state;
+    if (drugId1 && drugId2 && sample) {
+      const { history } = this.props;
+      history.push(`/synergy_score?drugId1=${drugId1}&drugId2=${drugId2}&sample=${sample}`);
+    }
+    return null;
+  }
+
+  handleDrug1Search(drugId, event) {
+    const { value, label } = event;
+    this.setState({ drugId1: value, selectedDrug1: { value, label } });
+    const { sample } = this.state;
+
+    // Sends a post request to the API to retrieve relevant combo drugs for drugsData2
+    if (sample) this.updateDrug2Data(sample, value);
+  }
+
+  handleDrug2Search(event) {
+    const { value, label } = event;
+    this.setState({ drugId2: value, selectedDrug2: { value, label } });
+  }
+
+  handleSampleSearch(event) {
+    const { value, label } = event;
+    this.setState({ sample: value, selectedSample: { value, label } });
+    const { drugId1 } = this.state;
+    if (drugId1) this.updateDrug2Data(value, drugId1);
+  }
+
   updateDrug2Data(sample, drugId) {
     const requestBody = { drugId };
     if (sample !== 'Any') requestBody.sample = sample;
@@ -186,36 +219,6 @@ class SearchCombos extends Component {
       });
   }
 
-  handleDrug1Search(drugId, event) {
-    const { value, label } = event;
-    this.setState({ drugId1: value, selectedDrug1: { value, label } });
-    const { sample } = this.state;
-
-    // Sends a post request to the API to retrieve relevant combo drugs for drugsData2
-    if (sample) this.updateDrug2Data(sample, value);
-  }
-
-  handleDrug2Search(event) {
-    const { value, label } = event;
-    this.setState({ drugId2: value, selectedDrug2: { value, label } });
-  }
-
-  handleSampleSearch(event) {
-    const { value, label } = event;
-    this.setState({ sample: value, selectedSample: { value, label } });
-    const { drugId1 } = this.state;
-    if (drugId1) this.updateDrug2Data(value, drugId1);
-  }
-
-  handleSubmit(event) {
-    event.preventDefault();
-    const {
-      drugId1, drugId2, sample, showResults,
-    } = this.state;
-    if (drugId1 && drugId2 && sample) {
-      this.setState({ showResults: !showResults });
-    }
-  }
 
   // Generates an example for user and updates react component
   handleExample() {
@@ -243,7 +246,7 @@ class SearchCombos extends Component {
       selectedSample, selectedDrug1, selectedDrug2, drug2Placeholder,
     } = this.state;
     const {
-      handleSampleSearch, handleDrug1Search, handleDrug2Search, handleSubmit, handleExample,
+      handleSampleSearch, handleDrug1Search, handleDrug2Search, userRedirect, handleExample,
     } = this;
 
     const isDisabled = !(drugId1 && sample && drugsData2.length > 0);
@@ -254,7 +257,7 @@ class SearchCombos extends Component {
         <h2>
           SYNERGxDB is a comprehensive database to explore synergistic drug combinations for biomarker discovery.
         </h2>
-        <StyledForm className="search-combos" onSubmit={handleSubmit}>
+        <StyledForm className="search-combos">
           <Select
             components={{ MenuList }}
             options={sampleData}
@@ -278,7 +281,7 @@ class SearchCombos extends Component {
             onChange={handleDrug2Search}
           />
           <StyledButton onClick={handleExample} type="button">Example Query</StyledButton>
-          <StyledButton type="submit">Search</StyledButton>
+          <StyledButton onClick={userRedirect} type="button">Search</StyledButton>
         </StyledForm>
       </Fragment>
     );
@@ -302,4 +305,4 @@ class SearchCombos extends Component {
   }
 }
 
-export default SearchCombos;
+export default withRouter(SearchCombos);

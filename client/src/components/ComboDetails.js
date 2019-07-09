@@ -17,7 +17,6 @@ export default class ComboDetails extends Component {
   componentDidMount() {
     const { location } = this.props;
     const requestParams = queryString.parse(location.search);
-    this.setState({ requestParams });
     const {
       idSource, idDrugA, idDrugB, idSample,
     } = requestParams;
@@ -31,7 +30,6 @@ export default class ComboDetails extends Component {
       .then(response => response.json())
       .then((cellData) => {
         this.setState({ cellData });
-        console.log(this.state.cellData);
       });
     fetch(`/api/drugs/info?idDrugA=${idDrugA}&idDrugB=${idDrugB}`, {
       method: 'GET',
@@ -43,7 +41,6 @@ export default class ComboDetails extends Component {
       .then(response => response.json())
       .then((drugsData) => {
         this.setState({ drugsData });
-        console.log(this.state.drugsData);
       });
     fetch(`/api/datasets?idSource=${idSource}`, {
       method: 'GET',
@@ -55,7 +52,6 @@ export default class ComboDetails extends Component {
       .then(response => response.json())
       .then((sourceData) => {
         this.setState({ sourceData });
-        console.log(this.state.sourceData);
       });
   }
 
