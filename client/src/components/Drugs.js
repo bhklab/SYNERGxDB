@@ -111,6 +111,7 @@ class Drugs extends Component {
     const columns = [{
       Header: 'Name',
       accessor: 'name', // String-based value accessors!
+      minWidth: 400,
     }, {
       Header: 'ATC Code',
       accessor: 'atcCode',
@@ -136,6 +137,7 @@ class Drugs extends Component {
               sortable={false}
               defaultPageSize={25}
               filterable
+              className="-striped -highlight"
             />
           </StyledWrapper>
         </main>

@@ -1,6 +1,9 @@
 import React, { Component, Fragment } from 'react';
 import styled from 'styled-components';
+import ReactTable from 'react-table';
 import colors from '../styles/colors';
+import 'react-table/react-table.css';
+
 // import transitions from '../styles/transitions';
 
 
@@ -47,16 +50,16 @@ class Datasets extends Component {
 
   render() {
     const { databaseData } = this.state;
-    const listOfSources = databaseData.map((item, index) => (
-      // eslint-disable-next-line react/no-array-index-key
-      <Fragment key={index}>
-        <span>{item.name}</span>
-        <span>{item.author}</span>
-        <span>{item.no_samples}</span>
-        <span>{item.no_drugs}</span>
-        <span>{item.combo}</span>
-      </Fragment>
-    ));
+    // const listOfSources = databaseData.map((item, index) => (
+    // // eslint-disable-next-line react/no-array-index-key
+    // <Fragment key={index}>
+    //   <span>{item.name}</span>
+    //   <span>{item.author}</span>
+    //   <span>{item.no_samples}</span>
+    //   <span>{item.no_drugs}</span>
+    //   <span>{item.combo}</span>
+    // </Fragment>
+    // ));
     return (
       <Fragment>
         <header>
@@ -64,14 +67,22 @@ class Datasets extends Component {
         </header>
         <main>
           <StyledWrapper className="wrapper">
-            <StyledTable className="grid-container">
+            <ReactTable
+              data={databaseData}
+              columns={columns}
+              sortable={false}
+              defaultPageSize={25}
+              filterable
+              className="-striped -highlight"
+            />
+            {/* <StyledTable className="grid-container">
               <span className="table-header">Name</span>
               <span className="table-header">Source</span>
               <span className="table-header"># of cell lines</span>
               <span className="table-header"># of drugs</span>
               <span className="table-header">Design</span>
               {listOfSources}
-            </StyledTable>
+            </StyledTable> */}
 
           </StyledWrapper>
         </main>
