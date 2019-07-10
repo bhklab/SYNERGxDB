@@ -154,8 +154,8 @@ class SearchCombos extends Component {
           }
         });
         // const tissueData = tissueList.map(item => ({ value: item, label: item }));
-        const tissueData = Object.keys(tissueObject).map(tissue => ({ value: tissue, label: `${tissue} (${tissueObject[tissue]} cell lines)` }));
-        const cellsData = data.map(item => ({ value: item.idSample, label: `${item.name} (${item.tissue})` }));
+        const tissueData = Object.keys(tissueObject).map(tissue => ({ value: tissue, label: `${tissue.toUpperCase()} (${tissueObject[tissue]} cell lines)` }));
+        const cellsData = data.map(item => ({ value: item.idSample, label: `${item.name.toUpperCase()} (${item.tissue.toUpperCase()})` }));
         this.setState({ sampleData: [{ value: 'Any', label: 'Any Sample' }, ...tissueData, ...cellsData] });
       });
   }

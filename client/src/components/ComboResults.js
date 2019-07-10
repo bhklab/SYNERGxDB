@@ -87,8 +87,8 @@ class ComboResults extends Component {
       return (
         <StyledRow key={index}>
           <Link to={url} style={{ display: 'contents' }}>
-            <span>{tissue}</span>
-            <span>{sampleName}</span>
+            <span>{tissue.toUpperCase()}</span>
+            <span>{sampleName.toUpperCase()}</span>
             <span>{drugNameA}</span>
             <span>{drugNameB}</span>
             {zip >= 0.2 ? <span className="high-score">{zip}</span> : <span>{zip}</span>}

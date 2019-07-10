@@ -49,8 +49,8 @@ class Databases extends Component {
     const listOfCells = cellLineData.map((cellLine, index) => (
       // eslint-disable-next-line react/no-array-index-key
       <Fragment key={index}>
-        <span>{cellLine.tissue}</span>
-        <span>{cellLine.name}</span>
+        <span>{cellLine.tissue.toUpperCase()}</span>
+        <span>{cellLine.name.toUpperCase()}</span>
         <span>{cellLine.sex}</span>
         <span>{cellLine.age}</span>
         <span>

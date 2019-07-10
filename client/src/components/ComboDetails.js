@@ -67,7 +67,7 @@ export default class ComboDetails extends Component {
             Sample:
             {' '}
             <b>
-              {cellData.name}
+              {cellData.name ? cellData.name.toUpperCase() : null}
             </b>
             ,
             {' '}
