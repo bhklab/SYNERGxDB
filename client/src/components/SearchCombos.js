@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable max-len */
 /* eslint-disable no-plusplus */
 import React, { Component, Fragment } from 'react';
@@ -222,9 +223,7 @@ class SearchCombos extends Component {
 
   // Generates an example for user and updates react component
   handleExample() {
-    const { selectedSample, selectedDrug1, selectedDrug2 } = this.state;
     this.updateDrug2Data('Any', 11);
-
     // updateDrug2Data is asynchronous function and drugId2 can only be updated after it executes
     setTimeout(
       () => {

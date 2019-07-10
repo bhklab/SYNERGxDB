@@ -1,7 +1,8 @@
+/* eslint-disable react/prop-types */
 import React, { Component } from 'react';
 import queryString from 'query-string';
-import styled from 'styled-components';
-import colors from '../styles/colors';
+// import styled from 'styled-components';
+// import colors from '../styles/colors';
 
 
 export default class ComboDetails extends Component {

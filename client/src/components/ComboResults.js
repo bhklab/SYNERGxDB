@@ -51,7 +51,6 @@ class ComboResults extends Component {
       drugId2: parseInt(drugId2, 10),
     });
     if (sample !== 'Any') requestBody.sample = parseInt(sample, 10);
-    console.log(requestBody);
     fetch('/api/combos', {
       method: 'POST',
       headers: {
@@ -68,13 +67,19 @@ class ComboResults extends Component {
 
   render() {
     const { results, drugId1, drugId2 } = this.state;
-    console.log(drugId1, drugId2);
     const showBiomarker = typeof drugId2 === 'number' && <Biomarkers drugId1={drugId1} drugId2={drugId2} sourceName={results} />;
     const totalSynergyScores = results.length;
     const resultRows = results.map((synergyResult, index) => {
       const {
-        idSample, tissue, sampleName, drugNameA, drugNameB, zip, bliss, loewe, hsa, sourceName, idSource, idDrugA, idDrugB,
+        idSample, tissue, sampleName, drugNameA, drugNameB, sourceName, idSource, idDrugA, idDrugB,
       } = synergyResult;
+      let {
+        zip, bliss, loewe, hsa,
+      } = synergyResult;
+      zip = zip && zip.toFixed(4);
+      bliss = bliss && bliss.toFixed(4);
+      loewe = loewe && loewe.toFixed(4);
+      hsa = hsa && hsa.toFixed(4);
       const url = {
         pathname: '/drug_combo',
         search: `?idSource=${idSource}&idDrugA=${idDrugA}&idDrugB=${idDrugB}&idSample=${idSample}`,

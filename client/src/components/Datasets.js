@@ -15,6 +15,8 @@ const StyledWrapper = styled.div`
 const StyledTable = styled.div`
     
   grid-template-columns: repeat(5, 1fr);
+  border-bottom: solid 2px black;
+  margin: 10px 0;
 
   span {
     &:nth-child(10n-4),

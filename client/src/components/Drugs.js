@@ -1,8 +1,9 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable react/no-array-index-key */
 import React, { Component, Fragment } from 'react';
 import styled from 'styled-components';
 import colors from '../styles/colors';
-import transitions from '../styles/transitions';
+// import transitions from '../styles/transitions';
 
 
 const StyledWrapper = styled.div`
@@ -15,7 +16,9 @@ const StyledWrapper = styled.div`
 
 const StyledTable = styled.div`
     
-  grid-template-columns: minmax(25%, 400px) minmax(25%, 400px) auto auto;
+  grid-template-columns: minmax(25%, 400px) auto auto auto;
+  border-bottom: solid 2px black;
+  margin: 10px 0;
 
   span {
     &:nth-child(8n-3),
@@ -39,8 +42,8 @@ class Drugs extends Component {
     fetch('/api/drugs/')
       .then(response => response.json())
       .then((drugsData) => {
-        // Sorts by presence of ATC code, then by presence of DrugBank id, then by presence of PubChem id
-        // and lastly it sorts drug names alphabetically
+        // Sorts by presence of ATC code, then by presence of DrugBank id,
+        // then by presence of PubChem id and lastly it sorts drug names alphabetically
         drugsData.sort((a, b) => {
           if (a.atcCode && !b.atcCode) {
             return -1;
@@ -60,6 +63,12 @@ class Drugs extends Component {
           if (a.name > b.name) return 1;
           if (a.name < b.name) return -1;
           return 0;
+        });
+        drugsData.forEach((drug) => {
+          if (drug.atcCode) {
+            const atc = drug.atcCode.split(';');
+            drug.atcCode = atc.length > 1 ? atc[0].concat(', ...') : atc[0];
+          }
         });
         this.setState({ drugsData });
       });

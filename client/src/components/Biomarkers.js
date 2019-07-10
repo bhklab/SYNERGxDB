@@ -1,3 +1,5 @@
+/* eslint-disable react/no-array-index-key */
+/* eslint-disable react/prop-types */
 import React, { Component, Fragment } from 'react';
 import styled from 'styled-components';
 import colors from '../styles/colors';
@@ -13,6 +15,8 @@ const StyledBiomarkers = styled.div`
 const BiomarkerDiv = styled.div`
   
   grid-template-columns: repeat(4, 1fr);
+  border-bottom: solid 2px black;
+  margin: 10px 0;
 
   span {
     &:nth-child(8n-3),
