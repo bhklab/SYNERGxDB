@@ -113,7 +113,7 @@ const GlobalStyles = createGlobalStyle`
 
   .table-header {
     font-weight: bold;
-    border-bottom: 2px solid black;
+    border-bottom: 5px double black;
   }
   .high-score {
     font-weight: bold;

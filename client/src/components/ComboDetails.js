@@ -59,8 +59,8 @@ export default class ComboDetails extends Component {
     const { cellData, drugsData, sourceData } = this.state;
     return (
       <header>
-        <h2>Drug combination synergy</h2>
-        <h3>Combo Summary</h3>
+        <h1>Drug combination synergy</h1>
+        <h2>Combo Summary</h2>
         <div>
           <p>
             Sample:
@@ -72,7 +72,7 @@ export default class ComboDetails extends Component {
             {' '}
             {cellData.disease}
             {' '}
-            <a className="hover" href={`https://web.expasy.org/cellosaurus/${cellData.idCellosaurus}`}>(Cellosaurus)</a>
+            <a className="hover" href={`https://web.expasy.org/cellosaurus/${cellData.idCellosaurus}`} rel="noopener noreferrer" target="_blank">(Cellosaurus)</a>
           </p>
           <p>
             Drug A:
@@ -86,9 +86,9 @@ export default class ComboDetails extends Component {
                 {' '}
                 {drugsData[0].description}
                 {' '}
-                <a className="hover" href={`https://pubchem.ncbi.nlm.nih.gov/compound/${drugsData[0].idPubChem}`}>(PubChem)</a>
+                <a className="hover" href={`https://pubchem.ncbi.nlm.nih.gov/compound/${drugsData[0].idPubChem}`} rel="noopener noreferrer" target="_blank">(PubChem)</a>
                 {' '}
-                <a className="hover" href={`https://www.drugbank.ca/drugs/${drugsData[0].idDrugBank}`}>(DrugBank)</a>
+                <a className="hover" href={`https://www.drugbank.ca/drugs/${drugsData[0].idDrugBank}`} rel="noopener noreferrer" target="_blank">(DrugBank)</a>
               </span>
             ) : null}
           </p>
@@ -103,9 +103,9 @@ export default class ComboDetails extends Component {
               {' '}
               {drugsData[1].description}
               {' '}
-              <a className="hover" href={`https://pubchem.ncbi.nlm.nih.gov/compound/${drugsData[1].idPubChem}`}>(PubChem)</a>
+              <a className="hover" href={`https://pubchem.ncbi.nlm.nih.gov/compound/${drugsData[1].idPubChem}`} rel="noopener noreferrer" target="_blank">(PubChem)</a>
               {' '}
-              <a className="hover" href={`https://www.drugbank.ca/drugs/${drugsData[1].idDrugBank}`}>(DrugBank)</a>
+              <a className="hover" href={`https://www.drugbank.ca/drugs/${drugsData[1].idDrugBank}`} rel="noopener noreferrer" target="_blank">(DrugBank)</a>
             </span>
           ) : null}
           <p>
@@ -116,7 +116,7 @@ export default class ComboDetails extends Component {
             </b>
             ,
             {' '}
-            <a className="hover" href={`https://www.ncbi.nlm.nih.gov/pubmed/${sourceData.pmID}`}>(PubMed)</a>
+            <a className="hover" href={`https://www.ncbi.nlm.nih.gov/pubmed/${sourceData.pmID}`} rel="noopener noreferrer" target="_blank">(PubMed)</a>
           </p>
         </div>
       </header>

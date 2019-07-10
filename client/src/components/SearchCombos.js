@@ -123,7 +123,7 @@ class SearchCombos extends Component {
       selectedSample: { value: 'Any', label: 'Any Sample' },
       selectedDrug1: null,
       selectedDrug2: null,
-      drug2Placeholder: 'Enter Drug 2',
+      drug2Placeholder: 'Enter Drug B',
     };
     this.handleDrug1Search = this.handleDrug1Search.bind(this);
     this.handleDrug2Search = this.handleDrug2Search.bind(this);
@@ -212,7 +212,7 @@ class SearchCombos extends Component {
             if (a.value < b.value) return -1;
             return 0;
           });
-          this.setState({ drugsData2: [{ value: 'Any', label: 'Any Drug' }, ...drugsData], drug2Placeholder: 'Enter Drug 2' });
+          this.setState({ drugsData2: [{ value: 'Any', label: 'Any Drug' }, ...drugsData], drug2Placeholder: 'Enter Drug B' });
         } else {
           this.setState({ drug2Placeholder: 'No drug combos for this cell line and drug' });
         }
@@ -268,7 +268,7 @@ class SearchCombos extends Component {
           <Select
             components={{ MenuList }}
             options={drugsData1}
-            placeholder="Enter Drug 1"
+            placeholder="Enter Drug A"
             onChange={e => handleDrug1Search('drugId1', e)}
             value={selectedDrug1}
           />

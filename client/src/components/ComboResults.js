@@ -12,6 +12,8 @@ import Biomarkers from './Biomarkers';
 
 const SynergyDiv = styled.div`
   grid-template-columns: repeat(9, 1fr);
+  border-bottom: solid 2px black;
+  margin: 10px 0;
   div:nth-child(2n) span {
     background-color: ${colors.trans_color_main_3};
   }
