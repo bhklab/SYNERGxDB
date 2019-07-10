@@ -166,6 +166,7 @@ class SearchCombos extends Component {
     } = this.state;
     if (drugId1 && drugId2 && sample) {
       const { history } = this.props;
+      // Redirects user to synergy scores page
       history.push(`/synergy_score?drugId1=${drugId1}&drugId2=${drugId2}&sample=${sample}`);
     }
     return null;

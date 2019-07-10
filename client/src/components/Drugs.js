@@ -2,6 +2,8 @@
 /* eslint-disable react/no-array-index-key */
 import React, { Component, Fragment } from 'react';
 import styled from 'styled-components';
+import ReactTable from 'react-table';
+import 'react-table/react-table.css';
 import colors from '../styles/colors';
 // import transitions from '../styles/transitions';
 
@@ -12,6 +14,7 @@ const StyledWrapper = styled.div`
   justify-content: center;
   align-items: center;
   text-align: center;
+  width: 100%;
 `;
 
 const StyledTable = styled.div`
@@ -77,34 +80,49 @@ class Drugs extends Component {
   render() {
     const { drugsData } = this.state;
     // splits data into chunks, css grid collapses data if more than ~990 rows
-    const drugChunks = [];
-    for (let i = 0; i < drugsData.length; i += 901) {
-      drugChunks.push(drugsData.slice(i, i + 901));
-    }
-    const listOfDrugs = drugChunks.length > 0 ? drugChunks[0].map((drug, index) => (
-      <Fragment key={index}>
-        <span>{drug.name}</span>
-        <span>{drug.atcCode}</span>
-        <span><a className="hover" href={`https://pubchem.ncbi.nlm.nih.gov/compound/${drug.idPubChem}`}>{drug.idPubChem}</a></span>
-        <span><a className="hover" href={`https://www.drugbank.ca/drugs/${drug.idDrugBank}`}>{drug.idDrugBank}</a></span>
-      </Fragment>
-    )) : null;
-    drugChunks.shift();
-    const restDrugs = drugChunks.map((chunk, index) => {
-      const chunkData = chunk.map((drug, i) => (
-        <Fragment key={i}>
-          <span>{drug.name}</span>
-          <span>{drug.atcCode}</span>
-          <span><a className="hover" href={`https://pubchem.ncbi.nlm.nih.gov/compound/${drug.idPubChem}`}>{drug.idPubChem}</a></span>
-          <span><a className="hover" href={`https://www.drugbank.ca/drugs/${drug.idDrugBank}`}>{drug.idDrugBank}</a></span>
-        </Fragment>
-      ));
-      return (
-        <StyledTable key={index} className="grid-container">
-          {chunkData}
-        </StyledTable>
-      );
-    });
+    // const drugChunks = [];
+    // for (let i = 0; i < drugsData.length; i += 901) {
+    //   drugChunks.push(drugsData.slice(i, i + 901));
+    // }
+    // const listOfDrugs = drugChunks.length > 0 ? drugChunks[0].map((drug, index) => (
+    //   <Fragment key={index}>
+    //     <span>{drug.name}</span>
+    //     <span>{drug.atcCode}</span>
+    //     <span><a className="hover" href={`https://pubchem.ncbi.nlm.nih.gov/compound/${drug.idPubChem}`}>{drug.idPubChem}</a></span>
+    //     <span><a className="hover" href={`https://www.drugbank.ca/drugs/${drug.idDrugBank}`}>{drug.idDrugBank}</a></span>
+    //   </Fragment>
+    // )) : null;
+    // drugChunks.shift();
+    // const restDrugs = drugChunks.map((chunk, index) => {
+    //   const chunkData = chunk.map((drug, i) => (
+    //     <Fragment key={i}>
+    //       <span>{drug.name}</span>
+    //       <span>{drug.atcCode}</span>
+    //       <span><a className="hover" href={`https://pubchem.ncbi.nlm.nih.gov/compound/${drug.idPubChem}`}>{drug.idPubChem}</a></span>
+    //       <span><a className="hover" href={`https://www.drugbank.ca/drugs/${drug.idDrugBank}`}>{drug.idDrugBank}</a></span>
+    //     </Fragment>
+    //   ));
+    //   return (
+    //     <StyledTable key={index} className="grid-container">
+    //       {chunkData}
+    //     </StyledTable>
+    //   );
+    // });
+    const columns = [{
+      Header: 'Name',
+      accessor: 'name', // String-based value accessors!
+    }, {
+      Header: 'ATC Code',
+      accessor: 'atcCode',
+    }, {
+      Header: 'PubChem CID',
+      accessor: 'idPubChem',
+      Cell: props => <a className="hover" href={`https://pubchem.ncbi.nlm.nih.gov/compound/${props.value}`}>{props.value}</a>,
+    }, {
+      Header: 'DrugBank ID',
+      accessor: 'idDrugBank',
+      Cell: props => <a className="hover" href={`https://www.drugbank.ca/drugs/${props.value}`}>{props.value}</a>,
+    }];
     return (
       <Fragment>
         <header>
@@ -112,14 +130,13 @@ class Drugs extends Component {
         </header>
         <main>
           <StyledWrapper className="wrapper">
-            <StyledTable className="grid-container">
-              <span className="table-header">Name</span>
-              <span className="table-header">ATC Code</span>
-              <span className="table-header">PubChem CID</span>
-              <span className="table-header">DrugBank ID</span>
-              {listOfDrugs}
-            </StyledTable>
-            {restDrugs}
+            <ReactTable
+              data={drugsData}
+              columns={columns}
+              sortable={false}
+              defaultPageSize={25}
+              filterable
+            />
           </StyledWrapper>
         </main>
         <footer>
