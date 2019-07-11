@@ -5,7 +5,7 @@
 import React, { Component } from 'react';
 import CountUp from 'react-countup';
 import styled from 'styled-components';
-// import colors from '../styles/colors';
+import colors from '../styles/colors';
 
 const StyledDiv = styled.div`
     width: 100%;
