@@ -105,7 +105,6 @@ const GlobalStyles = createGlobalStyle`
 
   .main-wrapper {
     width: 100%;
-     
   }
   .app,
   .js-plotly-plot {
@@ -162,8 +161,8 @@ const GlobalStyles = createGlobalStyle`
 
 const StyledApp = styled.div`
   margin: 0 auto;
-  padding: 0 25px;
-  min-height: 100vh;
+  padding: 12.5vh 0 25px;
+  min-height: 87.5vh;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -178,8 +177,8 @@ const App = () => (
     <Normalize />
     <GlobalStyles />
     {/* <SideNav /> */}
-    <TopNav />
     <div className="main-wrapper">
+      <TopNav />
       <StyledApp className="app">
         <Switch>
           <Route exact path="/" component={SearchCombos} />
