@@ -162,7 +162,7 @@ const GlobalStyles = createGlobalStyle`
 const StyledApp = styled.div`
   margin: 0 auto;
   padding: 12.5vh 0 25px;
-  min-height: 87.5vh;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: space-between;

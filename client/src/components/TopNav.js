@@ -16,6 +16,7 @@ const StyledNav = styled.nav`
     position: fixed;
     font-size: 1.1vw;
     font-family: 'Montserrat', sans-serif;
+    z-index: 10;
 
     a {
         color: ${colors.nav_links};
@@ -44,12 +45,12 @@ const StyledLogo = styled.img`
 const Home = () => (
 
   <StyledNav className="top-nav">
-    <Link to="/"><StyledLogo src={logo} alt="logo" className="logo"/></Link>
-      <Link to="/">Synergy Scores</Link>
-      <Link to="/cell-lines/">Cell lines</Link>
-      <Link to="/drugs/">Drugs</Link>
-      <Link to="/datasets/">Datasets</Link>
-      <Link to="/documentation/">Documentation</Link>
+    <Link to="/"><StyledLogo src={logo} alt="logo" className="logo" /></Link>
+    <Link to="/">Synergy Scores</Link>
+    <Link to="/cell-lines/">Cell lines</Link>
+    <Link to="/drugs/">Drugs</Link>
+    <Link to="/datasets/">Datasets</Link>
+    <Link to="/documentation/">Documentation</Link>
   </StyledNav>
 );
 
