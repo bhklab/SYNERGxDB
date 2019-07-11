@@ -5,14 +5,21 @@
 import React, { Component } from 'react';
 import CountUp from 'react-countup';
 import styled from 'styled-components';
-// import colors from '../styles/colors';
+import colors from '../styles/colors';
 
 const StyledDiv = styled.div`
-    width: 100%    
+    width: 100%;
+    bottom:0%;
+    left:0px;
+    position:fixed;  
     display: flex;
+    line-height:10px;
     align-items: flex-end;
     justify-content: space-around;
     flex-wrap: wrap
+    background:rgba(255, 255, 255, 0.6);
+    color: ${colors.nav_links} !important;
+    font-family: 'Montserrat', sans-serif;
 
     &:div {
         width: 200px;
@@ -20,7 +27,10 @@ const StyledDiv = styled.div`
         margin: 20px
     }
     h2 {
-      text-transform: uppercase;
+      color: ${colors.nav_links} !important;
+      font-family: 'Montserrat', sans-serif;
+      font-weight:500;
+      font-size: 1.2vw;
     }
 `;
 
@@ -74,8 +84,7 @@ class Stats extends Component {
     return (
       <StyledDiv className="stasts">
         <div>
-          <h2>Datasets</h2>
-          <h2>
+        <h2>
             <CountUp
               start={0}
               end={datasets}
@@ -83,6 +92,8 @@ class Stats extends Component {
               easingFn={easeInOut}
             />
           </h2>
+          <h2>Datasets</h2>
+          
         </div>
         {/* <div>
           <h2>Cell Lines</h2>
@@ -96,7 +107,6 @@ class Stats extends Component {
           </h2>
         </div> */}
         <div>
-          <h2>Tissues</h2>
           <h2>
             <CountUp
               start={0}
@@ -105,9 +115,10 @@ class Stats extends Component {
               easingFn={easeInOut}
             />
           </h2>
+          <h2>Tissues</h2>
+          
         </div>
         <div>
-          <h2>Compounds</h2>
           <h2>
             <CountUp
               start={0}
@@ -116,9 +127,10 @@ class Stats extends Component {
               easingFn={easeInOut}
             />
           </h2>
+          <h2>Compounds</h2>
+          
         </div>
         <div>
-          <h2>Combinations</h2>
           <h2>
             <CountUp
               start={0}
@@ -127,9 +139,10 @@ class Stats extends Component {
               easingFn={easeInOut}
             />
           </h2>
+          <h2>Combinations</h2>
+          
         </div>
         <div>
-          <h2>Experiments</h2>
           <h2>
             <CountUp
               start={0}
@@ -138,9 +151,10 @@ class Stats extends Component {
               easingFn={easeInOut}
             />
           </h2>
+          <h2>Experiments</h2>
+          
         </div>
         <div>
-          <h2>Data points</h2>
           <h2>
             <CountUp
               start={0}
@@ -149,6 +163,8 @@ class Stats extends Component {
               easingFn={easeInOut}
             />
           </h2>
+          <h2>Data points</h2>
+          
         </div>
       </StyledDiv>
     );

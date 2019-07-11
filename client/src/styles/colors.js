@@ -10,4 +10,7 @@ export default {
   color_accent_1: '#fb2b06',
   trans_color_accent_1: 'rgba(251,43,6, 0.5)',
   color_accent_2: '#f0f0f0',
+  nav_links: '#3a5386',
+  nav_bg: '#ffffff',
+  nav_link_hov: '#efa127',
 };
