@@ -1,7 +1,11 @@
+/* eslint-disable no-plusplus */
+/* eslint-disable no-restricted-properties */
+/* eslint-disable no-param-reassign */
+/* eslint-disable no-cond-assign */
 import React, { Component } from 'react';
 import CountUp from 'react-countup';
 import styled from 'styled-components';
-import colors from '../styles/colors';
+// import colors from '../styles/colors';
 
 const StyledDiv = styled.div`
     width: 100%;
@@ -69,7 +73,7 @@ class Stats extends Component {
 
   render() {
     const {
-      cells, datasets, tissues, compounds, combos, experiments, datapoints,
+      datasets, tissues, compounds, combos, experiments, datapoints,
     } = this.state;
     const easeInOut = (t, b, c, d) => {
       if (t === 0) return b;

@@ -125,7 +125,7 @@ const GlobalStyles = createGlobalStyle`
 
   .table-header {
     font-weight: bold;
-    border-bottom: 2px solid black;
+    border-bottom: 5px double black;
   }
   .high-score {
     font-weight: bold;
@@ -137,6 +137,11 @@ const GlobalStyles = createGlobalStyle`
     &:hover {
       color: ${colors.color_main_4}
     }
+  }
+  .ReactTable {
+    width: 100%;
+    text-align: left;
+    margin: 10px 0;
   }
   
   #root {

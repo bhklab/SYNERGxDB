@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable max-len */
 /* eslint-disable no-plusplus */
 import React, { Component, Fragment } from 'react';
@@ -166,7 +167,7 @@ class SearchCombos extends Component {
       selectedSample: { value: 'Any', label: 'Any Sample' },
       selectedDrug1: null,
       selectedDrug2: null,
-      drug2Placeholder: 'Enter Drug 2',
+      drug2Placeholder: 'Enter Drug B',
     };
     this.handleDrug1Search = this.handleDrug1Search.bind(this);
     this.handleDrug2Search = this.handleDrug2Search.bind(this);
@@ -196,8 +197,8 @@ class SearchCombos extends Component {
           }
         });
         // const tissueData = tissueList.map(item => ({ value: item, label: item }));
-        const tissueData = Object.keys(tissueObject).map(tissue => ({ value: tissue, label: `${tissue} (${tissueObject[tissue]} cell lines)` }));
-        const cellsData = data.map(item => ({ value: item.idSample, label: `${item.name} (${item.tissue})` }));
+        const tissueData = Object.keys(tissueObject).map(tissue => ({ value: tissue, label: `${tissue.toUpperCase()} (${tissueObject[tissue]} cell lines)` }));
+        const cellsData = data.map(item => ({ value: item.idSample, label: `${item.name.toUpperCase()} (${item.tissue.toUpperCase()})` }));
         this.setState({ sampleData: [{ value: 'Any', label: 'Any Sample' }, ...tissueData, ...cellsData] });
       });
   }
@@ -208,6 +209,7 @@ class SearchCombos extends Component {
     } = this.state;
     if (drugId1 && drugId2 && sample) {
       const { history } = this.props;
+      // Redirects user to synergy scores page
       history.push(`/synergy_score?drugId1=${drugId1}&drugId2=${drugId2}&sample=${sample}`);
     }
     return null;
@@ -255,7 +257,7 @@ class SearchCombos extends Component {
             if (a.value < b.value) return -1;
             return 0;
           });
-          this.setState({ drugsData2: [{ value: 'Any', label: 'Any Drug' }, ...drugsData], drug2Placeholder: 'Enter Drug 2' });
+          this.setState({ drugsData2: [{ value: 'Any', label: 'Any Drug' }, ...drugsData], drug2Placeholder: 'Enter Drug B' });
         } else {
           this.setState({ drug2Placeholder: 'No drug combos for this cell line and drug' });
         }
@@ -265,9 +267,7 @@ class SearchCombos extends Component {
 
   // Generates an example for user and updates react component
   handleExample() {
-    const { selectedSample, selectedDrug1, selectedDrug2 } = this.state;
     this.updateDrug2Data('Any', 11);
-
     // updateDrug2Data is asynchronous function and drugId2 can only be updated after it executes
     setTimeout(
       () => {
@@ -313,7 +313,7 @@ class SearchCombos extends Component {
             components={{ MenuList }}
             styles={customStyles}
             options={drugsData1}
-            placeholder="Enter Drug 1"
+            placeholder="Enter Drug A"
             onChange={e => handleDrug1Search('drugId1', e)}
             value={selectedDrug1}
           />
