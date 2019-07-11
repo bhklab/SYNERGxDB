@@ -19,10 +19,14 @@ const StyledWrapper = styled.div`
   justify-content: center;
   align-items: center;
   text-align: center;
-
-  h2 {
-    color: ${colors.color_main_2};
+  top:50%;
+  h1 {
+    color: ${colors.nav_links};
+    font-family:'Raleway', sans-serif;
+    font-weight:700;
+    
   }
+  
 `;
 
 const StyledBanner = styled.img`
@@ -31,12 +35,12 @@ const StyledBanner = styled.img`
 `;
 
 const StyledForm = styled.form`
-  max-width: 700px;
+  max-width: 800px;
   width: 100%;
-  background-color: ${colors.trans_color_main_3};
+  background-color: rgb(1,106,158,0.27);
+  border-radius:25px;
   margin: 5px;
-  padding: 10px;
-  padding-top: 25px;
+  padding:25px;
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -49,42 +53,81 @@ const StyledForm = styled.form`
     justify-content: space-between;
   }
   input {
-    color: ${colors.color_main_1};
-    border: 2px solid ${colors.trans_color_main_5};
+    color: white;
+    border: none;
     min-width: 350px;
     width: 50%;
-    padding: 10px;
+    padding: 13px;
     margin: 10px auto;
     outline-style: none;
-    background-color: ${colors.trans_color_main_5};
+    background: transparent !important;
 
     &::placeholder {
-      color: ${colors.color_main_4};
+      color: "white";
     }
     &:focus {
       border: 2px solid ${colors.color_main_2};
       background-color: ${colors.trans_color_main_4};
       
       &::placeholder {
-      color: ${colors.color_main_3};
+      color: white;
     }
   }
 `;
+
+const customStyles = {
+  control: (provided, state) => ({
+    ...provided,
+    background:"transparent",
+    border: "1px solid white",
+    margin: "5px 0px",
+    '&:hover': {
+      border: "1px solid white",
+      cursor: "text"
+    }
+  }),
+  placeholder: (provided, state) => ({
+    ...provided,
+    color:"white",
+  }),
+  dropdownIndicator: (provided, state) => ({
+    ...provided,
+    color: "white",
+    '&:hover': {
+      color: "white",
+      cursor: "pointer"
+    }
+  }),
+  indicatorSeparator: (provided, state) => ({
+    ...provided,
+    background: "white",
+    '&:hover': {
+      background: "white",
+    }
+  }),
+  singleValue: (provided, state) => ({
+    ...provided,
+    color: "white",
+  })
+}
+
 const StyledButton = styled.button`
-  font-size: 1.5em;
-  font-weight: bold; 
-  background: none;
+  font-size: 2.5em;
+  background: rgb(255,255,255, 0.6);
   border: none;
-  padding: 10px 2px;
-  color: ${colors.color_main_1};
+  border-radius:10px;
+  padding: 20px;
+  margin: 30px 0px 15px 0px;
+  color: ${colors.nav_links};
   transition: ${transitions.main_trans};
   outline-style: none;
 
   &:hover {
-    color: ${colors.color_main_4}
+    color: ${colors.nav_link_hov}
+    cursor:pointer;
   }
   &[type="button"] {
-    font-size: 1.2em;
+    font-size: 2.3em;
   }
 `;
 
@@ -252,14 +295,15 @@ class SearchCombos extends Component {
     const isDisabled = !(drugId1 && sample && drugsData2.length > 0);
     const searchForm = (
       <Fragment>
-        <Stats />
-        <StyledBanner src={banner} alt="banner" />
-        <h2>
+        
+        {/* <StyledBanner src={banner} alt="banner" /> */}
+        <h1>
           SYNERGxDB is a comprehensive database to explore synergistic drug combinations for biomarker discovery.
-        </h2>
+        </h1>
         <StyledForm className="search-combos">
           <Select
             components={{ MenuList }}
+            styles={customStyles}
             options={sampleData}
             placeholder="Enter Cell Line or Tissue"
             onChange={handleSampleSearch}
@@ -267,6 +311,7 @@ class SearchCombos extends Component {
           />
           <Select
             components={{ MenuList }}
+            styles={customStyles}
             options={drugsData1}
             placeholder="Enter Drug 1"
             onChange={e => handleDrug1Search('drugId1', e)}
@@ -274,15 +319,17 @@ class SearchCombos extends Component {
           />
           <Select
             components={{ MenuList }}
+            styles={customStyles}
             options={drugsData2}
             isDisabled={isDisabled}
             placeholder={drug2Placeholder}
             value={selectedDrug2}
             onChange={handleDrug2Search}
           />
-          <StyledButton onClick={handleExample} type="button">Example Query</StyledButton>
+          {/* <StyledButton onClick={handleExample} type="button">Example Query</StyledButton> */}
           <StyledButton onClick={userRedirect} type="button">Search</StyledButton>
         </StyledForm>
+        <Stats />
       </Fragment>
     );
     const displayedComponent = showResults ? <ComboResults sample={sample} drugId1={drugId1} drugId2={drugId2} /> : searchForm;
@@ -290,16 +337,16 @@ class SearchCombos extends Component {
     return (
       <Fragment>
         <header />
-        <main>
+        <main className="landing">
           <StyledWrapper className="wrapper">
             {displayedComponent}
           </StyledWrapper>
         </main>
-        <footer>
+        {/* <footer>
           <div className="wrapper">
             <p>Copyright © 2019. All rights reserved</p>
           </div>
-        </footer>
+        </footer> */}
       </Fragment>
     );
   }

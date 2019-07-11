@@ -2,8 +2,10 @@ import React, { Fragment } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import styled, { createGlobalStyle } from 'styled-components';
 import { Normalize } from 'styled-normalize';
+import TopNav from './TopNav';
 import SideNav from './SideNav';
-import heroImg from '../images/hero-image.jpg';
+// import heroImg from '../images/hero-image.jpg';
+import heroImg from '../images/bg.jpg';
 import colors from '../styles/colors';
 import transitions from '../styles/transitions';
 
@@ -39,6 +41,10 @@ const GlobalStyles = createGlobalStyle`
     text-decoration: none;
     color: black;
     font-family: 'Raleway', sans-serif;
+
+    &:hover {
+      cursor: pointer !important;
+    }
   }
   img {
     width: 100%;
@@ -46,9 +52,8 @@ const GlobalStyles = createGlobalStyle`
     display: block;
   }
   h1 {
-    margin: 3rem 0;
-    text-transform: uppercase;
-    font-size: 3em;
+    margin: 3rem 0; 
+    font-size: 2.6em;
     color: ${colors.color_main_2};
   }
   h1,
@@ -89,11 +94,18 @@ const GlobalStyles = createGlobalStyle`
   p,
   button {
     font-family: 'Raleway', sans-serif;
+    font-weight:700;
   }
   
+  main.landing {
+    position:absolute;
+    max-width:1000px;
+    top:20%;
+  }
+
   .main-wrapper {
-    width: calc(100% - 300px);
-    margin-left: 300px; 
+    width: 100%;
+     
   }
   .app,
   .js-plotly-plot {
@@ -132,10 +144,10 @@ const GlobalStyles = createGlobalStyle`
     display: flex;
     background: linear-gradient(
       to right top,
-      rgba(255, 255, 255, 0.85), 
-      rgba(255, 255, 255, 0.85)
-    ),
-    url(${heroImg});
+      rgba(255, 255, 255, 0.6), 
+      rgba(255, 255, 255, 0.6)
+    ),url(${heroImg});
+    
     background-size: cover;
     background-attachment: fixed;
     background-position: center;
@@ -160,7 +172,8 @@ const App = () => (
   <Fragment>
     <Normalize />
     <GlobalStyles />
-    <SideNav />
+    {/* <SideNav /> */}
+    <TopNav />
     <div className="main-wrapper">
       <StyledApp className="app">
         <Switch>
