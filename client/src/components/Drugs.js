@@ -17,21 +17,21 @@ const StyledWrapper = styled.div`
   width: 100%;
 `;
 
-const StyledTable = styled.div`
-    
-  grid-template-columns: minmax(25%, 400px) auto auto auto;
-  border-bottom: solid 2px black;
-  margin: 10px 0;
+// const StyledTable = styled.div`
 
-  span {
-    &:nth-child(8n-3),
-    &:nth-child(8n-2),
-    &:nth-child(8n-1),
-    &:nth-child(8n) {
-      background-color: ${colors.trans_color_main_5};
-    }
-  }
-`;
+//   grid-template-columns: minmax(25%, 400px) auto auto auto;
+//   border-bottom: solid 2px black;
+//   margin: 10px 0;
+
+//   span {
+//     &:nth-child(8n-3),
+//     &:nth-child(8n-2),
+//     &:nth-child(8n-1),
+//     &:nth-child(8n) {
+//       background-color: ${colors.trans_color_main_5};
+//     }
+//   }
+// `;
 
 class Drugs extends Component {
   constructor() {

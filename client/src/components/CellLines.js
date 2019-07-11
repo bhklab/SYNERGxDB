@@ -14,21 +14,21 @@ const StyledWrapper = styled.div`
   text-align: center;
 `;
 
-const StyledTable = styled.div`
-    
-  grid-template-columns: repeat(6, auto);
+// const StyledTable = styled.div`
 
-  span {
-    &:nth-child(12n-5),
-    &:nth-child(12n-4),
-    &:nth-child(12n-3),
-    &:nth-child(12n-2),
-    &:nth-child(12n-1),
-    &:nth-child(12n) {
-      background-color: ${colors.trans_color_main_5};
-    }
-  }
-`;
+//   grid-template-columns: repeat(6, auto);
+
+//   span {
+//     &:nth-child(12n-5),
+//     &:nth-child(12n-4),
+//     &:nth-child(12n-3),
+//     &:nth-child(12n-2),
+//     &:nth-child(12n-1),
+//     &:nth-child(12n) {
+//       background-color: ${colors.trans_color_main_5};
+//     }
+//   }
+// `;
 
 class Databases extends Component {
   constructor() {
