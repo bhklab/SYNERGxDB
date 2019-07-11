@@ -73,6 +73,7 @@ class Databases extends Component {
           </span>
         ) : <span>{value.name}</span>;
       },
+      filterable: false,
     }, {
       Header: 'Cellosaurus',
       accessor: 'idCellosaurus',

@@ -4,26 +4,36 @@ const db = require('../db');
 
 const router = express.Router();
 
-router.post('/', (req, res) => {
-  const { sample, drugId1, drugId2 } = req.body;
-  console.log(sample, drugId1, drugId2);
-
+router.get('/', (req, res) => {
+  let { sample, drugId1, drugId2 } = req.query;
+  drugId1 = parseInt(drugId1, 10);
+  drugId2 = drugId2 && parseInt(drugId2, 10);
+  sample = Number.isNaN(parseInt(sample, 10)) ? sample : parseInt(sample, 10);
   // Subquery to link combo designs to respective synergy scores
   function subqueryCD() {
     let baseQuery = this.select('idCombo_Design', 'idDrugA', 'idDrugB', 'idSample as sampleId')
       .from('Combo_Design');
 
     // Checks type of the request and modifies the query accordingly
-    if (typeof (sample) === 'number') baseQuery = baseQuery.where({ idSample: sample });
+
     // Checks if drugId2 is set to 'Any'
     if (typeof (drugId2) === 'number') {
-      // Subquery to include all possible idDrugA and idDrugB combinations
-      baseQuery = baseQuery.andWhere(function () {
-        this.where({ idDrugA: drugId1, idDrugB: drugId2 });
-      })
-        .orWhere(function () {
-          this.where({ idDrugA: drugId2, idDrugB: drugId1 });
-        });
+      if (typeof (sample) === 'number') {
+        // Subquery to include all possible idDrugA and idDrugB combinations
+        baseQuery = baseQuery.andWhere(function () {
+          this.where({ idDrugA: drugId1, idDrugB: drugId2, idSample: sample });
+        })
+          .orWhere(function () {
+            this.where({ idDrugA: drugId2, idDrugB: drugId1, idSample: sample });
+          });
+      } else {
+        baseQuery = baseQuery.andWhere(function () {
+          this.where({ idDrugA: drugId1, idDrugB: drugId2 });
+        })
+          .orWhere(function () {
+            this.where({ idDrugA: drugId2, idDrugB: drugId1 });
+          });
+      }
     } else {
       baseQuery = baseQuery.where({ idDrugA: drugId1 });
     }

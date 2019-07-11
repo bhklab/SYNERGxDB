@@ -45,22 +45,23 @@ class ComboResults extends Component {
     const { location } = this.props;
     const requestParams = queryString.parse(location.search);
     const { sample, drugId1, drugId2 } = requestParams;
-    const requestBody = {
-      drugId1: parseInt(drugId1, 10),
-      drugId2: parseInt(drugId2, 10),
-    };
+    let queryParams = `?drugId1=${drugId1}`;
+    // const requestBody = {
+    //   drugId1: parseInt(drugId1, 10),
+    //   drugId2: parseInt(drugId2, 10),
+    // };
     this.setState({
       drugId1: parseInt(drugId1, 10),
       drugId2: parseInt(drugId2, 10),
     });
-    if (sample !== 'Any') requestBody.sample = parseInt(sample, 10);
-    fetch('/api/combos', {
-      method: 'POST',
+    if (drugId2 !== 'Any') queryParams = queryParams.concat(`&drugId2=${drugId2}`);
+    if (sample !== 'Any') queryParams = queryParams.concat(`&sample=${sample}`);
+    fetch('/api/combos'.concat(queryParams), {
+      method: 'GET',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(requestBody),
     })
       .then(response => response.json())
       .then((data) => {
@@ -147,37 +148,35 @@ class ComboResults extends Component {
     return (
       <Fragment>
         {showBiomarker}
-        <div className="synergy-scores">
+        <SynergyDiv>
           <h2>
             Synergy Scores, N=
             {totalSynergyScores}
           </h2>
-          <SynergyDiv>
-            <ReactTable
-              data={results}
-              columns={columns}
-              sortable={false}
-              defaultPageSize={25}
-              filterable
-              className="-striped -highlight"
-              loading={loading}
-              getTdProps={(state, rowInfo) => ({
-                onClick: (e, handleOriginal) => {
-                  handleCombo(rowInfo.index);
-                  // IMPORTANT! React-Table uses onClick internally to trigger
-                  // events like expanding SubComponents and pivots.
-                  // By default a custom 'onClick' handler will override this functionality.
-                  // If you want to fire the original onClick handler, call the
-                  // 'handleOriginal' function.
-                  if (handleOriginal) {
-                    handleOriginal();
-                  }
-                },
-              })
+          <ReactTable
+            data={results}
+            columns={columns}
+            sortable={false}
+            defaultPageSize={25}
+            filterable
+            className="-striped -highlight"
+            loading={loading}
+            getTdProps={(state, rowInfo) => ({
+              onClick: (e, handleOriginal) => {
+                handleCombo(rowInfo.index);
+                // IMPORTANT! React-Table uses onClick internally to trigger
+                // events like expanding SubComponents and pivots.
+                // By default a custom 'onClick' handler will override this functionality.
+                // If you want to fire the original onClick handler, call the
+                // 'handleOriginal' function.
+                if (handleOriginal) {
+                  handleOriginal();
+                }
+              },
+            })
             }
-            />
-          </SynergyDiv>
-        </div>
+          />
+        </SynergyDiv>
       </Fragment>
     );
   }
