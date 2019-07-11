@@ -37,6 +37,7 @@ class Datasets extends Component {
     super();
     this.state = {
       databaseData: [],
+      loading: true,
     };
   }
 
@@ -44,12 +45,12 @@ class Datasets extends Component {
     fetch('/api/datasets/')
       .then(response => response.json())
       .then((databaseData) => {
-        this.setState({ databaseData });
+        this.setState({ databaseData, loading: false });
       });
   }
 
   render() {
-    const { databaseData } = this.state;
+    const { databaseData, loading } = this.state;
     // const listOfSources = databaseData.map((item, index) => (
     // // eslint-disable-next-line react/no-array-index-key
     // <Fragment key={index}>
@@ -60,6 +61,22 @@ class Datasets extends Component {
     //   <span>{item.combo}</span>
     // </Fragment>
     // ));
+    const columns = [{
+      Header: 'Name',
+      accessor: 'name', // String-based value accessors!
+    }, {
+      Header: 'Source',
+      accessor: 'author',
+    }, {
+      Header: '# of cell lines',
+      accessor: 'no_samples',
+    }, {
+      Header: '# of drugs',
+      accessor: 'no_drugs',
+    }, {
+      Header: 'Design',
+      accessor: 'combo',
+    }];
     return (
       <Fragment>
         <header>
@@ -70,10 +87,10 @@ class Datasets extends Component {
             <ReactTable
               data={databaseData}
               columns={columns}
-              sortable={false}
-              defaultPageSize={25}
-              filterable
               className="-striped -highlight"
+              showPagination={false}
+              defaultPageSize={7}
+              loading={loading}
             />
             {/* <StyledTable className="grid-container">
               <span className="table-header">Name</span>

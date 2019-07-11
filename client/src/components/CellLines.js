@@ -35,6 +35,7 @@ class Databases extends Component {
     super();
     this.state = {
       cellLineData: [],
+      loading: true,
     };
   }
 
@@ -51,12 +52,12 @@ class Databases extends Component {
             tissue, name, sex, age, idCellosaurus, disease: { name: disease, origin },
           };
         });
-        this.setState({ cellLineData });
+        this.setState({ cellLineData, loading: false });
       });
   }
 
   render() {
-    const { cellLineData } = this.state;
+    const { cellLineData, loading } = this.state;
     // const listOfCells = cellLineData.map((cellLine, index) => (
     //   // eslint-disable-next-line react/no-array-index-key
     //   <Fragment key={index}>
@@ -121,6 +122,7 @@ class Databases extends Component {
               defaultPageSize={25}
               filterable
               className="-striped -highlight"
+              loading={loading}
             />
             {/* <StyledTable className="grid-container">
               <span className="table-header">Tissue</span>

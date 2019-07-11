@@ -38,6 +38,7 @@ class Drugs extends Component {
     super();
     this.state = {
       drugsData: [],
+      loading: true,
     };
   }
 
@@ -73,12 +74,12 @@ class Drugs extends Component {
             drug.atcCode = atc.length > 1 ? atc[0].concat(', ...') : atc[0];
           }
         });
-        this.setState({ drugsData });
+        this.setState({ drugsData, loading: false });
       });
   }
 
   render() {
-    const { drugsData } = this.state;
+    const { drugsData, loading } = this.state;
     // splits data into chunks, css grid collapses data if more than ~990 rows
     // const drugChunks = [];
     // for (let i = 0; i < drugsData.length; i += 901) {
@@ -138,6 +139,7 @@ class Drugs extends Component {
               defaultPageSize={25}
               filterable
               className="-striped -highlight"
+              loading={loading}
             />
           </StyledWrapper>
         </main>
