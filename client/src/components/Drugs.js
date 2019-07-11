@@ -17,21 +17,6 @@ const StyledWrapper = styled.div`
   width: 100%;
 `;
 
-// const StyledTable = styled.div`
-
-//   grid-template-columns: minmax(25%, 400px) auto auto auto;
-//   border-bottom: solid 2px black;
-//   margin: 10px 0;
-
-//   span {
-//     &:nth-child(8n-3),
-//     &:nth-child(8n-2),
-//     &:nth-child(8n-1),
-//     &:nth-child(8n) {
-//       background-color: ${colors.trans_color_main_5};
-//     }
-//   }
-// `;
 
 class Drugs extends Component {
   constructor() {
@@ -80,35 +65,6 @@ class Drugs extends Component {
 
   render() {
     const { drugsData, loading } = this.state;
-    // splits data into chunks, css grid collapses data if more than ~990 rows
-    // const drugChunks = [];
-    // for (let i = 0; i < drugsData.length; i += 901) {
-    //   drugChunks.push(drugsData.slice(i, i + 901));
-    // }
-    // const listOfDrugs = drugChunks.length > 0 ? drugChunks[0].map((drug, index) => (
-    //   <Fragment key={index}>
-    //     <span>{drug.name}</span>
-    //     <span>{drug.atcCode}</span>
-    //     <span><a className="hover" href={`https://pubchem.ncbi.nlm.nih.gov/compound/${drug.idPubChem}`}>{drug.idPubChem}</a></span>
-    //     <span><a className="hover" href={`https://www.drugbank.ca/drugs/${drug.idDrugBank}`}>{drug.idDrugBank}</a></span>
-    //   </Fragment>
-    // )) : null;
-    // drugChunks.shift();
-    // const restDrugs = drugChunks.map((chunk, index) => {
-    //   const chunkData = chunk.map((drug, i) => (
-    //     <Fragment key={i}>
-    //       <span>{drug.name}</span>
-    //       <span>{drug.atcCode}</span>
-    //       <span><a className="hover" href={`https://pubchem.ncbi.nlm.nih.gov/compound/${drug.idPubChem}`}>{drug.idPubChem}</a></span>
-    //       <span><a className="hover" href={`https://www.drugbank.ca/drugs/${drug.idDrugBank}`}>{drug.idDrugBank}</a></span>
-    //     </Fragment>
-    //   ));
-    //   return (
-    //     <StyledTable key={index} className="grid-container">
-    //       {chunkData}
-    //     </StyledTable>
-    //   );
-    // });
     const columns = [{
       Header: 'Name',
       accessor: 'name', // String-based value accessors!

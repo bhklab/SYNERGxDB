@@ -15,23 +15,6 @@ const StyledWrapper = styled.div`
   text-align: center;
 `;
 
-const StyledTable = styled.div`
-    
-  grid-template-columns: repeat(5, 1fr);
-  border-bottom: solid 2px black;
-  margin: 10px 0;
-
-  span {
-    &:nth-child(10n-4),
-    &:nth-child(10n-3),
-    &:nth-child(10n-2),
-    &:nth-child(10n-1),
-    &:nth-child(10n) {
-      background-color: ${colors.trans_color_main_5};
-    }
-  }
-`;
-
 class Datasets extends Component {
   constructor() {
     super();
@@ -51,16 +34,6 @@ class Datasets extends Component {
 
   render() {
     const { databaseData, loading } = this.state;
-    // const listOfSources = databaseData.map((item, index) => (
-    // // eslint-disable-next-line react/no-array-index-key
-    // <Fragment key={index}>
-    //   <span>{item.name}</span>
-    //   <span>{item.author}</span>
-    //   <span>{item.no_samples}</span>
-    //   <span>{item.no_drugs}</span>
-    //   <span>{item.combo}</span>
-    // </Fragment>
-    // ));
     const columns = [{
       Header: 'Name',
       accessor: 'name', // String-based value accessors!
@@ -92,15 +65,6 @@ class Datasets extends Component {
               defaultPageSize={7}
               loading={loading}
             />
-            {/* <StyledTable className="grid-container">
-              <span className="table-header">Name</span>
-              <span className="table-header">Source</span>
-              <span className="table-header"># of cell lines</span>
-              <span className="table-header"># of drugs</span>
-              <span className="table-header">Design</span>
-              {listOfSources}
-            </StyledTable> */}
-
           </StyledWrapper>
         </main>
         <footer>

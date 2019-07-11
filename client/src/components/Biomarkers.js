@@ -91,21 +91,7 @@ class Biomarkers extends Component {
         Header: 'Source',
         accessor: 'name',
       }];
-      // const listOfBiomarkers = results.map((biomarker, index) => (
-      //   <Fragment key={index}>
-      //     <span>{biomarker.gene}</span>
-      //     <span>{biomarker.p}</span>
-      //     <span>{biomarker.name}</span>
-      //     <span>
-      //       <input
-      //         type="radio"
-      //         value={index}
-      //         checked={index.toString() === selectedBiomarker}
-      //         onChange={this.handleSelect}
-      //       />
-      //     </span>
-      //   </Fragment>
-      // ));
+
       return (
         <Fragment>
           <StyledBiomarkers className="biomarkers">
@@ -136,13 +122,6 @@ class Biomarkers extends Component {
               })
               }
             />
-            {/* <BiomarkerDiv className="grid-container">
-              <span className="table-header">Gene Symbol</span>
-              <span className="table-header">One-way ANOVA P</span>
-              <span className="table-header">Source</span>
-              <span className="table-header">Select</span>
-              {listOfBiomarkers}
-            </BiomarkerDiv> */}
           </StyledBiomarkers>
           <BiomarkerPlot
             idDrugA={drugId1}

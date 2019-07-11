@@ -14,21 +14,6 @@ const StyledWrapper = styled.div`
   text-align: center;
 `;
 
-// const StyledTable = styled.div`
-
-//   grid-template-columns: repeat(6, auto);
-
-//   span {
-//     &:nth-child(12n-5),
-//     &:nth-child(12n-4),
-//     &:nth-child(12n-3),
-//     &:nth-child(12n-2),
-//     &:nth-child(12n-1),
-//     &:nth-child(12n) {
-//       background-color: ${colors.trans_color_main_5};
-//     }
-//   }
-// `;
 
 class Databases extends Component {
   constructor() {
@@ -58,20 +43,6 @@ class Databases extends Component {
 
   render() {
     const { cellLineData, loading } = this.state;
-    // const listOfCells = cellLineData.map((cellLine, index) => (
-    //   // eslint-disable-next-line react/no-array-index-key
-    //   <Fragment key={index}>
-    //     <span>{cellLine.tissue.toUpperCase()}</span>
-    //     <span>{cellLine.name.toUpperCase()}</span>
-    //     <span>{cellLine.sex}</span>
-    //     <span>{cellLine.age}</span>
-    //     <span>
-    //       {cellLine.disease}
-    //       {cellLine.origin ? (<em> (metastasis)</em>) : null}
-    //     </span>
-    //     <span><a className="hover" href={`https://web.expasy.org/cellosaurus/${cellLine.idCellosaurus}`}>{cellLine.idCellosaurus}</a></span>
-    //   </Fragment>
-    // ));
     const columns = [{
       Header: 'Tissue',
       accessor: 'tissue', // String-based value accessors!
@@ -124,16 +95,6 @@ class Databases extends Component {
               className="-striped -highlight"
               loading={loading}
             />
-            {/* <StyledTable className="grid-container">
-              <span className="table-header">Tissue</span>
-              <span className="table-header">Name</span>
-              <span className="table-header">Sex</span>
-              <span className="table-header">Age</span>
-              <span className="table-header">Disease</span>
-              <span className="table-header">Cellosaurus</span>
-              {listOfCells}
-            </StyledTable> */}
-
           </StyledWrapper>
         </main>
         <footer>
