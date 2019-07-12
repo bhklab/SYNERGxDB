@@ -303,19 +303,26 @@ class SearchCombos extends Component {
     const {
       drugId1, drugId2, drugsData1, drugsData2, sampleData, sample,
       selectedSample, selectedDrug1, selectedDrug2, drug2Placeholder, datasetData,
-      selectedDataset,
+      selectedDataset, dataset,
     } = this.state;
     const {
-      handleSampleSearch, handleDrug1Search, handleDrug2Search, userRedirect, handleExample,
+      handleSampleSearch, handleDrug1Search, handleDrug2Search, userRedirect,
       handleDatasetSearch,
     } = this;
 
     const isDisabled = !(drugId1 && sample && drugsData2.length > 0);
 
+    let queryParams = `?drugId1=${drugId1}`;
+    if (sample !== 'Any') queryParams = queryParams.concat(`&sample=${sample}`);
+    if (dataset !== 'Any') queryParams = queryParams.concat(`&dataset=${dataset}`);
+    if (drugId2 !== 'Any') queryParams = queryParams.concat(`&drugId2=${drugId2}`);
+    const exampleUrl = {
+      pathname: '/synergy_score',
+      search: queryParams,
+    };
+
     const searchForm = (
       <Fragment>
-
-        {/* <StyledBanner src={banner} alt="banner" /> */}
         <h1>
           SYNERGxDB is a comprehensive database to explore synergistic drug combinations for biomarker discovery.
         </h1>
@@ -361,8 +368,12 @@ class SearchCombos extends Component {
               onChange={handleDrug2Search}
             />
           </div>
-          {/* <StyledButton onClick={handleExample} type="button">Example Query</StyledButton> */}
           <ButtonContainer>
+            <span>
+            Example
+              {' '}
+              <Link to={exampleUrl} />
+            </span>
             <StyledButton onClick={userRedirect} type="button">Search</StyledButton>
           </ButtonContainer>
         </StyledForm>

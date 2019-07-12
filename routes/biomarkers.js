@@ -44,6 +44,7 @@ router.post('/fpkm', (req, res) => {
   const {
     idSource, idDrugA, idDrugB, gene, interaction,
   } = req.body;
+  console.log(idSource, idDrugA, idDrugB, gene, interaction);
   // Subquery to get list of idSample from idSource, idDrugA, idDrugB
   function subquerySL() {
     const allSample = this.distinct('cd.idSample')
@@ -80,6 +81,7 @@ router.post('/fpkm', (req, res) => {
     .andWhere({ gene_id: subqueryGI })
     .andWhere('rna.FPKM', '>', 0)
     .then((data) => {
+      console.log(data);
       res.json(data);
     });
 });

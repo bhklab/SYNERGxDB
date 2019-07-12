@@ -53,6 +53,8 @@ export default class BiomarkerPlot extends React.Component {
     const {
       idDrugA, idDrugB, idSource, gene, pValue,
     } = this.props;
+    console.log('INITIAL FETCH');
+    console.log(idSource, idDrugA, idDrugB, gene);
     this.fetchFPKM(idSource, idDrugA, idDrugB, gene, 'SYN');
     this.fetchFPKM(idSource, idDrugA, idDrugB, gene, 'MOD');
     this.fetchFPKM(idSource, idDrugA, idDrugB, gene, 'ANT');
@@ -67,6 +69,8 @@ export default class BiomarkerPlot extends React.Component {
     // Always check if new props are different before updating state to avoid infinite loops
     // idDrugA and idDrugB are not gonna change, we just need check for gene and idSource
     if (gene !== prevProps.gene || idSource !== prevProps.idSource) {
+      console.log('START FETCHING');
+      console.log(idSource, idDrugA, idDrugB, gene);
       this.fetchFPKM(idSource, idDrugA, idDrugB, gene, 'SYN');
       this.fetchFPKM(idSource, idDrugA, idDrugB, gene, 'MOD');
       this.fetchFPKM(idSource, idDrugA, idDrugB, gene, 'ANT');
