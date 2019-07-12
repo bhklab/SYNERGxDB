@@ -267,11 +267,6 @@ class SearchCombos extends Component {
         this.setState({ drugId2: null, selectedDrug2: null, drugsData2: [] });
         if (data.length > 0) {
           const drugsData = data.map(item => ({ value: item.idDrug, label: item.name }));
-          drugsData.sort((a, b) => {
-            if (a.value > b.value) return 1;
-            if (a.value < b.value) return -1;
-            return 0;
-          });
           this.setState({ drugsData2: [{ value: 'Any', label: 'Any Drug' }, ...drugsData], drug2Placeholder: 'Enter Drug B' });
         } else {
           this.setState({ drug2Placeholder: 'No drug combos for entered request parameters' });
