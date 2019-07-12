@@ -108,7 +108,9 @@ const customStyles = {
 };
 
 const ButtonContainer = styled.div`
-  width: 100%
+  width: 100%;
+  display: flex;
+  flex-direction: column;
 `;
 
 const StyledButton = styled.button`
@@ -117,7 +119,7 @@ const StyledButton = styled.button`
   border: none;
   border-radius:10px;
   padding: 20px;
-  margin: 30px 0px 15px 0px;
+  margin: 10px auto;
   color: ${colors.nav_links};
   transition: ${transitions.main_trans};
   outline-style: none;
@@ -130,7 +132,18 @@ const StyledButton = styled.button`
     font-size: 2.3em;
   }
 `;
+const ExampleSpan = styled.span`
+  font-size: 1.2rem;
+  text-align: left;
+  margin-left: 10px;
+  font-weight: bold;
 
+  a {
+    font-style: normal;
+    color:${colors.blue_main};
+    font-style: italic;
+  }
+`;
 
 const MenuList = (props) => {
   const height = 50;
@@ -311,14 +324,9 @@ class SearchCombos extends Component {
     } = this;
 
     const isDisabled = !(drugId1 && sample && drugsData2.length > 0);
-
-    let queryParams = `?drugId1=${drugId1}`;
-    if (sample !== 'Any') queryParams = queryParams.concat(`&sample=${sample}`);
-    if (dataset !== 'Any') queryParams = queryParams.concat(`&dataset=${dataset}`);
-    if (drugId2 !== 'Any') queryParams = queryParams.concat(`&drugId2=${drugId2}`);
     const exampleUrl = {
       pathname: '/synergy_score',
-      search: queryParams,
+      search: '?drugId1=11&drugId2=97',
     };
 
     const searchForm = (
@@ -369,11 +377,11 @@ class SearchCombos extends Component {
             />
           </div>
           <ButtonContainer>
-            <span>
-            Example
+            <ExampleSpan>
+            Example:
               {' '}
-              <Link to={exampleUrl} />
-            </span>
+              <Link className="hover" to={exampleUrl}>Bortezomib + Topotecan across all cell lines and datasets</Link>
+            </ExampleSpan>
             <StyledButton onClick={userRedirect} type="button">Search</StyledButton>
           </ButtonContainer>
         </StyledForm>
