@@ -158,11 +158,11 @@ class SearchCombos extends Component {
       drugId1: null,
       drugId2: null,
       sample: 'Any',
+      dataset: 'Any',
       drugsData1: [],
       drugsData2: [],
       sampleData: [],
       datasetData: [],
-      showResults: false,
       selectedSample: { value: 'Any', label: 'Any Sample' },
       selectedDrug1: null,
       selectedDrug2: null,
@@ -206,8 +206,7 @@ class SearchCombos extends Component {
       .then(response => response.json())
       .then((data) => {
         const datasets = data.map(source => ({ value: source.idSource, label: source.name }));
-        console.log(datasets);
-        this.setState({ datasetData: [...this.state.datasetData, ...datasets] });
+        this.setState({ datasetData: [{ value: 'Any', label: 'Any Dataset' }, ...datasets] });
       });
   }
 
@@ -225,11 +224,11 @@ class SearchCombos extends Component {
 
   handleDrug1Search(drugId, event) {
     const { value, label } = event;
+    const { sample, dataset } = this.state;
     this.setState({ drugId1: value, selectedDrug1: { value, label } });
-    const { sample } = this.state;
 
     // Sends a post request to the API to retrieve relevant combo drugs for drugsData2
-    if (sample) this.updateDrug2Data(sample, value);
+    if (sample && dataset) this.updateDrug2Data(sample, dataset, value);
   }
 
   handleDrug2Search(event) {
@@ -239,21 +238,22 @@ class SearchCombos extends Component {
 
   handleSampleSearch(event) {
     const { value, label } = event;
-    const { drugId1 } = this.state;
+    const { dataset, drugId1 } = this.state;
     this.setState({ sample: value, selectedSample: { value, label } });
-    if (drugId1) this.updateDrug2Data(value, drugId1);
+    if (dataset && drugId1) this.updateDrug2Data(value, dataset, drugId1);
   }
 
   handleDatasetSearch(event) {
     const { value, label } = event;
-    const { drugId1 } = this.state;
-    this.setState({ selectedDataset: { value, label } });
-    if (drugId1) this.updateDrug2Data(value, drugId1);
+    const { sample, drugId1 } = this.state;
+    this.setState({ dataset: value, selectedDataset: { value, label } });
+    if (sample && drugId1) this.updateDrug2Data(sample, value, drugId1);
   }
 
-  updateDrug2Data(sample, drugId) {
+  updateDrug2Data(sample, dataset, drugId) {
     const requestBody = { drugId };
     if (sample !== 'Any') requestBody.sample = sample;
+    if (dataset !== 'Any') requestBody.dataset = dataset;
     fetch('/api/drugs', {
       method: 'POST',
       headers: {
@@ -274,7 +274,7 @@ class SearchCombos extends Component {
           });
           this.setState({ drugsData2: [{ value: 'Any', label: 'Any Drug' }, ...drugsData], drug2Placeholder: 'Enter Drug B' });
         } else {
-          this.setState({ drug2Placeholder: 'No drug combos for this cell line and drug' });
+          this.setState({ drug2Placeholder: 'No drug combos for entered request parameters' });
         }
       });
   }
@@ -300,7 +300,7 @@ class SearchCombos extends Component {
 
   render() {
     const {
-      drugId1, drugId2, drugsData1, showResults, drugsData2, sampleData, sample,
+      drugId1, drugId2, drugsData1, drugsData2, sampleData, sample,
       selectedSample, selectedDrug1, selectedDrug2, drug2Placeholder, datasetData,
       selectedDataset,
     } = this.state;
@@ -357,14 +357,13 @@ class SearchCombos extends Component {
         <Stats />
       </Fragment>
     );
-    const displayedComponent = showResults ? <ComboResults sample={sample} drugId1={drugId1} drugId2={drugId2} /> : searchForm;
 
     return (
       <Fragment>
         <header />
         <main className="landing">
           <StyledWrapper className="wrapper">
-            {displayedComponent}
+            {searchForm}
           </StyledWrapper>
         </main>
         {/* <footer>
