@@ -11,8 +11,6 @@ import transitions from '../styles/transitions';
 
 import ComboResults from './ComboResults';
 import Stats from './Stats';
-import banner from '../images/banner.png';
-
 
 const StyledWrapper = styled.div`
   display: flex;
@@ -79,38 +77,38 @@ const StyledForm = styled.form`
 const customStyles = {
   control: (provided, state) => ({
     ...provided,
-    background:"transparent",
-    border: "1px solid white",
-    margin: "5px 0px",
+    background: 'transparent',
+    border: '1px solid white',
+    margin: '5px 0px',
     '&:hover': {
-      border: "1px solid white",
-      cursor: "text"
-    }
+      border: '1px solid white',
+      cursor: 'text',
+    },
   }),
   placeholder: (provided, state) => ({
     ...provided,
-    color:"white",
+    color: 'white',
   }),
   dropdownIndicator: (provided, state) => ({
     ...provided,
-    color: "white",
+    color: 'white',
     '&:hover': {
-      color: "white",
-      cursor: "pointer"
-    }
+      color: 'white',
+      cursor: 'pointer',
+    },
   }),
   indicatorSeparator: (provided, state) => ({
     ...provided,
-    background: "white",
+    background: 'white',
     '&:hover': {
-      background: "white",
-    }
+      background: 'white',
+    },
   }),
   singleValue: (provided, state) => ({
     ...provided,
-    color: "white",
-  })
-}
+    color: 'white',
+  }),
+};
 
 const StyledButton = styled.button`
   font-size: 2.5em;
@@ -163,10 +161,12 @@ class SearchCombos extends Component {
       drugsData1: [],
       drugsData2: [],
       sampleData: [],
+      datasetData: [],
       showResults: false,
       selectedSample: { value: 'Any', label: 'Any Sample' },
       selectedDrug1: null,
       selectedDrug2: null,
+      selectedDataset: { value: 'Any', label: 'Any Dataset' },
       drug2Placeholder: 'Enter Drug B',
     };
     this.handleDrug1Search = this.handleDrug1Search.bind(this);
@@ -174,6 +174,7 @@ class SearchCombos extends Component {
     this.handleSampleSearch = this.handleSampleSearch.bind(this);
     this.userRedirect = this.userRedirect.bind(this);
     this.handleExample = this.handleExample.bind(this);
+    this.handleDatasetSearch = this.handleDatasetSearch.bind(this);
   }
 
   componentDidMount() {
@@ -200,6 +201,13 @@ class SearchCombos extends Component {
         const tissueData = Object.keys(tissueObject).map(tissue => ({ value: tissue, label: `${tissue.toUpperCase()} (${tissueObject[tissue]} cell lines)` }));
         const cellsData = data.map(item => ({ value: item.idSample, label: `${item.name.toUpperCase()} (${item.tissue.toUpperCase()})` }));
         this.setState({ sampleData: [{ value: 'Any', label: 'Any Sample' }, ...tissueData, ...cellsData] });
+      });
+    fetch('/api/datasets/')
+      .then(response => response.json())
+      .then((data) => {
+        const datasets = data.map(source => ({ value: source.idSource, label: source.name }));
+        console.log(datasets);
+        this.setState({ datasetData: [...this.state.datasetData, ...datasets] });
       });
   }
 
@@ -231,8 +239,15 @@ class SearchCombos extends Component {
 
   handleSampleSearch(event) {
     const { value, label } = event;
-    this.setState({ sample: value, selectedSample: { value, label } });
     const { drugId1 } = this.state;
+    this.setState({ sample: value, selectedSample: { value, label } });
+    if (drugId1) this.updateDrug2Data(value, drugId1);
+  }
+
+  handleDatasetSearch(event) {
+    const { value, label } = event;
+    const { drugId1 } = this.state;
+    this.setState({ selectedDataset: { value, label } });
     if (drugId1) this.updateDrug2Data(value, drugId1);
   }
 
@@ -286,16 +301,18 @@ class SearchCombos extends Component {
   render() {
     const {
       drugId1, drugId2, drugsData1, showResults, drugsData2, sampleData, sample,
-      selectedSample, selectedDrug1, selectedDrug2, drug2Placeholder,
+      selectedSample, selectedDrug1, selectedDrug2, drug2Placeholder, datasetData,
+      selectedDataset,
     } = this.state;
     const {
       handleSampleSearch, handleDrug1Search, handleDrug2Search, userRedirect, handleExample,
+      handleDatasetSearch,
     } = this;
 
     const isDisabled = !(drugId1 && sample && drugsData2.length > 0);
     const searchForm = (
       <Fragment>
-        
+
         {/* <StyledBanner src={banner} alt="banner" /> */}
         <h1>
           SYNERGxDB is a comprehensive database to explore synergistic drug combinations for biomarker discovery.
@@ -308,6 +325,14 @@ class SearchCombos extends Component {
             placeholder="Enter Cell Line or Tissue"
             onChange={handleSampleSearch}
             value={selectedSample}
+          />
+          <Select
+            components={{ MenuList }}
+            styles={customStyles}
+            options={datasetData}
+            placeholder="Enter Dataset"
+            value={selectedDataset}
+            onChange={handleDatasetSearch}
           />
           <Select
             components={{ MenuList }}
