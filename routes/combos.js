@@ -5,9 +5,12 @@ const db = require('../db');
 const router = express.Router();
 
 router.get('/', (req, res) => {
-  let { sample, drugId1, drugId2 } = req.query;
+  let {
+    sample, drugId1, drugId2, dataset,
+  } = req.query;
   drugId1 = parseInt(drugId1, 10);
   drugId2 = drugId2 && parseInt(drugId2, 10);
+  dataset = dataset && parseInt(dataset, 10);
   sample = Number.isNaN(parseInt(sample, 10)) ? sample : parseInt(sample, 10);
   // Subquery to link combo designs to respective synergy scores
   function subqueryCD() {
@@ -66,7 +69,14 @@ router.get('/', (req, res) => {
   }
   // Links synergy scores to existing data
   function subquerySS() {
-    this.select('idSample', 'bliss', 'loewe', 'hsa', 'zip', 'sampleName', 'drugNameA', 'drugNameB', 'tissue', 'idSource as sourceId', 'idDrugA', 'idDrugB')
+    if (dataset) {
+      return this.select('idSample', 'bliss', 'loewe', 'hsa', 'zip', 'sampleName', 'drugNameA', 'drugNameB', 'tissue', 'idSource as sourceId', 'idDrugA', 'idDrugB')
+        .from(subqueryD2)
+        .join('Synergy_Score', 'D2.idCombo_Design', '=', 'Synergy_Score.idSynergy_Score')
+        .where({ idSource: dataset })
+        .as('SS');
+    }
+    return this.select('idSample', 'bliss', 'loewe', 'hsa', 'zip', 'sampleName', 'drugNameA', 'drugNameB', 'tissue', 'idSource as sourceId', 'idDrugA', 'idDrugB')
       .from(subqueryD2)
       .join('Synergy_Score', 'D2.idCombo_Design', '=', 'Synergy_Score.idSynergy_Score')
       .as('SS');

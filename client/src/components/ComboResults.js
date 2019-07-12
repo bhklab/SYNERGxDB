@@ -2,13 +2,12 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/no-array-index-key */
 import React, { Component, Fragment } from 'react';
-import { Link } from 'react-router-dom';
 import queryString from 'query-string';
 import styled from 'styled-components';
 import ReactTable from 'react-table';
 import colors from '../styles/colors';
 import 'react-table/react-table.css';
-import transitions from '../styles/transitions';
+// import transitions from '../styles/transitions';
 
 import Biomarkers from './Biomarkers';
 
@@ -20,15 +19,6 @@ const SynergyDiv = styled.div`
   }
 `;
 
-const StyledRow = styled.div`
-  display: contents;
-  transition: ${transitions.main_trans};
-  
-  &:nth-child(n):hover span {
-    background-color: ${colors.trans_color_main_4};
-  }
-`;
-
 class ComboResults extends Component {
   constructor() {
     super();
@@ -37,6 +27,7 @@ class ComboResults extends Component {
       drugId1: null,
       drugId2: null,
       loading: true,
+      dataset: null,
     };
     this.handleCombo = this.handleCombo.bind(this);
   }
@@ -44,18 +35,18 @@ class ComboResults extends Component {
   componentDidMount() {
     const { location } = this.props;
     const requestParams = queryString.parse(location.search);
-    const { sample, drugId1, drugId2 } = requestParams;
+    const {
+      sample, drugId1, drugId2, dataset,
+    } = requestParams;
     let queryParams = `?drugId1=${drugId1}`;
-    // const requestBody = {
-    //   drugId1: parseInt(drugId1, 10),
-    //   drugId2: parseInt(drugId2, 10),
-    // };
     this.setState({
       drugId1: parseInt(drugId1, 10),
       drugId2: parseInt(drugId2, 10),
+      dataset: parseInt(dataset, 10),
     });
-    if (drugId2 !== 'Any') queryParams = queryParams.concat(`&drugId2=${drugId2}`);
-    if (sample !== 'Any') queryParams = queryParams.concat(`&sample=${sample}`);
+    if (sample) queryParams = queryParams.concat(`&sample=${sample}`);
+    if (dataset) queryParams = queryParams.concat(`&dataset=${dataset}`);
+    if (drugId2) queryParams = queryParams.concat(`&drugId2=${drugId2}`);
     fetch('/api/combos'.concat(queryParams), {
       method: 'GET',
       headers: {
@@ -83,10 +74,10 @@ class ComboResults extends Component {
 
   render() {
     const {
-      results, drugId1, drugId2, loading,
+      results, drugId1, drugId2, loading, dataset,
     } = this.state;
     const { handleCombo } = this;
-    const showBiomarker = typeof drugId2 === 'number' && <Biomarkers drugId1={drugId1} drugId2={drugId2} sourceName={results} />;
+    const showBiomarker = typeof drugId2 === 'number' && <Biomarkers drugId1={drugId1} drugId2={drugId2} sourceName={results} dataset={dataset} />;
     const totalSynergyScores = results.length;
     // Process zip, hsa, loewe and bliss scores into renderable format
     const showScore = (props) => {

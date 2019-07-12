@@ -13,4 +13,5 @@ export default {
   nav_links: '#3a5386',
   nav_bg: '#ffffff',
   nav_link_hov: '#efa127',
+  blue_main: '#3a5386',
 };
