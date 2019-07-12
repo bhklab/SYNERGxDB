@@ -27,6 +27,7 @@ class ComboResults extends Component {
       drugId1: null,
       drugId2: null,
       loading: true,
+      dataset: null,
     };
     this.handleCombo = this.handleCombo.bind(this);
   }
@@ -38,13 +39,10 @@ class ComboResults extends Component {
       sample, drugId1, drugId2, dataset,
     } = requestParams;
     let queryParams = `?drugId1=${drugId1}`;
-    // const requestBody = {
-    //   drugId1: parseInt(drugId1, 10),
-    //   drugId2: parseInt(drugId2, 10),
-    // };
     this.setState({
       drugId1: parseInt(drugId1, 10),
       drugId2: parseInt(drugId2, 10),
+      dataset: parseInt(dataset, 10),
     });
     if (sample) queryParams = queryParams.concat(`&sample=${sample}`);
     if (dataset) queryParams = queryParams.concat(`&dataset=${dataset}`);
@@ -76,10 +74,10 @@ class ComboResults extends Component {
 
   render() {
     const {
-      results, drugId1, drugId2, loading,
+      results, drugId1, drugId2, loading, dataset,
     } = this.state;
     const { handleCombo } = this;
-    const showBiomarker = typeof drugId2 === 'number' && <Biomarkers drugId1={drugId1} drugId2={drugId2} sourceName={results} />;
+    const showBiomarker = typeof drugId2 === 'number' && <Biomarkers drugId1={drugId1} drugId2={drugId2} sourceName={results} dataset={dataset} />;
     const totalSynergyScores = results.length;
     // Process zip, hsa, loewe and bliss scores into renderable format
     const showScore = (props) => {
