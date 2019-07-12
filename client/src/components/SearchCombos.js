@@ -8,8 +8,6 @@ import Select from 'react-select';
 import { FixedSizeList as List } from 'react-window';
 import colors from '../styles/colors';
 import transitions from '../styles/transitions';
-
-import ComboResults from './ComboResults';
 import Stats from './Stats';
 
 const StyledWrapper = styled.div`
@@ -23,14 +21,7 @@ const StyledWrapper = styled.div`
     color: ${colors.nav_links};
     font-family:'Raleway', sans-serif;
     font-weight:700;
-    
   }
-  
-`;
-
-const StyledBanner = styled.img`
-  max-width: 500px;
-  max-height: 400px;
 `;
 
 const StyledForm = styled.form`
@@ -42,8 +33,14 @@ const StyledForm = styled.form`
   padding:25px;
   text-align: center;
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: space-around
   align-items: center;
+
+  .select-container {
+    min-width: 300px;
+    max-width: 49%
+  }
   
   .button-container {
     min-width: 300px;
@@ -75,7 +72,7 @@ const StyledForm = styled.form`
 `;
 
 const customStyles = {
-  control: (provided, state) => ({
+  control: provided => ({
     ...provided,
     background: 'transparent',
     border: '1px solid white',
@@ -85,11 +82,11 @@ const customStyles = {
       cursor: 'text',
     },
   }),
-  placeholder: (provided, state) => ({
+  placeholder: provided => ({
     ...provided,
     color: 'white',
   }),
-  dropdownIndicator: (provided, state) => ({
+  dropdownIndicator: provided => ({
     ...provided,
     color: 'white',
     '&:hover': {
@@ -97,18 +94,22 @@ const customStyles = {
       cursor: 'pointer',
     },
   }),
-  indicatorSeparator: (provided, state) => ({
+  indicatorSeparator: provided => ({
     ...provided,
     background: 'white',
     '&:hover': {
       background: 'white',
     },
   }),
-  singleValue: (provided, state) => ({
+  singleValue: provided => ({
     ...provided,
     color: 'white',
   }),
 };
+
+const ButtonContainer = styled.div`
+  width: 100%
+`;
 
 const StyledButton = styled.button`
   font-size: 2.5em;
@@ -319,41 +320,51 @@ class SearchCombos extends Component {
           SYNERGxDB is a comprehensive database to explore synergistic drug combinations for biomarker discovery.
         </h1>
         <StyledForm className="search-combos">
-          <Select
-            components={{ MenuList }}
-            styles={customStyles}
-            options={sampleData}
-            placeholder="Enter Cell Line or Tissue"
-            onChange={handleSampleSearch}
-            value={selectedSample}
-          />
-          <Select
-            components={{ MenuList }}
-            styles={customStyles}
-            options={datasetData}
-            placeholder="Enter Dataset"
-            value={selectedDataset}
-            onChange={handleDatasetSearch}
-          />
-          <Select
-            components={{ MenuList }}
-            styles={customStyles}
-            options={drugsData1}
-            placeholder="Enter Drug A"
-            onChange={e => handleDrug1Search('drugId1', e)}
-            value={selectedDrug1}
-          />
-          <Select
-            components={{ MenuList }}
-            styles={customStyles}
-            options={drugsData2}
-            isDisabled={isDisabled}
-            placeholder={drug2Placeholder}
-            value={selectedDrug2}
-            onChange={handleDrug2Search}
-          />
+          <div className="select-container">
+            <Select
+              components={{ MenuList }}
+              styles={customStyles}
+              options={sampleData}
+              placeholder="Enter Cell Line or Tissue"
+              onChange={handleSampleSearch}
+              value={selectedSample}
+            />
+          </div>
+          <div className="select-container">
+            <Select
+              components={{ MenuList }}
+              styles={customStyles}
+              options={drugsData1}
+              placeholder="Enter Drug A"
+              onChange={e => handleDrug1Search('drugId1', e)}
+              value={selectedDrug1}
+            />
+          </div>
+          <div className="select-container">
+            <Select
+              components={{ MenuList }}
+              styles={customStyles}
+              options={datasetData}
+              placeholder="Enter Dataset"
+              value={selectedDataset}
+              onChange={handleDatasetSearch}
+            />
+          </div>
+          <div className="select-container">
+            <Select
+              components={{ MenuList }}
+              styles={customStyles}
+              options={drugsData2}
+              isDisabled={isDisabled}
+              placeholder={drug2Placeholder}
+              value={selectedDrug2}
+              onChange={handleDrug2Search}
+            />
+          </div>
           {/* <StyledButton onClick={handleExample} type="button">Example Query</StyledButton> */}
-          <StyledButton onClick={userRedirect} type="button">Search</StyledButton>
+          <ButtonContainer>
+            <StyledButton onClick={userRedirect} type="button">Search</StyledButton>
+          </ButtonContainer>
         </StyledForm>
         <Stats />
       </Fragment>

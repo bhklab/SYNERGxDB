@@ -54,6 +54,7 @@ router.post('/fpkm', (req, res) => {
         idDrugA,
         idDrugB,
       });
+    // eslint-disable-next-line default-case
     switch (interaction) {
       case 'SYN':
         return allSample.andWhere('ZIP', '>', 0.2);
