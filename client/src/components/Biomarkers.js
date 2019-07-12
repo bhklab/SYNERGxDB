@@ -44,7 +44,7 @@ class Biomarkers extends Component {
   }
 
   componentDidMount() {
-    const { drugId1, drugId2 } = this.props;
+    const { drugId1, drugId2, dataset } = this.props;
     fetch('/api/biomarkers', {
       method: 'POST',
       headers: {
@@ -54,6 +54,7 @@ class Biomarkers extends Component {
       body: JSON.stringify({
         drugId1,
         drugId2,
+        dataset,
       }),
     })
       .then(response => response.json())
@@ -79,7 +80,9 @@ class Biomarkers extends Component {
     const {
       biomarkerData, results, selectedBiomarker, loading,
     } = this.state;
-    const { drugId1, drugId2, sourceName } = this.props;
+    const {
+      drugId1, drugId2, sourceName, dataset,
+    } = this.props;
     if (biomarkerData) {
       const columns = [{
         Header: 'Gene Symbol',

@@ -8,7 +8,7 @@ router.get('/datasets', (req, res, next) => {
     idSource,
   } = req.query;
   const baseQuery = db('Source')
-    .select('name', 'no_samples', 'no_drugs', 'author', 'combo', 'pmID');
+    .select();
 
   if (idSource) {
     baseQuery

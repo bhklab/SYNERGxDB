@@ -2,17 +2,13 @@
 /* eslint-disable max-len */
 /* eslint-disable no-plusplus */
 import React, { Component, Fragment } from 'react';
-import { withRouter } from 'react-router-dom';
+import { withRouter, Link } from 'react-router-dom';
 import styled from 'styled-components';
 import Select from 'react-select';
 import { FixedSizeList as List } from 'react-window';
 import colors from '../styles/colors';
 import transitions from '../styles/transitions';
-
-import ComboResults from './ComboResults';
 import Stats from './Stats';
-import banner from '../images/banner.png';
-
 
 const StyledWrapper = styled.div`
   display: flex;
@@ -25,14 +21,7 @@ const StyledWrapper = styled.div`
     color: ${colors.nav_links};
     font-family:'Raleway', sans-serif;
     font-weight:700;
-    
   }
-  
-`;
-
-const StyledBanner = styled.img`
-  max-width: 500px;
-  max-height: 400px;
 `;
 
 const StyledForm = styled.form`
@@ -44,8 +33,14 @@ const StyledForm = styled.form`
   padding:25px;
   text-align: center;
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: space-around
   align-items: center;
+
+  .select-container {
+    min-width: 300px;
+    max-width: 49%
+  }
   
   .button-container {
     min-width: 300px;
@@ -77,40 +72,46 @@ const StyledForm = styled.form`
 `;
 
 const customStyles = {
-  control: (provided, state) => ({
+  control: provided => ({
     ...provided,
-    background:"transparent",
-    border: "1px solid white",
-    margin: "5px 0px",
+    background: 'transparent',
+    border: '1px solid white',
+    margin: '5px 0px',
     '&:hover': {
-      border: "1px solid white",
-      cursor: "text"
-    }
+      border: '1px solid white',
+      cursor: 'text',
+    },
   }),
-  placeholder: (provided, state) => ({
+  placeholder: provided => ({
     ...provided,
-    color:"white",
+    color: 'white',
   }),
-  dropdownIndicator: (provided, state) => ({
+  dropdownIndicator: provided => ({
     ...provided,
-    color: "white",
+    color: 'white',
     '&:hover': {
-      color: "white",
-      cursor: "pointer"
-    }
+      color: 'white',
+      cursor: 'pointer',
+    },
   }),
-  indicatorSeparator: (provided, state) => ({
+  indicatorSeparator: provided => ({
     ...provided,
-    background: "white",
+    background: 'white',
     '&:hover': {
-      background: "white",
-    }
+      background: 'white',
+    },
   }),
-  singleValue: (provided, state) => ({
+  singleValue: provided => ({
     ...provided,
-    color: "white",
-  })
-}
+    color: 'white',
+  }),
+};
+
+const ButtonContainer = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+`;
 
 const StyledButton = styled.button`
   font-size: 2.5em;
@@ -118,7 +119,7 @@ const StyledButton = styled.button`
   border: none;
   border-radius:10px;
   padding: 20px;
-  margin: 30px 0px 15px 0px;
+  margin: 10px auto;
   color: ${colors.nav_links};
   transition: ${transitions.main_trans};
   outline-style: none;
@@ -131,7 +132,18 @@ const StyledButton = styled.button`
     font-size: 2.3em;
   }
 `;
+const ExampleSpan = styled.span`
+  font-size: 1.2rem;
+  text-align: left;
+  margin-left: 10px;
+  font-weight: bold;
 
+  a {
+    font-style: normal;
+    color:${colors.blue_main};
+    font-style: italic;
+  }
+`;
 
 const MenuList = (props) => {
   const height = 50;
@@ -160,13 +172,15 @@ class SearchCombos extends Component {
       drugId1: null,
       drugId2: null,
       sample: 'Any',
+      dataset: 'Any',
       drugsData1: [],
       drugsData2: [],
       sampleData: [],
-      showResults: false,
+      datasetData: [],
       selectedSample: { value: 'Any', label: 'Any Sample' },
       selectedDrug1: null,
       selectedDrug2: null,
+      selectedDataset: { value: 'Any', label: 'Any Dataset' },
       drug2Placeholder: 'Enter Drug B',
     };
     this.handleDrug1Search = this.handleDrug1Search.bind(this);
@@ -174,6 +188,7 @@ class SearchCombos extends Component {
     this.handleSampleSearch = this.handleSampleSearch.bind(this);
     this.userRedirect = this.userRedirect.bind(this);
     this.handleExample = this.handleExample.bind(this);
+    this.handleDatasetSearch = this.handleDatasetSearch.bind(this);
   }
 
   componentDidMount() {
@@ -201,27 +216,38 @@ class SearchCombos extends Component {
         const cellsData = data.map(item => ({ value: item.idSample, label: `${item.name.toUpperCase()} (${item.tissue.toUpperCase()})` }));
         this.setState({ sampleData: [{ value: 'Any', label: 'Any Sample' }, ...tissueData, ...cellsData] });
       });
+    fetch('/api/datasets/')
+      .then(response => response.json())
+      .then((data) => {
+        const datasets = data.map(source => ({ value: source.idSource, label: source.name }));
+        this.setState({ datasetData: [{ value: 'Any', label: 'Any Dataset' }, ...datasets] });
+      });
   }
 
   userRedirect() {
     const {
-      drugId1, drugId2, sample,
+      drugId1, drugId2, sample, dataset,
     } = this.state;
-    if (drugId1 && drugId2 && sample) {
+    if (drugId1 && drugId2 && sample && dataset) {
       const { history } = this.props;
+      let queryParams = `?drugId1=${drugId1}`;
+
+      if (sample !== 'Any') queryParams = queryParams.concat(`&sample=${sample}`);
+      if (dataset !== 'Any') queryParams = queryParams.concat(`&dataset=${dataset}`);
+      if (drugId2 !== 'Any') queryParams = queryParams.concat(`&drugId2=${drugId2}`);
       // Redirects user to synergy scores page
-      history.push(`/synergy_score?drugId1=${drugId1}&drugId2=${drugId2}&sample=${sample}`);
+      history.push('/synergy_score'.concat(queryParams));
     }
     return null;
   }
 
   handleDrug1Search(drugId, event) {
     const { value, label } = event;
+    const { sample, dataset } = this.state;
     this.setState({ drugId1: value, selectedDrug1: { value, label } });
-    const { sample } = this.state;
 
     // Sends a post request to the API to retrieve relevant combo drugs for drugsData2
-    if (sample) this.updateDrug2Data(sample, value);
+    if (sample && dataset) this.updateDrug2Data(sample, dataset, value);
   }
 
   handleDrug2Search(event) {
@@ -231,14 +257,22 @@ class SearchCombos extends Component {
 
   handleSampleSearch(event) {
     const { value, label } = event;
+    const { dataset, drugId1 } = this.state;
     this.setState({ sample: value, selectedSample: { value, label } });
-    const { drugId1 } = this.state;
-    if (drugId1) this.updateDrug2Data(value, drugId1);
+    if (dataset && drugId1) this.updateDrug2Data(value, dataset, drugId1);
   }
 
-  updateDrug2Data(sample, drugId) {
+  handleDatasetSearch(event) {
+    const { value, label } = event;
+    const { sample, drugId1 } = this.state;
+    this.setState({ dataset: value, selectedDataset: { value, label } });
+    if (sample && drugId1) this.updateDrug2Data(sample, value, drugId1);
+  }
+
+  updateDrug2Data(sample, dataset, drugId) {
     const requestBody = { drugId };
     if (sample !== 'Any') requestBody.sample = sample;
+    if (dataset !== 'Any') requestBody.dataset = dataset;
     fetch('/api/drugs', {
       method: 'POST',
       headers: {
@@ -252,14 +286,9 @@ class SearchCombos extends Component {
         this.setState({ drugId2: null, selectedDrug2: null, drugsData2: [] });
         if (data.length > 0) {
           const drugsData = data.map(item => ({ value: item.idDrug, label: item.name }));
-          drugsData.sort((a, b) => {
-            if (a.value > b.value) return 1;
-            if (a.value < b.value) return -1;
-            return 0;
-          });
           this.setState({ drugsData2: [{ value: 'Any', label: 'Any Drug' }, ...drugsData], drug2Placeholder: 'Enter Drug B' });
         } else {
-          this.setState({ drug2Placeholder: 'No drug combos for this cell line and drug' });
+          this.setState({ drug2Placeholder: 'No drug combos for entered request parameters' });
         }
       });
   }
@@ -285,61 +314,87 @@ class SearchCombos extends Component {
 
   render() {
     const {
-      drugId1, drugId2, drugsData1, showResults, drugsData2, sampleData, sample,
-      selectedSample, selectedDrug1, selectedDrug2, drug2Placeholder,
+      drugId1, drugId2, drugsData1, drugsData2, sampleData, sample,
+      selectedSample, selectedDrug1, selectedDrug2, drug2Placeholder, datasetData,
+      selectedDataset, dataset,
     } = this.state;
     const {
-      handleSampleSearch, handleDrug1Search, handleDrug2Search, userRedirect, handleExample,
+      handleSampleSearch, handleDrug1Search, handleDrug2Search, userRedirect,
+      handleDatasetSearch,
     } = this;
 
     const isDisabled = !(drugId1 && sample && drugsData2.length > 0);
+    const exampleUrl = {
+      pathname: '/synergy_score',
+      search: '?drugId1=11&drugId2=97',
+    };
+
     const searchForm = (
       <Fragment>
-        
-        {/* <StyledBanner src={banner} alt="banner" /> */}
         <h1>
           SYNERGxDB is a comprehensive database to explore synergistic drug combinations for biomarker discovery.
         </h1>
         <StyledForm className="search-combos">
-          <Select
-            components={{ MenuList }}
-            styles={customStyles}
-            options={sampleData}
-            placeholder="Enter Cell Line or Tissue"
-            onChange={handleSampleSearch}
-            value={selectedSample}
-          />
-          <Select
-            components={{ MenuList }}
-            styles={customStyles}
-            options={drugsData1}
-            placeholder="Enter Drug A"
-            onChange={e => handleDrug1Search('drugId1', e)}
-            value={selectedDrug1}
-          />
-          <Select
-            components={{ MenuList }}
-            styles={customStyles}
-            options={drugsData2}
-            isDisabled={isDisabled}
-            placeholder={drug2Placeholder}
-            value={selectedDrug2}
-            onChange={handleDrug2Search}
-          />
-          {/* <StyledButton onClick={handleExample} type="button">Example Query</StyledButton> */}
-          <StyledButton onClick={userRedirect} type="button">Search</StyledButton>
+          <div className="select-container">
+            <Select
+              components={{ MenuList }}
+              styles={customStyles}
+              options={sampleData}
+              placeholder="Enter Cell Line or Tissue"
+              onChange={handleSampleSearch}
+              value={selectedSample}
+            />
+          </div>
+          <div className="select-container">
+            <Select
+              components={{ MenuList }}
+              styles={customStyles}
+              options={drugsData1}
+              placeholder="Enter Drug A"
+              onChange={e => handleDrug1Search('drugId1', e)}
+              value={selectedDrug1}
+            />
+          </div>
+          <div className="select-container">
+            <Select
+              components={{ MenuList }}
+              styles={customStyles}
+              options={datasetData}
+              placeholder="Enter Dataset"
+              value={selectedDataset}
+              onChange={handleDatasetSearch}
+            />
+          </div>
+          <div className="select-container">
+            <Select
+              components={{ MenuList }}
+              styles={customStyles}
+              options={drugsData2}
+              isDisabled={isDisabled}
+              placeholder={drug2Placeholder}
+              value={selectedDrug2}
+              onChange={handleDrug2Search}
+            />
+          </div>
+          <ButtonContainer>
+            <ExampleSpan>
+            Example:
+              {' '}
+              <Link className="hover" to={exampleUrl}>Bortezomib + Topotecan across all cell lines and datasets</Link>
+            </ExampleSpan>
+            <StyledButton onClick={userRedirect} type="button">Search</StyledButton>
+          </ButtonContainer>
         </StyledForm>
         <Stats />
       </Fragment>
     );
-    const displayedComponent = showResults ? <ComboResults sample={sample} drugId1={drugId1} drugId2={drugId2} /> : searchForm;
 
     return (
       <Fragment>
         <header />
         <main className="landing">
           <StyledWrapper className="wrapper">
-            {displayedComponent}
+            {searchForm}
           </StyledWrapper>
         </main>
         {/* <footer>
