@@ -105,6 +105,13 @@ const customStyles = {
     ...provided,
     color: 'white',
   }),
+  option: (provided, state) => ({
+    ...provided,
+    'text-align': state.isDisabled ? 'left' : 'center',
+    'font-weight': state.isDisabled ? '700' : state.isSelected ? '700' : '400',
+    background: state.isDisabled ? colors.color_main_2 : 'white',
+    color: state.isSelected ? colors.color_main_2 : 'black',
+  }),
 };
 
 const ButtonContainer = styled.div`
@@ -144,6 +151,19 @@ const ExampleSpan = styled.span`
     font-style: italic;
   }
 `;
+
+// Wraps the react-select to use a better filter method, current one relies on indexOf which isn't great for searching large lists
+// New custom search matches if all words in box are found anywhere in the option.label, case in-sensitive
+const customFilterOption = (option, rawInput) => {
+  if (option.data.isDisabled) {
+    return true;
+  }
+  const words = rawInput.split(' ');
+  return words.reduce(
+    (acc, cur) => acc && option.label.toLowerCase().includes(cur.toLowerCase()),
+    true,
+  );
+};
 
 const MenuList = (props) => {
   const height = 50;
@@ -214,7 +234,19 @@ class SearchCombos extends Component {
         // const tissueData = tissueList.map(item => ({ value: item, label: item }));
         const tissueData = Object.keys(tissueObject).map(tissue => ({ value: tissue, label: `${tissue.toUpperCase()} (${tissueObject[tissue]} cell lines)` }));
         const cellsData = data.map(item => ({ value: item.idSample, label: `${item.name.toUpperCase()} (${item.tissue.toUpperCase()})` }));
-        this.setState({ sampleData: [{ value: 'Any', label: 'Any Sample' }, ...tissueData, ...cellsData] });
+        this.setState({
+          sampleData: [
+            { value: 'Any', label: 'Any Sample' },
+            {
+              value: 'Tissue', label: 'Tissues', isDisabled: true, isSearchable: false,
+            },
+            ...tissueData,
+            {
+              value: 'Cells', label: 'Cell Lines', isDisabled: true, isSearchable: false,
+            },
+            ...cellsData,
+          ],
+        });
       });
     fetch('/api/datasets/')
       .then(response => response.json())
@@ -343,6 +375,7 @@ class SearchCombos extends Component {
               placeholder="Enter Cell Line or Tissue"
               onChange={handleSampleSearch}
               value={selectedSample}
+              filterOption={customFilterOption}
             />
           </div>
           <div className="select-container">
@@ -353,6 +386,7 @@ class SearchCombos extends Component {
               placeholder="Enter Drug A"
               onChange={e => handleDrug1Search('drugId1', e)}
               value={selectedDrug1}
+              filterOption={customFilterOption}
             />
           </div>
           <div className="select-container">
@@ -363,6 +397,7 @@ class SearchCombos extends Component {
               placeholder="Enter Dataset"
               value={selectedDataset}
               onChange={handleDatasetSearch}
+              filterOption={customFilterOption}
             />
           </div>
           <div className="select-container">
@@ -374,6 +409,7 @@ class SearchCombos extends Component {
               placeholder={drug2Placeholder}
               value={selectedDrug2}
               onChange={handleDrug2Search}
+              filterOption={customFilterOption}
             />
           </div>
           <ButtonContainer>
