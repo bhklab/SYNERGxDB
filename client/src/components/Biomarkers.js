@@ -120,7 +120,7 @@ class Biomarkers extends Component {
                   }
                 },
                 style: {
-                  background: rowInfo.index === selectedBiomarker ? colors.trans_color_accent_1 : 'transparent',
+                  background: rowInfo.index === selectedBiomarker ? colors.trans_color_main_2 : 'transparent',
                 },
               })
               }

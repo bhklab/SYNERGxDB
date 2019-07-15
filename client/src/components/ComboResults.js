@@ -15,7 +15,7 @@ const SynergyDiv = styled.div`
   width: 100%;
 
   .rt-tr-group:hover {
-    background-color: ${colors.trans_color_main_4}
+    background-color: ${colors.trans_color_main_5}
   }
 `;
 
