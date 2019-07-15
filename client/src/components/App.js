@@ -54,6 +54,9 @@ const GlobalStyles = createGlobalStyle`
   h1 {
     margin: 3rem 0; 
     font-size: 2.6em;
+  }
+  h1,
+  h2 {
     color: ${colors.color_main_2};
   }
   h1,
