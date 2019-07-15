@@ -1,8 +1,14 @@
 /* eslint-disable react/prop-types */
 import React, { Component } from 'react';
 import queryString from 'query-string';
-// import styled from 'styled-components';
+import styled from 'styled-components';
 // import colors from '../styles/colors';
+
+const StyledSummary = styled.div`
+  p {
+    font-weight: 400;
+  }
+`;
 
 
 export default class ComboDetails extends Component {

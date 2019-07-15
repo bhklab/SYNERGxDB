@@ -144,6 +144,7 @@ const GlobalStyles = createGlobalStyle`
       color: ${colors.color_main_4}
     }
   }
+
   .ReactTable {
     width: 100%;
     text-align: left;
