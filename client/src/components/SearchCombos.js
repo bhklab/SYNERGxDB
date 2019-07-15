@@ -107,8 +107,8 @@ const customStyles = {
   }),
   option: (provided, state) => ({
     ...provided,
-    'text-align': state.isDisabled ? 'left' : 'center',
-    'font-weight': state.isDisabled ? '700' : state.isSelected ? '700' : '400',
+    textAlign: state.isDisabled ? 'left' : 'center',
+    fontWeight: state.isDisabled ? '700' : state.isSelected ? '700' : '400',
     background: state.isDisabled ? colors.color_main_2 : 'white',
     color: state.isSelected ? colors.color_main_2 : 'black',
   }),
