@@ -7,7 +7,7 @@ import colors from '../styles/colors';
 import 'react-table/react-table.css';
 // import transitions from '../styles/transitions';
 
-import BiomarkerPlot from './BiomarkerPlot';
+import BiomarkerPlot from './Plots/BiomarkerPlot';
 
 const StyledBiomarkers = styled.div`
   width: 100%;

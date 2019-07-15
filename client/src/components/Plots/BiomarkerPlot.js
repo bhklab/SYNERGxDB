@@ -2,7 +2,7 @@
 import React from 'react';
 import Plot from 'react-plotly.js';
 
-import colors from '../styles/colors';
+import colors from '../../styles/colors';
 
 export default class BiomarkerPlot extends React.Component {
   // Defining initial state and layout

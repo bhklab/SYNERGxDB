@@ -8,6 +8,9 @@ import drugbank from '../images/logos/drugbank.svg';
 import pubchem from '../images/logos/pubchem.gif';
 import pubmed from '../images/logos/pubmed.png';
 
+import CumulativeDensity from './Plots/CumulativeDensity';
+
+
 const StyledSummary = styled.div`
   p {
     font-weight: 400;
@@ -143,6 +146,7 @@ export default class ComboDetails extends Component {
               {' '}
               <a className="hover" href={`https://www.ncbi.nlm.nih.gov/pubmed/${sourceData.pmID}`} rel="noopener noreferrer" target="_blank"><Logo src={pubmed} alt="Pubmed" /></a>
             </p>
+            <CumulativeDensity />
           </StyledSummary>
         </header>
       </SynergyDetail>
