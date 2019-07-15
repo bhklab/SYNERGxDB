@@ -12,7 +12,10 @@ const StyledWrapper = styled.div`
   justify-content: center;
   align-items: center;
   text-align: center;
+  background:white;
+  padding:0px 30px;
 `;
+
 
 
 class Databases extends Component {
@@ -39,6 +42,8 @@ class Databases extends Component {
         });
         this.setState({ cellLineData, loading: false });
       });
+
+    
   }
 
   render() {
@@ -81,29 +86,29 @@ class Databases extends Component {
       maxWidth: 125,
     }];
     return (
-      <Fragment>
-        <header>
-          <h1>List of Cell Lines</h1>
-        </header>
-        <main>
-          <StyledWrapper className="wrapper">
-            <ReactTable
-              data={cellLineData}
-              columns={columns}
-              sortable={false}
-              defaultPageSize={25}
-              filterable
-              className="-striped -highlight"
-              loading={loading}
-            />
-          </StyledWrapper>
-        </main>
-        <footer>
-          <div className="wrapper">
-            <p>Copyright © 2019. All rights reserved</p>
-          </div>
-        </footer>
-      </Fragment>
+      
+        <Fragment>
+          <style>{'#root { background: #e7f3f8 !important; }'}</style>
+          <main className="summary">
+            <StyledWrapper className="wrapper">
+            <h1>List of Cell Lines</h1>
+              <ReactTable
+                data={cellLineData}
+                columns={columns}
+                sortable={false}
+                defaultPageSize={25}
+                filterable
+                className="-highlight"
+                loading={loading}
+              />
+            </StyledWrapper>
+          </main>
+          <footer>
+            <div className="wrapper">
+              <p>Copyright © 2019. All rights reserved</p>
+            </div>
+          </footer>
+        </Fragment>
     );
   }
 }

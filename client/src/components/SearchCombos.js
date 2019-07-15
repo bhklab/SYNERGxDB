@@ -74,7 +74,7 @@ const StyledForm = styled.form`
 const customStyles = {
   control: provided => ({
     ...provided,
-    background: 'transparent',
+    background: 'rgb(0,0,0,0.1)',
     border: '1px solid white',
     margin: '5px 0px',
     '&:hover': {
@@ -115,7 +115,7 @@ const ButtonContainer = styled.div`
 
 const StyledButton = styled.button`
   font-size: 2.5em;
-  background: rgb(255,255,255, 0.6);
+  background: rgb(255,255,255, 0.8);
   border: none;
   border-radius:10px;
   padding: 20px;
@@ -135,7 +135,7 @@ const StyledButton = styled.button`
 const ExampleSpan = styled.span`
   font-size: 1.2rem;
   text-align: left;
-  margin-left: 10px;
+  margin: 10px;
   font-weight: bold;
 
   a {

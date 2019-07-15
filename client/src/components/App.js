@@ -55,15 +55,13 @@ const GlobalStyles = createGlobalStyle`
     margin: 3rem 0; 
     font-size: 2.6em;
   }
-  h1,
-  h2 {
-    color: ${colors.color_main_2};
-  }
+
   h1,
   h2,
   h3,
   h4 {
-    font-family: 'Paytone One', sans-serif;
+    font-family: 'Raleway', sans-serif;
+    color:${colors.nav_links};
   }
   main {
     width: 100%;
@@ -75,12 +73,14 @@ const GlobalStyles = createGlobalStyle`
     text-align: left;
     border-spacing: 0;
     margin: 20px 0;
+    
 
     th,
     td {
       overflow: hidden;
       margin: 0;
       padding: 5px;
+      color:${colors.nav_links};
       border-bottom: 2px solid ${colors.color_main_1}
     }
 
@@ -104,6 +104,10 @@ const GlobalStyles = createGlobalStyle`
     position:absolute;
     max-width:1000px;
     top:20%;
+  }
+
+  main.summary {
+    margin-top:30px;
   }
 
   .main-wrapper {
@@ -144,6 +148,15 @@ const GlobalStyles = createGlobalStyle`
     width: 100%;
     text-align: left;
     margin: 10px 0;
+    color:${colors.nav_links};
+
+    .rt-thead.-header {
+      box-shadow:none !important;
+      border-bottom: 1px solid rgba(0,0,0,0.15)
+    }
+  }
+  .wrapper {
+    color:${colors.nav_links};
   }
   
   #root {
@@ -160,6 +173,7 @@ const GlobalStyles = createGlobalStyle`
     background-position: center;
     flex-wrap: wrap;
   }
+
 `;
 
 const StyledApp = styled.div`
@@ -175,12 +189,13 @@ const StyledApp = styled.div`
   max-width: 1200px;
 `;
 
+
 const App = () => (
   <Fragment>
     <Normalize />
     <GlobalStyles />
     {/* <SideNav /> */}
-    <div className="main-wrapper">
+    <div className="main-wrapper ">
       <TopNav />
       <StyledApp className="app">
         <Switch>
