@@ -14,19 +14,19 @@ export default class BiomarkerPlot extends React.Component {
         y: null,
         type: 'box',
         name: '',
-        marker: { color: colors.color_accent_1 },
+        marker: { color: colors.color_main_4 },
       },
       box2: {
         y: null,
         type: 'box',
         name: '',
-        marker: { color: colors.color_accent_2 },
+        marker: { color: colors.color_main_2 },
       },
       box3: {
         y: null,
         type: 'box',
         name: '',
-        marker: { color: colors.color_main_4 },
+        marker: { color: colors.color_main_5 },
       },
       layout: {
         height: 450,
