@@ -25,7 +25,7 @@ class CumulativeDensity extends React.Component {
         paper_bgcolor: colors.trans_color_main_3,
         plot_bgcolor: colors.trans_color_main_3,
         yaxis: { title: 'Cumulative density' },
-        xaxis: { title: 'Synergy Score (Cell Lines, N=60)' },
+        xaxis: { title: 'Synergy Score (Cell Lines, N=undefined)' },
         barmode: 'overlay',
         font: {
           size: 16,
@@ -51,6 +51,14 @@ class CumulativeDensity extends React.Component {
         cumulative: { enabled: true },
         marker: { color: colors.color_main_2 },
       },
+      blissMarker: {
+        x: [0.5],
+        y: [250],
+        showlegend: false,
+        marker: { color: colors.color_main_2, size: 15 },
+        mode: 'markers',
+        type: 'scatter',
+      },
       loewe:
         {
           x: generateDataset(0.5),
@@ -60,6 +68,14 @@ class CumulativeDensity extends React.Component {
           cumulative: { enabled: true },
           marker: { color: colors.color_main_3 },
         },
+      loeweMarker: {
+        x: [0.25],
+        y: [250],
+        showlegend: false,
+        marker: { color: colors.color_main_3, size: 15 },
+        mode: 'markers',
+        type: 'scatter',
+      },
       hsa:
         {
           x: generateDataset(1.8),
@@ -69,6 +85,14 @@ class CumulativeDensity extends React.Component {
           cumulative: { enabled: true },
           marker: { color: colors.color_main_4 },
         },
+      hsaMarker: {
+        x: [0.9],
+        y: [250],
+        showlegend: false,
+        marker: { color: colors.color_main_4, size: 15 },
+        mode: 'markers',
+        type: 'scatter',
+      },
       zip:
         {
           x: generateDataset(1.3),
@@ -78,15 +102,23 @@ class CumulativeDensity extends React.Component {
           cumulative: { enabled: true },
           marker: { color: colors.color_main_5 },
         },
+      zipMarker: {
+        x: [0.65],
+        y: [250],
+        showlegend: false,
+        marker: { color: colors.color_main_5, size: 15 },
+        mode: 'markers',
+        type: 'scatter',
+      },
     });
   }
 
   // Render this compoenent
   render() {
     const {
-      bliss, loewe, hsa, zip, layout,
+      bliss, loewe, hsa, zip, blissMarker, loeweMarker, hsaMarker, zipMarker, layout,
     } = this.state;
-    const data = [bliss, loewe, hsa, zip];
+    const data = [bliss, blissMarker, loewe, loeweMarker, hsa, hsaMarker, zipMarker, zip];
     return (
       <div className="cumulative-container">
         <Plot data={data} layout={layout} graphDiv="graph" config={{ responsive: true }} />
