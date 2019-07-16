@@ -42,6 +42,8 @@ export default class ComboDetails extends Component {
       cellData: {},
       drugsData: [],
       sourceData: {},
+      comboId: null,
+      idSource: null,
     };
   }
 
@@ -49,7 +51,7 @@ export default class ComboDetails extends Component {
     const { location } = this.props;
     const requestParams = queryString.parse(location.search);
     const {
-      idSource, idDrugA, idDrugB, idSample,
+      idSource, idDrugA, idDrugB, idSample, comboId,
     } = requestParams;
     fetch(`/api/cell_lines/info?idSample=${idSample}`, {
       method: 'GET',
@@ -84,10 +86,16 @@ export default class ComboDetails extends Component {
       .then((sourceData) => {
         this.setState({ sourceData });
       });
+    this.setState({
+      comboId: parseInt(comboId, 10),
+      idSource: parseInt(idSource, 10),
+    });
   }
 
   render() {
-    const { cellData, drugsData, sourceData } = this.state;
+    const {
+      cellData, drugsData, sourceData, comboId, idSource,
+    } = this.state;
     return (
       <SynergyDetail>
         <header>
@@ -157,7 +165,12 @@ export default class ComboDetails extends Component {
           {drugsData.length > 0 ? (
             <Fragment>
               <CumulativeDensity drug1={drugsData[0].name} drug2={drugsData[1].name} />
-              <SynergyMatrices />
+              <SynergyMatrices
+                drug1={drugsData[0].name}
+                drug2={drugsData[1].name}
+                comboId={comboId}
+                idSource={idSource}
+              />
             </Fragment>
           ) : null}
         </main>
