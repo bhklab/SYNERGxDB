@@ -15,6 +15,8 @@ const StyledWrapper = styled.div`
   align-items: center;
   text-align: center;
   width: 100%;
+  background:white;
+  padding:0px 30px;
 `;
 
 
@@ -83,18 +85,17 @@ class Drugs extends Component {
     }];
     return (
       <Fragment>
-        <header>
-          <h1>List of Drugs</h1>
-        </header>
-        <main>
+        <style>{'#root { background: #e7f3f8  !important; }'}</style>
+        <main className="summary">
           <StyledWrapper className="wrapper">
+          <h1>List of Drugs</h1>
             <ReactTable
               data={drugsData}
               columns={columns}
               sortable={false}
               defaultPageSize={25}
               filterable
-              className="-striped -highlight"
+              className="-highlight"
               loading={loading}
             />
           </StyledWrapper>

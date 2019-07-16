@@ -13,6 +13,8 @@ const StyledWrapper = styled.div`
   justify-content: center;
   align-items: center;
   text-align: center;
+  background:white;
+  padding:0px 30px;
 `;
 
 class Datasets extends Component {
@@ -52,15 +54,14 @@ class Datasets extends Component {
     }];
     return (
       <Fragment>
-        <header>
-          <h1>List of Datasets</h1>
-        </header>
-        <main>
+        <style>{'#root { background: #e7f3f8  !important; }'}</style>
+        <main className="summary">
           <StyledWrapper className="wrapper">
+          <h1>List of Datasets</h1>
             <ReactTable
               data={databaseData}
               columns={columns}
-              className="-striped -highlight"
+              className="-highlight"
               showPagination={false}
               defaultPageSize={7}
               loading={loading}

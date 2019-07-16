@@ -61,7 +61,8 @@ class Databases extends Component {
     }, {
       Header: 'Sex',
       accessor: 'sex',
-      maxWidth: 40,
+      maxWidth: 55,
+      minWidth:55,
     }, {
       Header: 'Age',
       accessor: 'age',
@@ -88,7 +89,7 @@ class Databases extends Component {
     return (
       
         <Fragment>
-          <style>{'#root { background: #e7f3f8 !important; }'}</style>
+          <style>{'#root { background: #e7f3f8  !important; }'}</style>
           <main className="summary">
             <StyledWrapper className="wrapper">
             <h1>List of Cell Lines</h1>

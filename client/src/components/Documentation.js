@@ -5,26 +5,23 @@ import React from 'react';
 const Documentation = () => {
   const divStyle = {
     fontSize: '20px',
+    padding:'10px 50px ',
+    listStyleType: 'none',
   };
   const noStyle = {
     listStyleType: 'none',
   };
   return (
+    
     <div>
-      <header>
-        <div className="wrapper">
-          <h1>SYNERGxDB</h1>
-        </div>
-      </header>
-      <main>
+      <style>{'#root { background: #e7f3f8  !important; } '}</style>
+      <main className="documentation">
+        <h1>SYNERGxDB</h1>
         <h2>Documentation</h2>
-        <ol type="A" style={divStyle} align="justify">
-          <li>
-            <b>SYNERGxDB</b>
-            {' '}
-is a comprehensive database to explore synergistic drug combinations for biomarker discovery.
-          </li>
-          <br />
+        <span> <b>SYNERGxDB</b> is a comprehensive database to explore synergistic drug combinations for biomarker discovery.
+        </span>         
+        <ol style={divStyle} align="justify">
+            
           <li>
             <b>Overview</b>
             <ol>

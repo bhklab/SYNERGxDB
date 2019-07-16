@@ -12,7 +12,9 @@ export default {
   trans_color_accent_1: 'rgba(251,43,6, 0.5)',
   color_accent_2: '#f0f0f0',
   nav_links: '#3a5386',
-  nav_bg: '#ffffff',
+  nav_bg: '#ffffff',  
   nav_link_hov: '#efa127',
   blue_main: '#3a5386',
+  summary_bg: '#e7f3f8',
+  pagination: '#5675b3',
 };
