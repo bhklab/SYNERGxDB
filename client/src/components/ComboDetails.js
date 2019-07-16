@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import ReactRouterPropTypes from 'react-router-prop-types';
 import queryString from 'query-string';
 import styled from 'styled-components';
@@ -9,6 +9,7 @@ import pubchem from '../images/logos/pubchem.gif';
 import pubmed from '../images/logos/pubmed.png';
 
 import CumulativeDensity from './Plots/CumulativeDensity';
+import SynergyMatrices from './SynergyMatrices';
 
 
 const StyledSummary = styled.div`
@@ -150,11 +151,16 @@ export default class ComboDetails extends Component {
               {' '}
               <a className="hover" href={`https://www.ncbi.nlm.nih.gov/pubmed/${sourceData.pmID}`} rel="noopener noreferrer" target="_blank"><Logo src={pubmed} alt="Pubmed" /></a>
             </p>
-            {drugsData.length > 0 ? (
-              <CumulativeDensity drug1={drugsData[0].name} drug2={drugsData[1].name} />
-            ) : null}
           </StyledSummary>
         </header>
+        <main>
+          {drugsData.length > 0 ? (
+            <Fragment>
+              <CumulativeDensity drug1={drugsData[0].name} drug2={drugsData[1].name} />
+              <SynergyMatrices />
+            </Fragment>
+          ) : null}
+        </main>
       </SynergyDetail>
     );
   }

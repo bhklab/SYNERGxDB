@@ -61,6 +61,7 @@ class ComboResults extends Component {
     })
       .then(response => response.json())
       .then((data) => {
+        console.log(data);
         this.setState({ results: data, loading: false });
       });
   }
@@ -71,10 +72,10 @@ class ComboResults extends Component {
       results,
     } = this.state;
     const {
-      idSource, idDrugA, idDrugB, idSample,
+      idSource, idDrugA, idDrugB, idSample, comboId,
     } = results[index];
     // Redirects user to combo details page
-    history.push(`/drug_combo?idSource=${idSource}&idDrugA=${idDrugA}&idDrugB=${idDrugB}&idSample=${idSample}`);
+    history.push(`/drug_combo?idSource=${idSource}&idDrugA=${idDrugA}&idDrugB=${idDrugB}&idSample=${idSample}&comboId=${comboId}`);
   }
 
   render() {
