@@ -64,6 +64,7 @@ const StyledForm = styled.form`
     &:focus {
       border: 2px solid ${colors.color_main_2};
       background-color: ${colors.trans_color_main_4};
+      outline:none;
       
       &::placeholder {
       color: white;
@@ -94,6 +95,7 @@ const customStyles = {
       cursor: 'pointer',
     },
   }),
+  
   indicatorSeparator: provided => ({
     ...provided,
     background: 'white',
@@ -109,8 +111,8 @@ const customStyles = {
     ...provided,
     textAlign: state.isDisabled ? 'left' : 'center',
     fontWeight: state.isDisabled ? '700' : state.isSelected ? '700' : '400',
-    background: state.isDisabled ? colors.color_main_2 : 'white',
-    color: state.isSelected ? colors.color_main_2 : 'black',
+    background: state.isDisabled ? colors.summary_bg : 'white',
+    color: state.isSelected ? colors.color_main_2 : colors.nav_links,
   }),
 };
 
