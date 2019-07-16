@@ -163,6 +163,11 @@ const GlobalStyles = createGlobalStyle`
     font-weight: bold;
     border-bottom: 5px double black;
   }
+  .score {
+    width: 100%;
+    text-align: right;
+    padding-right: 5px;
+  }
   .high-score {
     font-weight: bold;
   }

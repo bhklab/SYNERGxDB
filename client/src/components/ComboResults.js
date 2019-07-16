@@ -89,7 +89,11 @@ class ComboResults extends Component {
     const showScore = (props) => {
       // eslint-disable-next-line no-nested-ternary
       const score = props.value ? (props.value > 0 ? props.value.toFixed(4) : props.value.toFixed(3)) : null;
-      return (score >= 0.2 ? <span className="high-score">{score}</span> : <span>{score}</span>);
+      return (
+        <div className="score">
+          {score >= 0.2 ? <span className="high-score">{score}</span> : <span>{score}</span>}
+        </div>
+      );
     };
 
     const columns = [{
