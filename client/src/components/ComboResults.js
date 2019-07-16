@@ -122,21 +122,25 @@ class ComboResults extends Component {
       accessor: 'zip',
       Cell: props => showScore(props),
       filterable: false,
+      sortable: true,
     }, {
       Header: 'Bliss',
       accessor: 'bliss',
       Cell: props => showScore(props),
       filterable: false,
+      sortable: true,
     }, {
       Header: 'Loewe',
       accessor: 'loewe',
       Cell: props => showScore(props),
       filterable: false,
+      sortable: true,
     }, {
       Header: 'HSA',
       accessor: 'hsa',
       Cell: props => showScore(props),
       filterable: false,
+      sortable: true,
     }, {
       Header: 'Source',
       accessor: 'sourceName',
