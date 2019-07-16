@@ -1,5 +1,5 @@
-/* eslint-disable react/prop-types */
 import React, { Component } from 'react';
+import ReactRouterPropTypes from 'react-router-prop-types';
 import queryString from 'query-string';
 import styled from 'styled-components';
 // import colors from '../styles/colors';
@@ -31,6 +31,10 @@ const Logo = styled.img`
 
 
 export default class ComboDetails extends Component {
+  static propTypes = {
+    location: ReactRouterPropTypes.location.isRequired,
+  }
+
   constructor() {
     super();
     this.state = {
@@ -146,7 +150,9 @@ export default class ComboDetails extends Component {
               {' '}
               <a className="hover" href={`https://www.ncbi.nlm.nih.gov/pubmed/${sourceData.pmID}`} rel="noopener noreferrer" target="_blank"><Logo src={pubmed} alt="Pubmed" /></a>
             </p>
-            <CumulativeDensity />
+            {drugsData.length > 0 ? (
+              <CumulativeDensity drug1={drugsData[0].name} drug2={drugsData[1].name} />
+            ) : null}
           </StyledSummary>
         </header>
       </SynergyDetail>

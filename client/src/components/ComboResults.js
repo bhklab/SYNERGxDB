@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
-/* eslint-disable react/prop-types */
 /* eslint-disable react/no-array-index-key */
 import React, { Component, Fragment } from 'react';
+import ReactRouterPropTypes from 'react-router-prop-types';
 import queryString from 'query-string';
 import styled from 'styled-components';
 import ReactTable from 'react-table';
@@ -20,6 +20,11 @@ const SynergyDiv = styled.div`
 `;
 
 class ComboResults extends Component {
+  static propTypes = {
+    history: ReactRouterPropTypes.history.isRequired,
+    location: ReactRouterPropTypes.location.isRequired,
+  }
+
   constructor() {
     super();
     this.state = {
