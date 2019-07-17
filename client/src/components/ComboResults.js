@@ -61,7 +61,6 @@ class ComboResults extends Component {
     })
       .then(response => response.json())
       .then((data) => {
-        console.log(data);
         this.setState({ results: data, loading: false });
       });
   }

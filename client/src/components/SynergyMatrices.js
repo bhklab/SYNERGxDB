@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 // import styled from 'styled-components';
@@ -21,7 +22,6 @@ class SynergyMatrices extends Component {
     const {
       idSource, comboId, drug1, drug2,
     } = this.props;
-    console.log(comboId);
     fetch(`/api/combos/matrix?comboId=${comboId}&idSource=${idSource}`)
       .then(response => response.json())
       .then((synergyData) => {
@@ -31,7 +31,21 @@ class SynergyMatrices extends Component {
   }
 
   render() {
-    const columns = [{
+    const { synergyData } = this.state;
+    const {
+      idSource, comboId, drug1, drug2,
+    } = this.props;
+    const generateTable = (accessor, dataset) => {
+      const comboInfo = {};
+      dataset.forEach((item) => {
+        // eslint-disable-next-line no-unused-expressions
+        comboInfo[item.concB] === undefined ? comboInfo[item.concB] = [{ concA: item.concA, [accessor]: item[accessor] }] : comboInfo[item.concB].push({ concA: item.concA, [accessor]: item[accessor] });
+      });
+      const columns = Object.keys(comboInfo).map(key => ({ Header: `${key} µM`, accessor }));
+      columns.unshift({ Header: `${drug1}`, accessor: 'concA' });
+      console.log(columns, comboInfo);
+    };
+    const columnsRaw = [{
       Header: 'Name',
       accessor: 'name', // String-based value accessors!
     }, {
@@ -47,6 +61,7 @@ class SynergyMatrices extends Component {
       Header: 'Design',
       accessor: 'combo',
     }];
+    generateTable('raw_matrix', synergyData);
     return (
       <div className="synergy-matrix">
         <h2>Synergy Matrices</h2>
