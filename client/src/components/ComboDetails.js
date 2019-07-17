@@ -73,7 +73,6 @@ export default class ComboDetails extends Component {
     })
       .then(response => response.json())
       .then((drugsData) => {
-        console.log(drugsData);
         this.setState({ drugsData });
       });
     fetch(`/api/datasets?idSource=${idSource}`, {
@@ -163,9 +162,11 @@ export default class ComboDetails extends Component {
           </StyledSummary>
         </header>
         <main>
-          {drugsData.length > 0 ? (
+          {drugsData.length > 0 && cellData.name !== undefined ? (
             <Fragment>
               <CumulativeDensity
+                comboId={comboId}
+                sample={cellData.name}
                 drug1={{ name: drugsData[0].name, idDrug: drugsData[0].idDrug }}
                 drug2={{ name: drugsData[1].name, idDrug: drugsData[1].idDrug }}
               />

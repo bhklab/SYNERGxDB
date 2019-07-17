@@ -1,16 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Plot from 'react-plotly.js';
+import styled from 'styled-components';
 
 import colors from '../../styles/colors';
 
-const generateDataset = (factor) => {
-  const output = [];
-  for (let i = 0; i < 500; i++) {
-    output[i] = Math.random() * factor;
-  }
-  return output;
-};
+const CumulativeContainer = styled.div`
+  width: 1000px;
+`;
 
 class CumulativeDensity extends React.Component {
   constructor(props) {
@@ -21,29 +18,15 @@ class CumulativeDensity extends React.Component {
       loewe: {},
       hsa: {},
       zip: {},
-      layout: {
-        height: 450,
-        paper_bgcolor: colors.trans_color_main_3,
-        plot_bgcolor: colors.trans_color_main_3,
-        yaxis: { title: 'Cumulative density' },
-        xaxis: { title: 'Synergy Score (Cell Lines, N=undefined)' },
-        barmode: 'overlay',
-        font: {
-          size: 16,
-          color: '#000000',
-          family: 'Raleway',
-        },
-        title: {
-          text: `${props.drug1.name} * ${props.drug2.name}`,
-          size: 18,
-        },
-      },
+      layout: {},
     };
   }
 
   // Methods called on loading
   componentDidMount() {
-    const { drug1, drug2 } = this.props;
+    const {
+      drug1, drug2, comboId, sample,
+    } = this.props;
 
     fetch(`/api/combos?drugId1=${drug1.idDrug}&drugId2=${drug2.idDrug}`, {
       method: 'GET',
@@ -54,11 +37,53 @@ class CumulativeDensity extends React.Component {
     })
       .then(response => response.json())
       .then((comboData) => {
-        this.setState({ comboData });
-        console.log(comboData);
+        const { length } = comboData;
+        const blissSortedData = comboData.sort((a, b) => (a.bliss > b.bliss ? 1 : -1));
+        const blissCoordinates = {};
+        blissSortedData.some((item, index) => {
+          if (item.comboId === comboId) {
+            blissCoordinates.x = item.bliss;
+            blissCoordinates.y = index / (length - 1);
+            return true;
+          }
+          return false;
+        });
+        const loeweSortedData = comboData.sort((a, b) => (a.loewe > b.loewe ? 1 : -1));
+        const loeweCoordinates = {};
+        loeweSortedData.some((item, index) => {
+          if (item.comboId === comboId) {
+            loeweCoordinates.x = item.loewe;
+            loeweCoordinates.y = index / (length - 1);
+            return true;
+          }
+          return false;
+        });
+        const hsaSortedData = comboData.sort((a, b) => (a.hsa > b.hsa ? 1 : -1));
+        const hsaCoordinates = {};
+        hsaSortedData.some((item, index) => {
+          if (item.comboId === comboId) {
+            hsaCoordinates.x = item.hsa;
+            hsaCoordinates.y = index / (length - 1);
+            return true;
+          }
+          return false;
+        });
+        const zipSortedData = comboData.sort((a, b) => (a.zip > b.zip ? 1 : -1));
+        const zipCoordinates = {};
+        zipSortedData.some((item, index) => {
+          if (item.comboId === comboId) {
+            zipCoordinates.x = item.zip;
+            zipCoordinates.y = index / (length - 1);
+            return true;
+          }
+          return false;
+        });
         this.setState({
+          comboData,
           bliss: {
             x: comboData.map(item => item.bliss),
+            nbinsx: comboData.length,
+            histnorm: 'probability',
             name: 'Bliss',
             opacity: 0.5,
             type: 'histogram',
@@ -66,9 +91,10 @@ class CumulativeDensity extends React.Component {
             marker: { color: colors.color_main_2 },
           },
           blissMarker: {
-            x: [0.5],
-            y: [250],
+            x: [blissCoordinates.x],
+            y: [blissCoordinates.y],
             showlegend: false,
+            name: `${sample} Bliss`,
             marker: { color: colors.color_main_2, size: 15 },
             mode: 'markers',
             type: 'scatter',
@@ -76,6 +102,8 @@ class CumulativeDensity extends React.Component {
           loewe:
             {
               x: comboData.map(item => item.loewe),
+              nbinsx: comboData.length,
+              histnorm: 'probability',
               name: 'Loewe',
               opacity: 0.5,
               type: 'histogram',
@@ -83,16 +111,19 @@ class CumulativeDensity extends React.Component {
               marker: { color: colors.color_main_1 },
             },
           loeweMarker: {
-            x: [0.25],
-            y: [250],
+            x: [loeweCoordinates.x],
+            y: [loeweCoordinates.y],
+            name: `${sample} Loewe`,
             showlegend: false,
-            marker: { color: colors.color_main_3, size: 15 },
+            marker: { color: colors.color_main_1, size: 15 },
             mode: 'markers',
             type: 'scatter',
           },
           hsa:
             {
               x: comboData.map(item => item.hsa),
+              nbinsx: comboData.length,
+              histnorm: 'probability',
               name: 'HSA',
               type: 'histogram',
               opacity: 0.5,
@@ -100,9 +131,10 @@ class CumulativeDensity extends React.Component {
               marker: { color: colors.color_main_4 },
             },
           hsaMarker: {
-            x: [0.9],
-            y: [250],
+            x: [hsaCoordinates.x],
+            y: [hsaCoordinates.y],
             showlegend: false,
+            name: `${sample} HSA`,
             marker: { color: colors.color_main_4, size: 15 },
             mode: 'markers',
             type: 'scatter',
@@ -110,6 +142,8 @@ class CumulativeDensity extends React.Component {
           zip:
             {
               x: comboData.map(item => item.zip),
+              nbinsx: comboData.length,
+              histnorm: 'probability',
               type: 'histogram',
               name: 'ZIP',
               opacity: 0.5,
@@ -117,12 +151,30 @@ class CumulativeDensity extends React.Component {
               marker: { color: colors.color_main_5 },
             },
           zipMarker: {
-            x: [0.65],
-            y: [250],
+            x: [zipCoordinates.x],
+            y: [zipCoordinates.y],
             showlegend: false,
+            name: `${sample} ZIP`,
             marker: { color: colors.color_main_5, size: 15 },
             mode: 'markers',
             type: 'scatter',
+          },
+          layout: {
+            height: 450,
+            paper_bgcolor: colors.trans_color_main_3,
+            plot_bgcolor: colors.trans_color_accent_2,
+            yaxis: { title: 'Cumulative density' },
+            xaxis: { title: `Synergy Score (Cell Lines, N=${length})` },
+            barmode: 'overlay',
+            font: {
+              size: 16,
+              color: '#000000',
+              family: 'Raleway',
+            },
+            title: {
+              text: `${drug1.name} * ${drug2.name}`,
+              size: 18,
+            },
           },
         });
       });
@@ -133,12 +185,13 @@ class CumulativeDensity extends React.Component {
     const {
       bliss, loewe, hsa, zip, blissMarker, loeweMarker, hsaMarker, zipMarker, layout, comboData,
     } = this.state;
-    // const data = [bliss, blissMarker, loewe, loeweMarker, hsa, hsaMarker, zipMarker, zip];
-    const data = [bliss, loewe, hsa, zip];
+    const data = [bliss, blissMarker, loewe, loeweMarker, hsa, hsaMarker, zipMarker, zip];
+    // const data = [bliss, loewe, hsa, zip];
+    // const data = [bliss, blissMarker, loewe, loeweMarker, hsa, hsaMarker];
     return (
-      <div className="cumulative-container">
+      <CumulativeContainer className="cumulative-container">
         {comboData.length > 0 ? (<Plot data={data} layout={layout} graphDiv="graph" config={{ responsive: true }} />) : null}
-      </div>
+      </CumulativeContainer>
     );
   }
 }
@@ -152,6 +205,8 @@ CumulativeDensity.propTypes = {
     name: PropTypes.string,
     idDrug: PropTypes.number,
   }).isRequired,
+  comboId: PropTypes.number.isRequired,
+  sample: PropTypes.string.isRequired,
 };
 
 export default CumulativeDensity;
