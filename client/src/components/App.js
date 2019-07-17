@@ -3,7 +3,7 @@ import { Route, Switch } from 'react-router-dom';
 import styled, { createGlobalStyle } from 'styled-components';
 import { Normalize } from 'styled-normalize';
 import TopNav from './TopNav';
-import heroImg from '../images/bg.jpg';
+import heroImg from '../images/bg-2.jpg';
 import colors from '../styles/colors';
 import transitions from '../styles/transitions';
 
