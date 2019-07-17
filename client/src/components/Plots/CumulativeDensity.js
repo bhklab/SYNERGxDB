@@ -43,76 +43,9 @@ class CumulativeDensity extends React.Component {
 
   // Methods called on loading
   componentDidMount() {
-    this.setState({
-      bliss: {
-        x: generateDataset(1),
-        name: 'Bliss',
-        opacity: 0.5,
-        type: 'histogram',
-        cumulative: { enabled: true },
-        marker: { color: colors.color_main_2 },
-      },
-      blissMarker: {
-        x: [0.5],
-        y: [250],
-        showlegend: false,
-        marker: { color: colors.color_main_2, size: 15 },
-        mode: 'markers',
-        type: 'scatter',
-      },
-      loewe:
-        {
-          x: generateDataset(0.5),
-          name: 'Loewe',
-          opacity: 0.5,
-          type: 'histogram',
-          cumulative: { enabled: true },
-          marker: { color: colors.color_main_3 },
-        },
-      loeweMarker: {
-        x: [0.25],
-        y: [250],
-        showlegend: false,
-        marker: { color: colors.color_main_3, size: 15 },
-        mode: 'markers',
-        type: 'scatter',
-      },
-      hsa:
-        {
-          x: generateDataset(1.8),
-          name: 'HSA',
-          type: 'histogram',
-          opacity: 0.5,
-          cumulative: { enabled: true },
-          marker: { color: colors.color_main_4 },
-        },
-      hsaMarker: {
-        x: [0.9],
-        y: [250],
-        showlegend: false,
-        marker: { color: colors.color_main_4, size: 15 },
-        mode: 'markers',
-        type: 'scatter',
-      },
-      zip:
-        {
-          x: generateDataset(1.3),
-          type: 'histogram',
-          name: 'ZIP',
-          opacity: 0.5,
-          cumulative: { enabled: true },
-          marker: { color: colors.color_main_5 },
-        },
-      zipMarker: {
-        x: [0.65],
-        y: [250],
-        showlegend: false,
-        marker: { color: colors.color_main_5, size: 15 },
-        mode: 'markers',
-        type: 'scatter',
-      },
-    });
-    fetch('/api/combos', {
+    const { drug1, drug2 } = this.props;
+
+    fetch(`/api/combos?drugId1=${drug1.idDrug}&drugId2=${drug2.idDrug}`, {
       method: 'GET',
       headers: {
         Accept: 'application/json',
@@ -123,18 +56,88 @@ class CumulativeDensity extends React.Component {
       .then((comboData) => {
         this.setState({ comboData });
         console.log(comboData);
+        this.setState({
+          bliss: {
+            x: comboData.map(item => item.bliss),
+            name: 'Bliss',
+            opacity: 0.5,
+            type: 'histogram',
+            cumulative: { enabled: true },
+            marker: { color: colors.color_main_2 },
+          },
+          blissMarker: {
+            x: [0.5],
+            y: [250],
+            showlegend: false,
+            marker: { color: colors.color_main_2, size: 15 },
+            mode: 'markers',
+            type: 'scatter',
+          },
+          loewe:
+            {
+              x: comboData.map(item => item.loewe),
+              name: 'Loewe',
+              opacity: 0.5,
+              type: 'histogram',
+              cumulative: { enabled: true },
+              marker: { color: colors.color_main_1 },
+            },
+          loeweMarker: {
+            x: [0.25],
+            y: [250],
+            showlegend: false,
+            marker: { color: colors.color_main_3, size: 15 },
+            mode: 'markers',
+            type: 'scatter',
+          },
+          hsa:
+            {
+              x: comboData.map(item => item.hsa),
+              name: 'HSA',
+              type: 'histogram',
+              opacity: 0.5,
+              cumulative: { enabled: true },
+              marker: { color: colors.color_main_4 },
+            },
+          hsaMarker: {
+            x: [0.9],
+            y: [250],
+            showlegend: false,
+            marker: { color: colors.color_main_4, size: 15 },
+            mode: 'markers',
+            type: 'scatter',
+          },
+          zip:
+            {
+              x: comboData.map(item => item.zip),
+              type: 'histogram',
+              name: 'ZIP',
+              opacity: 0.5,
+              cumulative: { enabled: true },
+              marker: { color: colors.color_main_5 },
+            },
+          zipMarker: {
+            x: [0.65],
+            y: [250],
+            showlegend: false,
+            marker: { color: colors.color_main_5, size: 15 },
+            mode: 'markers',
+            type: 'scatter',
+          },
+        });
       });
   }
 
   // Render this compoenent
   render() {
     const {
-      bliss, loewe, hsa, zip, blissMarker, loeweMarker, hsaMarker, zipMarker, layout,
+      bliss, loewe, hsa, zip, blissMarker, loeweMarker, hsaMarker, zipMarker, layout, comboData,
     } = this.state;
-    const data = [bliss, blissMarker, loewe, loeweMarker, hsa, hsaMarker, zipMarker, zip];
+    // const data = [bliss, blissMarker, loewe, loeweMarker, hsa, hsaMarker, zipMarker, zip];
+    const data = [bliss, loewe, hsa, zip];
     return (
       <div className="cumulative-container">
-        <Plot data={data} layout={layout} graphDiv="graph" config={{ responsive: true }} />
+        {comboData.length > 0 ? (<Plot data={data} layout={layout} graphDiv="graph" config={{ responsive: true }} />) : null}
       </div>
     );
   }
