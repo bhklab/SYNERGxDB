@@ -16,6 +16,7 @@ class CumulativeDensity extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      comboData: [],
       bliss: {},
       loewe: {},
       hsa: {},
@@ -33,7 +34,7 @@ class CumulativeDensity extends React.Component {
           family: 'Raleway',
         },
         title: {
-          text: `${props.drug1} * ${props.drug2}`,
+          text: `${props.drug1.name} * ${props.drug2.name}`,
           size: 18,
         },
       },
@@ -111,6 +112,18 @@ class CumulativeDensity extends React.Component {
         type: 'scatter',
       },
     });
+    fetch('/api/combos', {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(response => response.json())
+      .then((comboData) => {
+        this.setState({ comboData });
+        console.log(comboData);
+      });
   }
 
   // Render this compoenent
@@ -128,8 +141,14 @@ class CumulativeDensity extends React.Component {
 }
 
 CumulativeDensity.propTypes = {
-  drug1: PropTypes.string.isRequired,
-  drug2: PropTypes.string.isRequired,
+  drug1: PropTypes.shape({
+    name: PropTypes.string,
+    idDrug: PropTypes.number,
+  }).isRequired,
+  drug2: PropTypes.shape({
+    name: PropTypes.string,
+    idDrug: PropTypes.number,
+  }).isRequired,
 };
 
 export default CumulativeDensity;

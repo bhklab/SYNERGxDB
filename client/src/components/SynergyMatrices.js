@@ -42,7 +42,7 @@ class SynergyMatrices extends Component {
         comboInfo[item.concB] === undefined ? comboInfo[item.concB] = [{ concA: item.concA, [accessor]: item[accessor] }] : comboInfo[item.concB].push({ concA: item.concA, [accessor]: item[accessor] });
       });
       const columns = Object.keys(comboInfo).map(key => ({ Header: `${key} µM`, accessor }));
-      columns.unshift({ Header: `${drug1}`, accessor: 'concA' });
+      columns.unshift({ Header: `${drug1.name}`, accessor: 'concA' });
       console.log(columns, comboInfo);
     };
     const columnsRaw = [{
@@ -71,8 +71,14 @@ class SynergyMatrices extends Component {
 }
 
 SynergyMatrices.propTypes = {
-  drug1: PropTypes.string.isRequired,
-  drug2: PropTypes.string.isRequired,
+  drug1: PropTypes.shape({
+    name: PropTypes.string,
+    idDrug: PropTypes.number,
+  }).isRequired,
+  drug2: PropTypes.shape({
+    name: PropTypes.string,
+    idDrug: PropTypes.number,
+  }).isRequired,
   comboId: PropTypes.number.isRequired,
   idSource: PropTypes.number.isRequired,
 };

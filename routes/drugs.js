@@ -16,7 +16,7 @@ router.get('/info', (req, res) => {
   const {
     idDrugA, idDrugB,
   } = req.query;
-  db('Drug').select('name', 'idPubChem', 'idDrugBank', 'description')
+  db('Drug').select('idDrug', 'name', 'idPubChem', 'idDrugBank', 'description')
     .where({ idDrug: idDrugA })
     .orWhere({ idDrug: idDrugB })
     .then((data) => {

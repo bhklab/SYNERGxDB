@@ -73,6 +73,7 @@ export default class ComboDetails extends Component {
     })
       .then(response => response.json())
       .then((drugsData) => {
+        console.log(drugsData);
         this.setState({ drugsData });
       });
     fetch(`/api/datasets?idSource=${idSource}`, {
@@ -164,10 +165,13 @@ export default class ComboDetails extends Component {
         <main>
           {drugsData.length > 0 ? (
             <Fragment>
-              <CumulativeDensity drug1={drugsData[0].name} drug2={drugsData[1].name} />
+              <CumulativeDensity
+                drug1={{ name: drugsData[0].name, idDrug: drugsData[0].idDrug }}
+                drug2={{ name: drugsData[1].name, idDrug: drugsData[1].idDrug }}
+              />
               <SynergyMatrices
-                drug1={drugsData[0].name}
-                drug2={drugsData[1].name}
+                drug1={{ name: drugsData[0].name, idDrug: drugsData[0].idDrug }}
+                drug2={{ name: drugsData[1].name, idDrug: drugsData[1].idDrug }}
                 comboId={comboId}
                 idSource={idSource}
               />
