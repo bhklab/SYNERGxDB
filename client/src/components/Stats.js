@@ -17,7 +17,7 @@ const StyledDiv = styled.div`
     align-items: flex-end;
     justify-content: space-around;
     flex-wrap: wrap
-    background:rgba(255, 255, 255, 0.6);
+    background:rgba(255, 255, 255, 0.7);
     color: ${colors.nav_links} !important;
     font-family: 'Montserrat', sans-serif;
 
@@ -30,7 +30,7 @@ const StyledDiv = styled.div`
       color: ${colors.nav_links} !important;
       font-family: 'Montserrat', sans-serif;
       font-weight:500;
-      font-size: 1.2vw;
+      font-size: 1.3em;
     }
 `;
 

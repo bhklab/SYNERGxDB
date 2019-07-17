@@ -51,7 +51,7 @@ const GlobalStyles = createGlobalStyle`
   }
   h1 {
     margin: 3rem 0; 
-    font-size: 2.6em;
+    font-size: 2em;
   }
 
   h1,
@@ -107,6 +107,7 @@ const GlobalStyles = createGlobalStyle`
   main.summary {
     margin-top:30px;
     background:white;
+    padding-bottom:30px;
   }
 
   main.documentation {
@@ -219,12 +220,12 @@ const GlobalStyles = createGlobalStyle`
   #root {
     width: 100vw;
     display: flex;
+    background: ${colors.summary_bg};
     background: linear-gradient(
       to right top,
-      rgba(255, 255, 255, 0.6), 
-      rgba(255, 255, 255, 0.6)
-    ),url(${heroImg});
-    
+      rgba(255, 255, 255, 0.3), 
+      rgba(255, 255, 255, 0.3)
+    ),url('${heroImg}');
     background-size: cover;
     background-attachment: fixed;
     background-position: center;

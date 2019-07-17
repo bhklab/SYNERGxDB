@@ -9,12 +9,12 @@ import transitions from '../styles/transitions';
 const StyledNav = styled.nav`
     padding: 15px 0px 0px 0px;    
     width: 100%;
-    height:12.5vh;
-    line-height:8vh;
+    height:124px;
+    line-height:4em;
     white-space:nowrap;
     background-color: ${colors.nav_bg};
     position: fixed;
-    font-size: 1.1vw;
+    font-size: 1.5em;
     font-family: 'Montserrat', sans-serif;
     z-index: 10;
 
@@ -23,7 +23,7 @@ const StyledNav = styled.nav`
         transition: ${transitions.main_trans}
         font-family: 'Raleway', sans-serif;
         font-weight:700;
-        padding:0px 3vw;
+        padding:0em 2.5vw;
         float:left;
         
 
@@ -39,7 +39,7 @@ const StyledNav = styled.nav`
   
 `;
 const StyledLogo = styled.img`
-    width:10vw;
+    width:200px;
 `;
 
 const Home = () => (

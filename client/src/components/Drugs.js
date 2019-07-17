@@ -92,7 +92,7 @@ class Drugs extends Component {
             <ReactTable
               data={drugsData}
               columns={columns}
-              sortable={false}
+              sortable={true}
               defaultPageSize={25}
               filterable
               className="-highlight"
