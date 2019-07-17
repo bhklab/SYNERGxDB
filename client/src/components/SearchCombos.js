@@ -27,7 +27,8 @@ const StyledWrapper = styled.div`
 const StyledForm = styled.form`
   max-width: 800px;
   width: 100%;
-  background-color: rgb(1,106,158,0.27);
+  background-color: rgb(255,255,255,0.7); 
+  //17,120,199,0.17
   border-radius:25px;
   margin: 5px;
   padding:25px;
@@ -49,7 +50,7 @@ const StyledForm = styled.form`
     justify-content: space-between;
   }
   input {
-    color: white;
+    color: ${colors.nav_links};
     border: none;
     min-width: 350px;
     width: 50%;
@@ -59,7 +60,7 @@ const StyledForm = styled.form`
     background: transparent !important;
 
     &::placeholder {
-      color: "white";
+      color: ${colors.nav_links};
     }
     &:focus {
       border: 2px solid ${colors.color_main_2};
@@ -75,37 +76,37 @@ const StyledForm = styled.form`
 const customStyles = {
   control: provided => ({
     ...provided,
-    background: 'rgb(0,0,0,0.1)',
-    border: '1px solid white',
+    background: 'rgb(0,0,0,0)',
+    border: '1px solid #3a5386',
     margin: '5px 0px',
     '&:hover': {
-      border: '1px solid white',
+      border: '1px solid #3a5386',
       cursor: 'text',
     },
   }),
   placeholder: provided => ({
     ...provided,
-    color: 'white',
+    color: '#3a5386',
   }),
   dropdownIndicator: provided => ({
     ...provided,
-    color: 'white',
+    color: '#3a5386',
     '&:hover': {
-      color: 'white',
+      color: '#3a5386',
       cursor: 'pointer',
     },
   }),
   
   indicatorSeparator: provided => ({
     ...provided,
-    background: 'white',
+    background: '#3a5386',
     '&:hover': {
-      background: 'white',
+      background: '#3a5386',
     },
   }),
   singleValue: provided => ({
     ...provided,
-    color: 'white',
+    color: '#3a5386',
   }),
   option: (provided, state) => ({
     ...provided,
@@ -123,13 +124,12 @@ const ButtonContainer = styled.div`
 `;
 
 const StyledButton = styled.button`
-  font-size: 2.5em;
-  background: rgb(255,255,255, 0.8);
+  background: ${colors.nav_links};
   border: none;
   border-radius:10px;
-  padding: 20px;
+  padding: 10px 20px;
   margin: 10px auto;
-  color: ${colors.nav_links};
+  color: #ffffff;
   transition: ${transitions.main_trans};
   outline-style: none;
 
@@ -138,7 +138,7 @@ const StyledButton = styled.button`
     cursor:pointer;
   }
   &[type="button"] {
-    font-size: 2.3em;
+    font-size: 2em;
   }
 `;
 const ExampleSpan = styled.span`
