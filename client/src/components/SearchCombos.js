@@ -194,12 +194,13 @@ const MenuList = (props) => {
   );
 };
 
+
 class SearchCombos extends Component {
   constructor() {
     super();
     this.state = {
-      drugId1: null,
-      drugId2: null,
+      drugId1: 'Any',
+      drugId2: 'Any',
       sample: 'Any',
       dataset: 'Any',
       drugsData1: [],
@@ -211,6 +212,7 @@ class SearchCombos extends Component {
       selectedDrug2: null,
       selectedDataset: { value: 'Any', label: 'Any Dataset' },
       drug2Placeholder: 'Enter Drug B',
+      allowRedirect: true,
     };
     this.handleDrug1Search = this.handleDrug1Search.bind(this);
     this.handleDrug2Search = this.handleDrug2Search.bind(this);
@@ -219,6 +221,7 @@ class SearchCombos extends Component {
     this.handleExample = this.handleExample.bind(this);
     this.handleDatasetSearch = this.handleDatasetSearch.bind(this);
     this.handleEnterPress = this.handleEnterPress.bind(this);
+    this.checkUserInput = this.checkUserInput.bind(this);
   }
 
   componentDidMount() {
@@ -268,19 +271,28 @@ class SearchCombos extends Component {
 
   userRedirect() {
     const {
-      drugId1, drugId2, sample, dataset,
+      drugId1, drugId2, sample, dataset, allowRedirect,
     } = this.state;
-    if (drugId1 && drugId2 && sample && dataset) {
+    console.log(this.checkUserInput(), allowRedirect);
+    if (this.checkUserInput() && allowRedirect) {
       const { history } = this.props;
-      let queryParams = `?drugId1=${drugId1}`;
-
+      let queryParams = '';
+      if (drugId1 !== 'Any') queryParams = queryParams.concat(`drugId1=${drugId1}`);
       if (sample !== 'Any') queryParams = queryParams.concat(`&sample=${sample}`);
       if (dataset !== 'Any') queryParams = queryParams.concat(`&dataset=${dataset}`);
       if (drugId2 !== 'Any') queryParams = queryParams.concat(`&drugId2=${drugId2}`);
       // Redirects user to synergy scores page
-      history.push('/synergy_score'.concat(queryParams));
+      history.push('/synergy_score?'.concat(queryParams));
     }
     return null;
+  }
+
+  // verify if user inputs at least one serach parameter
+  checkUserInput() {
+    const {
+      drugId1, drugId2, sample, dataset,
+    } = this.state;
+    return drugId1 !== 'Any' || sample !== 'Any' || dataset !== 'Any' || drugId2 !== 'Any';
   }
 
   handleEnterPress(e) {
@@ -305,18 +317,19 @@ class SearchCombos extends Component {
     const { value, label } = event;
     const { dataset, drugId1 } = this.state;
     this.setState({ sample: value, selectedSample: { value, label } });
-    if (dataset && drugId1) this.updateDrug2Data(value, dataset, drugId1);
+    if (drugId1 !== 'Any') this.updateDrug2Data(value, dataset, drugId1);
   }
 
   handleDatasetSearch(event) {
     const { value, label } = event;
     const { sample, drugId1 } = this.state;
     this.setState({ dataset: value, selectedDataset: { value, label } });
-    if (sample && drugId1) this.updateDrug2Data(sample, value, drugId1);
+    if (drugId1 !== 'Any') this.updateDrug2Data(sample, value, drugId1);
   }
 
   updateDrug2Data(sample, dataset, drugId) {
-    const requestBody = { drugId };
+    const requestBody = { };
+    if (drugId !== 'Any') requestBody.drugId = drugId;
     if (sample !== 'Any') requestBody.sample = sample;
     if (dataset !== 'Any') requestBody.dataset = dataset;
     fetch('/api/drugs', {
@@ -329,12 +342,14 @@ class SearchCombos extends Component {
     })
       .then(response => response.json())
       .then((data) => {
-        this.setState({ drugId2: null, selectedDrug2: null, drugsData2: [] });
+        this.setState({
+          drugId2: 'Any', selectedDrug2: null, drugsData2: [],
+        });
         if (data.length > 0) {
           const drugsData = data.map(item => ({ value: item.idDrug, label: item.name }));
-          this.setState({ drugsData2: [{ value: 'Any', label: 'Any Drug' }, ...drugsData], drug2Placeholder: 'Enter Drug B' });
+          this.setState({ drugsData2: [{ value: 'Any', label: 'Any Drug' }, ...drugsData], drug2Placeholder: 'Enter Drug B', allowRedirect: true });
         } else {
-          this.setState({ drug2Placeholder: 'No drug combos for entered request parameters' });
+          this.setState({ drug2Placeholder: 'No drug combos for entered request parameters', allowRedirect: false });
         }
       });
   }
@@ -369,7 +384,7 @@ class SearchCombos extends Component {
       handleDatasetSearch, handleEnterPress,
     } = this;
 
-    const isDisabled = !(drugId1 && sample && drugsData2.length > 0);
+    const isDisabled = !(drugsData2.length > 0);
     const exampleUrl = {
       pathname: '/synergy_score',
       search: '?drugId1=11&drugId2=97',
@@ -378,7 +393,9 @@ class SearchCombos extends Component {
     const searchForm = (
       <Fragment>
         <h1>
-          <span>SYNERGxDB</span> is a comprehensive database to explore synergistic drug combinations for biomarker discovery.
+          <span>SYNERGxDB</span>
+          {' '}
+          is a comprehensive database to explore synergistic drug combinations for biomarker discovery.
         </h1>
         <StyledForm className="search-combos" onKeyPress={handleEnterPress}>
           <div className="select-container">

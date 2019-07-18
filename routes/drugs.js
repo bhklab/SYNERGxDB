@@ -26,7 +26,6 @@ router.get('/info', (req, res) => {
 
 router.post('/', (req, res) => {
   const { sample, dataset, drugId } = req.body;
-  console.log(dataset);
   // query to get relevant cell lines
   function subqueryTissue() {
     if (sample) {
@@ -40,7 +39,6 @@ router.post('/', (req, res) => {
   }
   // query for specific dataset
   function subquerySynergyScore() {
-    console.log('subquerySynergyScore fired');
     return this.select('idCombo_Design as idComb')
       .from('Synergy_score')
       .where({ idSource: dataset })
@@ -48,7 +46,6 @@ router.post('/', (req, res) => {
   }
   // query for relevent combo design (intermediary step required to filter by source name)
   function subqueryComboDesign() {
-    console.log('subqueryComboDesign fired');
     return this.select('idCombo_Design', 'idSample', 'idDrugA', 'idDrugB')
       .from(subquerySynergyScore)
       .join('Combo_Design', 'ss.idComb', '=', 'Combo_Design.idCombo_Design')
@@ -63,13 +60,11 @@ router.post('/', (req, res) => {
       // query with cell line
       if (dataset) {
         // query with dataset
-        console.log('cell + dataset');
         baseQuery = this.select('idDrugA')
           .from(subqueryComboDesign)
           .where({ idSample: sample, idDrugB: drugId });
       } else {
         // query without dataset
-        console.log('cell + no dataset');
         baseQuery = this.select('idDrugA')
           .from('Combo_Design')
           .where({ idSample: sample, idDrugB: drugId });
@@ -78,7 +73,6 @@ router.post('/', (req, res) => {
       // query with tissue
       if (dataset) {
         // query with dataset
-        console.log('tissue + dataset');
         baseQuery = this.select('idDrugA')
           .from(subqueryTissue)
           .where({ idDrugB: drugId })
@@ -101,13 +95,11 @@ router.post('/', (req, res) => {
       // query with cell line
       if (dataset) {
         // query with dataset
-        console.log('cell + dataset');
         baseQuery = this.select('idDrugB')
           .from(subqueryComboDesign)
           .where({ idSample: sample, idDrugA: drugId });
       } else {
         // query without dataset
-        console.log('cell + no dataset');
         baseQuery = this.select('idDrugB')
           .from('Combo_Design')
           .where({ idSample: sample, idDrugA: drugId });
@@ -115,14 +107,12 @@ router.post('/', (req, res) => {
     } else {
       if (dataset) {
         // query with dataset
-        console.log('tissue + dataset');
         baseQuery = this.select('idDrugB')
           .from(subqueryTissue)
           .where({ idDrugA: drugId })
           .join(subqueryComboDesign, 't.idSample', '=', 'CD.idSample');
       } else {
         // query without dataset
-        console.log('tissue + no dataset');
         baseQuery = this.select('idDrugB')
           .from(subqueryTissue)
           .where({ idDrugA: drugId })
