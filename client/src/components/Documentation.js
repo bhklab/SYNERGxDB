@@ -14,7 +14,7 @@ const Documentation = () => {
   return (
     
     <div>
-      <style>{'#root { background: #e7f3f8  !important; } '}</style>
+      {/* <style>{'#root { background: #e7f3f8  !important; } '}</style> */}
       <main className="documentation">
         <h1>SYNERGxDB</h1>
         <h2>Documentation</h2>

@@ -54,7 +54,7 @@ class Datasets extends Component {
     }];
     return (
       <Fragment>
-        <style>{'#root { background: #e7f3f8  !important; }'}</style>
+        {/* <style>{'#root { background: #e7f3f8  !important; }'}</style> */}
         <main className="summary">
           <StyledWrapper className="wrapper">
             <h1>List of Datasets</h1>
