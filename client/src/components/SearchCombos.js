@@ -96,7 +96,7 @@ const customStyles = {
       cursor: 'pointer',
     },
   }),
-  
+
   indicatorSeparator: provided => ({
     ...provided,
     background: '#3a5386',
@@ -211,6 +211,7 @@ class SearchCombos extends Component {
     this.userRedirect = this.userRedirect.bind(this);
     this.handleExample = this.handleExample.bind(this);
     this.handleDatasetSearch = this.handleDatasetSearch.bind(this);
+    this.handleEnterPress = this.handleEnterPress.bind(this);
   }
 
   componentDidMount() {
@@ -273,6 +274,10 @@ class SearchCombos extends Component {
       history.push('/synergy_score'.concat(queryParams));
     }
     return null;
+  }
+
+  handleEnterPress(e) {
+    if (e.key === 'Enter') this.userRedirect();
   }
 
   handleDrug1Search(drugId, event) {
@@ -354,7 +359,7 @@ class SearchCombos extends Component {
     } = this.state;
     const {
       handleSampleSearch, handleDrug1Search, handleDrug2Search, userRedirect,
-      handleDatasetSearch,
+      handleDatasetSearch, handleEnterPress,
     } = this;
 
     const isDisabled = !(drugId1 && sample && drugsData2.length > 0);
@@ -368,7 +373,7 @@ class SearchCombos extends Component {
         <h1>
           SYNERGxDB is a comprehensive database to explore synergistic drug combinations for biomarker discovery.
         </h1>
-        <StyledForm className="search-combos">
+        <StyledForm className="search-combos" onKeyPress={handleEnterPress}>
           <div className="select-container">
             <Select
               components={{ MenuList }}
