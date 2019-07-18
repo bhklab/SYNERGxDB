@@ -4,7 +4,7 @@
 import React, { Component, Fragment } from 'react';
 import { withRouter, Link } from 'react-router-dom';
 import styled from 'styled-components';
-import Select from 'react-select';
+import Select, { components } from 'react-select';
 import { FixedSizeList as List } from 'react-window';
 import colors from '../styles/colors';
 import transitions from '../styles/transitions';
@@ -189,7 +189,7 @@ const MenuList = (props) => {
       itemSize={height}
       initialScrollOffset={initialOffset}
     >
-      {({ index, style }) => <div style={style}>{children[index]}</div>}
+      {({ index, style }) => <div style={style}>{children[index]}</div> }
     </List>
   );
 };
@@ -407,6 +407,7 @@ class SearchCombos extends Component {
               onChange={handleSampleSearch}
               value={selectedSample}
               filterOption={customFilterOption}
+              classNamePrefix="react-select"
             />
           </div>
           <div className="select-container">
@@ -418,6 +419,7 @@ class SearchCombos extends Component {
               onChange={e => handleDrug1Search('drugId1', e)}
               value={selectedDrug1}
               filterOption={customFilterOption}
+              classNamePrefix="react-select"
             />
           </div>
           <div className="select-container">
@@ -429,6 +431,7 @@ class SearchCombos extends Component {
               value={selectedDataset}
               onChange={handleDatasetSearch}
               filterOption={customFilterOption}
+              classNamePrefix="react-select"
             />
           </div>
           <div className="select-container">
@@ -441,6 +444,7 @@ class SearchCombos extends Component {
               value={selectedDrug2}
               onChange={handleDrug2Search}
               filterOption={customFilterOption}
+              classNamePrefix="react-select"
             />
           </div>
           <ButtonContainer>

@@ -180,6 +180,9 @@ const GlobalStyles = createGlobalStyle`
       color: ${colors.color_main_4}
     }
   }
+  .react-select__option--is-focused:not(.react-select__option--is-selected) {
+    background-color: ${colors.trans_color_main_5};
+  }
 
   .ReactTable {
     width: 100%;
