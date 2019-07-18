@@ -22,6 +22,11 @@ const StyledWrapper = styled.div`
     font-family:'Raleway', sans-serif;
     font-weight:700;
   }
+  h1 span {
+    color: ${colors.nav_link_hov};
+    font-family:'Raleway', sans-serif;
+    font-weight:700;
+  }
 `;
 
 const StyledForm = styled.form`
@@ -125,7 +130,7 @@ const ButtonContainer = styled.div`
 
 const StyledButton = styled.button`
   background: ${colors.nav_links};
-  border: none;
+  border: 1px solid ${colors.nav_links};
   border-radius:10px;
   padding: 10px 20px;
   margin: 10px auto;
@@ -134,7 +139,9 @@ const StyledButton = styled.button`
   outline-style: none;
 
   &:hover {
-    color: ${colors.nav_link_hov}
+    color: ${colors.nav_links};
+    background: ${colors.nav_bg};
+    border: 1px solid ${colors.nav_links};
     cursor:pointer;
   }
   &[type="button"] {
@@ -366,7 +373,7 @@ class SearchCombos extends Component {
     const searchForm = (
       <Fragment>
         <h1>
-          SYNERGxDB is a comprehensive database to explore synergistic drug combinations for biomarker discovery.
+          <span>SYNERGxDB</span> is a comprehensive database to explore synergistic drug combinations for biomarker discovery.
         </h1>
         <StyledForm className="search-combos">
           <div className="select-container">
