@@ -3,8 +3,6 @@ import { Route, Switch } from 'react-router-dom';
 import styled, { createGlobalStyle } from 'styled-components';
 import { Normalize } from 'styled-normalize';
 import TopNav from './TopNav';
-import SideNav from './SideNav';
-// import heroImg from '../images/hero-image.jpg';
 import heroImg from '../images/bg-2.jpg';
 import colors from '../styles/colors';
 import transitions from '../styles/transitions';
@@ -165,6 +163,11 @@ const GlobalStyles = createGlobalStyle`
   .table-header {
     font-weight: bold;
     border-bottom: 5px double black;
+  }
+  .score {
+    width: 100%;
+    text-align: right;
+    padding-right: 5px;
   }
   .high-score {
     font-weight: bold;

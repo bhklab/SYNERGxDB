@@ -70,25 +70,36 @@ router.get('/', (req, res) => {
   // Links synergy scores to existing data
   function subquerySS() {
     if (dataset) {
-      return this.select('idSample', 'bliss', 'loewe', 'hsa', 'zip', 'sampleName', 'drugNameA', 'drugNameB', 'tissue', 'idSource as sourceId', 'idDrugA', 'idDrugB')
+      return this.select('D2.idCombo_Design as comboId', 'idSample', 'bliss', 'loewe', 'hsa', 'zip', 'sampleName', 'drugNameA', 'drugNameB', 'tissue', 'idSource as sourceId', 'idDrugA', 'idDrugB')
         .from(subqueryD2)
-        .join('Synergy_Score', 'D2.idCombo_Design', '=', 'Synergy_Score.idSynergy_Score')
+        .join('Synergy_Score', 'D2.idCombo_Design', '=', 'Synergy_Score.idCombo_Design')
         .where({ idSource: dataset })
         .as('SS');
     }
-    return this.select('idSample', 'bliss', 'loewe', 'hsa', 'zip', 'sampleName', 'drugNameA', 'drugNameB', 'tissue', 'idSource as sourceId', 'idDrugA', 'idDrugB')
+    return this.select('D2.idCombo_Design as comboId', 'idSample', 'bliss', 'loewe', 'hsa', 'zip', 'sampleName', 'drugNameA', 'drugNameB', 'tissue', 'idSource as sourceId', 'idDrugA', 'idDrugB')
       .from(subqueryD2)
-      .join('Synergy_Score', 'D2.idCombo_Design', '=', 'Synergy_Score.idSynergy_Score')
+      .join('Synergy_Score', 'D2.idCombo_Design', '=', 'Synergy_Score.idCombo_Design')
       .as('SS');
   }
   // Adds source name to the results and sends it to the client
-  db.select('idSample', 'bliss', 'loewe', 'hsa', 'zip', 'name as sourceName', 'sampleName', 'drugNameA', 'drugNameB', 'tissue', 'idSource', 'idDrugA', 'idDrugB')
+  db.select('comboId', 'idSample', 'bliss', 'loewe', 'hsa', 'zip', 'name as sourceName', 'sampleName', 'drugNameA', 'drugNameB', 'tissue', 'idSource', 'idDrugA', 'idDrugB')
     .from(subquerySS)
     .join('Source', 'SS.sourceId', '=', 'Source.idSource')
     .orderBy('zip', 'desc')
     .then((data) => {
       res.json(data);
     });
+});
+
+router.get('/matrix', (req, res) => {
+  let { comboId, idSource } = req.query;
+  comboId = parseInt(comboId, 10);
+  idSource = parseInt(idSource, 10);
+  console.log(comboId, idSource);
+  db.select('concA', 'concB', 'raw_matrix', 'bliss_matrix', 'loewe_matrix', 'hsa_matrix', 'zip_matrix', 'idSource')
+    .from('Combo_matrix')
+    .where({ idCombo_Design: comboId, idSource })
+    .then(data => res.json(data));
 });
 
 

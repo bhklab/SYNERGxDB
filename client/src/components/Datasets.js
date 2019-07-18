@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import styled from 'styled-components';
 import ReactTable from 'react-table';
-import colors from '../styles/colors';
+// import colors from '../styles/colors';
 import 'react-table/react-table.css';
 
 // import transitions from '../styles/transitions';
@@ -57,7 +57,7 @@ class Datasets extends Component {
         {/* <style>{'#root { background: #e7f3f8  !important; }'}</style> */}
         <main className="summary">
           <StyledWrapper className="wrapper">
-          <h1>List of Datasets</h1>
+            <h1>List of Datasets</h1>
             <ReactTable
               data={databaseData}
               columns={columns}

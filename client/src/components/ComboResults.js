@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
-/* eslint-disable react/prop-types */
 /* eslint-disable react/no-array-index-key */
 import React, { Component, Fragment } from 'react';
+import ReactRouterPropTypes from 'react-router-prop-types';
 import queryString from 'query-string';
 import styled from 'styled-components';
 import ReactTable from 'react-table';
@@ -20,6 +20,11 @@ const SynergyDiv = styled.div`
 `;
 
 class ComboResults extends Component {
+  static propTypes = {
+    history: ReactRouterPropTypes.history.isRequired,
+    location: ReactRouterPropTypes.location.isRequired,
+  }
+
   constructor() {
     super();
     this.state = {
@@ -66,10 +71,10 @@ class ComboResults extends Component {
       results,
     } = this.state;
     const {
-      idSource, idDrugA, idDrugB, idSample,
+      idSource, idDrugA, idDrugB, idSample, comboId,
     } = results[index];
     // Redirects user to combo details page
-    history.push(`/drug_combo?idSource=${idSource}&idDrugA=${idDrugA}&idDrugB=${idDrugB}&idSample=${idSample}`);
+    history.push(`/drug_combo?idSource=${idSource}&idDrugA=${idDrugA}&idDrugB=${idDrugB}&idSample=${idSample}&comboId=${comboId}`);
   }
 
   render() {
@@ -83,7 +88,11 @@ class ComboResults extends Component {
     const showScore = (props) => {
       // eslint-disable-next-line no-nested-ternary
       const score = props.value ? (props.value > 0 ? props.value.toFixed(4) : props.value.toFixed(3)) : null;
-      return (score >= 0.2 ? <span className="high-score">{score}</span> : <span>{score}</span>);
+      return (
+        <div className="score">
+          {score >= 0.2 ? <span className="high-score">{score}</span> : <span>{score}</span>}
+        </div>
+      );
     };
 
     const columns = [{
@@ -117,21 +126,25 @@ class ComboResults extends Component {
       accessor: 'zip',
       Cell: props => showScore(props),
       filterable: false,
+      sortable: true,
     }, {
       Header: 'Bliss',
       accessor: 'bliss',
       Cell: props => showScore(props),
       filterable: false,
+      sortable: true,
     }, {
       Header: 'Loewe',
       accessor: 'loewe',
       Cell: props => showScore(props),
       filterable: false,
+      sortable: true,
     }, {
       Header: 'HSA',
       accessor: 'hsa',
       Cell: props => showScore(props),
       filterable: false,
+      sortable: true,
     }, {
       Header: 'Source',
       accessor: 'sourceName',
