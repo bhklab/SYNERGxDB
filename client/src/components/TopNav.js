@@ -14,7 +14,7 @@ const StyledNav = styled.nav`
     white-space:nowrap;
     background-color: ${colors.nav_bg};
     position: fixed;
-    font-size: 1.5em;
+    font-size: calc(0.5em + 1vw);
     font-family: 'Montserrat', sans-serif;
     z-index: 10;
 

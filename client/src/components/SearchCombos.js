@@ -5,10 +5,12 @@ import React, { Component, Fragment } from 'react';
 import { withRouter, Link } from 'react-router-dom';
 import styled from 'styled-components';
 import Select, { components } from 'react-select';
-import { FixedSizeList as List } from 'react-window';
+
+// import { FixedSizeList as List } from 'react-window';
 import colors from '../styles/colors';
 import transitions from '../styles/transitions';
 import Stats from './Stats';
+import MenuList from './MenuList';
 
 const StyledWrapper = styled.div`
   display: flex;
@@ -174,25 +176,45 @@ const customFilterOption = (option, rawInput) => {
   );
 };
 
-const MenuList = (props) => {
-  const height = 50;
-  const {
-    options, children, maxHeight, getValue,
-  } = props;
-  const [value] = getValue();
-  const initialOffset = options.indexOf(value) * height;
-
-  return (
-    <List
-      height={maxHeight}
-      itemCount={children.length}
-      itemSize={height}
-      initialScrollOffset={initialOffset}
+const CustomOption = innerProps => (
+  <components.Option {...innerProps}>
+    <div
+      style={{
+        backgroundColor: innerProps.isFocused ? !innerProps.isDisabled ? colors.trans_color_main_5 : 'inherit' : 'inherit',
+        width: '350px',
+        height: '50px',
+        padding: 'auto',
+        margin: '0',
+        display: 'flex',
+        justifyContent: innerProps.isDisabled ? 'flex-start' : 'center',
+        alignItems: 'center',
+      }}
     >
-      {({ index, style }) => <div style={style}>{children[index]}</div> }
-    </List>
-  );
-};
+      <span>{innerProps.label}</span>
+    </div>
+  </components.Option>
+);
+
+
+// const MenuList = (props) => {
+//   const height = 50;
+//   const {
+//     options, children, maxHeight, getValue,
+//   } = props;
+//   const [value] = getValue();
+//   const initialOffset = options.indexOf(value) * height;
+
+//   return (
+//     <List
+//       height={maxHeight}
+//       itemCount={children.length}
+//       itemSize={height}
+//       initialScrollOffset={initialOffset}
+//     >
+//       {({ index, style }) => <div style={style}>{children[index]}</div> }
+//     </List>
+//   );
+// };
 
 
 class SearchCombos extends Component {
@@ -222,6 +244,7 @@ class SearchCombos extends Component {
     this.handleDatasetSearch = this.handleDatasetSearch.bind(this);
     this.handleEnterPress = this.handleEnterPress.bind(this);
     this.checkUserInput = this.checkUserInput.bind(this);
+    this.handleFocus = this.handleFocus.bind(this);
   }
 
   componentDidMount() {
@@ -273,7 +296,6 @@ class SearchCombos extends Component {
     const {
       drugId1, drugId2, sample, dataset, allowRedirect,
     } = this.state;
-    console.log(this.checkUserInput(), allowRedirect);
     if (this.checkUserInput() && allowRedirect) {
       const { history } = this.props;
       let queryParams = '';
@@ -297,6 +319,11 @@ class SearchCombos extends Component {
 
   handleEnterPress(e) {
     if (e.key === 'Enter') this.userRedirect();
+  }
+
+  handleFocus(e) {
+    console.log(e);
+    console.log(this);
   }
 
   handleDrug1Search(drugId, event) {
@@ -381,7 +408,7 @@ class SearchCombos extends Component {
     } = this.state;
     const {
       handleSampleSearch, handleDrug1Search, handleDrug2Search, userRedirect,
-      handleDatasetSearch, handleEnterPress,
+      handleDatasetSearch, handleEnterPress, handleFocus,
     } = this;
 
     const isDisabled = !(drugsData2.length > 0);
@@ -400,43 +427,52 @@ class SearchCombos extends Component {
         <StyledForm className="search-combos" onKeyPress={handleEnterPress}>
           <div className="select-container">
             <Select
-              components={{ MenuList }}
+              components={{
+                Option: CustomOption,
+                MenuList: props => (<MenuList {...props} />),
+              }}
               styles={customStyles}
               options={sampleData}
               placeholder="Enter Cell Line or Tissue"
               onChange={handleSampleSearch}
               value={selectedSample}
               filterOption={customFilterOption}
-              classNamePrefix="react-select"
             />
           </div>
           <div className="select-container">
             <Select
-              components={{ MenuList }}
+              components={{
+                Option: CustomOption,
+                MenuList: props => (<MenuList {...props} />),
+              }}
               styles={customStyles}
               options={drugsData1}
               placeholder="Enter Drug A"
               onChange={e => handleDrug1Search('drugId1', e)}
               value={selectedDrug1}
               filterOption={customFilterOption}
-              classNamePrefix="react-select"
             />
           </div>
           <div className="select-container">
             <Select
-              components={{ MenuList }}
+              components={{
+                Option: CustomOption,
+                MenuList: props => (<MenuList {...props} />),
+              }}
               styles={customStyles}
               options={datasetData}
               placeholder="Enter Dataset"
               value={selectedDataset}
               onChange={handleDatasetSearch}
               filterOption={customFilterOption}
-              classNamePrefix="react-select"
             />
           </div>
           <div className="select-container">
             <Select
-              components={{ MenuList }}
+              components={{
+                Option: CustomOption,
+                MenuList: props => (<MenuList {...props} />),
+              }}
               styles={customStyles}
               options={drugsData2}
               isDisabled={isDisabled}
@@ -444,7 +480,6 @@ class SearchCombos extends Component {
               value={selectedDrug2}
               onChange={handleDrug2Search}
               filterOption={customFilterOption}
-              classNamePrefix="react-select"
             />
           </div>
           <ButtonContainer>
