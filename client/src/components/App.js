@@ -191,12 +191,18 @@ const GlobalStyles = createGlobalStyle`
     color:${colors.nav_links};
     font-family: Nunito Sans, sans-serif;
 
-    .rt-thead.-header {
+    .rt-thead.-header,
+    .raw-names,
+    .header-name {
       box-shadow:none !important;
       font-weight: 700;
       font-size: 18px;
+    }
+
+    .rt-thead.-header {
       border-bottom: 1px solid rgba(0,0,0,0.1);
     }
+    
 
     .pagination-bottom {
       box-shadow:none !important;

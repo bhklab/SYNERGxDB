@@ -20,7 +20,7 @@ class SynergyMatrices extends Component {
 
   componentDidMount() {
     const {
-      idSource, comboId, drug1, drug2,
+      idSource, comboId,
     } = this.props;
 
     fetch(`/api/combos/matrix?comboId=${comboId}&idSource=${idSource}`)
@@ -40,27 +40,29 @@ class SynergyMatrices extends Component {
       const comboInfo = {};
       synergyData.forEach((item) => {
         // eslint-disable-next-line no-unused-expressions
-        comboInfo[item.concB] === undefined ? comboInfo[item.concB] = [{ concA: item.concA, [type]: item[type] }] : comboInfo[item.concB].push({ concA: item.concA, [type]: item[type] });
+        comboInfo[item.concA] === undefined ? comboInfo[item.concA] = [{ concB: item.concB, [type]: item[type] }] : comboInfo[item.concA].push({ concB: item.concB, [type]: item[type] });
       });
       // Building column structure
-      const columns = Object.values(comboInfo).map((item, index) => {
-        console.log('here', index);
-        return ({
-          Header: `${item[index].concA} µM`,
-          accessor: `${type}.${index}`,
-        });
-      });
-      columns.unshift({
+      const subcolumns = Object.values(comboInfo).map((item, index) => ({
+        Header: `${item[index].concB} µM`,
+        accessor: `${type}.${index}`,
+        Cell: props => <div style={{ textAlign: 'center' }}>{props.value.toFixed(4)}</div>,
+      }));
+      const columns = [{
         Header: `${drug2.name}`,
         accessor: 'key',
         Cell: props => (
-          <span className="number">
+          <div className="raw-names">
             {props.value}
             {' '}
             µM
-          </span>
+          </div>
         ),
-      });
+      }, {
+        Header: `${drug1.name}`,
+        headerClassName: 'header-name',
+        columns: subcolumns,
+      }];
       // Format the data to be usable by react table
       const tableData = Object.entries(comboInfo).map((item) => {
         const scoreObj = {};
@@ -69,7 +71,6 @@ class SynergyMatrices extends Component {
         });
         return ({ key: item[0], [type]: scoreObj });
       });
-      // console.log('combo info', comboInfo);
       console.log('table data', tableData);
       console.log('Columns', columns);
       console.log('comboInfo', comboInfo);
@@ -77,8 +78,8 @@ class SynergyMatrices extends Component {
         <ReactTable
           data={tableData}
           columns={columns}
-          sortable
           showPagination={false}
+          sortable={false}
           defaultPageSize={tableData.length}
           className="-highlight"
         />
