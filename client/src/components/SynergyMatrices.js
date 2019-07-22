@@ -1,21 +1,46 @@
 /* eslint-disable max-len */
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-// import styled from 'styled-components';
+import styled from 'styled-components';
 import ReactTable from 'react-table';
-// import colors from '../styles/colors';
+import colors from '../styles/colors';
 import 'react-table/react-table.css';
+import transitions from '../styles/transitions';
 
-// import transitions from '../styles/transitions';
+const SynergyContainer = styled.div`
+  
+display: flex;
 
+  button {
+    background: ${colors.nav_links};
+    border: 1px solid ${colors.nav_links};
+    padding: 10px 20px;
+    margin: 10px 0;
+    color: #ffffff;
+    transition: ${transitions.main_trans};
+    outline-style: none;
+  
+    &:hover {
+      color: ${colors.nav_links};
+      background: ${colors.nav_bg};
+      border: 1px solid ${colors.nav_links};
+      cursor:pointer;
+    }
+    &[type="button"] {
+      font-size: 2em;
+    }
+  }
+`;
 
 class SynergyMatrices extends Component {
   constructor() {
     super();
     this.state = {
       synergyData: [],
-      type: 'raw_matrix',
+      selectedType: 0,
+      dataTypes: ['raw_matrix', 'bliss_matrix', 'loewe_matrix', 'hsa_matrix', 'zip_matrix'],
     };
+    this.handleClick = this.handleClick.bind(this);
   }
 
   componentDidMount() {
@@ -26,26 +51,28 @@ class SynergyMatrices extends Component {
     fetch(`/api/combos/matrix?comboId=${comboId}&idSource=${idSource}`)
       .then(response => response.json())
       .then((synergyData) => {
-        console.log('raw data', synergyData);
         this.setState({ synergyData });
       });
   }
 
+  handleClick(selectedType) {
+    this.setState({ selectedType });
+  }
+
   render() {
-    const {
-      idSource, comboId, drug1, drug2,
-    } = this.props;
-    const { synergyData, type } = this.state;
+    const { handleClick } = this;
+    const { drug1, drug2 } = this.props;
+    const { synergyData, dataTypes, selectedType } = this.state;
     const generateTable = () => {
       const comboInfo = {};
       synergyData.forEach((item) => {
         // eslint-disable-next-line no-unused-expressions
-        comboInfo[item.concA] === undefined ? comboInfo[item.concA] = [{ concB: item.concB, [type]: item[type] }] : comboInfo[item.concA].push({ concB: item.concB, [type]: item[type] });
+        comboInfo[item.concA] === undefined ? comboInfo[item.concA] = [{ concB: item.concB, [dataTypes[selectedType]]: item[dataTypes[selectedType]] }] : comboInfo[item.concA].push({ concB: item.concB, [dataTypes[selectedType]]: item[dataTypes[selectedType]] });
       });
       // Building column structure
       const subcolumns = Object.values(comboInfo).map((item, index) => ({
         Header: `${item[index].concB} µM`,
-        accessor: `${type}.${index}`,
+        accessor: `${dataTypes[selectedType]}.${index}`,
         Cell: props => <div style={{ textAlign: 'center' }}>{props.value.toFixed(4)}</div>,
       }));
       const columns = [{
@@ -67,13 +94,10 @@ class SynergyMatrices extends Component {
       const tableData = Object.entries(comboInfo).map((item) => {
         const scoreObj = {};
         item[1].forEach((conc, index) => {
-          scoreObj[index] = conc[type];
+          scoreObj[index] = conc[dataTypes[selectedType]];
         });
-        return ({ key: item[0], [type]: scoreObj });
+        return ({ key: item[0], [dataTypes[selectedType]]: scoreObj });
       });
-      console.log('table data', tableData);
-      console.log('Columns', columns);
-      console.log('comboInfo', comboInfo);
       return (
         <ReactTable
           data={tableData}
@@ -90,6 +114,13 @@ class SynergyMatrices extends Component {
     return (
       <div className="synergy-matrix">
         <h2>Synergy Matrices</h2>
+        <SynergyContainer>
+          <button type="button" onClick={() => handleClick(0)}>Input</button>
+          <button type="button" onClick={() => handleClick(1)}>Bliss</button>
+          <button type="button" onClick={() => handleClick(2)}>Loewe</button>
+          <button type="button" onClick={() => handleClick(3)}>HSA</button>
+          <button type="button" onClick={() => handleClick(4)}>ZIP</button>
+        </SynergyContainer>
         {synergyData.length > 0 ? generateTable() : null}
       </div>
     );

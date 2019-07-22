@@ -5,9 +5,9 @@ import styled from 'styled-components';
 
 import colors from '../../styles/colors';
 
-const CumulativeContainer = styled.div`
-  width: 1000px;
-`;
+// const CumulativeContainer = styled.div`
+//   width: 1000px;
+// `;
 
 class CumulativeDensity extends React.Component {
   constructor(props) {
@@ -189,9 +189,9 @@ class CumulativeDensity extends React.Component {
     // const data = [bliss, loewe, hsa, zip];
     // const data = [bliss, blissMarker, loewe, loeweMarker, hsa, hsaMarker];
     return (
-      <CumulativeContainer className="cumulative-container">
+      <div className="cumulative-container">
         {comboData.length > 0 ? (<Plot data={data} layout={layout} graphDiv="graph" config={{ responsive: true }} />) : null}
-      </CumulativeContainer>
+      </div>
     );
   }
 }
