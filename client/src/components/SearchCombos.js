@@ -18,7 +18,6 @@ const StyledWrapper = styled.div`
   justify-content: center;
   align-items: center;
   text-align: center;
-  top:50%;
   h1 {
     color: ${colors.nav_links};
     font-family:'Raleway', sans-serif;
@@ -27,7 +26,8 @@ const StyledWrapper = styled.div`
   h1 span {
     color: ${colors.nav_link_hov};
     font-family:'Raleway', sans-serif;
-    font-weight:700;
+    font-weight:800;
+    font-size: 1.15em;
   }
 `;
 
@@ -160,6 +160,10 @@ const ExampleSpan = styled.span`
     font-style: normal;
     color:${colors.blue_main};
     font-style: italic;
+
+    &:hover {
+      color:${colors.nav_link_hov};
+    }
   }
 `;
 
@@ -240,7 +244,7 @@ class SearchCombos extends Component {
     this.handleDrug2Search = this.handleDrug2Search.bind(this);
     this.handleSampleSearch = this.handleSampleSearch.bind(this);
     this.userRedirect = this.userRedirect.bind(this);
-    this.handleExample = this.handleExample.bind(this);
+    // this.handleExample = this.handleExample.bind(this);
     this.handleDatasetSearch = this.handleDatasetSearch.bind(this);
     this.handleEnterPress = this.handleEnterPress.bind(this);
     this.checkUserInput = this.checkUserInput.bind(this);
@@ -383,22 +387,22 @@ class SearchCombos extends Component {
 
 
   // Generates an example for user and updates react component
-  handleExample() {
-    this.updateDrug2Data('Any', 11);
-    // updateDrug2Data is asynchronous function and drugId2 can only be updated after it executes
-    setTimeout(
-      () => {
-        this.setState({
-          selectedSample: { value: 'Any', label: 'Any Sample' },
-          selectedDrug1: { label: 'Bortezomib', value: 11 },
-          selectedDrug2: { label: 'Topotecan', value: 97 },
-          drugId1: 11,
-          drugId2: 97,
-        });
-      },
-      500,
-    );
-  }
+  // handleExample() {
+  //   this.updateDrug2Data('Any', 11);
+  //   // updateDrug2Data is asynchronous function and drugId2 can only be updated after it executes
+  //   setTimeout(
+  //     () => {
+  //       this.setState({
+  //         selectedSample: { value: 'Any', label: 'Any Sample' },
+  //         selectedDrug1: { label: 'Bortezomib', value: 11 },
+  //         selectedDrug2: { label: 'Topotecan', value: 97 },
+  //         drugId1: 11,
+  //         drugId2: 97,
+  //       });
+  //     },
+  //     500,
+  //   );
+  // }
 
   render() {
     const {
@@ -412,9 +416,17 @@ class SearchCombos extends Component {
     } = this;
 
     const isDisabled = !(drugsData2.length > 0);
-    const exampleUrl = {
+    const exampleDrugUrl = {
       pathname: '/synergy_score',
       search: '?drugId1=11&drugId2=97',
+    };
+    const exampleDatasetUrl = {
+      pathname: '/synergy_score',
+      search: '?&dataset=4',
+    };
+    const exampleSampleUrl = {
+      pathname: '/synergy_score',
+      search: '?&sample=bladder',
     };
 
     const searchForm = (
@@ -422,7 +434,7 @@ class SearchCombos extends Component {
         <h1>
           <span>SYNERGxDB</span>
           {' '}
-          is a comprehensive database to explore synergistic drug combinations for biomarker discovery.
+          is a comprehensive database to explore <br></br>synergistic drug combinations for biomarker discovery.
         </h1>
         <StyledForm className="search-combos" onKeyPress={handleEnterPress}>
           <div className="select-container">
@@ -486,7 +498,9 @@ class SearchCombos extends Component {
             <ExampleSpan>
             Example:
               {' '}
-              <Link className="hover" to={exampleUrl}>Bortezomib + Topotecan across all cell lines and datasets</Link>
+              <Link className="hover" to={exampleSampleUrl}>BLADDER</Link>&nbsp;&nbsp;|&nbsp;&nbsp;
+              <Link className="hover" to={exampleDatasetUrl}>YALE-PDAC</Link>&nbsp;&nbsp;|&nbsp;&nbsp;
+              <Link className="hover" to={exampleDrugUrl}>Bortezomib + Topotecan across all cell lines and datasets</Link> 
             </ExampleSpan>
             <StyledButton onClick={userRedirect} type="button">Search</StyledButton>
           </ButtonContainer>

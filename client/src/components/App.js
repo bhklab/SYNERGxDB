@@ -101,7 +101,7 @@ const GlobalStyles = createGlobalStyle`
   main.landing {
     position:absolute;
     max-width:1000px;
-    top:20%;
+    top:25%;
   }
 
   main.summary {

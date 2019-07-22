@@ -9,14 +9,17 @@ import transitions from '../styles/transitions';
 const StyledNav = styled.nav`
     padding: 15px 0px 0px 0px;    
     width: 100%;
-    height:124px;
-    line-height:4em;
+    right:0px;
+    height:90px;
+    line-height:3em;
     white-space:nowrap;
     background-color: ${colors.nav_bg};
     position: fixed;
-    font-size: calc(0.5em + 1vw);
+    font-size: calc(1em + 0.3vw);
     font-family: 'Montserrat', sans-serif;
     z-index: 10;
+    text-align: center;
+    padding-right:320px; // centers the links
 
     a {
         color: ${colors.nav_links};
@@ -24,7 +27,6 @@ const StyledNav = styled.nav`
         font-family: 'Raleway', sans-serif;
         font-weight:700;
         padding:0em 2.5vw;
-        float:left;
         
 
         &:hover {
@@ -35,22 +37,26 @@ const StyledNav = styled.nav`
     .logo {
         position:relative;
         float:left;
+        margin-left:50px;
+        margin-top:-5px;
+
     }
   
 `;
 const StyledLogo = styled.img`
-    width:200px;
+    width:150px;
 `;
 
 const Home = () => (
 
   <StyledNav className="top-nav">
     <Link to="/"><StyledLogo src={logo} alt="logo" className="logo" /></Link>
-    <Link to="/">Synergy Scores</Link>
-    <Link to="/cell-lines/">Cell lines</Link>
-    <Link to="/drugs/">Drugs</Link>
-    <Link to="/datasets/">Datasets</Link>
+    {/* <Link to="/">Synergy Scores</Link> */}
     <Link to="/documentation/">Documentation</Link>
+    <Link to="/cell-lines/">Cell lines</Link>
+    <Link to="/drugs/">Compounds</Link>
+    <Link to="/datasets/">Datasets</Link>
+    
   </StyledNav>
 );
 

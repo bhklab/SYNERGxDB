@@ -12,6 +12,8 @@ import BiomarkerPlot from './Plots/BiomarkerPlot';
 const StyledBiomarkers = styled.div`
   width: 100%;
   height: auto;
+  background:white;
+  padding:0px 30px;
 `;
 
 const BiomarkerDiv = styled.div`
@@ -102,7 +104,7 @@ class Biomarkers extends Component {
             <ReactTable
               data={results}
               columns={columns}
-              className="-striped -highlight"
+              className="-highlight"
               showPagination={false}
               defaultPageSize={10}
               loading={loading}
@@ -120,7 +122,7 @@ class Biomarkers extends Component {
                   }
                 },
                 style: {
-                  background: rowInfo.index === selectedBiomarker ? colors.trans_color_main_2 : 'transparent',
+                  background: rowInfo.index === selectedBiomarker ? colors.summary_bg : 'transparent',
                 },
               })
               }

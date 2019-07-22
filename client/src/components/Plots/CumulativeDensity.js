@@ -161,14 +161,14 @@ class CumulativeDensity extends React.Component {
           },
           layout: {
             height: 450,
-            paper_bgcolor: colors.trans_color_main_3,
-            plot_bgcolor: colors.trans_color_accent_2,
+            paper_bgcolor: "white",
+            plot_bgcolor: "white",
             yaxis: { title: 'Cumulative density' },
             xaxis: { title: `Synergy Score (Cell Lines, N=${length})` },
             barmode: 'overlay',
             font: {
               size: 16,
-              color: '#000000',
+              color: colors.nav_links,
               family: 'Raleway',
             },
             title: {
