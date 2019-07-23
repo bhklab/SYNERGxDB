@@ -27,6 +27,7 @@ class CumulativeDensity extends React.Component {
     const {
       drug1, drug2, comboId, sample, idSource,
     } = this.props;
+    const scatterSize = 5;
 
     fetch(`/api/combos?drugId1=${drug1.idDrug}&drugId2=${drug2.idDrug}&dataset=${idSource}`, {
       method: 'GET',
@@ -38,46 +39,34 @@ class CumulativeDensity extends React.Component {
       .then(response => response.json())
       .then((comboData) => {
         const { length } = comboData;
-        const blissSortedData = comboData.sort((a, b) => (a.bliss > b.bliss ? 1 : -1));
-        const blissCoordinates = {};
-        blissSortedData.some((item, index) => {
-          if (item.comboId === comboId) {
-            blissCoordinates.x = item.bliss;
-            blissCoordinates.y = index / (length - 1);
-            return true;
-          }
-          return false;
-        });
-        const loeweSortedData = comboData.sort((a, b) => (a.loewe > b.loewe ? 1 : -1));
-        const loeweCoordinates = {};
-        loeweSortedData.some((item, index) => {
-          if (item.comboId === comboId) {
-            loeweCoordinates.x = item.loewe;
-            loeweCoordinates.y = index / (length - 1);
-            return true;
-          }
-          return false;
-        });
-        const hsaSortedData = comboData.sort((a, b) => (a.hsa > b.hsa ? 1 : -1));
-        const hsaCoordinates = {};
-        hsaSortedData.some((item, index) => {
-          if (item.comboId === comboId) {
-            hsaCoordinates.x = item.hsa;
-            hsaCoordinates.y = index / (length - 1);
-            return true;
-          }
-          return false;
-        });
-        const zipSortedData = comboData.sort((a, b) => (a.zip > b.zip ? 1 : -1));
-        const zipCoordinates = {};
-        zipSortedData.some((item, index) => {
-          if (item.comboId === comboId) {
-            zipCoordinates.x = item.zip;
-            zipCoordinates.y = index / (length - 1);
-            return true;
-          }
-          return false;
-        });
+
+        const generateCoordinates = (data, type) => {
+          const outputCoordinates = {};
+          const rawData = data;
+          const sortedData = rawData.sort((a, b) => (a[type] > b[type] ? 1 : -1));
+          let value = null;
+
+          sortedData.some((item, index) => {
+            if (item.comboId === comboId) {
+              value = item[type];
+              outputCoordinates.x = item[type];
+            }
+            // Checks for last item that had same synergy score to define y axis
+            // value !== null instead of value is used to avoid scenerios when value might be zero
+            if (value !== null && value !== item[type]) {
+              outputCoordinates.y = (index) / (length - 1);
+              return true;
+            }
+            return false;
+          });
+          return outputCoordinates;
+        };
+
+        const blissCoordinates = generateCoordinates(comboData, 'bliss');
+        const zipCoordinates = generateCoordinates(comboData, 'zip');
+        const hsaCoordinates = generateCoordinates(comboData, 'hsa');
+        const loeweCoordinates = generateCoordinates(comboData, 'loewe');
+
         this.setState({
           comboData,
           bliss: {
@@ -94,9 +83,9 @@ class CumulativeDensity extends React.Component {
           blissMarker: {
             x: [blissCoordinates.x],
             y: [blissCoordinates.y],
-            showlegend: false,
+            // showlegend: false,
             name: `${sample} Bliss`,
-            marker: { color: colors.color_main_2, size: 15 },
+            marker: { color: colors.color_main_2, size: scatterSize },
             mode: 'markers',
             type: 'scatter',
             legendgroup: 'bliss',
@@ -118,7 +107,7 @@ class CumulativeDensity extends React.Component {
             y: [loeweCoordinates.y],
             name: `${sample} Loewe`,
             showlegend: false,
-            marker: { color: colors.color_main_1, size: 15 },
+            marker: { color: colors.color_main_1, size: scatterSize },
             mode: 'markers',
             type: 'scatter',
             visible: 'legendonly',
@@ -141,7 +130,7 @@ class CumulativeDensity extends React.Component {
             y: [hsaCoordinates.y],
             showlegend: false,
             name: `${sample} HSA`,
-            marker: { color: colors.color_main_4, size: 15 },
+            marker: { color: colors.color_main_4, size: scatterSize },
             mode: 'markers',
             type: 'scatter',
             visible: 'legendonly',
@@ -164,7 +153,7 @@ class CumulativeDensity extends React.Component {
             y: [zipCoordinates.y],
             showlegend: false,
             name: `${sample} ZIP`,
-            marker: { color: colors.color_main_5, size: 15 },
+            marker: { color: colors.color_main_5, size: scatterSize },
             mode: 'markers',
             type: 'scatter',
             legendgroup: 'zip',
@@ -206,7 +195,6 @@ class CumulativeDensity extends React.Component {
             layout={layout}
             graphDiv="graph"
             config={{ responsive: true }}
-            onLegendClick={e => console.log(e)}
           />
         ) : null}
       </div>
