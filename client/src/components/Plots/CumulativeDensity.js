@@ -89,6 +89,7 @@ class CumulativeDensity extends React.Component {
             type: 'histogram',
             cumulative: { enabled: true },
             marker: { color: colors.color_main_2 },
+            legendgroup: 'bliss',
           },
           blissMarker: {
             x: [blissCoordinates.x],
@@ -98,18 +99,20 @@ class CumulativeDensity extends React.Component {
             marker: { color: colors.color_main_2, size: 15 },
             mode: 'markers',
             type: 'scatter',
+            legendgroup: 'bliss',
           },
-          loewe:
-            {
-              x: comboData.map(item => item.loewe),
-              nbinsx: comboData.length,
-              histnorm: 'probability',
-              name: 'Loewe',
-              opacity: 0.5,
-              type: 'histogram',
-              cumulative: { enabled: true },
-              marker: { color: colors.color_main_1 },
-            },
+          loewe: {
+            x: comboData.map(item => item.loewe),
+            nbinsx: comboData.length,
+            histnorm: 'probability',
+            name: 'Loewe',
+            opacity: 0.5,
+            type: 'histogram',
+            cumulative: { enabled: true },
+            marker: { color: colors.color_main_1 },
+            visible: 'legendonly',
+            legendgroup: 'loewe',
+          },
           loeweMarker: {
             x: [loeweCoordinates.x],
             y: [loeweCoordinates.y],
@@ -118,18 +121,21 @@ class CumulativeDensity extends React.Component {
             marker: { color: colors.color_main_1, size: 15 },
             mode: 'markers',
             type: 'scatter',
+            visible: 'legendonly',
+            legendgroup: 'loewe',
           },
-          hsa:
-            {
-              x: comboData.map(item => item.hsa),
-              nbinsx: comboData.length,
-              histnorm: 'probability',
-              name: 'HSA',
-              type: 'histogram',
-              opacity: 0.5,
-              cumulative: { enabled: true },
-              marker: { color: colors.color_main_4 },
-            },
+          hsa: {
+            x: comboData.map(item => item.hsa),
+            nbinsx: comboData.length,
+            histnorm: 'probability',
+            name: 'HSA',
+            type: 'histogram',
+            opacity: 0.5,
+            cumulative: { enabled: true },
+            marker: { color: colors.color_main_4 },
+            visible: 'legendonly',
+            legendgroup: 'hsa',
+          },
           hsaMarker: {
             x: [hsaCoordinates.x],
             y: [hsaCoordinates.y],
@@ -138,6 +144,8 @@ class CumulativeDensity extends React.Component {
             marker: { color: colors.color_main_4, size: 15 },
             mode: 'markers',
             type: 'scatter',
+            visible: 'legendonly',
+            legendgroup: 'hsa',
           },
           zip:
             {
@@ -149,6 +157,7 @@ class CumulativeDensity extends React.Component {
               opacity: 0.5,
               cumulative: { enabled: true },
               marker: { color: colors.color_main_5 },
+              legendgroup: 'zip',
             },
           zipMarker: {
             x: [zipCoordinates.x],
@@ -158,6 +167,7 @@ class CumulativeDensity extends React.Component {
             marker: { color: colors.color_main_5, size: 15 },
             mode: 'markers',
             type: 'scatter',
+            legendgroup: 'zip',
           },
           layout: {
             height: 450,
@@ -185,12 +195,20 @@ class CumulativeDensity extends React.Component {
     const {
       bliss, loewe, hsa, zip, blissMarker, loeweMarker, hsaMarker, zipMarker, layout, comboData,
     } = this.state;
-    const data = [bliss, blissMarker, loewe, loeweMarker, hsa, hsaMarker, zipMarker, zip];
+    const data = [zipMarker, zip, bliss, blissMarker, loewe, loeweMarker, hsa, hsaMarker];
     // const data = [bliss, loewe, hsa, zip];
     // const data = [bliss, blissMarker, loewe, loeweMarker, hsa, hsaMarker];
     return (
       <div className="cumulative-container">
-        {comboData.length > 0 ? (<Plot data={data} layout={layout} graphDiv="graph" config={{ responsive: true }} />) : null}
+        {comboData.length > 0 ? (
+          <Plot
+            data={data}
+            layout={layout}
+            graphDiv="graph"
+            config={{ responsive: true }}
+            onLegendClick={e => console.log(e)}
+          />
+        ) : null}
       </div>
     );
   }
