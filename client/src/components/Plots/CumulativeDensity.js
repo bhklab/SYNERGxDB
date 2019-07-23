@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Plot from 'react-plotly.js';
-import styled from 'styled-components';
+// import styled from 'styled-components';
 
 import colors from '../../styles/colors';
 
@@ -25,10 +25,10 @@ class CumulativeDensity extends React.Component {
   // Methods called on loading
   componentDidMount() {
     const {
-      drug1, drug2, comboId, sample,
+      drug1, drug2, comboId, sample, idSource,
     } = this.props;
 
-    fetch(`/api/combos?drugId1=${drug1.idDrug}&drugId2=${drug2.idDrug}`, {
+    fetch(`/api/combos?drugId1=${drug1.idDrug}&drugId2=${drug2.idDrug}&dataset=${idSource}`, {
       method: 'GET',
       headers: {
         Accept: 'application/json',
@@ -207,6 +207,7 @@ CumulativeDensity.propTypes = {
   }).isRequired,
   comboId: PropTypes.number.isRequired,
   sample: PropTypes.string.isRequired,
+  idSource: PropTypes.number.isRequired,
 };
 
 export default CumulativeDensity;
