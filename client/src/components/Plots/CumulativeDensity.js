@@ -45,19 +45,13 @@ class CumulativeDensity extends React.Component {
           const sortedData = rawData.sort((a, b) => (a[type] > b[type] ? 1 : a[type] < b[type] ? -1 : 0));
           let value = null;
           sortedData.some((item, index) => {
-            console.log(index, item, type);
             if (item.comboId === comboId) {
               value = item[type];
               outputCoordinates.x = item[type];
-              console.log('-----------Item 1-------------', index, item);
             }
             // Checks for last item that had same synergy score to define y axis
             // value !== null instead of value is used to avoid scenerios when value might be zero
             if (value !== null && value !== item[type]) {
-              console.log('Item 2', index, item);
-              console.log('------------------------');
-              console.log('Raw data lenght is ', data.length);
-              console.log('SortedData.lenght is ', sortedData.length);
               outputCoordinates.y = (index) / (sortedData.length - 1);
               return true;
             }
@@ -78,7 +72,7 @@ class CumulativeDensity extends React.Component {
             nbinsx: comboData.length,
             histnorm: 'probability',
             name: 'Bliss',
-            opacity: 0.5,
+            opacity: 0.35,
             type: 'histogram',
             cumulative: { enabled: true },
             marker: { color: colors.color_main_2 },
@@ -87,7 +81,6 @@ class CumulativeDensity extends React.Component {
           blissMarker: {
             x: [blissCoordinates.x],
             y: [blissCoordinates.y],
-            // showlegend: false,
             name: `${sample} Bliss`,
             marker: { color: colors.color_main_2, size: scatterSize },
             showlegend: false,
@@ -100,7 +93,7 @@ class CumulativeDensity extends React.Component {
             nbinsx: comboData.length,
             histnorm: 'probability',
             name: 'Loewe',
-            opacity: 0.5,
+            opacity: 0.35,
             type: 'histogram',
             cumulative: { enabled: true },
             marker: { color: colors.color_main_1 },
@@ -124,7 +117,7 @@ class CumulativeDensity extends React.Component {
             histnorm: 'probability',
             name: 'HSA',
             type: 'histogram',
-            opacity: 0.5,
+            opacity: 0.35,
             cumulative: { enabled: true },
             marker: { color: colors.color_main_4 },
             visible: 'legendonly',
@@ -148,7 +141,7 @@ class CumulativeDensity extends React.Component {
               histnorm: 'probability',
               type: 'histogram',
               name: 'ZIP',
-              opacity: 0.5,
+              opacity: 0.35,
               cumulative: { enabled: true },
               marker: { color: colors.color_main_5 },
               legendgroup: 'zip',
