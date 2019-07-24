@@ -3,7 +3,7 @@ import { Route, Switch } from 'react-router-dom';
 import styled, { createGlobalStyle } from 'styled-components';
 import { Normalize } from 'styled-normalize';
 import TopNav from './TopNav';
-import heroImg from '../images/bg-2.jpg';
+import heroImg from '../images/bg-3.jpg';
 import colors from '../styles/colors';
 import transitions from '../styles/transitions';
 
@@ -106,7 +106,6 @@ const GlobalStyles = createGlobalStyle`
 
   main.summary {
     margin-top:30px;
-    background:white;
     padding-bottom:30px;
   }
 
@@ -143,6 +142,7 @@ const GlobalStyles = createGlobalStyle`
 
   .main-wrapper {
     width: 100%;
+    overflow-x:hidden;
   }
   .app,
   .js-plotly-plot {
@@ -218,6 +218,13 @@ const GlobalStyles = createGlobalStyle`
   }
   .wrapper {
     color:${colors.nav_links};
+    background:white;
+    margin-bottom:30px;
+  }
+
+  .footer-wrapper {
+    color:${colors.blue_main};
+    background:none !important;
   }
   
   #root {
@@ -234,10 +241,21 @@ const GlobalStyles = createGlobalStyle`
     background-position: center;
     flex-wrap: wrap;
 
-  .main-wrapper {
-    overflow-x:hidden;
+    .main-wrapper {
+      overflow-x:hidden;
+    }
+
   }
+
+  .plot {
+    font-family: Nunito Sans, sans-serif;
   }
+
+  #cellSexPlot {
+    display:flex;
+    justify-content: space-around;
+  }
+
 
 `;
 

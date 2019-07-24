@@ -101,7 +101,7 @@ class Drugs extends Component {
           </StyledWrapper>
         </main>
         <footer>
-          <div className="wrapper">
+          <div className="footer-wrapper">
             <p>Copyright © 2019. All rights reserved</p>
           </div>
         </footer>

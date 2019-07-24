@@ -34,8 +34,7 @@ const StyledWrapper = styled.div`
 const StyledForm = styled.form`
   max-width: 800px;
   width: 100%;
-  background-color: rgb(255,255,255,0.7); 
-  //17,120,199,0.17
+  background-color: rgb(255,255,255,0.85); 
   border-radius:25px;
   margin: 5px;
   padding:25px;
@@ -513,7 +512,7 @@ class SearchCombos extends Component {
       <Fragment>
         <header />
         <main className="landing">
-          <StyledWrapper className="wrapper">
+          <StyledWrapper className="form-wrapper">
             {searchForm}
           </StyledWrapper>
         </main>
