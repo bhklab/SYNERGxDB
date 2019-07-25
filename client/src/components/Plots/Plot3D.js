@@ -14,22 +14,28 @@ class Plot3D extends React.Component {
       data: {},
       layout: {
         title: 'Example Plot',
-        scene: { camera: { eye: { x: 1.87, y: 0.88, z: -0.64 } } },
+        scene: {
+        //   camera: { eye: { x: 1.87, y: 0.88, z: -0.64 } },
+          xaxis: { title: 'Drug1 undefined' },
+          yaxis: { title: 'Drug2 undefined' },
+          zaxis: { title: 'Type undefined' },
+        },
         autosize: true,
-        width: 500,
-        height: 500,
         margin: {
           l: 65,
           r: 50,
           b: 65,
           t: 90,
         },
+
       },
     };
   }
 
   // Methods called on loading
   componentDidMount() {
+    const { data } = this.props;
+    console.log(data);
     const zData = [
       [8.83, 8.89, 8.81, 8.87, 8.9, 8.87],
       [8.89, 8.94, 8.85, 8.94, 8.96, 8.92],
@@ -47,7 +53,7 @@ class Plot3D extends React.Component {
       [8.99, 8.99, 8.98, 9.18, 9.2, 9.19],
       [8.93, 8.97, 8.97, 9.18, 9.2, 9.18],
     ];
-    const data = [{
+    const dataZ = [{
       z: zData,
       type: 'surface',
       contours: {
@@ -60,7 +66,7 @@ class Plot3D extends React.Component {
       },
     }];
 
-    this.setState({ data });
+    this.setState({ data: dataZ });
   }
 
   // Render this compoenent

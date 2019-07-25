@@ -55,7 +55,7 @@ const SynergyContainer = styled.div`
   
     &:hover,
     &:focus,
-    &:active {
+    &.active-score {
       color: ${colors.nav_links};
       
       border: 1px solid ${colors.nav_links};
@@ -78,12 +78,15 @@ class SynergyMatrices extends Component {
       dataTypes: ['raw_matrix', 'bliss_matrix', 'loewe_matrix', 'hsa_matrix', 'zip_matrix'],
     };
     this.handleClick = this.handleClick.bind(this);
+    // this.focusButton = React.createRef();
   }
 
   componentDidMount() {
     const {
       idSource, comboId,
     } = this.props;
+
+    // this.focusButton.current.focus();
 
     fetch(`/api/combos/matrix?comboId=${comboId}&idSource=${idSource}`)
       .then(response => response.json())
@@ -97,10 +100,9 @@ class SynergyMatrices extends Component {
   }
 
   render() {
-    const { handleClick } = this;
+    const { handleClick, focusButton } = this;
     const { drug1, drug2 } = this.props;
     const { synergyData, dataTypes, selectedType } = this.state;
-    const data = [];
     const generateTable = () => {
       const comboInfo = {};
       synergyData.forEach((item) => {
@@ -152,14 +154,52 @@ class SynergyMatrices extends Component {
       <div className="synergy-matrix">
         <h2>Synergy Matrices</h2>
         <SynergyContainer>
-          <button type="button" onClick={() => handleClick(0)}>Input</button>
-          <button type="button" onClick={() => handleClick(1)}>Bliss</button>
-          <button type="button" onClick={() => handleClick(2)}>Loewe</button>
-          <button type="button" onClick={() => handleClick(3)}>HSA</button>
-          <button type="button" onClick={() => handleClick(4)}>ZIP</button>
+          <button
+            type="button"
+            onClick={() => handleClick(0)}
+            className={selectedType === 0 ? 'active-score' : null}
+          >
+            Input
+          </button>
+          <button
+            type="button"
+            onClick={() => handleClick(1)}
+            className={selectedType === 1 ? 'active-score' : null}
+          >
+            Bliss
+          </button>
+          <button
+            type="button"
+            onClick={() => handleClick(2)}
+            className={selectedType === 2 ? 'active-score' : null}
+          >
+            Loewe
+          </button>
+          <button
+            type="button"
+            onClick={() => handleClick(3)}
+            className={selectedType === 3 ? 'active-score' : null}
+          >
+          HSA
+          </button>
+          <button
+            type="button"
+            onClick={() => handleClick(4)}
+            className={selectedType === 4 ? 'active-score' : null}
+          >
+            ZIP
+          </button>
         </SynergyContainer>
         {synergyData.length > 0 ? generateTable() : null}
-        <Plot3D drug1={drug1} drug2={drug2} data={data} />
+        {synergyData.length > 0 && selectedType !== 0
+          ? (
+            <Plot3D
+              drug1={drug1}
+              drug2={drug2}
+              data={synergyData}
+              type={dataTypes[selectedType]}
+            />
+          ) : null}
       </div>
     );
   }
