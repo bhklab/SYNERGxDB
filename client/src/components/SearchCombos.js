@@ -41,7 +41,7 @@ const StyledForm = styled.form`
   text-align: center;
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-around
+  justify-content: space-around;
   align-items: center;
 
   .select-container {
