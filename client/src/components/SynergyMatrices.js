@@ -78,15 +78,12 @@ class SynergyMatrices extends Component {
       dataTypes: ['raw_matrix', 'bliss_matrix', 'loewe_matrix', 'hsa_matrix', 'zip_matrix'],
     };
     this.handleClick = this.handleClick.bind(this);
-    // this.focusButton = React.createRef();
   }
 
   componentDidMount() {
     const {
       idSource, comboId,
     } = this.props;
-
-    // this.focusButton.current.focus();
 
     fetch(`/api/combos/matrix?comboId=${comboId}&idSource=${idSource}`)
       .then(response => response.json())
@@ -100,7 +97,7 @@ class SynergyMatrices extends Component {
   }
 
   render() {
-    const { handleClick, focusButton } = this;
+    const { handleClick } = this;
     const { drug1, drug2 } = this.props;
     const { synergyData, dataTypes, selectedType } = this.state;
     const generateTable = () => {
@@ -149,7 +146,7 @@ class SynergyMatrices extends Component {
         />
       );
     };
-
+    console.log(synergyData instanceof Array);
     return (
       <div className="synergy-matrix">
         <h2>Synergy Matrices</h2>

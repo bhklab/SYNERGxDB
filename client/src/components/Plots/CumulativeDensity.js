@@ -42,7 +42,9 @@ class CumulativeDensity extends React.Component {
         const generateCoordinates = (data, type) => {
           const outputCoordinates = {};
           const rawData = data.filter(item => (item[type] !== null));
-          const sortedData = rawData.sort((a, b) => (a[type] > b[type] ? 1 : a[type] < b[type] ? -1 : 0));
+          const sortedData = rawData.sort(
+            (a, b) => (a[type] > b[type] ? 1 : a[type] < b[type] ? -1 : 0),
+          );
           let value = null;
           sortedData.some((item, index) => {
             if (item.comboId === comboId) {
