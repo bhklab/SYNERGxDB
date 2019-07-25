@@ -17,7 +17,7 @@ class CellLinePlot extends React.Component {
             .then((data) => {
                 const names = [...new Set(data.map(x => x[keyName]))];
                 const donutData = this.formatData(data, keyName, names);
-                this.plotCellLineDonut(donutData, data.length, names, mini, plotId);
+                this.plotCellLineDonut(donutData, data.length, mini, plotId);
 
             });        
     }
@@ -126,7 +126,7 @@ class CellLinePlot extends React.Component {
         return result;
     }
 
-    plotCellLineDonut(donutData, sum, names, mini, plotId) {
+    plotCellLineDonut(donutData, sum, mini, plotId) {
         //positions and dimensions
         var margin = {
             top: 20,
@@ -171,6 +171,18 @@ class CellLinePlot extends React.Component {
             .value(function(d) {
                 return d.num;
             });
+
+        // tooltip
+        var tooltip = d3.select("#" + plotId)
+            .append("div")
+            .style("position", "absolute")
+            .style("z-index", "10")
+            .style("visibility", "hidden")
+            .style("color", colors.blue_main)
+            .style("padding", "2px 8px")
+            .style("background", "#fff")
+            .text("hehe"); // it changes, don't worry
+
         
         //making each slice of pie
         var arcs = svg.selectAll("g.slice")
@@ -183,10 +195,22 @@ class CellLinePlot extends React.Component {
             arcs.append("svg:path")
                 .attr("fill", function(d, i) { return colorPlot(i); } )
                 .style("opacity",0.7)
-                .attr("d", arc);
+                .attr("d", arc)
+                .on("mouseover", function(d){
+                    tooltip.text(d.data.name + ": " + d3.format(".2f")((d.data.num/sum)*100) + "%").style("visibility", "visible");
+                })
+                .on("mousemove", function(){
+                    tooltip.style("top", (d3.event.pageY-10)+"px").style("left",(d3.event.pageX+10)+"px");
+                })
+                .on("mouseout", function(){
+                    tooltip.style("visibility", "hidden");
+                });
+
+            // arcs.append("svg:title")
+                // .text(function(d,i) {return donutData[i].name + ": " + d3.format(".2f")((donutData[i].num/sum)*100) + "%"});
+
+
         
-            arcs.append("svg:title")
-                .text(function(d,i) {return donutData[i].name + ": " + d3.format(".2f")((donutData[i].num/sum)*100) + "%"});
 
             //percentage
             // arcs.append("svg:text")
@@ -221,7 +245,7 @@ class CellLinePlot extends React.Component {
                 svg.append('text')
                     .attr("x", width-(width/2 - 5))
                     .attr("y",  i * 35 - (height/2 + 8)) //208
-                    .attr("id", "legendLabel" + names[i])
+                    .attr("id", "legendLabel" + donutData[i].name)
                     .style("text-anchor", "start")
                     .style("font-size", "14px")
                     .style("opacity", 1)
