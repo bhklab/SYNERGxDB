@@ -4,7 +4,9 @@ import PropTypes from 'prop-types';
 import Plot from 'react-plotly.js';
 // import styled from 'styled-components';
 
-// import colors from '../../styles/colors';
+import colors from '../../styles/colors';
+
+const types = ['Bliss', 'Loewe', 'HSA', 'ZIP'];
 
 
 class Plot3D extends React.Component {
@@ -13,12 +15,15 @@ class Plot3D extends React.Component {
     this.state = {
       data: [],
       layout: {
-        title: 'Example Plot',
+        title: {
+          text: types[props.type - 1],
+          size: 18,
+        },
         scene: {
         //   camera: { eye: { x: 1.87, y: 0.88, z: -0.64 } },
-          xaxis: { title: 'Drug1 undefined' },
-          yaxis: { title: 'Drug2 undefined' },
-          zaxis: { title: 'Type undefined' },
+          xaxis: { title: `${props.drug1.name}` },
+          yaxis: { title: `${props.drug2.name}` },
+          zaxis: { title: types[props.type - 1] },
         },
         autosize: true,
         margin: {
@@ -27,7 +32,13 @@ class Plot3D extends React.Component {
           b: 65,
           t: 90,
         },
-
+        paper_bgcolor: colors.summary_bg_trans,
+        plot_bgcolor: colors.trans_color_accent_2,
+        colorscale: [[0, 'rgb(25,255,255)'], [0.5, 'rgb(255,0,0)']],
+        // showscale: false,
+        // cmax: 5.563,
+        // autocolorscale: false,
+        reversescale: true,
       },
     };
   }
@@ -99,6 +110,8 @@ class Plot3D extends React.Component {
 }
 
 Plot3D.propTypes = {
+  type: PropTypes.number
+    .isRequired,
   drug1: PropTypes.shape({
     name: PropTypes.string,
     idDrug: PropTypes.number,

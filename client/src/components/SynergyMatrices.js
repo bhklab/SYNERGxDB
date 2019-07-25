@@ -194,7 +194,7 @@ class SynergyMatrices extends Component {
               drug1={drug1}
               drug2={drug2}
               data={synergyData}
-              type={dataTypes[selectedType]}
+              type={selectedType}
             />
           ) : null}
       </div>
