@@ -37,7 +37,7 @@ const StyledNav = styled.nav`
     .logo {
         position:relative;
         float:left;
-        margin-left:50px;
+        margin-left:5vw;
         margin-top:-5px;
 
     }

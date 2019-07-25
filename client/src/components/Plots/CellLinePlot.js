@@ -181,6 +181,7 @@ class CellLinePlot extends React.Component {
             .style("color", colors.blue_main)
             .style("padding", "2px 8px")
             .style("background", "#fff")
+            .style("border-radius","10px")
             .text("hehe"); // it changes, don't worry
 
         
