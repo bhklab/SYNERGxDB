@@ -7,6 +7,8 @@ import colors from '../styles/colors';
 import 'react-table/react-table.css';
 import transitions from '../styles/transitions';
 
+import Plot3D from './Plots/Plot3D';
+
 const SynergyContainer = styled.div`
 
   button {
@@ -38,7 +40,7 @@ const SynergyContainer = styled.div`
       left: 0;
       right: 0;
       bottom: 0;
-      background: #2098D1;
+      background: ${colors.button_hover};
       -webkit-transform: scaleX(0);
       transform: scaleX(0);
       -webkit-transform-origin: 0 50%;
@@ -98,6 +100,7 @@ class SynergyMatrices extends Component {
     const { handleClick } = this;
     const { drug1, drug2 } = this.props;
     const { synergyData, dataTypes, selectedType } = this.state;
+    const data = [];
     const generateTable = () => {
       const comboInfo = {};
       synergyData.forEach((item) => {
@@ -144,7 +147,6 @@ class SynergyMatrices extends Component {
         />
       );
     };
-    generateTable();
 
     return (
       <div className="synergy-matrix">
@@ -157,6 +159,7 @@ class SynergyMatrices extends Component {
           <button type="button" onClick={() => handleClick(4)}>ZIP</button>
         </SynergyContainer>
         {synergyData.length > 0 ? generateTable() : null}
+        <Plot3D drug1={drug1} drug2={drug2} data={data} />
       </div>
     );
   }
