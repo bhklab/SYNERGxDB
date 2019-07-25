@@ -35,11 +35,6 @@ class Plot3D extends React.Component {
         },
         paper_bgcolor: colors.summary_bg_trans,
         plot_bgcolor: colors.trans_color_accent_2,
-        colorscale: [[0, 'rgb(25,255,255)'], [0.5, 'rgb(255,0,0)']],
-        // showscale: false,
-        // cmax: 5.563,
-        // autocolorscale: false,
-        reversescale: true,
       },
     };
   }
@@ -87,6 +82,10 @@ class Plot3D extends React.Component {
           highlightcolor: '#42f462',
           project: { z: true },
         },
+      },
+      colorscale: [[0, 'rgb(25,255,255)'], [1, 'rgb(255,0,0)']],
+      colorbar: {
+        x: 95,
       },
     }];
 
