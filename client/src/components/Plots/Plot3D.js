@@ -19,6 +19,7 @@ class Plot3D extends React.Component {
           text: types[props.type - 1],
           size: 18,
         },
+        type: 'surface',
         scene: {
         //   camera: { eye: { x: 1.87, y: 0.88, z: -0.64 } },
           xaxis: { title: `${props.drug1.name}` },
