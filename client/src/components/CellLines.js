@@ -105,12 +105,14 @@ class Databases extends Component {
                 plotId="cellMiniPlot"
               />
 
+              
               <CellLinePlot
                 keyName="origin"
                 mini={true}
                 plotId="cellMiniPlot"
               />
 
+              
               <CellLinePlot
                 keyName="age"
                 mini={true}

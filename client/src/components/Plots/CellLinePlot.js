@@ -17,7 +17,7 @@ class CellLinePlot extends React.Component {
             .then((data) => {
                 const names = [...new Set(data.map(x => x[keyName]))];
                 const donutData = this.formatData(data, keyName, names);
-                this.plotCellLineDonut(donutData, data.length, mini, plotId);
+                this.plotCellLineDonut(donutData, data.length, mini, plotId, keyName);
 
             });        
     }
@@ -126,7 +126,7 @@ class CellLinePlot extends React.Component {
         return result;
     }
 
-    plotCellLineDonut(donutData, sum, mini, plotId) {
+    plotCellLineDonut(donutData, sum, mini, plotId, keyName) {
         //positions and dimensions
         var margin = {
             top: 20,
@@ -138,7 +138,7 @@ class CellLinePlot extends React.Component {
         var width, height, radius;
         if (mini) {
             width = 300;
-            height = 150;
+            height = 230;
             radius = 100;
         } else {
             width = 600;
@@ -161,11 +161,29 @@ class CellLinePlot extends React.Component {
             .append("g")
                 .attr("transform",
                         "translate(" + radius + "," + (radius) + ")")
+                .attr("id", "g-" + keyName)
+
         
+        if (mini) {
+            d3.select("#g-" + keyName).attr("transform",
+                "translate(" + radius + "," + (radius + 80) + ")")
+
+            var title = svg.append("text")
+            .attr("text-anchor", "middle")
+            .attr("fill",colors.blue_main)
+            .style("font-size", "20px")
+            .style("font-weight", "700")
+            .style("text-transform", "capitalize")
+            .attr("transform", "translate("+ 0 +","+ -120 +")")
+            .text(function(d) {
+                return keyName == "origin"? "biopsy": keyName
+            })
+        }
         
+
         var arc = d3.arc()
             .outerRadius(radius)
-            .innerRadius(radius - (radius/2.87));
+            .innerRadius(radius - (radius/2.87))
         
         var pie = d3.pie()
             .value(function(d) {
@@ -207,34 +225,31 @@ class CellLinePlot extends React.Component {
                     tooltip.style("visibility", "hidden");
                 });
 
-            // arcs.append("svg:title")
-                // .text(function(d,i) {return donutData[i].name + ": " + d3.format(".2f")((donutData[i].num/sum)*100) + "%"});
-
-
-        
-
-            //percentage
-            // arcs.append("svg:text")
-            //     .attr("transform", function(d) {  //center
-            //     d.innerRadius = 0;
-            //     d.outerRadius = radius;
-            //     var coords = arc.centroid(d);
-            //     coords[0] *= 1;
-            //     coords[1] *= 1;
-            //     return "translate(" + coords + ")"; //return coordinates
-            //     })
-
-            // .attr("text-anchor", "middle")
-            // .attr("fill", "white")
-            // .style("font-size", "13px")
-            // .text(function(d, i) {
-            //     return d3.format(".2f")((donutData[i].num/sum)*100) + "%";
-            // });
-        
             
+
             //legend
             for (var i = 0; i < donutData.length; i++) {
-                svg.append('rect')
+                if (mini) {
+                    svg.append('rect')
+                    .attr("x", width-(width/2 + 15))
+                    .attr("y", i * 35 - (height/2 - 30)) //220
+                    .attr("width", 15)
+                    .attr("height", 15)
+                    .style("fill", colorPlot(i))
+                    .style("opacity",0.7);
+            
+            
+                    svg.append('text')
+                        .attr("x", width-(width/2 - 5))
+                        .attr("y",  i * 35 - (height/2 - 43)) //208
+                        .attr("id", "legendLabel" + donutData[i].name)
+                        .style("text-anchor", "start")
+                        .style("font-size", "14px")
+                        .style("opacity", 1)
+                        .attr("fill", colors.blue_main)
+                        .text(donutData[i].name);
+                } else {
+                    svg.append('rect')
                     .attr("x", width-(width/2 + 15))
                     .attr("y", i * 35 - (height/2 + 20)) //220
                     .attr("width", 15)
@@ -252,6 +267,8 @@ class CellLinePlot extends React.Component {
                     .style("opacity", 1)
                     .attr("fill", colors.blue_main)
                     .text(donutData[i].name);
+                }
+                
 
             }   
     }

@@ -251,7 +251,7 @@ const GlobalStyles = createGlobalStyle`
     font-family: Nunito Sans, sans-serif;
   }
 
-  #cellSexPlot {
+  #cellMiniPlot {
     display:flex;
     justify-content: space-around;
   }
