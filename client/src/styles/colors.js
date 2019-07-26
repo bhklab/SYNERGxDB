@@ -14,9 +14,11 @@ export default {
   color_accent_2: '#f0f0f0',
   trans_color_accent_2: 'rgba(241,241,241, 0.5)',
   nav_links: '#3a5386',
-  nav_bg: 'rgb(255,255,255,1)',  
+  nav_bg: 'rgb(255,255,255,1)',
   nav_link_hov: '#efa127',
   blue_main: '#3a5386',
   summary_bg: '#e7f3f8',
+  summary_bg_trans: 'rgba(231,243,248, 0.75)',
   pagination: '#5675b3',
+  button_hover: '#2098D1',
 };

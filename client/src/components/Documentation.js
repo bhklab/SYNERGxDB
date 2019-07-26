@@ -5,23 +5,27 @@ import React from 'react';
 const Documentation = () => {
   const divStyle = {
     fontSize: '20px',
-    padding:'10px 50px ',
+    padding: '10px 50px ',
     listStyleType: 'none',
   };
   const noStyle = {
     listStyleType: 'none',
   };
   return (
-    
+
     <div>
       {/* <style>{'#root { background: #e7f3f8  !important; } '}</style> */}
       <main className="documentation">
         <h1>SYNERGxDB</h1>
         <h2>Documentation</h2>
-        <span> <b>SYNERGxDB</b> is a comprehensive database to explore synergistic drug combinations for biomarker discovery.
-        </span>         
+        <span>
+          {' '}
+          <b>SYNERGxDB</b>
+          {' '}
+          is a comprehensive database to explore synergistic drug combinations for biomarker discovery.
+        </span>
         <ol style={divStyle} align="justify">
-            
+
           <li>
             <b>Overview</b>
             <ol>
@@ -31,11 +35,11 @@ const Documentation = () => {
                 {' '}
                 <b>overcoming cancer treatment failures.</b>
                 {' '}
-However, the impact of genetics on variability in combo responses for discovering predictive
+                However, the impact of genetics on variability in combo responses for discovering predictive
                 and prognostic biomarkers is currently unknown. To help solve this issue, we created
                 {' '}
                 <b>SYNERGxDB</b>
-, a web-application that possesses the
+                , a web-application that possesses the
                 largest database of seven collections of pharmacological and molecular profiles of corresponding cell lines (123 cell lines in 11
                 tissue types and 1,965 unique drugs/compounds - 14,634 unique combos). This application allows researchers and clinicians to identify
                 novel synergistic drug combinations, in order to discover potential prognostic and predictive biomarkers that can help improve
@@ -63,7 +67,7 @@ However, the impact of genetics on variability in combo responses for discoverin
                 {' '}
                 <i>Cellosaurus</i>
                 {' '}
-accession ID).
+                    accession ID).
               </li>
               <br />
               <li>
@@ -87,15 +91,15 @@ accession ID).
                 {' '}
                 {'>'}
                 {' '}
-0.2; moderate, 0
+                    0.2; moderate, 0
                 {' '}
                 {'<'}
                 {' '}
-ZIP
+                    ZIP
                 {' '}
                 {'<='}
                 {' '}
-0.2; none or antagonism
+                    0.2; none or antagonism
                     for the others), with the following characteristics provided: (HUGO gene symbol and P-value).
               </li>
               <br />

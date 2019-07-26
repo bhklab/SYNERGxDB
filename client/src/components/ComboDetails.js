@@ -171,6 +171,7 @@ export default class ComboDetails extends Component {
               <CumulativeDensity
                 comboId={comboId}
                 sample={cellData.name}
+                idSource={idSource}
                 drug1={{ name: drugsData[0].name, idDrug: drugsData[0].idDrug }}
                 drug2={{ name: drugsData[1].name, idDrug: drugsData[1].idDrug }}
               />

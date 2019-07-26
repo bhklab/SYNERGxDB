@@ -199,27 +199,6 @@ const CustomOption = innerProps => (
 );
 
 
-// const MenuList = (props) => {
-//   const height = 50;
-//   const {
-//     options, children, maxHeight, getValue,
-//   } = props;
-//   const [value] = getValue();
-//   const initialOffset = options.indexOf(value) * height;
-
-//   return (
-//     <List
-//       height={maxHeight}
-//       itemCount={children.length}
-//       itemSize={height}
-//       initialScrollOffset={initialOffset}
-//     >
-//       {({ index, style }) => <div style={style}>{children[index]}</div> }
-//     </List>
-//   );
-// };
-
-
 class SearchCombos extends Component {
   constructor() {
     super();
