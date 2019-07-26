@@ -7,12 +7,14 @@ import cellosaurus from '../images/logos/cellosaurus.jpg';
 import drugbank from '../images/logos/drugbank.svg';
 import pubchem from '../images/logos/pubchem.gif';
 import pubmed from '../images/logos/pubmed.png';
+import colors from '../styles/colors';
 
 import CumulativeDensity from './Plots/CumulativeDensity';
 import SynergyMatrices from './SynergyMatrices';
 
 
 const StyledSummary = styled.div`
+  color:${colors.nav_links};
   p {
     font-weight: 400;
     font-size: 1.2rem;
@@ -22,6 +24,8 @@ const StyledSummary = styled.div`
 const SynergyDetail = styled.div`
   align-self: flex-start;
   margin: 10px;
+  background:white;
+  padding:0px 30px;
 `;
 
 const Logo = styled.img`

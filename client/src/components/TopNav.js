@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component, Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 // import logo from '../images/logo.png';
@@ -9,14 +9,16 @@ import transitions from '../styles/transitions';
 const StyledNav = styled.nav`
     padding: 15px 0px 0px 0px;    
     width: 100%;
-    height:124px;
-    line-height:4em;
+    right:0px;
+    height:90px;
+    line-height:3em;
     white-space:nowrap;
     background-color: ${colors.nav_bg};
     position: fixed;
-    font-size: calc(0.5em + 1vw);
+    font-size: calc(1em + 0.3vw);
     font-family: 'Montserrat', sans-serif;
     z-index: 10;
+    text-align: center;
 
     a {
         color: ${colors.nav_links};
@@ -24,34 +26,37 @@ const StyledNav = styled.nav`
         font-family: 'Raleway', sans-serif;
         font-weight:700;
         padding:0em 2.5vw;
-        float:left;
         
 
         &:hover {
             color: ${colors.nav_link_hov};
         }
     }
-
-    .logo {
-        position:relative;
-        float:left;
-    }
   
 `;
 const StyledLogo = styled.img`
-    width:200px;
+    width:150px;
+    position:absolute;
+    float:left;
+    margin-left:5vw;
+    margin-top:5px;
+    z-index:999;
 `;
 
 const Home = () => (
+  <Fragment>
+    <Link to="/">
+      <StyledLogo src={logo} alt="logo" />
+    </Link>
+    <StyledNav className="top-nav">
+      <Link to="/documentation/">Documentation</Link>
+      <Link to="/cell-lines/">Cell lines</Link>
+      <Link to="/drugs/">Compounds</Link>
+      <Link to="/datasets/">Datasets</Link>
+    </StyledNav>
 
-  <StyledNav className="top-nav">
-    <Link to="/"><StyledLogo src={logo} alt="logo" className="logo" /></Link>
-    <Link to="/">Synergy Scores</Link>
-    <Link to="/cell-lines/">Cell lines</Link>
-    <Link to="/drugs/">Drugs</Link>
-    <Link to="/datasets/">Datasets</Link>
-    <Link to="/documentation/">Documentation</Link>
-  </StyledNav>
+  </Fragment>
+
 );
 
 export default Home;

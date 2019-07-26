@@ -13,7 +13,8 @@ const StyledDiv = styled.div`
     left:0px;
     position:fixed;  
     display: flex;
-    line-height:10px;
+    height:90px;
+    line-height:1em;
     align-items: flex-end;
     justify-content: space-around;
     flex-wrap: wrap
@@ -24,13 +25,12 @@ const StyledDiv = styled.div`
     &:div {
         width: 200px;
         min-width: 150px;
-        margin: 20px
     }
     h2 {
       color: ${colors.nav_links} !important;
       font-family: 'Montserrat', sans-serif;
       font-weight:500;
-      font-size: 1.3em;
+      font-size: 1.4em;
     }
 `;
 
@@ -82,7 +82,7 @@ class Stats extends Component {
       return c / 2 * (-Math.pow(2, -10 * --t) + 2) + b;
     };
     return (
-      <StyledDiv className="stasts">
+      <StyledDiv className="stats">
         <div>
         <h2>
             <CountUp
@@ -90,6 +90,7 @@ class Stats extends Component {
               end={datasets}
               duration={3}
               easingFn={easeInOut}
+              separator={","}
             />
           </h2>
           <h2>Datasets</h2>
@@ -113,6 +114,7 @@ class Stats extends Component {
               end={tissues}
               duration={3}
               easingFn={easeInOut}
+              separator={","}
             />
           </h2>
           <h2>Tissues</h2>
@@ -125,6 +127,7 @@ class Stats extends Component {
               end={compounds}
               duration={3}
               easingFn={easeInOut}
+              separator={","}
             />
           </h2>
           <h2>Compounds</h2>
@@ -137,6 +140,7 @@ class Stats extends Component {
               end={combos}
               duration={3}
               easingFn={easeInOut}
+              separator={","}
             />
           </h2>
           <h2>Combinations</h2>
@@ -149,6 +153,7 @@ class Stats extends Component {
               end={experiments}
               duration={3}
               easingFn={easeInOut}
+              separator={","}
             />
           </h2>
           <h2>Experiments</h2>
@@ -161,6 +166,7 @@ class Stats extends Component {
               end={datapoints}
               duration={3}
               easingFn={easeInOut}
+              separator={","}
             />
           </h2>
           <h2>Data points</h2>

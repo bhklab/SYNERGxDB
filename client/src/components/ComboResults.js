@@ -13,9 +13,11 @@ import Biomarkers from './Biomarkers';
 
 const SynergyDiv = styled.div`
   width: 100%;
+  background:white;
+  padding:0px 30px;
 
   .rt-tr-group:hover {
-    background-color: ${colors.trans_color_main_5}
+    background-color: ${colors.summary_bg}
   }
 `;
 
@@ -163,7 +165,7 @@ class ComboResults extends Component {
             sortable={false}
             defaultPageSize={25}
             filterable
-            className="-striped -highlight"
+            className=" -highlight"
             loading={loading}
             getTdProps={(state, rowInfo) => ({
               onClick: (e, handleOriginal) => {

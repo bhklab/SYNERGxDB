@@ -30,15 +30,15 @@ export default class BiomarkerPlot extends React.Component {
       },
       layout: {
         height: 450,
-        paper_bgcolor: colors.trans_color_main_3,
-        plot_bgcolor: colors.trans_color_main_3,
+        paper_bgcolor: "white",
+        plot_bgcolor: "white",
         yaxis: { title: 'FPKM' },
         xaxis: { title: 'Interaction Type' },
         showlegend: false,
         font: {
           size: 16,
-          color: '#000000',
-          family: 'Raleway',
+          color: colors.nav_links,
+          family: 'Nunito Sans',
         },
         title: {
           text: 'One-way ANOVA, p-val=',

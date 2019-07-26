@@ -167,7 +167,7 @@ class CumulativeDensity extends React.Component {
             barmode: 'overlay',
             font: {
               size: 16,
-              color: '#000000',
+              color: colors.nav_links,
               family: 'Raleway',
             },
             title: {

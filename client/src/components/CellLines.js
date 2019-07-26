@@ -4,7 +4,7 @@ import ReactTable from 'react-table';
 import colors from '../styles/colors';
 import 'react-table/react-table.css';
 // import transitions from '../styles/transitions';
-
+import CellLinePlot from './Plots/CellLinePlot';
 
 const StyledWrapper = styled.div`
   display: flex;
@@ -92,7 +92,35 @@ class Databases extends Component {
           {/* <style>{'#root { background: #e7f3f8  !important; }'}</style> */}
           <main className="summary">
             <StyledWrapper className="wrapper">
-            <h1>List of Cell Lines</h1>
+              <h1>Relative Percentage of Cell Lines Per Tissue</h1>
+              <CellLinePlot
+                keyName="tissue" 
+                mini={false}
+                plotId="cellTissuePlot"
+              />
+
+              <CellLinePlot
+                keyName="sex"
+                mini={true}
+                plotId="cellMiniPlot"
+              />
+
+              
+              <CellLinePlot
+                keyName="origin"
+                mini={true}
+                plotId="cellMiniPlot"
+              />
+
+              
+              <CellLinePlot
+                keyName="age"
+                mini={true}
+                plotId="cellMiniPlot"
+              />
+            </StyledWrapper>
+            <StyledWrapper className="wrapper">
+              <h1>List of Cell Lines</h1>
               <ReactTable
                 data={cellLineData}
                 columns={columns}
@@ -105,7 +133,7 @@ class Databases extends Component {
             </StyledWrapper>
           </main>
           <footer>
-            <div className="wrapper">
+            <div className="footer-wrapper">
               <p>Copyright © 2019. All rights reserved</p>
             </div>
           </footer>
