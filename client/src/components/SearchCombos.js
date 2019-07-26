@@ -238,7 +238,7 @@ class SearchCombos extends Component {
       .then(response => response.json())
       .then((data) => {
         const drugsData1 = data.map(item => ({ value: item.idDrug, label: item.name }));
-        this.setState({ drugsData1 });
+        this.setState({ drugsData1: [{ value: 'Any', label: 'Any Sample' }, ...drugsData1] });
       });
     fetch('/api/cell_lines')
       .then(response => response.json())
@@ -416,8 +416,11 @@ class SearchCombos extends Component {
         <h1>
           <span>SYNERGxDB</span>
           {' '}
-          is a comprehensive database to explore <br></br>synergistic drug combinations for biomarker discovery.
-        </h1>
+          is a comprehensive database to explore 
+{' '}
+<br></br>
+synergistic drug combinations for biomarker discovery.
+</h1>
         <StyledForm className="search-combos" onKeyPress={handleEnterPress}>
           <div className="select-container">
             <Select
@@ -480,9 +483,11 @@ class SearchCombos extends Component {
             <ExampleSpan>
             Examples:
               {' '}
-              <Link className="hover" to={exampleSampleUrl}>BLADDER</Link>&nbsp;&nbsp;|&nbsp;&nbsp;
-              <Link className="hover" to={exampleDatasetUrl}>YALE-PDAC</Link>&nbsp;&nbsp;|&nbsp;&nbsp;
-              <Link className="hover" to={exampleDrugUrl}>Bortezomib + Topotecan</Link> 
+              <Link className="hover" to={exampleSampleUrl}>BLADDER</Link>
+&nbsp;&nbsp;|&nbsp;&nbsp;
+<Link className="hover" to={exampleDatasetUrl}>YALE-PDAC</Link>
+&nbsp;&nbsp;|&nbsp;&nbsp;
+<Link className="hover" to={exampleDrugUrl}>Bortezomib + Topotecan</Link>
             </ExampleSpan>
             <StyledButton onClick={userRedirect} type="button">Search</StyledButton>
           </ButtonContainer>
