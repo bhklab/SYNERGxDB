@@ -26,6 +26,7 @@ const SynergyDetail = styled.div`
   margin: 10px;
   background:white;
   padding:0px 30px;
+  width: 100%;
 `;
 
 const Logo = styled.img`
@@ -171,6 +172,7 @@ export default class ComboDetails extends Component {
               <CumulativeDensity
                 comboId={comboId}
                 sample={cellData.name}
+                idSource={idSource}
                 drug1={{ name: drugsData[0].name, idDrug: drugsData[0].idDrug }}
                 drug2={{ name: drugsData[1].name, idDrug: drugsData[1].idDrug }}
               />

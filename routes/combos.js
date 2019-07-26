@@ -95,7 +95,6 @@ router.get('/matrix', (req, res) => {
   let { comboId, idSource } = req.query;
   comboId = parseInt(comboId, 10);
   idSource = parseInt(idSource, 10);
-  console.log(comboId, idSource);
   db.select('concA', 'concB', 'raw_matrix', 'bliss_matrix', 'loewe_matrix', 'hsa_matrix', 'zip_matrix', 'idSource')
     .from('Combo_matrix')
     .where({ idCombo_Design: comboId, idSource })
