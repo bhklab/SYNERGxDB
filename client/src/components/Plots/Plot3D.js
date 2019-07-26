@@ -11,10 +11,10 @@ const PlotlyContainer = styled.div`
 `;
 
 const types = [
-  { name: 'Bliss', color: colors.color_main_2 },
-  { name: 'Loewe', color: colors.color_main_1 },
-  { name: 'HSA', color: colors.color_main_4 },
-  { name: 'ZIP', color: colors.color_main_5 },
+  { name: 'Bliss', color: colors.color_main_2, accessor: 'bliss_matrix' },
+  { name: 'Loewe', color: colors.color_main_1, accessor: 'loewe_matrix' },
+  { name: 'HSA', color: colors.color_main_4, accessor: 'hsa_matrix' },
+  { name: 'ZIP', color: colors.color_main_5, accessor: 'zip_matrix' },
 ];
 
 
@@ -23,45 +23,42 @@ class Plot3D extends React.Component {
     super(props);
     this.state = {
       data: [],
-      layout: {
-        title: {
-          text: types[props.type - 1].name,
-          size: 18,
-        },
-        type: 'surface',
-        scene: {
-        //   camera: { eye: { x: 1.87, y: 0.88, z: -0.64 } },
-          xaxis: { title: `${props.drug1.name}` },
-          yaxis: { title: `${props.drug2.name}` },
-          zaxis: { title: types[props.type - 1].name },
-        },
-        // autosize: true,
-        margin: {
-          l: 65,
-          r: 50,
-          b: 65,
-          t: 90,
-        },
-        paper_bgcolor: colors.summary_bg_trans,
-        plot_bgcolor: colors.trans_color_accent_2,
-      },
+      layout: {},
     };
-    this.focusOnPlot = React.createRef();
+    // this.focusOnPlot = React.createRef();
   }
 
   // Methods called on loading
   componentDidMount() {
-    const { data, type } = this.props;
-    console.log(data);
-    const zData = [
-      [8.83, 8.89, 8.81, 8.87],
-      [8.89, 8.94, 8.85, 8.94],
-      [8.84, 8.9, 8.82, 8.92],
-      [8.79, 8.85, 8.79, 8.9],
-    ];
-    const xData = [...new Set(data.map(item => item.concA))];
-    const yData = [...new Set(data.map(item => item.concB))];
-    const dataZ = [{
+    this.updatePlotData();
+    // this.refs.focusOnPlot.focus();
+  }
+
+  componentDidUpdate(prevProps) {
+    const { type } = this.props;
+    // Always check if new props are different before updating state to avoid infinite loops
+    if (type !== prevProps.type) {
+      this.updatePlotData();
+    }
+  }
+
+  updatePlotData() {
+    const {
+      data, type, drug1, drug2,
+    } = this.props;
+    const zData = [];
+    let currentConc;
+    data.forEach((item) => {
+      if (item.concA === currentConc) {
+        zData[zData.length - 1].push(item[types[type - 1].accessor] * 100);
+      } else {
+        zData.push([item[types[type - 1].accessor] * 100]);
+        currentConc = item.concA;
+      }
+    });
+    const xData = [...new Set(data.map(item => item.concB))];
+    const yData = [...new Set(data.map(item => item.concA))];
+    const plotData = [{
       x: xData,
       y: yData,
       z: zData,
@@ -76,49 +73,43 @@ class Plot3D extends React.Component {
       },
       colorscale: [[0, `${colors.color_accent_1}`], [1, `${types[type - 1].color}`]],
       colorbar: {
-        x: 95,
+        exponentformat: 'E',
       },
     }];
-
-    this.setState({ data: dataZ });
-    this.refs.focusOnPlot.focus();
-  }
-
-  componentDidUpdate(prevProps) {
-    const { data, type } = this.props;
-    // Always check if new props are different before updating state to avoid infinite loops
-    if (type !== prevProps.type) {
-      const zData = [
-        [8.83, 8.89, 8.81, 8.87],
-        [8.89, 8.94, 8.85, 8.94],
-        [8.84, 8.9, 8.82, 8.92],
-        [8.79, 8.85, 8.79, 8.9],
-      ];
-      const xData = [...new Set(data.map(item => item.concA))];
-      const yData = [...new Set(data.map(item => item.concB))];
-
-      const dataZ = [{
-        x: xData,
-        y: yData,
-        z: zData,
-        type: 'surface',
-        contours: {
-          z: {
-            show: true,
-            usecolormap: true,
-            highlightcolor: '#42f462',
-            project: { z: true },
-          },
+    const layout = {
+      title: {
+        text: types[type - 1].name,
+        size: 18,
+      },
+      scene: {
+      //   camera: { eye: { x: 1.87, y: 0.88, z: -0.64 } },
+        xaxis: {
+          title: `${drug1.name}`,
+          type: 'log',
+          tickmode: 'array',
+          tickvals: xData,
+          ticktext: xData,
         },
-        colorscale: [[0, `${colors.color_accent_1}`], [1, `${types[type - 1].color}`]],
-        colorbar: {
-          x: 95,
+        yaxis: {
+          title: `${drug2.name}`,
+          type: 'log',
+          tickmode: 'array',
+          tickvals: yData,
+          ticktext: yData,
         },
-      }];
-      this.setState({ data: dataZ });
-      this.refs.focusOnPlot.focus();
-      console.log(this.refs);
-    }
+        zaxis: { title: types[type - 1].name },
+      },
+      autosize: true,
+      margin: {
+        l: 65,
+        r: 50,
+        b: 65,
+        t: 90,
+      },
+      paper_bgcolor: colors.summary_bg_trans,
+      plot_bgcolor: colors.trans_color_accent_2,
+    };
+    this.setState({ data: plotData, layout });
   }
 
   // Render this compoenent
@@ -134,7 +125,6 @@ class Plot3D extends React.Component {
             layout={layout}
           />
         </PlotlyContainer>
-        <div><span ref={this.focusOnPlot}>F</span></div>
       </Fragment>
     );
   }
