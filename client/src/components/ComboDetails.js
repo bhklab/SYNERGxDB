@@ -26,6 +26,7 @@ const SynergyDetail = styled.div`
   margin: 10px;
   background:white;
   padding:0px 30px;
+  width: 100%;
 `;
 
 const Logo = styled.img`
