@@ -44,16 +44,18 @@ const StyledLogo = styled.img`
 `;
 
 const Home = () => (
-    <Fragment>
-        <StyledLogo src={logo} alt="logo"/>
-        <StyledNav className="top-nav">
-            <Link to="/documentation/">Documentation</Link>
-            <Link to="/cell-lines/">Cell lines</Link>
-            <Link to="/drugs/">Compounds</Link>
-            <Link to="/datasets/">Datasets</Link>
-        </StyledNav>
-        
-    </Fragment>
+  <Fragment>
+    <Link to="/">
+      <StyledLogo src={logo} alt="logo" />
+    </Link>
+    <StyledNav className="top-nav">
+      <Link to="/documentation/">Documentation</Link>
+      <Link to="/cell-lines/">Cell lines</Link>
+      <Link to="/drugs/">Compounds</Link>
+      <Link to="/datasets/">Datasets</Link>
+    </StyledNav>
+
+  </Fragment>
 
 );
 
