@@ -150,15 +150,19 @@ const StyledButton = styled.button`
   }
 `;
 const ExampleSpan = styled.span`
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   text-align: left;
   margin: 10px;
-  font-weight: bold;
+  font-style: italic;
+  font-family: 'Raleway', sans-serif;
+  font-weight:700;
+  color:${colors.blue_main};
 
   a {
     font-style: normal;
     color:${colors.blue_main};
-    font-style: italic;
+    font-weight:400;
+    
 
     &:hover {
       color:${colors.nav_link_hov};
@@ -495,11 +499,11 @@ class SearchCombos extends Component {
           </div>
           <ButtonContainer>
             <ExampleSpan>
-            Example:
+            Examples:
               {' '}
               <Link className="hover" to={exampleSampleUrl}>BLADDER</Link>&nbsp;&nbsp;|&nbsp;&nbsp;
               <Link className="hover" to={exampleDatasetUrl}>YALE-PDAC</Link>&nbsp;&nbsp;|&nbsp;&nbsp;
-              <Link className="hover" to={exampleDrugUrl}>Bortezomib + Topotecan across all cell lines and datasets</Link> 
+              <Link className="hover" to={exampleDrugUrl}>Bortezomib + Topotecan</Link> 
             </ExampleSpan>
             <StyledButton onClick={userRedirect} type="button">Search</StyledButton>
           </ButtonContainer>

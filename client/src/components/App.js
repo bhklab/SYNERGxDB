@@ -197,7 +197,7 @@ const GlobalStyles = createGlobalStyle`
       font-size: 18px;
       border-bottom: 1px solid rgba(0,0,0,0.1);
     }
-
+  
     .pagination-bottom {
       box-shadow:none !important;
     }
@@ -219,6 +219,7 @@ const GlobalStyles = createGlobalStyle`
   .wrapper {
     color:${colors.nav_links};
     background:white;
+    padding-bottom:20px;
     margin-bottom:30px;
   }
 

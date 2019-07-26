@@ -15,7 +15,7 @@ const Documentation = () => {
     
     <div>
       {/* <style>{'#root { background: #e7f3f8  !important; } '}</style> */}
-      <main className="documentation">
+      <main className="documentation wrapper">
         <h1>SYNERGxDB</h1>
         <h2>Documentation</h2>
         <span> <b>SYNERGxDB</b> is a comprehensive database to explore synergistic drug combinations for biomarker discovery.
@@ -116,7 +116,7 @@ ZIP
         </ol>
       </main>
       <footer>
-        <div className="wrapper">
+        <div className="footer-wrapper">
           <p align="center">Copyright © 2019. All rights reserved</p>
         </div>
       </footer>

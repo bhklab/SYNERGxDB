@@ -77,22 +77,22 @@ class Drugs extends Component {
     }, {
       Header: 'PubChem CID',
       accessor: 'idPubChem',
-      Cell: props => <a className="hover" href={`https://pubchem.ncbi.nlm.nih.gov/compound/${props.value}`}>{props.value}</a>,
+      Cell: props => <div style={{ textAlign: "right" }}><a className="hover" target="_blank" href={`https://pubchem.ncbi.nlm.nih.gov/compound/${props.value}`}>{props.value}</a></div>,
     }, {
       Header: 'DrugBank ID',
       accessor: 'idDrugBank',
-      Cell: props => <a className="hover" href={`https://www.drugbank.ca/drugs/${props.value}`}>{props.value}</a>,
+      Cell: props => <a className="hover" target="_blank" href={`https://www.drugbank.ca/drugs/${props.value}`}>{props.value}</a>,
     }];
     return (
       <Fragment>
         {/* <style>{'#root { background: #e7f3f8  !important; }'}</style> */}
         <main className="summary">
           <StyledWrapper className="wrapper">
-          <h1>List of Drugs</h1>
+          <h1>List of Compounds</h1>
             <ReactTable
               data={drugsData}
               columns={columns}
-              sortable={true}
+              sortable={false}
               defaultPageSize={25}
               filterable
               className="-highlight"

@@ -36,7 +36,7 @@ const StyledNav = styled.nav`
 `;
 const StyledLogo = styled.img`
     width:150px;
-    position:absolute;
+    position:fixed;
     float:left;
     margin-left:5vw;
     margin-top:5px;

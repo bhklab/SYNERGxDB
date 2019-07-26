@@ -53,20 +53,25 @@ class Databases extends Component {
       accessor: 'tissue', // String-based value accessors!
       Cell: props => props.value.toUpperCase(),
       maxWidth: 125,
+      sortable: true
     }, {
       Header: 'Name',
       accessor: 'name',
       Cell: props => props.value.toUpperCase(),
       maxWidth: 125,
+      sortable: true
     }, {
       Header: 'Sex',
       accessor: 'sex',
       maxWidth: 55,
       minWidth:55,
+      sortable: false
     }, {
       Header: 'Age',
       accessor: 'age',
+      style: {textAlign: 'right'},
       maxWidth: 50,
+      sortable: true
     }, {
       Header: 'Disease',
       accessor: 'disease',
@@ -80,11 +85,13 @@ class Databases extends Component {
         ) : <span>{value.name}</span>;
       },
       filterable: false,
+      sortable: false
     }, {
       Header: 'Cellosaurus',
       accessor: 'idCellosaurus',
-      Cell: props => <a className="hover" href={`https://web.expasy.org/cellosaurus/${props.value}`}>{props.value}</a>,
+      Cell: props => <a className="hover" target="_blank" href={`https://web.expasy.org/cellosaurus/${props.value}`}>{props.value}</a>,
       maxWidth: 125,
+      sortable: false
     }];
     return (
       
@@ -124,7 +131,6 @@ class Databases extends Component {
               <ReactTable
                 data={cellLineData}
                 columns={columns}
-                sortable={false}
                 defaultPageSize={25}
                 filterable
                 className="-highlight"
