@@ -82,7 +82,9 @@ class Plot3D extends React.Component {
         size: 18,
       },
       scene: {
-      //   camera: { eye: { x: 1.87, y: 0.88, z: -0.64 } },
+        camera: {
+          eye: { x: -1.75, y: -1.75, z: 0.75 },
+        },
         xaxis: {
           title: `${drug1.name}`,
           type: 'log',
@@ -106,8 +108,8 @@ class Plot3D extends React.Component {
         b: 65,
         t: 90,
       },
-      paper_bgcolor: colors.summary_bg_trans,
-      plot_bgcolor: colors.trans_color_accent_2,
+      paper_bgcolor: 'white',
+      plot_bgcolor: 'white',
     };
     this.setState({ data: plotData, layout });
   }
