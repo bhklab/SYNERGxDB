@@ -8,6 +8,16 @@ import 'react-table/react-table.css';
 import transitions from '../styles/transitions';
 
 import Plot3D from './Plots/Plot3D';
+import SingleDrugInhibitionPlot from './Plots/SingleDrugInhibitionPlot';
+import InhibitionHeatMap from './Plots/InhibitionHeatMap';
+
+const InhibitionContainer = styled.div`
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 10px;
+    width: 100%;
+    padding: 0;
+`;
 
 const SynergyContainer = styled.div`
 
@@ -146,7 +156,6 @@ class SynergyMatrices extends Component {
         />
       );
     };
-    console.log(synergyData instanceof Array);
     return (
       <div className="synergy-matrix">
         <h2>Synergy Matrices</h2>
@@ -197,6 +206,14 @@ class SynergyMatrices extends Component {
               type={selectedType}
             />
           ) : null}
+        <div className="synergistic-inhibition">
+          <h2>Synergistic Inhibition</h2>
+          <InhibitionContainer>
+            <SingleDrugInhibitionPlot />
+            <SingleDrugInhibitionPlot />
+            <InhibitionHeatMap />
+          </InhibitionContainer>
+        </div>
       </div>
     );
   }

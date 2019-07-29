@@ -7,7 +7,7 @@ import styled from 'styled-components';
 import colors from '../../styles/colors';
 
 const PlotlyContainer = styled.div`
-    min-height: 50vh;
+    min-height: 450px;
 `;
 
 const types = [
@@ -77,13 +77,22 @@ class Plot3D extends React.Component {
       },
     }];
     const layout = {
+      margin: {
+        l: 0,
+        r: 0,
+        t: 0,
+        b: 0,
+      },
       title: {
         text: types[type - 1].name,
         size: 18,
       },
       scene: {
         camera: {
-          eye: { x: -1.75, y: -1.75, z: 0.75 },
+          eye: { x: -1.75, y: -1.75, z: 0.25 },
+        },
+        domain: {
+          x: [0, 2],
         },
         xaxis: {
           title: `${drug1.name}`,
@@ -91,6 +100,8 @@ class Plot3D extends React.Component {
           tickmode: 'array',
           tickvals: xData,
           ticktext: xData,
+          // showticklabels: false,
+          showspikes: false,
         },
         yaxis: {
           title: `${drug2.name}`,
@@ -98,16 +109,12 @@ class Plot3D extends React.Component {
           tickmode: 'array',
           tickvals: yData,
           ticktext: yData,
+          // showticklabels: false,
+          showspikes: false,
         },
         zaxis: { title: types[type - 1].name },
       },
       autosize: true,
-      margin: {
-        l: 65,
-        r: 50,
-        b: 65,
-        t: 90,
-      },
       paper_bgcolor: 'white',
       plot_bgcolor: 'white',
     };
@@ -119,7 +126,7 @@ class Plot3D extends React.Component {
     const { data, layout } = this.state;
     return (
       <Fragment>
-        <PlotlyContainer className="cumulative-container">
+        <PlotlyContainer>
           <Plot
             graphDiv="graph"
             config={{ responsive: true }}
