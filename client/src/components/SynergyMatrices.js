@@ -211,7 +211,9 @@ class SynergyMatrices extends Component {
           <InhibitionContainer>
             <SingleDrugInhibitionPlot />
             <SingleDrugInhibitionPlot />
-            <InhibitionHeatMap />
+            <InhibitionHeatMap
+              data={synergyData}
+            />
           </InhibitionContainer>
         </div>
       </div>

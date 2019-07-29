@@ -21,6 +21,17 @@ class InhibitionHeatMap extends React.Component {
   }
 
   componentDidMount() {
+    const { data } = this.props;
+    const plotData = [];
+    let currentConc;
+    data.forEach((item) => {
+      if (item.concA === currentConc) {
+        // plotData[plotData.length - 1].push(item[types[type - 1].accessor] * 100);
+      } else {
+        // plotData.push([item[types[type - 1].accessor] * 100]);
+        // currentConc = item.concA;
+      }
+    });
     this.setState({
       data: [{
         z: [[1, 20, 30], [20, 1, 60], [30, 60, 1]],
@@ -46,6 +57,11 @@ class InhibitionHeatMap extends React.Component {
 }
 
 InhibitionHeatMap.propTypes = {
+  data: PropTypes.arrayOf(PropTypes.shape({
+    concA: PropTypes.number.isRequired,
+    concB: PropTypes.number.isRequired,
+  }))
+    .isRequired,
 };
 
 export default InhibitionHeatMap;
