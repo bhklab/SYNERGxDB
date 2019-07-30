@@ -11,6 +11,8 @@ import Plot3D from './Plots/Plot3D';
 import SingleDrugInhibitionPlot from './Plots/SingleDrugInhibitionPlot';
 import InhibitionHeatMap from './Plots/InhibitionHeatMap';
 
+import { ComboContext } from './Context';
+
 const InhibitionContainer = styled.div`
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -94,7 +96,6 @@ class SynergyMatrices extends Component {
     const {
       idSource, comboId,
     } = this.props;
-
     fetch(`/api/combos/matrix?comboId=${comboId}&idSource=${idSource}`)
       .then(response => response.json())
       .then((synergyData) => {
@@ -109,7 +110,9 @@ class SynergyMatrices extends Component {
   render() {
     const { handleClick } = this;
     const { drug1, drug2 } = this.props;
-    const { synergyData, dataTypes, selectedType } = this.state;
+    const {
+      synergyData, dataTypes, selectedType,
+    } = this.state;
     const generateTable = () => {
       const comboInfo = {};
       synergyData.forEach((item) => {
@@ -206,16 +209,19 @@ class SynergyMatrices extends Component {
               type={selectedType}
             />
           ) : null}
-        <div className="synergistic-inhibition">
-          <h2>Synergistic Inhibition</h2>
-          <InhibitionContainer>
-            <SingleDrugInhibitionPlot />
-            <SingleDrugInhibitionPlot />
-            <InhibitionHeatMap
-              data={synergyData}
-            />
-          </InhibitionContainer>
-        </div>
+        {synergyData.length > 0
+          ? (
+            <div className="synergistic-inhibition">
+              <h2>Synergistic Inhibition</h2>
+              <InhibitionContainer>
+                <SingleDrugInhibitionPlot />
+                <SingleDrugInhibitionPlot />
+                <InhibitionHeatMap
+                  data={synergyData}
+                />
+              </InhibitionContainer>
+            </div>
+          ) : null }
       </div>
     );
   }
@@ -233,5 +239,7 @@ SynergyMatrices.propTypes = {
   comboId: PropTypes.number.isRequired,
   idSource: PropTypes.number.isRequired,
 };
+
+SynergyMatrices.contextType = ComboContext;
 
 export default SynergyMatrices;

@@ -1,10 +1,11 @@
 /* eslint-disable no-nested-ternary */
-import React, { Fragment } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import Plot from 'react-plotly.js';
 import styled from 'styled-components';
+import { ComboContext } from '../Context';
 
-import colors from '../../styles/colors';
+// import colors from '../../styles/colors';
 
 const StyledDiv = styled.div`
     grid-column: 2;
@@ -12,37 +13,43 @@ const StyledDiv = styled.div`
 `;
 
 class InhibitionHeatMap extends React.Component {
+  static contextType = ComboContext
+
   constructor(props) {
     super(props);
     this.state = {
       data: [],
-      layout: {},
+      layout: {
+        autosize: true,
+        height: 700,
+      },
     };
   }
 
   componentDidMount() {
     const { data } = this.props;
+    const { cellData } = this.context;
+    console.log(this.context);
     const plotData = [];
     let currentConc;
     data.forEach((item) => {
       if (item.concA === currentConc) {
-        // plotData[plotData.length - 1].push(item[types[type - 1].accessor] * 100);
+        plotData[plotData.length - 1].push(100 - item.raw_matrix * 100);
       } else {
-        // plotData.push([item[types[type - 1].accessor] * 100]);
-        // currentConc = item.concA;
+        plotData.push([100 - item.raw_matrix * 100]);
+        currentConc = item.concA;
       }
     });
-    this.setState({
+    this.setState(prevState => ({
       data: [{
-        z: [[1, 20, 30], [20, 1, 60], [30, 60, 1]],
+        z: plotData,
         type: 'heatmap',
       }],
       layout: {
-        title: 'Heatmap',
-        with: 700,
-        height: 700,
+        ...prevState.layout,
+        title: cellData.name,
       },
-    });
+    }));
   }
 
   // Render this compoenent
@@ -63,5 +70,7 @@ InhibitionHeatMap.propTypes = {
   }))
     .isRequired,
 };
+
+InhibitionHeatMap.contextType = ComboContext;
 
 export default InhibitionHeatMap;

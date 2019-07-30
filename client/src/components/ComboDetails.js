@@ -11,6 +11,7 @@ import colors from '../styles/colors';
 
 import CumulativeDensity from './Plots/CumulativeDensity';
 import SynergyMatrices from './SynergyMatrices';
+import { ComboContext } from './Context';
 
 
 const StyledSummary = styled.div`
@@ -98,9 +99,10 @@ export default class ComboDetails extends Component {
   }
 
   render() {
+    const context = this.state;
     const {
       cellData, drugsData, sourceData, comboId, idSource,
-    } = this.state;
+    } = context;
     return (
       <SynergyDetail>
         <header>
@@ -168,21 +170,24 @@ export default class ComboDetails extends Component {
         </header>
         <main>
           {drugsData.length > 0 && cellData.name !== undefined ? (
-            <Fragment>
-              <CumulativeDensity
-                comboId={comboId}
-                sample={cellData.name}
-                idSource={idSource}
-                drug1={{ name: drugsData[0].name, idDrug: drugsData[0].idDrug }}
-                drug2={{ name: drugsData[1].name, idDrug: drugsData[1].idDrug }}
-              />
-              <SynergyMatrices
-                drug1={{ name: drugsData[0].name, idDrug: drugsData[0].idDrug }}
-                drug2={{ name: drugsData[1].name, idDrug: drugsData[1].idDrug }}
-                comboId={comboId}
-                idSource={idSource}
-              />
-            </Fragment>
+            <ComboContext.Provider value={context}>
+              <Fragment>
+                <CumulativeDensity
+                  comboId={comboId}
+                  sample={cellData.name}
+                  idSource={idSource}
+                  drug1={{ name: drugsData[0].name, idDrug: drugsData[0].idDrug }}
+                  drug2={{ name: drugsData[1].name, idDrug: drugsData[1].idDrug }}
+                />
+                <SynergyMatrices
+                  drug1={{ name: drugsData[0].name, idDrug: drugsData[0].idDrug }}
+                  drug2={{ name: drugsData[1].name, idDrug: drugsData[1].idDrug }}
+                  sample={cellData.name}
+                  comboId={comboId}
+                  idSource={idSource}
+                />
+              </Fragment>
+            </ComboContext.Provider>
           ) : null}
         </main>
       </SynergyDetail>
