@@ -1,16 +1,14 @@
 /* eslint-disable no-nested-ternary */
 import React from 'react';
-import PropTypes from 'prop-types';
 import Plot from 'react-plotly.js';
 // import styled from 'styled-components';
 
 import colors from '../../styles/colors';
-
-// const CumulativeContainer = styled.div`
-//   width: 1000px;
-// `;
+import { ComboContext } from '../Context';
 
 class CumulativeDensity extends React.Component {
+  static contextType = ComboContext
+
   constructor(props) {
     super(props);
     this.state = {
@@ -26,11 +24,11 @@ class CumulativeDensity extends React.Component {
   // Methods called on loading
   componentDidMount() {
     const {
-      drug1, drug2, comboId, sample, idSource,
-    } = this.props;
+      drugsData, comboId, idSource, cellData,
+    } = this.context;
     const scatterSize = 10;
 
-    fetch(`/api/combos?drugId1=${drug1.idDrug}&drugId2=${drug2.idDrug}&dataset=${idSource}`, {
+    fetch(`/api/combos?drugId1=${drugsData[0].idDrug}&drugId2=${drugsData[1].idDrug}&dataset=${idSource}`, {
       method: 'GET',
       headers: {
         Accept: 'application/json',
@@ -83,7 +81,7 @@ class CumulativeDensity extends React.Component {
           blissMarker: {
             x: [blissCoordinates.x],
             y: [blissCoordinates.y],
-            name: `${sample} Bliss`,
+            name: `${cellData.name} Bliss`,
             marker: { color: colors.color_main_2, size: scatterSize },
             showlegend: false,
             mode: 'markers',
@@ -105,7 +103,7 @@ class CumulativeDensity extends React.Component {
           loeweMarker: {
             x: [loeweCoordinates.x],
             y: [loeweCoordinates.y],
-            name: `${sample} Loewe`,
+            name: `${cellData.name} Loewe`,
             showlegend: false,
             marker: { color: colors.color_main_1, size: scatterSize },
             mode: 'markers',
@@ -129,7 +127,7 @@ class CumulativeDensity extends React.Component {
             x: [hsaCoordinates.x],
             y: [hsaCoordinates.y],
             showlegend: false,
-            name: `${sample} HSA`,
+            name: `${cellData.name} HSA`,
             marker: { color: colors.color_main_4, size: scatterSize },
             mode: 'markers',
             type: 'scatter',
@@ -152,7 +150,7 @@ class CumulativeDensity extends React.Component {
             x: [zipCoordinates.x],
             y: [zipCoordinates.y],
             showlegend: false,
-            name: `${sample} ZIP`,
+            name: `${cellData.name} ZIP`,
             marker: { color: colors.color_main_5, size: scatterSize },
             mode: 'markers',
             type: 'scatter',
@@ -171,7 +169,7 @@ class CumulativeDensity extends React.Component {
               family: 'Raleway',
             },
             title: {
-              text: `${drug1.name} * ${drug2.name}`,
+              text: `${drugsData[0].name} * ${drugsData[1].name}`,
               size: 18,
             },
           },
@@ -201,19 +199,5 @@ class CumulativeDensity extends React.Component {
     );
   }
 }
-
-CumulativeDensity.propTypes = {
-  drug1: PropTypes.shape({
-    name: PropTypes.string,
-    idDrug: PropTypes.number,
-  }).isRequired,
-  drug2: PropTypes.shape({
-    name: PropTypes.string,
-    idDrug: PropTypes.number,
-  }).isRequired,
-  comboId: PropTypes.number.isRequired,
-  sample: PropTypes.string.isRequired,
-  idSource: PropTypes.number.isRequired,
-};
 
 export default CumulativeDensity;

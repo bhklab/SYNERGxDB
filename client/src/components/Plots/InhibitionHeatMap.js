@@ -10,6 +10,12 @@ import { ComboContext } from '../Context';
 const StyledDiv = styled.div`
     grid-column: 2;
     grid-row: 1/3;
+
+    h3 {
+      text-align: center;
+      font-size: 1.5em;
+      margin-top: 0
+    }
 `;
 
 class InhibitionHeatMap extends React.Component {
@@ -20,8 +26,14 @@ class InhibitionHeatMap extends React.Component {
     this.state = {
       data: [],
       layout: {
-        autosize: true,
-        height: 700,
+        // autosize: true,
+        MaxHeight: 700,
+        margin: {
+          l: 0,
+          r: 0,
+          t: 0,
+          b: 0,
+        },
       },
     };
   }
@@ -29,7 +41,6 @@ class InhibitionHeatMap extends React.Component {
   componentDidMount() {
     const { data } = this.props;
     const { cellData } = this.context;
-    console.log(this.context);
     const plotData = [];
     let currentConc;
     data.forEach((item) => {
@@ -55,9 +66,11 @@ class InhibitionHeatMap extends React.Component {
   // Render this compoenent
   render() {
     const { data, layout } = this.state;
+    const { cellData } = this.context;
     return (
       <StyledDiv>
-        <Plot data={data} layout={layout} />
+        <h3>{cellData.name}</h3>
+        <Plot data={data} layout={layout} config={{ responsive: true }} />
       </StyledDiv>
     );
   }
@@ -70,7 +83,5 @@ InhibitionHeatMap.propTypes = {
   }))
     .isRequired,
 };
-
-InhibitionHeatMap.contextType = ComboContext;
 
 export default InhibitionHeatMap;
