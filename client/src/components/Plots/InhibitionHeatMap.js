@@ -12,6 +12,10 @@ import colors from '../../styles/colors';
 const StyledDiv = styled.div`
     grid-column: 2;
     grid-row: 1/3;
+    div {
+      height: 100%;
+      maxHeight: 700px;
+    }
 `;
 
 class InhibitionHeatMap extends React.Component {
@@ -22,8 +26,7 @@ class InhibitionHeatMap extends React.Component {
     this.state = {
       data: [],
       layout: {
-        // autosize: true,
-        MaxHeight: 700,
+        autosize: true,
         margin: {
           l: 65,
           r: 0,
