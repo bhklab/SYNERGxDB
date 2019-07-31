@@ -192,7 +192,10 @@ class CumulativeDensity extends React.Component {
             data={data}
             layout={layout}
             graphDiv="graph"
-            config={{ responsive: true }}
+            config={{
+              responsive: true,
+              displayModeBar: false,
+            }}
           />
         ) : null}
       </div>

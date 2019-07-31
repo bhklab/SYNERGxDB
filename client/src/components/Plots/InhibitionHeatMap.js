@@ -147,7 +147,7 @@ class InhibitionHeatMap extends React.Component {
     const { data, layout } = this.state;
     return (
       <StyledDiv>
-        <Plot data={data} layout={layout} config={{ responsive: true }} />
+        <Plot data={data} layout={layout} config={{ responsive: true, displayModeBar: false }} />
       </StyledDiv>
     );
   }

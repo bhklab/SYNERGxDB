@@ -30,8 +30,8 @@ export default class BiomarkerPlot extends React.Component {
       },
       layout: {
         height: 450,
-        paper_bgcolor: "white",
-        plot_bgcolor: "white",
+        paper_bgcolor: 'white',
+        plot_bgcolor: 'white',
         yaxis: { title: 'FPKM' },
         xaxis: { title: 'Interaction Type' },
         showlegend: false,
@@ -156,6 +156,16 @@ export default class BiomarkerPlot extends React.Component {
     const {
       box1, box2, box3, layout,
     } = this.state;
-    return <Plot data={[box1, box2, box3]} layout={layout} graphDiv="graph" config={{ responsive: true }} />;
+    return (
+      <Plot
+        data={[box1, box2, box3]}
+        layout={layout}
+        graphDiv="graph"
+        config={{
+          responsive: true,
+          displayModeBar: false,
+        }}
+      />
+    );
   }
 }

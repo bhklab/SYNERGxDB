@@ -110,7 +110,8 @@ class SynergyMatrices extends Component {
 
   render() {
     const { handleClick } = this;
-    const { drugsData } = this.context;
+    const { drugsData, cellData } = this.context;
+    console.log(this.context);
     const {
       synergyData, dataTypes, selectedType,
     } = this.state;
@@ -133,17 +134,23 @@ class SynergyMatrices extends Component {
         Cell: props => <div style={{ textAlign: 'center' }}>{props.value.toFixed(4)}</div>,
       }));
       const columns = [{
-        Header: `${drugsData[1].name}`,
+        Header: `${cellData.name}`,
+        headerClassName: 'header-name',
         accessor: 'key',
-        Cell: props => (
-          <div className="raw-names">
-            {props.value}
-            {' '}
-            µM
-          </div>
-        ),
+        columns: [{
+          Header: `${drugsData[0].name}`,
+          headerClassName: 'header-name',
+          accessor: 'key',
+          Cell: props => (
+            <div className="raw-names">
+              {props.value}
+              {' '}
+              µM
+            </div>
+          ),
+        }],
       }, {
-        Header: `${drugsData[0].name}`,
+        Header: `${drugsData[1].name}`,
         headerClassName: 'header-name',
         columns: subcolumns,
       }];
