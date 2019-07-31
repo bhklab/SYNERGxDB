@@ -25,7 +25,7 @@ class InhibitionHeatMap extends React.Component {
         // autosize: true,
         MaxHeight: 700,
         margin: {
-          l: 45,
+          l: 60,
           r: 0,
           t: 30,
           b: 40,
@@ -77,7 +77,6 @@ class InhibitionHeatMap extends React.Component {
       type: 'heatmap',
       hoverinfo: 'text',
       hovertext: hoverData,
-      // hovertemplate: `%{x} µM of ${drugsData[0].name} and %{y} µM of ${drugsData[1].name}`,
       colorscale: [[0, colors.color_main_3], [1, colors.color_main_5]],
       colorbar: {
         ypad: 0,
@@ -89,7 +88,6 @@ class InhibitionHeatMap extends React.Component {
       zmin: 0,
       zmax: 100,
     };
-    console.log(annotationData);
     const annotations = {
       x: xData,
       y: yData,
@@ -101,28 +99,6 @@ class InhibitionHeatMap extends React.Component {
       },
       hoverinfo: 'skip',
     };
-    // EXPERIMENTAL CODE
-    const n = 250;
-    const t = 12;
-    const x = [];
-    const y = [];
-    const z = [];
-    const text = [];
-    const arr = ['A', 'T', 'G', 'C'];
-
-    for (let j = 0; j < t; j++) {
-      const ztemp = [];
-      for (let i = 0; i < n; i++) {
-        x.push(i);
-        y.push(j);
-        ztemp.push(Math.floor(Math.random() * 10));
-        text.push(arr[Math.floor(Math.random() * 4)]);
-      }
-      z.push(ztemp);
-    }
-    console.log(text);
-
-    // EXPERIMENTAL CODE
 
     this.setState(prevState => ({
       data: [heatMap, annotations],
@@ -130,12 +106,16 @@ class InhibitionHeatMap extends React.Component {
         ...prevState.layout,
         title: cellData.name,
         xaxis: {
-          title: `${drugsData[0].name} (M)`,
-          // type: 'log',
+          title: `${drugsData[1].name} (µM)`,
+          tickmode: 'array',
+          tickvals: [...new Set(xData)],
+          ticktext: [...new Set(data.map(item => item.concB))],
         },
         yaxis: {
-          title: `${drugsData[1].name} (M)`,
-          // type: 'log',
+          title: `${drugsData[0].name} (µM)`,
+          tickmode: 'array',
+          tickvals: [...new Set(yData)],
+          ticktext: [...new Set(data.map(item => item.concA))],
         },
         annotations: [],
       },
@@ -147,7 +127,14 @@ class InhibitionHeatMap extends React.Component {
     const { data, layout } = this.state;
     return (
       <StyledDiv>
-        <Plot data={data} layout={layout} config={{ responsive: true, displayModeBar: false }} />
+        <Plot
+          data={data}
+          layout={layout}
+          config={{
+            responsive: true,
+            displayModeBar: false,
+          }}
+        />
       </StyledDiv>
     );
   }
