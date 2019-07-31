@@ -1,5 +1,5 @@
 /* eslint-disable no-nested-ternary */
-import React, { Fragment } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import Plot from 'react-plotly.js';
 import styled from 'styled-components';
@@ -9,6 +9,9 @@ import { ComboContext } from '../Context';
 
 const PlotlyContainer = styled.div`
     min-height: 450px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid ${colors.color_main_3};
+    margin-bottom: 10px;
 `;
 
 const types = [
@@ -127,16 +130,14 @@ class Plot3D extends React.Component {
   render() {
     const { data, layout } = this.state;
     return (
-      <Fragment>
-        <PlotlyContainer>
-          <Plot
-            graphDiv="graph"
-            config={{ responsive: true }}
-            data={data}
-            layout={layout}
-          />
-        </PlotlyContainer>
-      </Fragment>
+      <PlotlyContainer>
+        <Plot
+          graphDiv="graph"
+          config={{ responsive: true }}
+          data={data}
+          layout={layout}
+        />
+      </PlotlyContainer>
     );
   }
 }

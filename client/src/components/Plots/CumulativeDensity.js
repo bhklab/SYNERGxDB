@@ -1,10 +1,17 @@
 /* eslint-disable no-nested-ternary */
 import React from 'react';
 import Plot from 'react-plotly.js';
-// import styled from 'styled-components';
+import styled from 'styled-components';
 
 import colors from '../../styles/colors';
 import { ComboContext } from '../Context';
+
+const PlotlyContainer = styled.div`
+    min-height: 450px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid ${colors.color_main_3};
+    margin-bottom: 10px;
+`;
 
 class CumulativeDensity extends React.Component {
   static contextType = ComboContext
@@ -186,7 +193,7 @@ class CumulativeDensity extends React.Component {
     // const data = [bliss, loewe, hsa, zip];
     // const data = [bliss, blissMarker, loewe, loeweMarker, hsa, hsaMarker];
     return (
-      <div className="cumulative-container">
+      <PlotlyContainer className="cumulative-container">
         {comboData.length > 0 ? (
           <Plot
             data={data}
@@ -198,7 +205,7 @@ class CumulativeDensity extends React.Component {
             }}
           />
         ) : null}
-      </div>
+      </PlotlyContainer>
     );
   }
 }

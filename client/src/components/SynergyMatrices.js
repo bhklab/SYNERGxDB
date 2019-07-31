@@ -87,7 +87,7 @@ class SynergyMatrices extends Component {
     super();
     this.state = {
       synergyData: [],
-      selectedType: 0,
+      selectedType: 4,
       dataTypes: ['raw_matrix', 'bliss_matrix', 'loewe_matrix', 'hsa_matrix', 'zip_matrix'],
     };
     this.handleClick = this.handleClick.bind(this);
@@ -111,7 +111,6 @@ class SynergyMatrices extends Component {
   render() {
     const { handleClick } = this;
     const { drugsData, cellData } = this.context;
-    console.log(this.context);
     const {
       synergyData, dataTypes, selectedType,
     } = this.state;

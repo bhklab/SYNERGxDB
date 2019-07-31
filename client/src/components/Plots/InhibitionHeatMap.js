@@ -14,7 +14,6 @@ const StyledDiv = styled.div`
     grid-row: 1/3;
     div {
       height: 100%;
-      maxHeight: 700px;
     }
 `;
 
@@ -70,9 +69,6 @@ class InhibitionHeatMap extends React.Component {
         yData.push(yCounter - 1);
       }
     });
-    console.log(yData);
-    // const xData = [...new Set(data.map(item => item.concB))];
-    // const yData = [...new Set(data.map(item => item.concA))];
     const heatMap = {
       z: plotData,
       customdata: plotData,

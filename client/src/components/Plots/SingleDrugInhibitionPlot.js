@@ -1,7 +1,8 @@
 /* eslint-disable no-nested-ternary */
-import React, { Fragment } from 'react';
+import React from 'react';
 import Plot from 'react-plotly.js';
 import styled from 'styled-components';
+import regression from 'regression';
 
 import { ComboContext } from '../Context';
 
@@ -9,7 +10,7 @@ import { ComboContext } from '../Context';
 
 const StyledDiv = styled.div`
     grid-column: 1;
-    height: 50%;
+    height: 250px;
 `;
 
 class SingleDrugInhibitionPlot extends React.Component {
@@ -21,16 +22,26 @@ class SingleDrugInhibitionPlot extends React.Component {
       data: [],
       layout: {
         title: 'Line and Scatter Plot',
+        autosize: true,
+        height: 250,
+        xaxis: {
+          type: 'log',
+        },
+        yaxis: {
+          title: 'Inhibition',
+        },
       },
     };
   }
 
   componentDidMount() {
     const data = [{
-      x: [1, 2, 3, 4],
-      y: [12, 9, 15, 12],
-      mode: 'lines+markers',
+      type: 'scatter',
+      x: [1, 2, 3, 4, 5],
+      y: [4, 6, 2, 7, 8],
+      line: { shape: 'spline', smoothing: 1.3 },
     }];
+    console.log(this.context);
     this.setState({ data });
   }
 
@@ -41,7 +52,10 @@ class SingleDrugInhibitionPlot extends React.Component {
       <StyledDiv>
         <Plot
           graphDiv="graph"
-          config={{ responsive: true }}
+          config={{
+            responsive: true,
+            displayModeBar: false,
+          }}
           data={data}
           layout={layout}
         />
