@@ -25,10 +25,10 @@ class InhibitionHeatMap extends React.Component {
         // autosize: true,
         MaxHeight: 700,
         margin: {
-          l: 60,
+          l: 65,
           r: 0,
           t: 30,
-          b: 40,
+          b: 45,
         },
       },
 
@@ -79,10 +79,21 @@ class InhibitionHeatMap extends React.Component {
       hovertext: hoverData,
       colorscale: [[0, colors.color_main_3], [1, colors.color_main_5]],
       colorbar: {
+        tickcolor: colors.color_main_1,
+        tickfont: {
+          family: 'Nunito Sans, sans-serif',
+          color: colors.color_main_1,
+          size: 13,
+        },
         ypad: 0,
         title: {
           text: 'Inhibition, %',
           side: 'right',
+          font: {
+            family: 'Nunito Sans, sans-serif',
+            color: colors.color_main_1,
+            size: 16,
+          },
         },
       },
       zmin: 0,
@@ -94,7 +105,9 @@ class InhibitionHeatMap extends React.Component {
       mode: 'text',
       text: annotationData,
       type: 'scattergl',
-      textfont: {
+      font: {
+        family: 'Nunito Sans, sans-serif',
+        color: colors.color_main_1,
         size: 18,
       },
       hoverinfo: 'skip',
@@ -104,18 +117,51 @@ class InhibitionHeatMap extends React.Component {
       data: [heatMap, annotations],
       layout: {
         ...prevState.layout,
-        title: cellData.name,
+        title: {
+          text: cellData.name,
+          font: {
+            family: 'Nunito Sans, sans-serif',
+            color: colors.color_main_1,
+            size: 18,
+          },
+        },
         xaxis: {
-          title: `${drugsData[1].name} (µM)`,
+          fixedrange: true,
+          title: {
+            text: `${drugsData[1].name} (µM)`,
+            font: {
+              family: 'Nunito Sans, sans-serif',
+              color: colors.color_main_1,
+              size: 16,
+            },
+          },
           tickmode: 'array',
           tickvals: [...new Set(xData)],
           ticktext: [...new Set(data.map(item => item.concB))],
+          tickfont: {
+            family: 'Nunito Sans, sans-serif',
+            color: colors.color_main_1,
+            size: 13,
+          },
         },
         yaxis: {
-          title: `${drugsData[0].name} (µM)`,
+          fixedrange: true,
+          title: {
+            text: `${drugsData[0].name} (µM)`,
+            font: {
+              family: 'Nunito Sans, sans-serif',
+              color: colors.color_main_1,
+              size: 16,
+            },
+          },
           tickmode: 'array',
           tickvals: [...new Set(yData)],
           ticktext: [...new Set(data.map(item => item.concA))],
+          tickfont: {
+            family: 'Nunito Sans, sans-serif',
+            color: colors.color_main_1,
+            size: 13,
+          },
         },
         annotations: [],
       },
