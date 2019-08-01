@@ -2,9 +2,11 @@
 import React from 'react';
 import Plot from 'react-plotly.js';
 import styled from 'styled-components';
+import Loading from 'react-loading-components';
 
 import colors from '../../styles/colors';
 import { ComboContext } from '../Context';
+
 
 const PlotlyContainer = styled.div`
     min-height: 450px;
@@ -25,6 +27,7 @@ class CumulativeDensity extends React.Component {
       hsa: {},
       zip: {},
       layout: {},
+      loading: true,
     };
   }
 
@@ -73,6 +76,7 @@ class CumulativeDensity extends React.Component {
         const loeweCoordinates = generateCoordinates(comboData, 'loewe');
 
         this.setState({
+          loading: false,
           comboData,
           bliss: {
             x: comboData.map(item => item.bliss),
@@ -187,24 +191,27 @@ class CumulativeDensity extends React.Component {
   // Render this compoenent
   render() {
     const {
-      bliss, loewe, hsa, zip, blissMarker, loeweMarker, hsaMarker, zipMarker, layout, comboData,
+      bliss, loewe, hsa, zip, blissMarker, loeweMarker,
+      hsaMarker, zipMarker, layout, comboData, loading,
     } = this.state;
     const data = [zipMarker, zip, bliss, blissMarker, loewe, loeweMarker, hsa, hsaMarker];
     // const data = [bliss, loewe, hsa, zip];
     // const data = [bliss, blissMarker, loewe, loeweMarker, hsa, hsaMarker];
     return (
       <PlotlyContainer className="cumulative-container">
-        {comboData.length > 0 ? (
-          <Plot
-            data={data}
-            layout={layout}
-            graphDiv="graph"
-            config={{
-              responsive: true,
-              displayModeBar: false,
-            }}
-          />
-        ) : null}
+        { loading
+          ? (<Loading type="ball_triangle" width={100} height={100} fill={colors.color_main_2} />)
+          : (
+            <Plot
+              data={data}
+              layout={layout}
+              graphDiv="graph"
+              config={{
+                responsive: true,
+                displayModeBar: false,
+              }}
+            />
+          ) }
       </PlotlyContainer>
     );
   }
