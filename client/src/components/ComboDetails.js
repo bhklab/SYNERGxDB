@@ -4,12 +4,15 @@ import ReactRouterPropTypes from 'react-router-prop-types';
 import queryString from 'query-string';
 import styled from 'styled-components';
 import Loading from 'react-loading-components';
+import SingleDrugInhibitionPlot from './Plots/SingleDrugInhibitionPlot';
+import InhibitionHeatMap from './Plots/InhibitionHeatMap';
 
 import colors from '../styles/colors';
 import cellosaurus from '../images/logos/cellosaurus.jpg';
 import drugbank from '../images/logos/drugbank.svg';
 import pubchem from '../images/logos/pubchem.gif';
 import pubmed from '../images/logos/pubmed.png';
+
 
 import CumulativeDensity from './Plots/CumulativeDensity';
 import SynergyMatrices from './SynergyMatrices';
@@ -43,6 +46,15 @@ const Logo = styled.img`
   display: inline-block;
 `;
 
+const InhibitionContainer = styled.div`
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 10px;
+    width: 100%;
+    padding: 0;
+    margin: 20px 0;
+`;
+
 
 export default class ComboDetails extends Component {
   static propTypes = {
@@ -59,6 +71,7 @@ export default class ComboDetails extends Component {
       idSource: null,
       loadingSummary: true,
       synergyData: null,
+      loadingSynergyData: true,
     };
   }
 
@@ -110,7 +123,7 @@ export default class ComboDetails extends Component {
     fetch(`/api/combos/matrix?comboId=${comboId}&idSource=${idSource}`)
       .then(response => response.json())
       .then((synergyData) => {
-        this.setState({ synergyData });
+        this.setState({ synergyData, loadingSynergyData: false });
       });
   }
 
@@ -126,7 +139,7 @@ export default class ComboDetails extends Component {
 
   render() {
     const {
-      cellData, drugsData, sourceData, loadingSummary,
+      cellData, drugsData, sourceData, loadingSummary, loadingSynergyData,
     } = this.state;
 
     return (
@@ -206,12 +219,24 @@ export default class ComboDetails extends Component {
             }
         </StyledHeader>
         <main>
-          {!loadingSummary ? (
+          {loadingSummary || loadingSynergyData ? (
+            <div className="loading-container">
+              <Loading type="ball_triangle" width={100} height={100} fill={colors.color_main_2} />
+            </div>
+          ) : (
             <ComboContext.Provider value={this.state}>
               <CumulativeDensity />
               <SynergyMatrices />
+              <div className="synergistic-inhibition">
+                <h2>Synergistic Inhibition</h2>
+                <InhibitionContainer>
+                  <SingleDrugInhibitionPlot />
+                  <SingleDrugInhibitionPlot />
+                  <InhibitionHeatMap />
+                </InhibitionContainer>
+              </div>
             </ComboContext.Provider>
-          ) : null}
+          )}
         </main>
       </SynergyDetail>
     );

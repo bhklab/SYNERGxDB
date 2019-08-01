@@ -40,7 +40,6 @@ class SingleDrugInhibitionPlot extends React.Component {
       y: [4, 6, 2, 7, 8],
       line: { shape: 'spline', smoothing: 1.3 },
     }];
-    console.log(this.context);
     this.setState({ data });
   }
 

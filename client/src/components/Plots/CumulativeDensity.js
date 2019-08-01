@@ -23,7 +23,6 @@ class CumulativeDensity extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      comboData: [],
       bliss: {},
       loewe: {},
       hsa: {},
@@ -79,7 +78,6 @@ class CumulativeDensity extends React.Component {
 
         this.setState({
           loading: false,
-          comboData,
           bliss: {
             x: comboData.map(item => item.bliss),
             nbinsx: comboData.length,
@@ -194,7 +192,7 @@ class CumulativeDensity extends React.Component {
   render() {
     const {
       bliss, loewe, hsa, zip, blissMarker, loeweMarker,
-      hsaMarker, zipMarker, layout, comboData, loading,
+      hsaMarker, zipMarker, layout, loading,
     } = this.state;
     const data = [zipMarker, zip, bliss, blissMarker, loewe, loeweMarker, hsa, hsaMarker];
     // const data = [bliss, loewe, hsa, zip];
