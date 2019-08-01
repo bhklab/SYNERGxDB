@@ -1,6 +1,4 @@
-/* eslint-disable max-len */
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import ReactTable from 'react-table';
 import colors from '../styles/colors';
@@ -19,6 +17,7 @@ const InhibitionContainer = styled.div`
     grid-gap: 10px;
     width: 100%;
     padding: 0;
+    margin: 20px 0;
 `;
 
 const SynergyContainer = styled.div`
@@ -82,11 +81,13 @@ const SynergyContainer = styled.div`
 `;
 
 class SynergyMatrices extends Component {
+  static contextType = ComboContext
+
   constructor() {
     super();
     this.state = {
       synergyData: [],
-      selectedType: 0,
+      selectedType: 4,
       dataTypes: ['raw_matrix', 'bliss_matrix', 'loewe_matrix', 'hsa_matrix', 'zip_matrix'],
     };
     this.handleClick = this.handleClick.bind(this);
@@ -95,7 +96,7 @@ class SynergyMatrices extends Component {
   componentDidMount() {
     const {
       idSource, comboId,
-    } = this.props;
+    } = this.context;
     fetch(`/api/combos/matrix?comboId=${comboId}&idSource=${idSource}`)
       .then(response => response.json())
       .then((synergyData) => {
@@ -109,7 +110,7 @@ class SynergyMatrices extends Component {
 
   render() {
     const { handleClick } = this;
-    const { drug1, drug2 } = this.props;
+    const { drugsData, cellData } = this.context;
     const {
       synergyData, dataTypes, selectedType,
     } = this.state;
@@ -117,7 +118,13 @@ class SynergyMatrices extends Component {
       const comboInfo = {};
       synergyData.forEach((item) => {
         // eslint-disable-next-line no-unused-expressions
-        comboInfo[item.concA] === undefined ? comboInfo[item.concA] = [{ concB: item.concB, [dataTypes[selectedType]]: item[dataTypes[selectedType]] }] : comboInfo[item.concA].push({ concB: item.concB, [dataTypes[selectedType]]: item[dataTypes[selectedType]] });
+        comboInfo[item.concA] === undefined
+          ? comboInfo[item.concA] = [{
+            concB: item.concB, [dataTypes[selectedType]]: item[dataTypes[selectedType]],
+          }]
+          : comboInfo[item.concA].push({
+            concB: item.concB, [dataTypes[selectedType]]: item[dataTypes[selectedType]],
+          });
       });
       // Building column structure
       const subcolumns = Object.values(comboInfo).map((item, index) => ({
@@ -126,17 +133,23 @@ class SynergyMatrices extends Component {
         Cell: props => <div style={{ textAlign: 'center' }}>{props.value.toFixed(4)}</div>,
       }));
       const columns = [{
-        Header: `${drug2.name}`,
+        Header: `${cellData.name}`,
+        headerClassName: 'header-name',
         accessor: 'key',
-        Cell: props => (
-          <div className="raw-names">
-            {props.value}
-            {' '}
-            µM
-          </div>
-        ),
+        columns: [{
+          Header: `${drugsData[0].name}`,
+          headerClassName: 'header-name',
+          accessor: 'key',
+          Cell: props => (
+            <div className="raw-names">
+              {props.value}
+              {' '}
+              µM
+            </div>
+          ),
+        }],
       }, {
-        Header: `${drug1.name}`,
+        Header: `${drugsData[1].name}`,
         headerClassName: 'header-name',
         columns: subcolumns,
       }];
@@ -203,8 +216,6 @@ class SynergyMatrices extends Component {
         {synergyData.length > 0 && selectedType !== 0
           ? (
             <Plot3D
-              drug1={drug1}
-              drug2={drug2}
               data={synergyData}
               type={selectedType}
             />
@@ -226,20 +237,5 @@ class SynergyMatrices extends Component {
     );
   }
 }
-
-SynergyMatrices.propTypes = {
-  drug1: PropTypes.shape({
-    name: PropTypes.string,
-    idDrug: PropTypes.number,
-  }).isRequired,
-  drug2: PropTypes.shape({
-    name: PropTypes.string,
-    idDrug: PropTypes.number,
-  }).isRequired,
-  comboId: PropTypes.number.isRequired,
-  idSource: PropTypes.number.isRequired,
-};
-
-SynergyMatrices.contextType = ComboContext;
 
 export default SynergyMatrices;

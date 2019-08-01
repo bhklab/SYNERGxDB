@@ -1,13 +1,17 @@
 /* eslint-disable no-nested-ternary */
-import React, { Fragment } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import Plot from 'react-plotly.js';
 import styled from 'styled-components';
 
 import colors from '../../styles/colors';
+import { ComboContext } from '../Context';
 
 const PlotlyContainer = styled.div`
     min-height: 450px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid ${colors.color_main_3};
+    margin-bottom: 10px;
 `;
 
 const types = [
@@ -19,19 +23,19 @@ const types = [
 
 
 class Plot3D extends React.Component {
+  static contextType = ComboContext
+
   constructor(props) {
     super(props);
     this.state = {
       data: [],
       layout: {},
     };
-    // this.focusOnPlot = React.createRef();
   }
 
   // Methods called on loading
   componentDidMount() {
     this.updatePlotData();
-    // this.refs.focusOnPlot.focus();
   }
 
   componentDidUpdate(prevProps) {
@@ -44,8 +48,9 @@ class Plot3D extends React.Component {
 
   updatePlotData() {
     const {
-      data, type, drug1, drug2,
+      data, type,
     } = this.props;
+    const { drugsData } = this.context;
     const zData = [];
     let currentConc;
     data.forEach((item) => {
@@ -95,7 +100,7 @@ class Plot3D extends React.Component {
           x: [0, 2],
         },
         xaxis: {
-          title: `${drug1.name}`,
+          title: `${drugsData[0].name}`,
           type: 'log',
           tickmode: 'array',
           tickvals: xData,
@@ -104,7 +109,7 @@ class Plot3D extends React.Component {
           showspikes: false,
         },
         yaxis: {
-          title: `${drug2.name}`,
+          title: `${drugsData[1].name}`,
           type: 'log',
           tickmode: 'array',
           tickvals: yData,
@@ -125,16 +130,14 @@ class Plot3D extends React.Component {
   render() {
     const { data, layout } = this.state;
     return (
-      <Fragment>
-        <PlotlyContainer>
-          <Plot
-            graphDiv="graph"
-            config={{ responsive: true }}
-            data={data}
-            layout={layout}
-          />
-        </PlotlyContainer>
-      </Fragment>
+      <PlotlyContainer>
+        <Plot
+          graphDiv="graph"
+          config={{ responsive: true }}
+          data={data}
+          layout={layout}
+        />
+      </PlotlyContainer>
     );
   }
 }
@@ -142,14 +145,6 @@ class Plot3D extends React.Component {
 Plot3D.propTypes = {
   type: PropTypes.number
     .isRequired,
-  drug1: PropTypes.shape({
-    name: PropTypes.string,
-    idDrug: PropTypes.number,
-  }).isRequired,
-  drug2: PropTypes.shape({
-    name: PropTypes.string,
-    idDrug: PropTypes.number,
-  }).isRequired,
   data: PropTypes.arrayOf(PropTypes.shape({
     concA: PropTypes.number.isRequired,
     concB: PropTypes.number.isRequired,

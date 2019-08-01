@@ -1,4 +1,5 @@
-import React, { Component, Fragment } from 'react';
+/* eslint-disable react/no-unused-state */
+import React, { Component } from 'react';
 import ReactRouterPropTypes from 'react-router-prop-types';
 import queryString from 'query-string';
 import styled from 'styled-components';
@@ -99,10 +100,9 @@ export default class ComboDetails extends Component {
   }
 
   render() {
-    const context = this.state;
     const {
-      cellData, drugsData, sourceData, comboId, idSource,
-    } = context;
+      cellData, drugsData, sourceData,
+    } = this.state;
     return (
       <SynergyDetail>
         <header>
@@ -170,23 +170,9 @@ export default class ComboDetails extends Component {
         </header>
         <main>
           {drugsData.length > 0 && cellData.name !== undefined ? (
-            <ComboContext.Provider value={context}>
-              <Fragment>
-                <CumulativeDensity
-                  comboId={comboId}
-                  sample={cellData.name}
-                  idSource={idSource}
-                  drug1={{ name: drugsData[0].name, idDrug: drugsData[0].idDrug }}
-                  drug2={{ name: drugsData[1].name, idDrug: drugsData[1].idDrug }}
-                />
-                <SynergyMatrices
-                  drug1={{ name: drugsData[0].name, idDrug: drugsData[0].idDrug }}
-                  drug2={{ name: drugsData[1].name, idDrug: drugsData[1].idDrug }}
-                  sample={cellData.name}
-                  comboId={comboId}
-                  idSource={idSource}
-                />
-              </Fragment>
+            <ComboContext.Provider value={this.state}>
+              <CumulativeDensity />
+              <SynergyMatrices />
             </ComboContext.Provider>
           ) : null}
         </main>

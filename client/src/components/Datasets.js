@@ -39,27 +39,27 @@ class Datasets extends Component {
     const columns = [{
       Header: 'Name',
       accessor: 'name', // String-based value accessors!
-      sortable: false
+      sortable: false,
     }, {
       Header: 'Source',
       accessor: 'author',
       sortable: false,
-      Cell: (props) => <a className="hover" target="_blank" href={`https://www.ncbi.nlm.nih.gov/pubmed/${props.original.pmID}`}>{props.value}</a>
+      Cell: props => <a className="hover" target="_blank" rel="noopener noreferrer" href={`https://www.ncbi.nlm.nih.gov/pubmed/${props.original.pmID}`}>{props.value}</a>,
 
     }, {
       Header: '# of cell lines',
       accessor: 'no_samples',
-      style:{textAlign: 'right'},
-      sortable: true
+      style: { textAlign: 'right' },
+      sortable: true,
     }, {
       Header: '# of compounds',
       accessor: 'no_drugs',
-      style:{textAlign: 'right'},
-      sortable: true
+      style: { textAlign: 'right' },
+      sortable: true,
     }, {
       Header: 'Design',
       accessor: 'combo',
-      sortable: false
+      sortable: false,
     }];
     return (
       <Fragment>
