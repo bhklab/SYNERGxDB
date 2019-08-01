@@ -34,12 +34,16 @@ class SingleDrugInhibitionPlot extends React.Component {
   }
 
   componentDidMount() {
+    const { synergyData } = this.context;
+    console.log(this.context);
     const data = [{
       type: 'scatter',
       x: [1, 2, 3, 4, 5],
       y: [4, 6, 2, 7, 8],
       line: { shape: 'spline', smoothing: 1.3 },
     }];
+    const inhibData = synergyData.filter(item => item.concA === 0).map(item => 100 - item.raw_matrix * 100);
+    console.log(inhibData);
     this.setState({ data });
   }
 

@@ -97,6 +97,7 @@ class InhibitionHeatMap extends React.Component {
       zmin: 0,
       zmax: 100,
     };
+    console.log(hoverData);
     const annotations = {
       x: xData,
       y: yData,
@@ -108,7 +109,7 @@ class InhibitionHeatMap extends React.Component {
         color: colors.color_main_1,
         size: 18,
       },
-      hoverinfo: 'skip',
+      // hoverinfo: 'skip',
     };
 
     this.setState(prevState => ({
@@ -124,7 +125,7 @@ class InhibitionHeatMap extends React.Component {
           },
         },
         xaxis: {
-          fixedrange: true,
+          // fixedrange: true,
           title: {
             text: `${drugsData[1].name} (µM)`,
             font: {
@@ -143,7 +144,7 @@ class InhibitionHeatMap extends React.Component {
           },
         },
         yaxis: {
-          fixedrange: true,
+          // fixedrange: true,
           title: {
             text: `${drugsData[0].name} (µM)`,
             font: {
@@ -161,7 +162,6 @@ class InhibitionHeatMap extends React.Component {
             size: 13,
           },
         },
-        annotations: [],
       },
     }));
   }
@@ -178,6 +178,8 @@ class InhibitionHeatMap extends React.Component {
             responsive: true,
             displayModeBar: false,
           }}
+          onHover={() => console.log('hover')}
+          onClick={() => console.log('click')}
         />
       </StyledDiv>
     );
