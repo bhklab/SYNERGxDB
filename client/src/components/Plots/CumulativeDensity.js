@@ -13,6 +13,8 @@ const PlotlyContainer = styled.div`
     padding-bottom: 10px;
     border-bottom: 2px solid ${colors.color_main_3};
     margin-bottom: 10px;
+    display: flex;
+    flex-direction: column; 
 `;
 
 class CumulativeDensity extends React.Component {
@@ -200,7 +202,11 @@ class CumulativeDensity extends React.Component {
     return (
       <PlotlyContainer className="cumulative-container">
         { loading
-          ? (<Loading type="ball_triangle" width={100} height={100} fill={colors.color_main_2} />)
+          ? (
+            <div className="loading-container">
+              <Loading type="ball_triangle" width={100} height={100} fill={colors.color_main_2} />
+            </div>
+          )
           : (
             <Plot
               data={data}

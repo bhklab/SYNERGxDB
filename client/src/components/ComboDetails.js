@@ -23,6 +23,11 @@ const StyledSummary = styled.div`
     font-size: 1.2rem;
   }
 `;
+const StyledHeader = styled.div`
+  min-height: 300px;
+  display: flex;
+  flex-direction: column; 
+`;
 
 const SynergyDetail = styled.div`
   align-self: flex-start;
@@ -53,6 +58,7 @@ export default class ComboDetails extends Component {
       comboId: null,
       idSource: null,
       loadingSummary: true,
+      synergyData: null,
     };
   }
 
@@ -76,8 +82,8 @@ export default class ComboDetails extends Component {
       },
     })
       .then(response => response.json())
-      .then((data) => {
-        this.setState({ cellData: data });
+      .then((cellData) => {
+        this.setState({ cellData });
       });
     fetch(`/api/drugs/info?idDrugA=${idDrugA}&idDrugB=${idDrugB}`, {
       method: 'GET',
@@ -87,8 +93,8 @@ export default class ComboDetails extends Component {
       },
     })
       .then(response => response.json())
-      .then((data) => {
-        this.setState({ drugsData: data });
+      .then((drugsData) => {
+        this.setState({ drugsData });
       });
     fetch(`/api/datasets?idSource=${idSource}`, {
       method: 'GET',
@@ -98,8 +104,13 @@ export default class ComboDetails extends Component {
       },
     })
       .then(response => response.json())
-      .then((data) => {
-        this.setState({ sourceData: data });
+      .then((sourceData) => {
+        this.setState({ sourceData });
+      });
+    fetch(`/api/combos/matrix?comboId=${comboId}&idSource=${idSource}`)
+      .then(response => response.json())
+      .then((synergyData) => {
+        this.setState({ synergyData });
       });
   }
 
@@ -120,9 +131,13 @@ export default class ComboDetails extends Component {
 
     return (
       <SynergyDetail>
-        <header>
+        <StyledHeader>
           {loadingSummary
-            ? (<Loading type="ball_triangle" width={100} height={100} fill={colors.color_main_2} />)
+            ? (
+              <div className="loading-container">
+                <Loading type="ball_triangle" width={100} height={100} fill={colors.color_main_2} />
+              </div>
+            )
             : (
               <Fragment>
                 <h1>Drug combination synergy</h1>
@@ -187,10 +202,11 @@ export default class ComboDetails extends Component {
                   </p>
                 </StyledSummary>
               </Fragment>
-            )}
-        </header>
+            )
+            }
+        </StyledHeader>
         <main>
-          {drugsData && cellData ? (
+          {!loadingSummary ? (
             <ComboContext.Provider value={this.state}>
               <CumulativeDensity />
               <SynergyMatrices />
