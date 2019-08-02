@@ -46,3 +46,8 @@ cd SYNERGxDB-Web-App
 
 - Nodemon
 - Eslint
+
+## Servers
+
+- Production server: [http://synergxdb.ca/](http://synergxdb.ca/)
+- Testing server: [http://testing.synergxdb.ca/](http://testing.synergxdb.ca/)
