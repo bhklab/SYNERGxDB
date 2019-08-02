@@ -6,19 +6,9 @@ import 'react-table/react-table.css';
 import transitions from '../styles/transitions';
 
 import Plot3D from './Plots/Plot3D';
-import SingleDrugInhibitionPlot from './Plots/SingleDrugInhibitionPlot';
-import InhibitionHeatMap from './Plots/InhibitionHeatMap';
 
 import { ComboContext } from './Context';
 
-const InhibitionContainer = styled.div`
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    grid-gap: 10px;
-    width: 100%;
-    padding: 0;
-    margin: 20px 0;
-`;
 
 const SynergyContainer = styled.div`
 
@@ -86,22 +76,10 @@ class SynergyMatrices extends Component {
   constructor() {
     super();
     this.state = {
-      synergyData: [],
-      selectedType: 4,
+      selectedType: 0,
       dataTypes: ['raw_matrix', 'bliss_matrix', 'loewe_matrix', 'hsa_matrix', 'zip_matrix'],
     };
     this.handleClick = this.handleClick.bind(this);
-  }
-
-  componentDidMount() {
-    const {
-      idSource, comboId,
-    } = this.context;
-    fetch(`/api/combos/matrix?comboId=${comboId}&idSource=${idSource}`)
-      .then(response => response.json())
-      .then((synergyData) => {
-        this.setState({ synergyData });
-      });
   }
 
   handleClick(selectedType) {
@@ -110,9 +88,9 @@ class SynergyMatrices extends Component {
 
   render() {
     const { handleClick } = this;
-    const { drugsData, cellData } = this.context;
+    const { drugsData, cellData, synergyData } = this.context;
     const {
-      synergyData, dataTypes, selectedType,
+      dataTypes, selectedType,
     } = this.state;
     const generateTable = () => {
       const comboInfo = {};
@@ -220,19 +198,6 @@ class SynergyMatrices extends Component {
               type={selectedType}
             />
           ) : null}
-        {synergyData.length > 0
-          ? (
-            <div className="synergistic-inhibition">
-              <h2>Synergistic Inhibition</h2>
-              <InhibitionContainer>
-                <SingleDrugInhibitionPlot />
-                <SingleDrugInhibitionPlot />
-                <InhibitionHeatMap
-                  data={synergyData}
-                />
-              </InhibitionContainer>
-            </div>
-          ) : null }
       </div>
     );
   }

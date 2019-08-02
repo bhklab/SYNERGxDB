@@ -2,15 +2,19 @@
 import React from 'react';
 import Plot from 'react-plotly.js';
 import styled from 'styled-components';
+import Loading from 'react-loading-components';
 
 import colors from '../../styles/colors';
 import { ComboContext } from '../Context';
+
 
 const PlotlyContainer = styled.div`
     min-height: 450px;
     padding-bottom: 10px;
     border-bottom: 2px solid ${colors.color_main_3};
     margin-bottom: 10px;
+    display: flex;
+    flex-direction: column; 
 `;
 
 class CumulativeDensity extends React.Component {
@@ -19,12 +23,12 @@ class CumulativeDensity extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      comboData: [],
       bliss: {},
       loewe: {},
       hsa: {},
       zip: {},
       layout: {},
+      loading: true,
     };
   }
 
@@ -73,7 +77,7 @@ class CumulativeDensity extends React.Component {
         const loeweCoordinates = generateCoordinates(comboData, 'loewe');
 
         this.setState({
-          comboData,
+          loading: false,
           bliss: {
             x: comboData.map(item => item.bliss),
             nbinsx: comboData.length,
@@ -187,24 +191,31 @@ class CumulativeDensity extends React.Component {
   // Render this compoenent
   render() {
     const {
-      bliss, loewe, hsa, zip, blissMarker, loeweMarker, hsaMarker, zipMarker, layout, comboData,
+      bliss, loewe, hsa, zip, blissMarker, loeweMarker,
+      hsaMarker, zipMarker, layout, loading,
     } = this.state;
     const data = [zipMarker, zip, bliss, blissMarker, loewe, loeweMarker, hsa, hsaMarker];
     // const data = [bliss, loewe, hsa, zip];
     // const data = [bliss, blissMarker, loewe, loeweMarker, hsa, hsaMarker];
     return (
       <PlotlyContainer className="cumulative-container">
-        {comboData.length > 0 ? (
-          <Plot
-            data={data}
-            layout={layout}
-            graphDiv="graph"
-            config={{
-              responsive: true,
-              displayModeBar: false,
-            }}
-          />
-        ) : null}
+        { loading
+          ? (
+            <div className="loading-container">
+              <Loading type="ball_triangle" width={100} height={100} fill={colors.color_main_2} />
+            </div>
+          )
+          : (
+            <Plot
+              data={data}
+              layout={layout}
+              graphDiv="graph"
+              config={{
+                responsive: true,
+                displayModeBar: false,
+              }}
+            />
+          ) }
       </PlotlyContainer>
     );
   }

@@ -257,6 +257,11 @@ const GlobalStyles = createGlobalStyle`
   .plot {
     font-family: Nunito Sans, sans-serif;
   }
+  .loading-container {
+    align-item: center;
+    margin: auto;
+    width: 100px;
+  }
 
   #cellMiniPlot {
     display:flex;

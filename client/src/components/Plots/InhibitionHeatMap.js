@@ -1,7 +1,6 @@
 /* eslint-disable no-plusplus */
 /* eslint-disable no-nested-ternary */
 import React from 'react';
-import PropTypes from 'prop-types';
 import Plot from 'react-plotly.js';
 import styled from 'styled-components';
 
@@ -38,7 +37,7 @@ class InhibitionHeatMap extends React.Component {
   }
 
   componentDidMount() {
-    const { data } = this.props;
+    const { synergyData } = this.context;
     const { cellData, drugsData } = this.context;
     const plotData = [];
     const hoverData = [];
@@ -50,7 +49,7 @@ class InhibitionHeatMap extends React.Component {
     let yCounter = 0;
     const annotationData = [];
 
-    data.forEach((item) => {
+    synergyData.forEach((item) => {
       const hoverStr = `${item.concA} µM of ${drugsData[0].name} and ${item.concB} µM of ${drugsData[1].name}`;
       annotationData.push((100 - item.raw_matrix * 100).toFixed(2));
       if (item.concA === currentConc) {
@@ -98,6 +97,7 @@ class InhibitionHeatMap extends React.Component {
       zmin: 0,
       zmax: 100,
     };
+    console.log(hoverData);
     const annotations = {
       x: xData,
       y: yData,
@@ -109,7 +109,7 @@ class InhibitionHeatMap extends React.Component {
         color: colors.color_main_1,
         size: 18,
       },
-      hoverinfo: 'skip',
+      // hoverinfo: 'skip',
     };
 
     this.setState(prevState => ({
@@ -125,7 +125,7 @@ class InhibitionHeatMap extends React.Component {
           },
         },
         xaxis: {
-          fixedrange: true,
+          // fixedrange: true,
           title: {
             text: `${drugsData[1].name} (µM)`,
             font: {
@@ -136,7 +136,7 @@ class InhibitionHeatMap extends React.Component {
           },
           tickmode: 'array',
           tickvals: [...new Set(xData)],
-          ticktext: [...new Set(data.map(item => item.concB))],
+          ticktext: [...new Set(synergyData.map(item => item.concB))],
           tickfont: {
             family: 'Nunito Sans, sans-serif',
             color: colors.color_main_1,
@@ -144,7 +144,7 @@ class InhibitionHeatMap extends React.Component {
           },
         },
         yaxis: {
-          fixedrange: true,
+          // fixedrange: true,
           title: {
             text: `${drugsData[0].name} (µM)`,
             font: {
@@ -155,14 +155,13 @@ class InhibitionHeatMap extends React.Component {
           },
           tickmode: 'array',
           tickvals: [...new Set(yData)],
-          ticktext: [...new Set(data.map(item => item.concA))],
+          ticktext: [...new Set(synergyData.map(item => item.concA))],
           tickfont: {
             family: 'Nunito Sans, sans-serif',
             color: colors.color_main_1,
             size: 13,
           },
         },
-        annotations: [],
       },
     }));
   }
@@ -179,17 +178,12 @@ class InhibitionHeatMap extends React.Component {
             responsive: true,
             displayModeBar: false,
           }}
+          onHover={() => console.log('hover')}
+          onClick={() => console.log('click')}
         />
       </StyledDiv>
     );
   }
 }
-
-InhibitionHeatMap.propTypes = {
-  data: PropTypes.arrayOf(PropTypes.shape({
-    concA: PropTypes.number.isRequired,
-    concB: PropTypes.number.isRequired,
-  })).isRequired,
-};
 
 export default InhibitionHeatMap;
