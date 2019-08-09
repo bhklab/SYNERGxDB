@@ -29,7 +29,7 @@ class InhibitionHeatMap extends React.Component {
           l: 65,
           r: 0,
           t: 30,
-          b: 45,
+          b: 50,
         },
       },
 
@@ -124,7 +124,7 @@ class InhibitionHeatMap extends React.Component {
           },
         },
         xaxis: {
-          // fixedrange: true,
+          fixedrange: true,
           title: {
             text: `${drugsData[1].name} (µM)`,
             font: {
@@ -143,7 +143,7 @@ class InhibitionHeatMap extends React.Component {
           },
         },
         yaxis: {
-          // fixedrange: true,
+          fixedrange: true,
           title: {
             text: `${drugsData[0].name} (µM)`,
             font: {

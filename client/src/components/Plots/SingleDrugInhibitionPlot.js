@@ -5,8 +5,7 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
 import { ComboContext } from '../Context';
-
-// import colors from '../../styles/colors';
+import colors from '../../styles/colors';
 
 const StyledDiv = styled.div`
     grid-column: 1;
@@ -37,27 +36,62 @@ class SingleDrugInhibitionPlot extends React.Component {
       type: 'scatter',
       x: concData,
       y: inhibData,
-      line: { shape: 'spline', smoothing: 1.3 },
+      line: {
+        color: colors.color_main_1,
+        shape: 'spline',
+        smoothing: 1.3,
+      },
     }];
     const layout = {
-      title: `${cellData.name} treated with ${drugName}`,
+      title: {
+        text: `${cellData.name} treated with ${drugName}`,
+        font: {
+          family: 'Nunito Sans, sans-serif',
+          color: colors.color_main_1,
+          size: 18,
+        },
+      },
       autosize: true,
       height: 250,
       margin: {
         l: 40,
         r: 0,
         t: 30,
-        b: 40,
+        b: 45,
       },
       xaxis: {
-        title: 'Concentration (µM)',
+        title: {
+          text: 'Concentration (µM)',
+          font: {
+            family: 'Nunito Sans, sans-serif',
+            color: colors.color_main_1,
+            size: 16,
+          },
+        },
         type: 'log',
         tickmode: 'array',
         tickvals: concData,
         ticktext: concData,
+        tickfont: {
+          family: 'Nunito Sans, sans-serif',
+          color: colors.color_main_1,
+          size: 13,
+        },
       },
       yaxis: {
-        title: 'Inhibtion',
+        title: {
+          text: 'Inhibition',
+          font: {
+            family: 'Nunito Sans, sans-serif',
+            color: colors.color_main_1,
+            size: 16,
+          },
+        },
+        tickfont: {
+          family: 'Nunito Sans, sans-serif',
+          color: colors.color_main_1,
+          size: 13,
+        },
       },
     };
     this.setState({ data, layout });
