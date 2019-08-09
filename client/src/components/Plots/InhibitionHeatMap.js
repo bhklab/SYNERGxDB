@@ -11,7 +11,7 @@ import colors from '../../styles/colors';
 const StyledDiv = styled.div`
     grid-column: 2;
     grid-row: 1/3;
-    div {
+    .js-plotly-plot {
       height: 100%;
     }
 `;
@@ -109,7 +109,7 @@ class InhibitionHeatMap extends React.Component {
         color: colors.color_main_1,
         size: 18,
       },
-      // hoverinfo: 'skip',
+      hoverinfo: 'skip',
     };
 
     this.setState(prevState => ({
