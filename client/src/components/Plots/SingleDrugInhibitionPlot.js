@@ -31,6 +31,7 @@ class SingleDrugInhibitionPlot extends React.Component {
     const inhibData = monoDrugData.map(item => 100 - item.raw_matrix * 100);
     const concData = monoDrugData.map(item => (drugA ? item.concA : item.concB));
     const drugName = drugA ? drugsData[0].name : drugsData[1].name;
+    const hoverData = monoDrugData.map(item => `${(100 - item.raw_matrix * 100).toFixed(2)}% inhibition (${drugA ? item.concA : item.concB} µM ${drugName})`);
     const data = [{
       type: 'scatter',
       x: concData,
@@ -40,6 +41,8 @@ class SingleDrugInhibitionPlot extends React.Component {
         shape: 'spline',
         smoothing: 1.3,
       },
+      hoverinfo: 'text',
+      hovertext: hoverData,
     }];
     const layout = {
       title: {
@@ -53,7 +56,7 @@ class SingleDrugInhibitionPlot extends React.Component {
       autosize: true,
       height: 250,
       margin: {
-        l: 40,
+        l: 50,
         r: 0,
         t: 30,
         b: 45,
@@ -90,6 +93,9 @@ class SingleDrugInhibitionPlot extends React.Component {
             size: 16,
           },
         },
+        color: colors.color_main_1,
+        tickcolor: colors.color_main_1,
+        linecolor: colors.color_main_1,
         range: [0, 100],
         fixedrange: true,
         tickfont: {
