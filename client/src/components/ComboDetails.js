@@ -244,8 +244,8 @@ export default class ComboDetails extends Component {
                 <div className="synergistic-inhibition">
                   <h2>Synergistic Inhibition</h2>
                   <InhibitionContainer>
-                    <SingleDrugInhibitionPlot />
-                    <SingleDrugInhibitionPlot />
+                    <SingleDrugInhibitionPlot drugA />
+                    <SingleDrugInhibitionPlot drugA={false} />
                     <InhibitionHeatMap />
                   </InhibitionContainer>
                 </div>

@@ -97,7 +97,6 @@ class InhibitionHeatMap extends React.Component {
       zmin: 0,
       zmax: 100,
     };
-    console.log(hoverData);
     const annotations = {
       x: xData,
       y: yData,
@@ -178,8 +177,6 @@ class InhibitionHeatMap extends React.Component {
             responsive: true,
             displayModeBar: false,
           }}
-          onHover={() => console.log('hover')}
-          onClick={() => console.log('click')}
         />
       </StyledDiv>
     );
