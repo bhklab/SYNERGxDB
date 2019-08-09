@@ -16,7 +16,7 @@ import pubmed from '../images/logos/pubmed.png';
 
 import CumulativeDensity from './Plots/CumulativeDensity';
 import SynergyMatrices from './SynergyMatrices';
-import { ComboContext } from './Context';
+import { ComboContext } from './Context/ComboContext';
 
 
 const StyledSummary = styled.div`

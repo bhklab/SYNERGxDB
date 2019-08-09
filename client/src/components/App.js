@@ -105,7 +105,6 @@ const GlobalStyles = createGlobalStyle`
   }
 
   main.summary {
-    margin-top:30px;
     padding-bottom:30px;
   }
 

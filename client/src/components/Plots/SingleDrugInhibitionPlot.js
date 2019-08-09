@@ -4,7 +4,7 @@ import Plot from 'react-plotly.js';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
-import { ComboContext } from '../Context';
+import { ComboContext } from '../Context/ComboContext';
 import colors from '../../styles/colors';
 
 const StyledDiv = styled.div`

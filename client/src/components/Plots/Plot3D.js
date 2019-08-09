@@ -5,7 +5,7 @@ import Plot from 'react-plotly.js';
 import styled from 'styled-components';
 
 import colors from '../../styles/colors';
-import { ComboContext } from '../Context';
+import { ComboContext } from '../Context/ComboContext';
 
 const PlotlyContainer = styled.div`
     min-height: 450px;
