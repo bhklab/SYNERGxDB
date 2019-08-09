@@ -4,6 +4,7 @@ import React, { Component, Fragment } from 'react';
 import styled from 'styled-components';
 import ReactTable from 'react-table';
 import 'react-table/react-table.css';
+import RadialBarChart from './Plots/RadialBarChart';
 // import colors from '../styles/colors';
 // import transitions from '../styles/transitions';
 
@@ -87,6 +88,12 @@ class Drugs extends Component {
       <Fragment>
         {/* <style>{'#root { background: #e7f3f8  !important; }'}</style> */}
         <main className="summary">
+          <StyledWrapper className="wrapper">
+            <h1>Number of Drugs per Dataset</h1>
+            <RadialBarChart
+                plotId="drugPlot"
+            />
+          </StyledWrapper>
           <StyledWrapper className="wrapper">
           <h1>List of Compounds</h1>
             <ReactTable
