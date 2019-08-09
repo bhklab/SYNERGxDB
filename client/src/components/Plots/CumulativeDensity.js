@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import Loading from 'react-loading-components';
 
 import colors from '../../styles/colors';
-import { ComboContext } from '../Context';
+import { ComboContext } from '../Context/ComboContext';
 
 
 const PlotlyContainer = styled.div`

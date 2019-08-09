@@ -7,7 +7,7 @@ import transitions from '../styles/transitions';
 
 import Plot3D from './Plots/Plot3D';
 
-import { ComboContext } from './Context';
+import { ComboContext } from './Context/ComboContext';
 
 
 const SynergyContainer = styled.div`

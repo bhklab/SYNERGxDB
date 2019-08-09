@@ -5,11 +5,13 @@ import ReactRouterPropTypes from 'react-router-prop-types';
 import queryString from 'query-string';
 import styled from 'styled-components';
 import ReactTable from 'react-table';
+
 import colors from '../styles/colors';
 import 'react-table/react-table.css';
 // import transitions from '../styles/transitions';
 
 import Biomarkers from './Biomarkers';
+import LoadingComponent from './Loading';
 
 const SynergyDiv = styled.div`
   width: 100%;
@@ -160,13 +162,14 @@ class ComboResults extends Component {
             {totalSynergyScores}
           </h2>
           <ReactTable
+            loading={loading}
+            LoadingComponent={LoadingComponent}
             data={results}
             columns={columns}
             sortable={false}
             defaultPageSize={25}
             filterable
             className=" -highlight"
-            loading={loading}
             getTdProps={(state, rowInfo) => ({
               onClick: (e, handleOriginal) => {
                 handleCombo(rowInfo.index);

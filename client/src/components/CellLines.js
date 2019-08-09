@@ -1,9 +1,11 @@
 import React, { Component, Fragment } from 'react';
 import styled from 'styled-components';
 import ReactTable from 'react-table';
-import colors from '../styles/colors';
 import 'react-table/react-table.css';
+// import colors from '../styles/colors';
 // import transitions from '../styles/transitions';
+
+import LoadingComponent from './Loading';
 import CellLinePlot from './Plots/CellLinePlot';
 
 const StyledWrapper = styled.div`
@@ -15,7 +17,6 @@ const StyledWrapper = styled.div`
   background:white;
   padding:0px 30px;
 `;
-
 
 
 class Databases extends Component {
@@ -42,8 +43,6 @@ class Databases extends Component {
         });
         this.setState({ cellLineData, loading: false });
       });
-
-    
   }
 
   render() {
@@ -53,25 +52,25 @@ class Databases extends Component {
       accessor: 'tissue', // String-based value accessors!
       Cell: props => props.value.toUpperCase(),
       maxWidth: 125,
-      sortable: true
+      sortable: true,
     }, {
       Header: 'Name',
       accessor: 'name',
       Cell: props => props.value.toUpperCase(),
       maxWidth: 125,
-      sortable: true
+      sortable: true,
     }, {
       Header: 'Sex',
       accessor: 'sex',
       maxWidth: 55,
-      minWidth:55,
-      sortable: false
+      minWidth: 55,
+      sortable: false,
     }, {
       Header: 'Age',
       accessor: 'age',
-      style: {textAlign: 'right'},
+      style: { textAlign: 'right' },
       maxWidth: 50,
-      sortable: true
+      sortable: true,
     }, {
       Header: 'Disease',
       accessor: 'disease',
@@ -85,65 +84,66 @@ class Databases extends Component {
         ) : <span>{value.name}</span>;
       },
       filterable: false,
-      sortable: false
+      sortable: false,
     }, {
       Header: 'Cellosaurus',
       accessor: 'idCellosaurus',
-      Cell: props => <a className="hover" target="_blank" href={`https://web.expasy.org/cellosaurus/${props.value}`}>{props.value}</a>,
+      Cell: props => <a className="hover" target="_blank" rel="noopener noreferrer" href={`https://web.expasy.org/cellosaurus/${props.value}`}>{props.value}</a>,
       maxWidth: 125,
-      sortable: false
+      sortable: false,
     }];
     return (
-      
-        <Fragment>
-          {/* <style>{'#root { background: #e7f3f8  !important; }'}</style> */}
-          <main className="summary">
-            <StyledWrapper className="wrapper">
-              <h1>Relative Percentage of Cell Lines Per Tissue</h1>
-              <CellLinePlot
-                keyName="tissue" 
-                mini={false}
-                plotId="cellTissuePlot"
-              />
 
-              <CellLinePlot
-                keyName="sex"
-                mini={true}
-                plotId="cellMiniPlot"
-              />
+      <Fragment>
+        {/* <style>{'#root { background: #e7f3f8  !important; }'}</style> */}
+        <main className="summary">
+          <StyledWrapper className="wrapper">
+            <h1>Relative Percentage of Cell Lines Per Tissue</h1>
+            <CellLinePlot
+              keyName="tissue"
+              mini={false}
+              plotId="cellTissuePlot"
+            />
 
-              
-              <CellLinePlot
-                keyName="origin"
-                mini={true}
-                plotId="cellMiniPlot"
-              />
+            <CellLinePlot
+              keyName="sex"
+              mini
+              plotId="cellMiniPlot"
+            />
 
-              
-              <CellLinePlot
-                keyName="age"
-                mini={true}
-                plotId="cellMiniPlot"
-              />
-            </StyledWrapper>
-            <StyledWrapper className="wrapper">
-              <h1>List of Cell Lines</h1>
-              <ReactTable
-                data={cellLineData}
-                columns={columns}
-                defaultPageSize={25}
-                filterable
-                className="-highlight"
-                loading={loading}
-              />
-            </StyledWrapper>
-          </main>
-          <footer>
-            <div className="footer-wrapper">
-              <p>Copyright © 2019. All rights reserved</p>
-            </div>
-          </footer>
-        </Fragment>
+
+            <CellLinePlot
+              keyName="origin"
+              mini
+              plotId="cellMiniPlot"
+            />
+
+
+            <CellLinePlot
+              keyName="age"
+              mini
+              plotId="cellMiniPlot"
+            />
+          </StyledWrapper>
+          <StyledWrapper className="wrapper">
+            <h1>List of Cell Lines</h1>
+            <ReactTable
+              data={cellLineData}
+              columns={columns}
+              defaultPageSize={25}
+              filterable
+              className="-highlight"
+              loading={loading}
+              LoadingComponent={LoadingComponent}
+            />
+          </StyledWrapper>
+        </main>
+        <footer>
+          <div className="footer-wrapper">
+            <p>Copyright © 2019. All rights reserved</p>
+          </div>
+        </footer>
+      </Fragment>
     );
   }
 }

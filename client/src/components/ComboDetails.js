@@ -16,7 +16,7 @@ import pubmed from '../images/logos/pubmed.png';
 
 import CumulativeDensity from './Plots/CumulativeDensity';
 import SynergyMatrices from './SynergyMatrices';
-import { ComboContext } from './Context';
+import { ComboContext } from './Context/ComboContext';
 
 
 const StyledSummary = styled.div`
@@ -51,6 +51,7 @@ const InhibitionContainer = styled.div`
     grid-template-columns: repeat(2, 1fr);
     grid-gap: 10px;
     width: 100%;
+    height: 510px;
     padding: 0;
     margin: 20px 0;
 `;
