@@ -30,7 +30,6 @@ class SingleDrugInhibitionPlot extends React.Component {
     monoDrugData.shift();
     const inhibData = monoDrugData.map(item => 100 - item.raw_matrix * 100);
     const concData = monoDrugData.map(item => (drugA ? item.concA : item.concB));
-    console.log(this.context);
     const drugName = drugA ? drugsData[0].name : drugsData[1].name;
     const data = [{
       type: 'scatter',
@@ -68,6 +67,10 @@ class SingleDrugInhibitionPlot extends React.Component {
             size: 16,
           },
         },
+        color: colors.color_main_1,
+        tickcolor: colors.color_main_1,
+        linecolor: colors.color_main_1,
+        fixedrange: true,
         type: 'log',
         tickmode: 'array',
         tickvals: concData,
@@ -80,13 +83,15 @@ class SingleDrugInhibitionPlot extends React.Component {
       },
       yaxis: {
         title: {
-          text: 'Inhibition',
+          text: 'Inhibition (%)',
           font: {
             family: 'Nunito Sans, sans-serif',
             color: colors.color_main_1,
             size: 16,
           },
         },
+        range: [0, 100],
+        fixedrange: true,
         tickfont: {
           family: 'Nunito Sans, sans-serif',
           color: colors.color_main_1,
