@@ -93,11 +93,11 @@ class Drugs extends Component {
           <StyledWrapper className="wrapper">
             <h1>Number of Drugs per Dataset</h1>
             <RadialBarChart
-                plotId="drugPlot"
+              plotId="drugPlot"
             />
           </StyledWrapper>
           <StyledWrapper className="wrapper">
-          <h1>List of Compounds</h1>
+            <h1>List of Compounds</h1>
             <ReactTable
               data={drugsData}
               columns={columns}
