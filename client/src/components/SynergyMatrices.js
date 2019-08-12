@@ -9,8 +9,14 @@ import Plot3D from './Plots/Plot3D';
 
 import { ComboContext } from './Context/ComboContext';
 
-
 const SynergyContainer = styled.div`
+  padding-bottom: 10px;
+  border-bottom: 2px solid ${colors.color_main_3};
+  margin-bottom: 10px;
+`;
+
+
+const ButtonContainer = styled.div`
   display: flex;
 
   button {
@@ -154,9 +160,9 @@ class SynergyMatrices extends Component {
     // checks if there is any dat for the given synergy score
     const scoreExist = accessor => synergyData.every(item => item[accessor] !== null);
     return (
-      <div className="synergy-matrix">
+      <SynergyContainer>
         <h2>Synergy Matrices</h2>
-        <SynergyContainer>
+        <ButtonContainer>
           <button
             type="button"
             onClick={() => handleClick(0)}
@@ -208,7 +214,7 @@ class SynergyMatrices extends Component {
               </button>
             ) : null }
 
-        </SynergyContainer>
+        </ButtonContainer>
         {synergyData.length > 0 ? generateTable() : null}
         {synergyData.length > 0 && selectedType !== 0
           ? (
@@ -217,7 +223,7 @@ class SynergyMatrices extends Component {
               type={selectedType}
             />
           ) : null}
-      </div>
+      </SynergyContainer>
     );
   }
 }

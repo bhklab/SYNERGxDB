@@ -4,8 +4,6 @@ import ReactRouterPropTypes from 'react-router-prop-types';
 import queryString from 'query-string';
 import styled from 'styled-components';
 // import Loading from 'react-loading-components';
-import SingleDrugInhibitionPlot from './Plots/SingleDrugInhibitionPlot';
-import InhibitionHeatMap from './Plots/InhibitionHeatMap';
 
 import colors from '../styles/colors';
 import cellosaurus from '../images/logos/cellosaurus.jpg';
@@ -17,6 +15,8 @@ import pubmed from '../images/logos/pubmed.png';
 import CumulativeDensity from './Plots/CumulativeDensity';
 import SynergyMatrices from './SynergyMatrices';
 import { ComboContext } from './Context/ComboContext';
+import SynergisticInhibition from './SynergisticInhibition';
+import SingleAgents from './SingleAgents';
 
 
 const StyledSummary = styled.div`
@@ -45,17 +45,6 @@ const Logo = styled.img`
   width: auto;
   display: inline-block;
 `;
-
-const InhibitionContainer = styled.div`
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    grid-gap: 10px;
-    width: 100%;
-    height: 510px;
-    padding: 0;
-    margin: 20px 0;
-`;
-
 
 export default class ComboDetails extends Component {
   static propTypes = {
@@ -147,16 +136,6 @@ export default class ComboDetails extends Component {
       <SynergyDetail>
         <StyledHeader>
           {loadingSummary
-          // (
-          //   <div className="loading-container">
-          //     <Loading
-          //       type="ball_triangle"
-          //       width={100}
-          //       height={100}
-          //       fill={colors.color_main_2}
-          //     />
-          //   </div>,
-          // )
             ? null
             : (
               <Fragment>
@@ -228,28 +207,12 @@ export default class ComboDetails extends Component {
         <main>
           {loadingSummary || loadingSynergyData
             ? null
-          // (
-          //   <div className="loading-container">
-          //     <Loading
-          //       type="ball_triangle"
-          //       width={100}
-          //       height={100}
-          //       fill={colors.color_main_2}
-          //     />
-          //   </div>,
-          // )
             : (
               <ComboContext.Provider value={this.state}>
                 <CumulativeDensity />
                 <SynergyMatrices />
-                <div className="synergistic-inhibition">
-                  <h2>Synergistic Inhibition</h2>
-                  <InhibitionContainer>
-                    <SingleDrugInhibitionPlot drugA />
-                    <SingleDrugInhibitionPlot drugA={false} />
-                    <InhibitionHeatMap />
-                  </InhibitionContainer>
-                </div>
+                <SynergisticInhibition />
+                <SingleAgents />
               </ComboContext.Provider>
             )}
         </main>
