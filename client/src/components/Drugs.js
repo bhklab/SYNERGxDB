@@ -4,7 +4,7 @@ import React, { Component, Fragment } from 'react';
 import styled from 'styled-components';
 import ReactTable from 'react-table';
 import 'react-table/react-table.css';
-import RadialBarChart from './Plots/RadialBarChart';
+import RadialBarChart from './Plots/BarChart';
 // import colors from '../styles/colors';
 // import transitions from '../styles/transitions';
 
