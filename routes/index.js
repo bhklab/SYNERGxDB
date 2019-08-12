@@ -3,7 +3,7 @@ const db = require('../db');
 
 const router = express.Router();
 
-router.get('/datasets', (req, res, next) => {
+router.get('/datasets', (req, res) => {
   const {
     idSource,
   } = req.query;

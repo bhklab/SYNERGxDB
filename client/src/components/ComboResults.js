@@ -172,7 +172,7 @@ class ComboResults extends Component {
             className=" -highlight"
             getTdProps={(state, rowInfo) => ({
               onClick: (e, handleOriginal) => {
-                handleCombo(rowInfo.index);
+                if (rowInfo) handleCombo(rowInfo.index);
                 // IMPORTANT! React-Table uses onClick internally to trigger
                 // events like expanding SubComponents and pivots.
                 // By default a custom 'onClick' handler will override this functionality.

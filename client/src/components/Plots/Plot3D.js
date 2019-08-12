@@ -50,6 +50,7 @@ class Plot3D extends React.Component {
     const {
       data, type,
     } = this.props;
+    console.log(data, type);
     const { drugsData } = this.context;
     const zData = [];
     let currentConc;
