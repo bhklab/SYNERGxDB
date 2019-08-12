@@ -35,6 +35,19 @@ router.get('/info', (req, res) => {
     });
 });
 
+router.get('/mono', (req, res) => {
+  // const { sampleId, drugId1, drugId2, idSource } = req.query;
+  const sampleId = 37;
+  const drugId1 = 1;
+  const drugId2 = 2;
+  const idSource = 1;
+  db('Mono_summary')
+    .select('idDrug', 'aac', 'ic50', 'ec50')
+    .where({ idSample: sampleId, idSource })
+    .whereIn('idDrug', [drugId1, drugId2])
+    .then(data => console.log(data));
+});
+
 router.post('/', (req, res) => {
   const { sample, dataset, drugId } = req.body;
   // query to get relevant cell lines
@@ -143,6 +156,8 @@ router.post('/', (req, res) => {
       res.json(drugList);
     });
 });
+
+router;
 
 
 module.exports = router;
