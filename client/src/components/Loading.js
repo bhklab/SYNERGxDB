@@ -1,5 +1,5 @@
 import React from 'react';
-import Loading from 'react-loading-components';
+import ReactLoading from 'react-loading';
 import styled from 'styled-components';
 import colors from '../styles/colors';
 
@@ -24,7 +24,7 @@ const LoadingComponent = (props) => {
   return loading ? (
     <LoadingContainer className="-loading -active">
       <div className="-loading-inner">
-        <Loading type="ball_triangle" width={150} height={150} fill={colors.color_main_2} />
+        <ReactLoading type="bubbles" width={150} height={150} color={colors.color_main_2} />
       </div>
     </LoadingContainer>
   ) : (
