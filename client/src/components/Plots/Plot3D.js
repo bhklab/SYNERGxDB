@@ -9,9 +9,6 @@ import { ComboContext } from '../Context/ComboContext';
 
 const PlotlyContainer = styled.div`
     min-height: 450px;
-    padding-bottom: 10px;
-    border-bottom: 2px solid ${colors.color_main_3};
-    margin-bottom: 10px;
 `;
 
 const types = [
