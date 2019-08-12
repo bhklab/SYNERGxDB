@@ -11,6 +11,7 @@ import { ComboContext } from './Context/ComboContext';
 
 
 const SynergyContainer = styled.div`
+  display: flex;
 
   button {
     font-size: 1.5em;
@@ -21,7 +22,6 @@ const SynergyContainer = styled.div`
     color: #ffffff;
     transition: ${transitions.main_trans};
     outline-style: none;
-    display: inline-block;
     vertical-align: middle;
     -webkit-transform: perspective(1px) translateZ(0);
     transform: perspective(1px) translateZ(0);
@@ -31,7 +31,7 @@ const SynergyContainer = styled.div`
     transition-property: color;
     -webkit-transition-duration: 0.3s;
     transition-duration: 0.3s;
-    width: 20%;
+    flex-grow: 1;
   
     &:before {
       content: "";
@@ -150,6 +150,9 @@ class SynergyMatrices extends Component {
         />
       );
     };
+
+    // checks if there is any dat for the given synergy score
+    const scoreExist = accessor => synergyData.every(item => item[accessor] !== null);
     return (
       <div className="synergy-matrix">
         <h2>Synergy Matrices</h2>
@@ -161,34 +164,50 @@ class SynergyMatrices extends Component {
           >
             Input
           </button>
-          <button
-            type="button"
-            onClick={() => handleClick(1)}
-            className={selectedType === 1 ? 'active-score' : null}
-          >
-            Bliss
-          </button>
-          <button
-            type="button"
-            onClick={() => handleClick(2)}
-            className={selectedType === 2 ? 'active-score' : null}
-          >
-            Loewe
-          </button>
-          <button
-            type="button"
-            onClick={() => handleClick(3)}
-            className={selectedType === 3 ? 'active-score' : null}
-          >
-          HSA
-          </button>
-          <button
-            type="button"
-            onClick={() => handleClick(4)}
-            className={selectedType === 4 ? 'active-score' : null}
-          >
-            ZIP
-          </button>
+          { scoreExist('bliss_matrix')
+            ? (
+              <button
+                type="button"
+                onClick={() => handleClick(1)}
+                className={selectedType === 1 ? 'active-score' : null}
+              >
+                Bliss
+              </button>
+            ) : null }
+
+          { scoreExist('loewe_matrix')
+            ? (
+              <button
+                type="button"
+                onClick={() => handleClick(2)}
+                className={selectedType === 2 ? 'active-score' : null}
+              >
+                Loewe
+              </button>
+            ) : null }
+
+          { scoreExist('hsa_matrix')
+            ? (
+              <button
+                type="button"
+                onClick={() => handleClick(3)}
+                className={selectedType === 3 ? 'active-score' : null}
+              >
+                HSA
+              </button>
+            ) : null }
+
+          { scoreExist('zip_matrix')
+            ? (
+              <button
+                type="button"
+                onClick={() => handleClick(4)}
+                className={selectedType === 4 ? 'active-score' : null}
+              >
+                ZIP
+              </button>
+            ) : null }
+
         </SynergyContainer>
         {synergyData.length > 0 ? generateTable() : null}
         {synergyData.length > 0 && selectedType !== 0
