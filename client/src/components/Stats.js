@@ -84,17 +84,17 @@ class Stats extends Component {
     return (
       <StyledDiv className="stats">
         <div>
-        <h2>
+          <h2>
             <CountUp
               start={0}
               end={datasets}
               duration={3}
               easingFn={easeInOut}
-              separator={","}
+              separator=","
             />
           </h2>
           <h2>Datasets</h2>
-          
+
         </div>
         {/* <div>
           <h2>Cell Lines</h2>
@@ -114,11 +114,11 @@ class Stats extends Component {
               end={tissues}
               duration={3}
               easingFn={easeInOut}
-              separator={","}
+              separator=","
             />
           </h2>
           <h2>Tissues</h2>
-          
+
         </div>
         <div>
           <h2>
@@ -127,11 +127,11 @@ class Stats extends Component {
               end={compounds}
               duration={3}
               easingFn={easeInOut}
-              separator={","}
+              separator=","
             />
           </h2>
           <h2>Compounds</h2>
-          
+
         </div>
         <div>
           <h2>
@@ -140,11 +140,11 @@ class Stats extends Component {
               end={combos}
               duration={3}
               easingFn={easeInOut}
-              separator={","}
+              separator=","
             />
           </h2>
           <h2>Combinations</h2>
-          
+
         </div>
         <div>
           <h2>
@@ -153,11 +153,11 @@ class Stats extends Component {
               end={experiments}
               duration={3}
               easingFn={easeInOut}
-              separator={","}
+              separator=","
             />
           </h2>
           <h2>Experiments</h2>
-          
+
         </div>
         <div>
           <h2>
@@ -166,11 +166,11 @@ class Stats extends Component {
               end={datapoints}
               duration={3}
               easingFn={easeInOut}
-              separator={","}
+              separator=","
             />
           </h2>
           <h2>Data points</h2>
-          
+
         </div>
       </StyledDiv>
     );

@@ -5,13 +5,14 @@ import colors from '../styles/colors';
 
 const LoadingContainer = styled.div`
   &.-loading.-active {
-    flex-direction: column;
-    justify-content: center;
     background-color: white;
-    opacity: 0;
+    opacity: 1;
+    z-index: 100;
     
     .-loading-inner {
-      top: 0;
+      display: flex;
+      justify-content: center;
+      top: calc(50% - 150px);
     }
   }
 

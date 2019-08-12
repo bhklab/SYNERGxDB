@@ -16,22 +16,6 @@ const StyledBiomarkers = styled.div`
   padding:0px 30px;
 `;
 
-const BiomarkerDiv = styled.div`
-  
-  grid-template-columns: repeat(4, 1fr);
-  border-bottom: solid 2px black;
-  margin: 10px 0;
-
-  span {
-    &:nth-child(8n-3),
-    &:nth-child(8n-2),
-    &:nth-child(8n-1),
-    &:nth-child(8n) {
-      background-color: ${colors.trans_color_main_3};
-    }
-  }
-`;
-
 
 class Biomarkers extends Component {
   constructor() {
@@ -83,7 +67,7 @@ class Biomarkers extends Component {
       biomarkerData, results, selectedBiomarker, loading,
     } = this.state;
     const {
-      drugId1, drugId2, sourceName, dataset,
+      drugId1, drugId2,
     } = this.props;
     if (biomarkerData) {
       const columns = [{

@@ -388,13 +388,13 @@ class SearchCombos extends Component {
 
   render() {
     const {
-      drugId1, drugId2, drugsData1, drugsData2, sampleData, sample,
+      drugsData1, drugsData2, sampleData,
       selectedSample, selectedDrug1, selectedDrug2, drug2Placeholder, datasetData,
-      selectedDataset, dataset,
+      selectedDataset,
     } = this.state;
     const {
       handleSampleSearch, handleDrug1Search, handleDrug2Search, userRedirect,
-      handleDatasetSearch, handleEnterPress, handleFocus,
+      handleDatasetSearch, handleEnterPress,
     } = this;
 
     const isDisabled = !(drugsData2.length > 0);
@@ -416,11 +416,11 @@ class SearchCombos extends Component {
         <h1>
           <span>SYNERGxDB</span>
           {' '}
-          is a comprehensive database to explore 
-{' '}
-<br></br>
+          is a comprehensive database to explore
+          {' '}
+          <br />
 synergistic drug combinations for biomarker discovery.
-</h1>
+        </h1>
         <StyledForm className="search-combos" onKeyPress={handleEnterPress}>
           <div className="select-container">
             <Select
@@ -485,9 +485,9 @@ synergistic drug combinations for biomarker discovery.
               {' '}
               <Link className="hover" to={exampleSampleUrl}>BLADDER</Link>
 &nbsp;&nbsp;|&nbsp;&nbsp;
-<Link className="hover" to={exampleDatasetUrl}>YALE-PDAC</Link>
+              <Link className="hover" to={exampleDatasetUrl}>YALE-PDAC</Link>
 &nbsp;&nbsp;|&nbsp;&nbsp;
-<Link className="hover" to={exampleDrugUrl}>Bortezomib + Topotecan</Link>
+              <Link className="hover" to={exampleDrugUrl}>Bortezomib + Topotecan</Link>
             </ExampleSpan>
             <StyledButton onClick={userRedirect} type="button">Search</StyledButton>
           </ButtonContainer>
