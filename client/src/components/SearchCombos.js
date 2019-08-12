@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable react/prop-types */
 /* eslint-disable max-len */
 /* eslint-disable no-plusplus */
@@ -230,7 +231,6 @@ class SearchCombos extends Component {
     this.handleDatasetSearch = this.handleDatasetSearch.bind(this);
     this.handleEnterPress = this.handleEnterPress.bind(this);
     this.checkUserInput = this.checkUserInput.bind(this);
-    this.handleFocus = this.handleFocus.bind(this);
   }
 
   componentDidMount() {
@@ -305,11 +305,6 @@ class SearchCombos extends Component {
 
   handleEnterPress(e) {
     if (e.key === 'Enter') this.userRedirect();
-  }
-
-  handleFocus(e) {
-    console.log(e);
-    console.log(this);
   }
 
   handleDrug1Search(drugId, event) {
@@ -419,7 +414,7 @@ class SearchCombos extends Component {
           is a comprehensive database to explore
           {' '}
           <br />
-synergistic drug combinations for biomarker discovery.
+          synergistic drug combinations for biomarker discovery.
         </h1>
         <StyledForm className="search-combos" onKeyPress={handleEnterPress}>
           <div className="select-container">
@@ -484,9 +479,9 @@ synergistic drug combinations for biomarker discovery.
             Examples:
               {' '}
               <Link className="hover" to={exampleSampleUrl}>BLADDER</Link>
-&nbsp;&nbsp;|&nbsp;&nbsp;
+                &nbsp;&nbsp;|&nbsp;&nbsp;
               <Link className="hover" to={exampleDatasetUrl}>YALE-PDAC</Link>
-&nbsp;&nbsp;|&nbsp;&nbsp;
+                &nbsp;&nbsp;|&nbsp;&nbsp;
               <Link className="hover" to={exampleDrugUrl}>Bortezomib + Topotecan</Link>
             </ExampleSpan>
             <StyledButton onClick={userRedirect} type="button">Search</StyledButton>
@@ -504,11 +499,6 @@ synergistic drug combinations for biomarker discovery.
             {searchForm}
           </StyledWrapper>
         </main>
-        {/* <footer>
-          <div className="wrapper">
-            <p>Copyright © 2019. All rights reserved</p>
-          </div>
-        </footer> */}
       </Fragment>
     );
   }

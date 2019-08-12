@@ -4,6 +4,7 @@
 /* eslint-disable no-cond-assign */
 import React, { Component } from 'react';
 import CountUp from 'react-countup';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import colors from '../styles/colors';
 
@@ -41,7 +42,7 @@ class Stats extends Component {
       datasets: 0,
       tissues: 0,
       compounds: 0,
-      // cells: 0,
+      cells: 0,
       combos: 0,
       experiments: 0,
       datapoints: 0,
@@ -64,7 +65,7 @@ class Stats extends Component {
       datasets: 7,
       tissues: 11,
       compounds: 1965,
-      // cells: 184,
+      cells: 184,
       combos: 14634,
       experiments: 475278,
       datapoints: 6059248,
@@ -73,7 +74,7 @@ class Stats extends Component {
 
   render() {
     const {
-      datasets, tissues, compounds, combos, experiments, datapoints,
+      datasets, tissues, compounds, combos, experiments, datapoints, cells,
     } = this.state;
     const easeInOut = (t, b, c, d) => {
       if (t === 0) return b;
@@ -84,54 +85,60 @@ class Stats extends Component {
     return (
       <StyledDiv className="stats">
         <div>
-          <h2>
-            <CountUp
-              start={0}
-              end={datasets}
-              duration={3}
-              easingFn={easeInOut}
-              separator=","
-            />
-          </h2>
-          <h2>Datasets</h2>
-
-        </div>
-        {/* <div>
-          <h2>Cell Lines</h2>
-          <h2>
-            <CountUp
-              start={0}
-              end={cells}
-              duration={3}
-              easingFn={easeInOut}
-            />
-          </h2>
-        </div> */}
-        <div>
-          <h2>
-            <CountUp
-              start={0}
-              end={tissues}
-              duration={3}
-              easingFn={easeInOut}
-              separator=","
-            />
-          </h2>
-          <h2>Tissues</h2>
-
+          <Link to="/datasets/">
+            <h2>
+              <CountUp
+                start={0}
+                end={datasets}
+                duration={3}
+                easingFn={easeInOut}
+                separator=","
+              />
+            </h2>
+            <h2>Datasets</h2>
+          </Link>
         </div>
         <div>
-          <h2>
-            <CountUp
-              start={0}
-              end={compounds}
-              duration={3}
-              easingFn={easeInOut}
-              separator=","
-            />
-          </h2>
-          <h2>Compounds</h2>
-
+          <Link to="/cell-lines/">
+            <h2>
+              <CountUp
+                start={0}
+                end={tissues}
+                duration={3}
+                easingFn={easeInOut}
+                separator=","
+              />
+            </h2>
+            <h2>Tissues</h2>
+          </Link>
+        </div>
+        <div>
+          <Link to="/cell-lines/">
+            <h2>
+              <CountUp
+                start={0}
+                end={cells}
+                duration={3}
+                easingFn={easeInOut}
+                separator=","
+              />
+            </h2>
+            <h2>Cell Lines</h2>
+          </Link>
+        </div>
+        <div>
+          <Link to="/drugs/">
+            <h2>
+              <CountUp
+                start={0}
+                end={compounds}
+                duration={3}
+                easingFn={easeInOut}
+                separator=","
+              />
+            </h2>
+            <h2>Compounds</h2>
+          </Link>
         </div>
         <div>
           <h2>
