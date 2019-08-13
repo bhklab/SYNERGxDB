@@ -19,6 +19,7 @@ const PlotlyContainer = styled.div`
 
 class CumulativeDensity extends React.Component {
   static contextType = ComboContext
+  _isMounted = false;
 
   constructor(props) {
     super(props);
@@ -34,6 +35,8 @@ class CumulativeDensity extends React.Component {
 
   // Methods called on loading
   componentDidMount() {
+    this._isMounted = true;
+
     const {
       drugsData, comboId, idSource, cellData,
     } = this.context;
@@ -76,118 +79,123 @@ class CumulativeDensity extends React.Component {
         const hsaCoordinates = generateCoordinates(comboData, 'hsa');
         const loeweCoordinates = generateCoordinates(comboData, 'loewe');
 
-        this.setState({
-          loading: false,
-          bliss: {
-            x: comboData.map(item => item.bliss),
-            nbinsx: comboData.length,
-            histnorm: 'probability',
-            name: 'Bliss',
-            opacity: 0.35,
-            type: 'histogram',
-            cumulative: { enabled: true },
-            marker: { color: colors.color_main_2 },
-            legendgroup: 'bliss',
-          },
-          blissMarker: {
-            x: [blissCoordinates.x],
-            y: [blissCoordinates.y],
-            name: `${cellData.name} Bliss`,
-            marker: { color: colors.color_main_2, size: scatterSize },
-            showlegend: false,
-            mode: 'markers',
-            type: 'scatter',
-            legendgroup: 'bliss',
-          },
-          loewe: {
-            x: comboData.map(item => item.loewe),
-            nbinsx: comboData.length,
-            histnorm: 'probability',
-            name: 'Loewe',
-            opacity: 0.35,
-            type: 'histogram',
-            cumulative: { enabled: true },
-            marker: { color: colors.color_main_1 },
-            visible: 'legendonly',
-            legendgroup: 'loewe',
-          },
-          loeweMarker: {
-            x: [loeweCoordinates.x],
-            y: [loeweCoordinates.y],
-            name: `${cellData.name} Loewe`,
-            showlegend: false,
-            marker: { color: colors.color_main_1, size: scatterSize },
-            mode: 'markers',
-            type: 'scatter',
-            visible: 'legendonly',
-            legendgroup: 'loewe',
-          },
-          hsa: {
-            x: comboData.map(item => item.hsa),
-            nbinsx: comboData.length,
-            histnorm: 'probability',
-            name: 'HSA',
-            type: 'histogram',
-            opacity: 0.35,
-            cumulative: { enabled: true },
-            marker: { color: colors.color_main_4 },
-            visible: 'legendonly',
-            legendgroup: 'hsa',
-          },
-          hsaMarker: {
-            x: [hsaCoordinates.x],
-            y: [hsaCoordinates.y],
-            showlegend: false,
-            name: `${cellData.name} HSA`,
-            marker: { color: colors.color_main_4, size: scatterSize },
-            mode: 'markers',
-            type: 'scatter',
-            visible: 'legendonly',
-            legendgroup: 'hsa',
-          },
-          zip:
-            {
-              x: comboData.map(item => item.zip),
+        if (this._isMounted) {
+          this.setState({
+            loading: false,
+            bliss: {
+              x: comboData.map(item => item.bliss),
               nbinsx: comboData.length,
               histnorm: 'probability',
+              name: 'Bliss',
+              opacity: 0.35,
               type: 'histogram',
-              name: 'ZIP',
+              cumulative: { enabled: true },
+              marker: { color: colors.color_main_2 },
+              legendgroup: 'bliss',
+            },
+            blissMarker: {
+              x: [blissCoordinates.x],
+              y: [blissCoordinates.y],
+              name: `${cellData.name} Bliss`,
+              marker: { color: colors.color_main_2, size: scatterSize },
+              showlegend: false,
+              mode: 'markers',
+              type: 'scatter',
+              legendgroup: 'bliss',
+            },
+            loewe: {
+              x: comboData.map(item => item.loewe),
+              nbinsx: comboData.length,
+              histnorm: 'probability',
+              name: 'Loewe',
+              opacity: 0.35,
+              type: 'histogram',
+              cumulative: { enabled: true },
+              marker: { color: colors.color_main_1 },
+              visible: 'legendonly',
+              legendgroup: 'loewe',
+            },
+            loeweMarker: {
+              x: [loeweCoordinates.x],
+              y: [loeweCoordinates.y],
+              name: `${cellData.name} Loewe`,
+              showlegend: false,
+              marker: { color: colors.color_main_1, size: scatterSize },
+              mode: 'markers',
+              type: 'scatter',
+              visible: 'legendonly',
+              legendgroup: 'loewe',
+            },
+            hsa: {
+              x: comboData.map(item => item.hsa),
+              nbinsx: comboData.length,
+              histnorm: 'probability',
+              name: 'HSA',
+              type: 'histogram',
               opacity: 0.35,
               cumulative: { enabled: true },
-              marker: { color: colors.color_main_5 },
+              marker: { color: colors.color_main_4 },
+              visible: 'legendonly',
+              legendgroup: 'hsa',
+            },
+            hsaMarker: {
+              x: [hsaCoordinates.x],
+              y: [hsaCoordinates.y],
+              showlegend: false,
+              name: `${cellData.name} HSA`,
+              marker: { color: colors.color_main_4, size: scatterSize },
+              mode: 'markers',
+              type: 'scatter',
+              visible: 'legendonly',
+              legendgroup: 'hsa',
+            },
+            zip:
+              {
+                x: comboData.map(item => item.zip),
+                nbinsx: comboData.length,
+                histnorm: 'probability',
+                type: 'histogram',
+                name: 'ZIP',
+                opacity: 0.35,
+                cumulative: { enabled: true },
+                marker: { color: colors.color_main_5 },
+                legendgroup: 'zip',
+              },
+            zipMarker: {
+              x: [zipCoordinates.x],
+              y: [zipCoordinates.y],
+              showlegend: false,
+              name: `${cellData.name} ZIP`,
+              marker: { color: colors.color_main_5, size: scatterSize },
+              mode: 'markers',
+              type: 'scatter',
               legendgroup: 'zip',
             },
-          zipMarker: {
-            x: [zipCoordinates.x],
-            y: [zipCoordinates.y],
-            showlegend: false,
-            name: `${cellData.name} ZIP`,
-            marker: { color: colors.color_main_5, size: scatterSize },
-            mode: 'markers',
-            type: 'scatter',
-            legendgroup: 'zip',
-          },
-          layout: {
-            height: 450,
-            paper_bgcolor: 'white',
-            plot_bgcolor: 'white',
-            yaxis: { title: 'Cumulative density' },
-            xaxis: { title: `Synergy Score (Cell Lines, N=${comboData.length})` },
-            barmode: 'overlay',
-            font: {
-              size: 16,
-              color: colors.nav_links,
-              family: 'Raleway',
+            layout: {
+              height: 450,
+              paper_bgcolor: 'white',
+              plot_bgcolor: 'white',
+              yaxis: { title: 'Cumulative density' },
+              xaxis: { title: `Synergy Score (Cell Lines, N=${comboData.length})` },
+              barmode: 'overlay',
+              font: {
+                size: 16,
+                color: colors.nav_links,
+                family: 'Raleway',
+              },
+              title: {
+                text: `${drugsData[0].name} * ${drugsData[1].name}`,
+                size: 18,
+              },
             },
-            title: {
-              text: `${drugsData[0].name} * ${drugsData[1].name}`,
-              size: 18,
-            },
-          },
-        });
+          });
+        }
       });
   }
 
+  componentWillUnmount() {
+    this._isMounted = false;
+  }
   // Render this compoenent
   render() {
     const {

@@ -63,7 +63,7 @@ const ButtonContainer = styled.div`
     &:hover,
     &:focus,
     &.active-score {
-      color: ${colors.nav_links};
+      color: white;
       
       border: 1px solid ${colors.nav_links};
       cursor:pointer;

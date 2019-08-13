@@ -20,5 +20,5 @@ export default {
   summary_bg: '#e7f3f8',
   summary_bg_trans: 'rgba(231,243,248, 0.75)',
   pagination: '#5675b3',
-  button_hover: '#2098D1',
+  button_hover: '#58a3c7',
 };

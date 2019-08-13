@@ -27,28 +27,6 @@ class BarChart extends React.Component {
     }
 
     formatData(drugData, datasetData) {
-        // let result = [];
-
-        // // initializing result with dataset names
-        // datasetData.forEach(function(x) {
-        //     let temp = {};
-        //     temp.name = x.name; 
-        //     temp.num = 0;
-        //     result.push(temp)
-        // })
-        
-        // // for each 
-        // drugData.forEach(function(x) {
-        //     let datasets = x.dataset_names.split(",");
-        //     datasets.forEach(function(dset) {
-        //         const ind = result.findIndex(function(item, i) {
-        //             return item.name === dset;
-        //         })
-        //         result[ind].num = result[ind].num + 1
-        //     })
-        // })
-        // console.log(result);
-
         // return result;
         let names = [], nums = [];
         datasetData.forEach(function(x) {
