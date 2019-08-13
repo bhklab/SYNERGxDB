@@ -44,16 +44,45 @@ router.get('/mono', (req, res) => {
   drugId2 = parseInt(drugId2, 10);
   idSource = parseInt(idSource, 10);
   idSample = parseInt(idSample, 10);
+  const drugArray = [drugId1, drugId2];
 
   console.log(idSample, drugId1, drugId2, idSource, typeof idSource);
-  db('Mono_summary')
-    .select('idDrug', 'aac', 'ic50', 'ec50')
+  db.select('idDrug', 'aac', 'ic50', 'ec50')
+    .from('Mono_summary')
     .where({ idSample, idSource })
-    .whereIn('idDrug', [drugId1, drugId2])
+    .whereIn('idDrug', drugArray)
     .limit(2)
-    .then((data) => {
-      console.log(data);
-      res.json(data);
+    .orderBy('idDrug', 'asc')
+    .then((monoData) => {
+      console.log(monoData);
+      const outputArray = monoData;
+      switch (outputArray.length) {
+        case 0:
+          outputArray.push(
+            {
+              idDrug: drugId1, aac: 0, ec50: 0, ic50: 0,
+            },
+            {
+              idDrug: drugId2, aac: 0, ec50: 0, ic50: 0,
+            },
+          );
+          break;
+        case 1:
+          // eslint-disable-next-line no-unused-expressions
+          outputArray[0].idDrug === drugId1 ? outputArray.push({
+            idDrug: drugId2, aac: 0, ec50: 0, ic50: 0,
+          }) : outputArray.unshift({
+            idDrug: drugId1, aac: 0, ec50: 0, ic50: 0,
+          });
+          break;
+        default:
+          break;
+      }
+      db('Drug').select('name').whereIn('idDrug', drugArray).orderBy('idDrug', 'asc')
+        .then((drugData) => {
+          drugData.forEach((item, index) => { outputArray[index].drugName = item.name; });
+          res.json(outputArray);
+        });
     });
 });
 

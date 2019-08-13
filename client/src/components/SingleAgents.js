@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
+import ReactTable from 'react-table';
 import SingleAgentPlot from './Plots/SingleAgentPlot';
 
 import { ComboContext } from './Context/ComboContext';
 
 import colors from '../styles/colors';
+import 'react-table/react-table.css';
 
 const StyledContainer = styled.div`
     padding-bottom: 10px;
@@ -33,8 +35,6 @@ class SingleAgents extends Component {
   }
 
   componentDidMount() {
-    console.log(this.context);
-
     const { drugsData, idSource, idSample } = this.context;
     fetch(`/api/drugs/mono?drugId1=${drugsData[0].idDrug}&drugId2=${drugsData[1].idDrug}&idSource=${idSource}&idSample=${idSample}`, {
       method: 'GET',
@@ -51,6 +51,16 @@ class SingleAgents extends Component {
   }
 
   render() {
+    const columns = [{
+      Header: 'Name',
+      accessor: 'name', // String-based value accessors!
+      sortable: false,
+    }];
+
+    const tableData = [{
+      name: 'Drug',
+    }];
+
     return (
       <StyledContainer>
         <h2>Single-agents</h2>
@@ -58,6 +68,14 @@ class SingleAgents extends Component {
           <SingleAgentPlot drugA />
           <SingleAgentPlot drugA={false} />
         </PlotContainer>
+        <ReactTable
+          data={tableData}
+          columns={columns}
+          showPagination={false}
+          sortable={false}
+          defaultPageSize={2}
+          className="-highlight"
+        />
       </StyledContainer>
     );
   }
