@@ -75,6 +75,7 @@ export default class ComboDetails extends Component {
     this.setState({
       comboId: parseInt(comboId, 10),
       idSource: parseInt(idSource, 10),
+      idSample: parseInt(idSample, 10),
     });
 
     fetch(`/api/cell_lines/info?idSample=${idSample}`, {

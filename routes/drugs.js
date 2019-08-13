@@ -36,16 +36,25 @@ router.get('/info', (req, res) => {
 });
 
 router.get('/mono', (req, res) => {
-  // const { sampleId, drugId1, drugId2, idSource } = req.query;
-  const sampleId = 37;
-  const drugId1 = 1;
-  const drugId2 = 2;
-  const idSource = 1;
+  let {
+    drugId1, drugId2, idSource, idSample,
+  } = req.query;
+
+  drugId1 = parseInt(drugId1, 10);
+  drugId2 = parseInt(drugId2, 10);
+  idSource = parseInt(idSource, 10);
+  idSample = parseInt(idSample, 10);
+
+  console.log(idSample, drugId1, drugId2, idSource, typeof idSource);
   db('Mono_summary')
     .select('idDrug', 'aac', 'ic50', 'ec50')
-    .where({ idSample: sampleId, idSource })
+    .where({ idSample, idSource })
     .whereIn('idDrug', [drugId1, drugId2])
-    .then(data => console.log(data));
+    .limit(2)
+    .then((data) => {
+      console.log(data);
+      res.json(data);
+    });
 });
 
 router.post('/', (req, res) => {
@@ -156,8 +165,5 @@ router.post('/', (req, res) => {
       res.json(drugList);
     });
 });
-
-router;
-
 
 module.exports = router;
