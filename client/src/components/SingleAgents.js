@@ -18,9 +18,8 @@ const PlotContainer = styled.div`
     display: flex;
     justify-content: space-between;
     width: 100%;
-    height: 510px;
     padding: 0;
-    margin: 20px 0;
+    margin: 20px 0 50px;
 `;
 
 class SingleAgents extends Component {
@@ -51,15 +50,26 @@ class SingleAgents extends Component {
   }
 
   render() {
-    const columns = [{
-      Header: 'Name',
-      accessor: 'name', // String-based value accessors!
-      sortable: false,
-    }];
-
-    const tableData = [{
-      name: 'Drug',
-    }];
+    const { cellData } = this.context;
+    const { monoData } = this.state;
+    const columns = [
+      {
+        Header: `${cellData.name}`,
+        accessor: 'drugName',
+      }, {
+        Header: 'AAC',
+        accessor: 'aac',
+        Cell: prop => (prop.value ? prop.value.toFixed(4) : '0.0000'),
+      }, {
+        Header: 'IC50 (µM)',
+        accessor: 'ic50',
+        Cell: prop => (prop.value ? prop.value.toFixed(4) : '0.0000'),
+      }, {
+        Header: 'EC50 (µM)',
+        accessor: 'ec50',
+        Cell: prop => (prop.value ? prop.value.toFixed(4) : '0.0000'),
+      },
+    ];
 
     return (
       <StyledContainer>
@@ -69,10 +79,11 @@ class SingleAgents extends Component {
           <SingleAgentPlot drugA={false} />
         </PlotContainer>
         <ReactTable
-          data={tableData}
+          data={monoData}
           columns={columns}
           showPagination={false}
           sortable={false}
+          filterable={false}
           defaultPageSize={2}
           className="-highlight"
         />

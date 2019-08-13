@@ -54,7 +54,7 @@ router.get('/mono', (req, res) => {
     .limit(2)
     .orderBy('idDrug', 'asc')
     .then((monoData) => {
-      console.log(monoData);
+      // standarizes data for client
       const outputArray = monoData;
       switch (outputArray.length) {
         case 0:
@@ -78,6 +78,7 @@ router.get('/mono', (req, res) => {
         default:
           break;
       }
+      // fetches drug names and sends data to client
       db('Drug').select('name').whereIn('idDrug', drugArray).orderBy('idDrug', 'asc')
         .then((drugData) => {
           drugData.forEach((item, index) => { outputArray[index].drugName = item.name; });
