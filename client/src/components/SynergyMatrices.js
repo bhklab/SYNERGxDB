@@ -110,9 +110,10 @@ class SynergyMatrices extends Component {
             concB: item.concB, [dataTypes[selectedType]]: item[dataTypes[selectedType]],
           });
       });
+      const concBArray = [...new Set(synergyData.map(item => item.concB))];
       // Building column structure
-      const subcolumns = Object.values(comboInfo).map((item, index) => ({
-        Header: `${item[index].concB} µM`,
+      const subcolumns = concBArray.map((item, index) => ({
+        Header: `${item} µM`,
         accessor: `${dataTypes[selectedType]}.${index}`,
         Cell: props => <div style={{ textAlign: 'center' }}>{props.value.toFixed(4)}</div>,
       }));
