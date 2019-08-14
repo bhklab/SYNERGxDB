@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import ReactTable from 'react-table';
+
 import SingleAgentPlot from './Plots/SingleAgentPlot';
+import Loading from './Loading';
 
 import { ComboContext } from './Context/ComboContext';
 
@@ -31,6 +33,7 @@ class SingleAgents extends Component {
       monoData: [],
       loading: true,
     };
+    this.handleDrug = this.handleDrug.bind(this);
   }
 
   componentDidMount() {
@@ -44,14 +47,20 @@ class SingleAgents extends Component {
     })
       .then(response => response.json())
       .then((monoData) => {
-        console.log(monoData);
         this.setState({ monoData, loading: false });
       });
   }
 
+  handleDrug(index) {
+    const { drugsData } = this.context;
+    window.location = `https://pubchem.ncbi.nlm.nih.gov/compound/${drugsData[index].idPubChem}`;
+  }
+
+
   render() {
+    const { handleDrug } = this;
+    const { monoData, loading } = this.state;
     const { cellData } = this.context;
-    const { monoData } = this.state;
     const columns = [
       {
         Header: `${cellData.name}`,
@@ -84,8 +93,24 @@ class SingleAgents extends Component {
           showPagination={false}
           sortable={false}
           filterable={false}
+          loading={loading}
+          LoadingComponent={Loading}
           defaultPageSize={2}
           className="-highlight"
+          getTdProps={(state, rowInfo) => ({
+            onClick: (e, handleOriginal) => {
+              if (rowInfo) handleDrug(rowInfo.index);
+              // IMPORTANT! React-Table uses onClick internally to trigger
+              // events like expanding SubComponents and pivots.
+              // By default a custom 'onClick' handler will override this functionality.
+              // If you want to fire the original onClick handler, call the
+              // 'handleOriginal' function.
+              if (handleOriginal) {
+                handleOriginal();
+              }
+            },
+          })
+          }
         />
       </StyledContainer>
     );

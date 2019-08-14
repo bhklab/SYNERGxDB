@@ -11,6 +11,7 @@ const StyledDiv = styled.div`
     width: 50%;
 `;
 
+// This plot is just a prototype (viability data has to be found)
 class SingleAgentPlot extends React.Component {
   static contextType = ComboContext
 
@@ -27,10 +28,10 @@ class SingleAgentPlot extends React.Component {
     const { synergyData, cellData, drugsData } = this.context;
     const monoDrugData = synergyData.filter(item => (drugA ? item.concB === 0 : item.concA === 0));
     monoDrugData.shift();
-    const inhibData = monoDrugData.map(item => 100 - item.raw_matrix * 100);
+    const inhibData = monoDrugData.map(item => item.raw_matrix * 100);
     const concData = monoDrugData.map(item => (drugA ? item.concA : item.concB));
     const drugName = drugA ? drugsData[0].name : drugsData[1].name;
-    const hoverData = monoDrugData.map(item => `${(100 - item.raw_matrix * 100).toFixed(2)}% inhibition (${drugA ? item.concA : item.concB} µM ${drugName})`);
+    const hoverData = monoDrugData.map(item => `${(item.raw_matrix * 100).toFixed(2)}% viability (${drugA ? item.concA : item.concB} µM ${drugName})`);
     const data = [{
       type: 'scatter',
       x: concData,
