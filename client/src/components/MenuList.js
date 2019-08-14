@@ -1,18 +1,19 @@
+/* eslint-disable react/prop-types */
 import React, { PureComponent } from 'react';
 import { List } from 'react-virtualized';
 import _ from 'lodash';
-import colors from '../styles/colors';
+// import colors from '../styles/colors';
 
 export default class MenuList extends PureComponent {
   render() {
     const {
-      options, children, maxHeight,
+      children, maxHeight,
     } = this.props;
     const height = 65;
 
     const rows = Array.isArray(children) ? children : [];
     const rowRenderer = ({
-      key, index, isFocused, style,
+      key, index, style,
     }) => (
       <div
         key={key}

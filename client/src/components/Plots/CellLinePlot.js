@@ -3,10 +3,6 @@ import React from 'react';
 import colors from '../../styles/colors';
 
 class CellLinePlot extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   componentDidMount() {
     const {
       keyName, mini, plotId,
@@ -23,7 +19,7 @@ class CellLinePlot extends React.Component {
   formatData(data, keyName, names) {
     let result = [];
 
-    if (keyName == 'age') {
+    if (keyName === 'age') {
       result = [
         {
           name: '> 50',
@@ -42,16 +38,16 @@ class CellLinePlot extends React.Component {
         let ind = 0;
         if (val[keyName] > 50) {
           ind = 0;
-        } else if (val[keyName] <= 50 && val[keyName] != null) {
+        } else if (val[keyName] <= 50 && val[keyName] !== null) {
           ind = 1;
-        } else if (val[keyName] == null) {
+        } else if (val[keyName] === null) {
           ind = 2;
         }
 
         // increment the counter
         result[ind].num = result[ind].num + 1;
       });
-    } else if (keyName == 'origin') {
+    } else if (keyName === 'origin') {
       result = [
         {
           name: 'Primary',
@@ -64,7 +60,7 @@ class CellLinePlot extends React.Component {
       ];
       data.forEach((val) => {
         let ind = 0;
-        if (val[keyName] == null) {
+        if (val[keyName] === null) {
           ind = 0;
         } else {
           ind = 1;
@@ -72,7 +68,7 @@ class CellLinePlot extends React.Component {
         // increment the counter
         result[ind].num = result[ind].num + 1;
       });
-    } else if (keyName == 'sex') {
+    } else if (keyName === 'sex') {
       result = [
         {
           name: 'Female',
@@ -89,11 +85,11 @@ class CellLinePlot extends React.Component {
       ];
       data.forEach((val) => {
         let ind = 0;
-        if (val[keyName] == 'F') {
+        if (val[keyName] === 'F') {
           ind = 0;
-        } else if (val[keyName] == 'M') {
+        } else if (val[keyName] === 'M') {
           ind = 1;
-        } else if (val[keyName] == null) {
+        } else if (val[keyName] === null) {
           ind = 2;
         }
         // increment the counter
@@ -152,17 +148,17 @@ class CellLinePlot extends React.Component {
       .attr('width', width + margin.left + margin.right)
       .attr('height', height + margin.top + margin.bottom)
       .attr('transform',
-        `translate(${ margin.left },${margin.top})`)
+        `translate(${margin.left},${margin.top})`)
       .attr('id', 'pie')
       .append('g')
       .attr('transform',
-        `translate(${radius},${ radius})`)
-      .attr('id', `g-${ keyName}`);
+        `translate(${radius},${radius})`)
+      .attr('id', `g-${keyName}`);
 
 
     if (mini) {
       d3.select(`#g-${keyName}`).attr('transform',
-        `translate(${radius },${radius + 80 })`);
+        `translate(${radius},${radius + 80})`);
 
       const title = svg.append('text')
         .attr('text-anchor', 'middle')
@@ -170,8 +166,8 @@ class CellLinePlot extends React.Component {
         .style('font-size', '20px')
         .style('font-weight', '700')
         .style('text-transform', 'capitalize')
-        .attr('transform', `translate(${0 },${ -120})`)
-        .text(d => (keyName == "origin"? "biopsy": keyName));
+        .attr('transform', `translate(${0},${-120})`)
+        .text(d => (keyName === 'origin' ? 'biopsy' : keyName));
     }
 
 
@@ -208,7 +204,7 @@ class CellLinePlot extends React.Component {
       .style('opacity', 0.7)
       .attr('d', arc)
       .on('mouseover', (d) => {
-        tooltip.text(`${d.data.name }: ${d3.format('.2f')((d.data.num / sum) * 100)}%`).style('visibility', 'visible');
+        tooltip.text(`${d.data.name}: ${d3.format('.2f')((d.data.num / sum) * 100)}%`).style('visibility', 'visible');
       })
       .on('mousemove', () => {
         tooltip.style('top', `${d3.event.pageY - 10}px`).style('left', `${d3.event.pageX + 10}px`);
