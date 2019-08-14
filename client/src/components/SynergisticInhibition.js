@@ -23,7 +23,7 @@ const InhibitionContainer = styled.div`
 
 
 function SynergisticInhibition(props) {
-  const dataAvailable = props.dataAvailable;
+  const { dataAvailable } = props;
 
   if (dataAvailable) {
     return (
@@ -35,16 +35,14 @@ function SynergisticInhibition(props) {
           <InhibitionHeatMap />
         </InhibitionContainer>
       </StyledContainer>
-    )
-  } else {
-    return (
-      <StyledContainer>
-        <h2>Synergistic Inhibition</h2>
-        <InhibitionHeatMap />
-      </StyledContainer>
-    )
+    );
   }
-  
+  return (
+    <StyledContainer>
+      <h2>Synergistic Inhibition</h2>
+      <InhibitionHeatMap />
+    </StyledContainer>
+  );
 }
 
 export default SynergisticInhibition;

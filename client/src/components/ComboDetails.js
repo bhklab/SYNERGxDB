@@ -46,26 +46,25 @@ const Logo = styled.img`
   display: inline-block;
 `;
 
-function ShowPlots(props, state) {
-  const dataAvailable = props.dataAvailable;
-  const value = props.value
+function ShowPlots(props) {
+  const { dataAvailable } = props;
+  const { value } = props;
   if (dataAvailable) {
     return (
       <ComboContext.Provider value={value}>
         <CumulativeDensity />
         <SynergyMatrices />
-        <SynergisticInhibition dataAvailable={dataAvailable}/>
+        <SynergisticInhibition dataAvailable={dataAvailable} />
         <SingleAgents />
       </ComboContext.Provider>
-    )
-  } else {
-      return (
-        <ComboContext.Provider value={value}>
-          <SynergyMatrices />
-          <SynergisticInhibition dataAvailable={dataAvailable}/>
-        </ComboContext.Provider>
-      )
+    );
   }
+  return (
+    <ComboContext.Provider value={value}>
+      <SynergyMatrices />
+      <SynergisticInhibition dataAvailable={dataAvailable} />
+    </ComboContext.Provider>
+  );
 }
 
 export default class ComboDetails extends Component {
@@ -84,7 +83,7 @@ export default class ComboDetails extends Component {
       loadingSummary: true,
       synergyData: null,
       loadingSynergyData: true,
-      isDataAvailable: true
+      isDataAvailable: true,
     };
   }
 
@@ -140,16 +139,14 @@ export default class ComboDetails extends Component {
         this.setState({ synergyData, loadingSynergyData: false });
 
         // determining if the data is available to render the inhibition plots etc
-        const monoDrugData = this.state.synergyData.filter(item => (item.concB === 0));
+        const monoDrugData = synergyData.filter(item => (item.concB === 0));
         monoDrugData.shift();
         const inhibData = monoDrugData.map(item => 100 - item.raw_matrix * 100);
-        
+
         // if there is negative data in the array, no data available
-        const negNumbers = inhibData.filter(function(number) {
-          return number < 0;
-        });
-        if (negNumbers.length != 0) {
-          this.setState({isDataAvailable:false})
+        const negNumbers = inhibData.filter(number => number < 0);
+        if (negNumbers.length !== 0) {
+          this.setState({ isDataAvailable: false });
         }
       });
   }
@@ -166,9 +163,10 @@ export default class ComboDetails extends Component {
 
   render() {
     const {
-      cellData, drugsData, sourceData, loadingSummary, loadingSynergyData,
+      cellData, drugsData, sourceData, loadingSummary, loadingSynergyData, isDataAvailable,
     } = this.state;
-    
+
+
     return (
       <SynergyDetail>
         <StyledHeader>
@@ -245,7 +243,7 @@ export default class ComboDetails extends Component {
           {loadingSummary || loadingSynergyData
             ? null
             : (
-              <ShowPlots dataAvailable={this.state.isDataAvailable} value={this.state} />
+              <ShowPlots dataAvailable={isDataAvailable} value={this.state} />
             )}
         </main>
       </SynergyDetail>

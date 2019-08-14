@@ -19,6 +19,7 @@ const PlotlyContainer = styled.div`
 
 class CumulativeDensity extends React.Component {
   static contextType = ComboContext
+
   _isMounted = false;
 
   constructor(props) {
@@ -196,6 +197,7 @@ class CumulativeDensity extends React.Component {
   componentWillUnmount() {
     this._isMounted = false;
   }
+
   // Render this compoenent
   render() {
     const {
