@@ -21,15 +21,30 @@ const InhibitionContainer = styled.div`
     margin: 20px 0;
 `;
 
-const SynergisticInhibition = () => (
-  <StyledContainer>
-    <h2>Synergistic Inhibition</h2>
-    <InhibitionContainer>
-      <SingleDrugInhibitionPlot drugA />
-      <SingleDrugInhibitionPlot drugA={false} />
-      <InhibitionHeatMap />
-    </InhibitionContainer>
-  </StyledContainer>
-);
+
+function SynergisticInhibition(props) {
+  const dataAvailable = props.dataAvailable;
+
+  if (dataAvailable) {
+    return (
+      <StyledContainer>
+        <h2>Synergistic Inhibition</h2>
+        <InhibitionContainer>
+          <SingleDrugInhibitionPlot drugA />
+          <SingleDrugInhibitionPlot drugA={false} />
+          <InhibitionHeatMap />
+        </InhibitionContainer>
+      </StyledContainer>
+    )
+  } else {
+    return (
+      <StyledContainer>
+        <h2>Synergistic Inhibition</h2>
+        <InhibitionHeatMap />
+      </StyledContainer>
+    )
+  }
+  
+}
 
 export default SynergisticInhibition;

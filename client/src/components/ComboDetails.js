@@ -46,6 +46,28 @@ const Logo = styled.img`
   display: inline-block;
 `;
 
+function ShowPlots(props, state) {
+  const dataAvailable = props.dataAvailable;
+  const value = props.value
+  if (dataAvailable) {
+    return (
+      <ComboContext.Provider value={value}>
+        <CumulativeDensity />
+        <SynergyMatrices />
+        <SynergisticInhibition dataAvailable={dataAvailable}/>
+        <SingleAgents />
+      </ComboContext.Provider>
+    )
+  } else {
+      return (
+        <ComboContext.Provider value={value}>
+          <SynergyMatrices />
+          <SynergisticInhibition dataAvailable={dataAvailable}/>
+        </ComboContext.Provider>
+      )
+  }
+}
+
 export default class ComboDetails extends Component {
   static propTypes = {
     location: ReactRouterPropTypes.location.isRequired,
@@ -62,6 +84,7 @@ export default class ComboDetails extends Component {
       loadingSummary: true,
       synergyData: null,
       loadingSynergyData: true,
+      isDataAvailable: true
     };
   }
 
@@ -115,6 +138,19 @@ export default class ComboDetails extends Component {
       .then(response => response.json())
       .then((synergyData) => {
         this.setState({ synergyData, loadingSynergyData: false });
+
+        // determining if the data is available to render the inhibition plots etc
+        const monoDrugData = this.state.synergyData.filter(item => (item.concB === 0));
+        monoDrugData.shift();
+        const inhibData = monoDrugData.map(item => 100 - item.raw_matrix * 100);
+        
+        // if there is negative data in the array, no data available
+        const negNumbers = inhibData.filter(function(number) {
+          return number < 0;
+        });
+        if (negNumbers.length != 0) {
+          this.setState({isDataAvailable:false})
+        }
       });
   }
 
@@ -132,7 +168,7 @@ export default class ComboDetails extends Component {
     const {
       cellData, drugsData, sourceData, loadingSummary, loadingSynergyData,
     } = this.state;
-
+    
     return (
       <SynergyDetail>
         <StyledHeader>
@@ -209,12 +245,7 @@ export default class ComboDetails extends Component {
           {loadingSummary || loadingSynergyData
             ? null
             : (
-              <ComboContext.Provider value={this.state}>
-                <CumulativeDensity />
-                <SynergyMatrices />
-                <SynergisticInhibition />
-                <SingleAgents />
-              </ComboContext.Provider>
+              <ShowPlots dataAvailable={this.state.isDataAvailable} value={this.state} />
             )}
         </main>
       </SynergyDetail>
