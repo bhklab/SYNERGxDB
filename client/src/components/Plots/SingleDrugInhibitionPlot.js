@@ -59,7 +59,7 @@ class SingleDrugInhibitionPlot extends React.Component {
         l: 50,
         r: 0,
         t: 30,
-        b: 45,
+        b: 55,
       },
       xaxis: {
         title: {

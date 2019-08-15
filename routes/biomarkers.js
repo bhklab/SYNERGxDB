@@ -54,15 +54,21 @@ router.post('/fpkm', (req, res) => {
         idDrugA,
         idDrugB,
       });
-    // eslint-disable-next-line default-case
+    let subQuery;
     switch (interaction) {
       case 'SYN':
-        return allSample.andWhere('ZIP', '>', 0.2);
+        subQuery = allSample.andWhere('ZIP', '>', 0.2);
+        break;
       case 'MOD':
-        return allSample.andWhere(0.2, '>=', 'ZIP', '>=', 0);
+        subQuery = allSample.andWhere(0.2, '>=', 'ZIP', '>=', 0);
+        break;
       case 'ANT':
-        return allSample.andWhere('ZIP', '<', 0);
+        subQuery = allSample.andWhere('ZIP', '<', 0);
+        break;
+      default:
+        break;
     }
+    return subQuery;
   }
 
   // Subquery to get gene_id from hgnc_symbol

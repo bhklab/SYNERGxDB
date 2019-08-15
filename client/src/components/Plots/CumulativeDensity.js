@@ -2,8 +2,8 @@
 import React from 'react';
 import Plot from 'react-plotly.js';
 import styled from 'styled-components';
-import Loading from 'react-loading-components';
 
+import ReactLoading from 'react-loading';
 import colors from '../../styles/colors';
 import { ComboContext } from '../Context/ComboContext';
 
@@ -19,6 +19,7 @@ const PlotlyContainer = styled.div`
 
 class CumulativeDensity extends React.Component {
   static contextType = ComboContext
+
   _isMounted = false;
 
   constructor(props) {
@@ -196,6 +197,7 @@ class CumulativeDensity extends React.Component {
   componentWillUnmount() {
     this._isMounted = false;
   }
+
   // Render this compoenent
   render() {
     const {
@@ -210,7 +212,7 @@ class CumulativeDensity extends React.Component {
         { loading
           ? (
             <div className="loading-container">
-              <Loading type="ball_triangle" width={100} height={100} fill={colors.color_main_2} />
+              <ReactLoading type="bubbles" width={150} height={150} color={colors.color_main_2} />
             </div>
           )
           : (

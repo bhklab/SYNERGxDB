@@ -1,6 +1,6 @@
-import * as d3 from "d3";
+import * as d3 from 'd3';
 import React from 'react';
-import colors from '../../styles/colors';
+// import colors from '../../styles/colors';
 
 class BarChart extends React.Component {
 
@@ -156,7 +156,16 @@ class BarChart extends React.Component {
     render() { 
         return <div id={this.props.plotId} className="plot"></div> 
     }
+  }
 
+  render() {
+    return <div id={this.props.plotId} className="plot" />;
+  }
 }
+
+//   render() {
+//     return (<div id={this.props.plotId} className="plot" />);
+//   }
+// }
 
 export default BarChart;
