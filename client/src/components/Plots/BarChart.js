@@ -158,14 +158,4 @@ class BarChart extends React.Component {
     }
   }
 
-  render() {
-    return <div id={this.props.plotId} className="plot" />;
-  }
-}
-
-//   render() {
-//     return (<div id={this.props.plotId} className="plot" />);
-//   }
-// }
-
 export default BarChart;
