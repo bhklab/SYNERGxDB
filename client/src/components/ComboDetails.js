@@ -144,7 +144,7 @@ export default class ComboDetails extends Component {
         const inhibData = monoDrugData.map(item => 100 - item.raw_matrix * 100);
 
         // if there is negative data in the array, no data available
-        const negNumbers = inhibData.filter(number => number < 0);
+        const negNumbers = inhibData.filter(number => number > 0);
         if (negNumbers.length !== 0) {
           this.setState({ isDataAvailable: true });
         }

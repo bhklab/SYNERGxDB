@@ -16,6 +16,14 @@ const StyledDiv = styled.div`
     }
 `;
 
+
+const standarizeData = (num) => {
+  let output = 100 - num * 100;
+  if (output > 100) output = 100;
+  if (output < 0) output = 0;
+  return output.toFixed(2);
+};
+
 class InhibitionHeatMap extends React.Component {
   static contextType = ComboContext
 
@@ -51,7 +59,7 @@ class InhibitionHeatMap extends React.Component {
 
     synergyData.forEach((item) => {
       const hoverStr = `${item.concA} µM of ${drugsData[0].name} and ${item.concB} µM of ${drugsData[1].name}`;
-      annotationData.push((100 - item.raw_matrix * 100).toFixed(2));
+      annotationData.push(standarizeData(item.raw_matrix));
       if (item.concA === currentConc) {
         plotData[plotData.length - 1].push(100 - item.raw_matrix * 100);
         hoverData[hoverData.length - 1].push(hoverStr);
