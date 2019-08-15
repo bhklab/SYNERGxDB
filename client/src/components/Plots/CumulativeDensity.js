@@ -40,6 +40,12 @@ const generateCoordinates = (data, type, comboId) => {
   return outputCoordinates;
 };
 
+// Checks if there is any data to display in the cumulative density plot (needed for zip and bliss scores)
+const checkSynergyScore = (data) => {
+  console.log(data.every(item => item === null) ? 'legendonly' : 'true');
+  return data.every(item => item === null) ? 'legendonly' : 'true';
+};
+
 class CumulativeDensity extends React.Component {
   static contextType = ComboContext
 
@@ -96,6 +102,7 @@ class CumulativeDensity extends React.Component {
                 cumulative: { enabled: true },
                 marker: { color: colors.color_main_2 },
                 legendgroup: 'bliss',
+                visible: checkSynergyScore(comboData.map(item => item.bliss)),
               },
               blissMarker: {
                 x: [blissCoordinates.x],
@@ -164,6 +171,7 @@ class CumulativeDensity extends React.Component {
                   cumulative: { enabled: true },
                   marker: { color: colors.color_main_5 },
                   legendgroup: 'zip',
+                  visible: checkSynergyScore(comboData.map(item => item.bliss)),
                 },
               zipMarker: {
                 x: [zipCoordinates.x],
