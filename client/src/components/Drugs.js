@@ -4,7 +4,7 @@ import React, { Component, Fragment } from 'react';
 import styled from 'styled-components';
 import ReactTable from 'react-table';
 import 'react-table/react-table.css';
-import RadialBarChart from './Plots/BarChart';
+import BarChart from './Plots/BarChart';
 // import colors from '../styles/colors';
 // import transitions from '../styles/transitions';
 
@@ -29,8 +29,31 @@ class Drugs extends Component {
     this.state = {
       drugsData: [],
       loading: true,
+      drugsData: [],
+      datasetData: []
     };
   }
+
+  formatData(drugData, datasetData) {
+    // return result;
+    let names = [], nums = [];
+    datasetData.forEach(function(x) {
+        names.push(x.name)
+        nums.push(0)
+    })
+
+    drugData.forEach(function(x) {
+        let datasets = x.dataset_names.split(",");
+        datasets.forEach(function(dset) {
+            const ind = names.findIndex(function(item, i) {
+                return item === dset;
+            })
+            nums[ind] = nums[ind] + 1
+        })
+    })
+    return [names, nums]
+  }
+
 
   componentDidMount() {
     fetch('/api/drugs/')
@@ -64,7 +87,12 @@ class Drugs extends Component {
             drug.atcCode = atc.length > 1 ? atc[0].concat(', ...') : atc[0];
           }
         });
-        this.setState({ drugsData, loading: false });
+        fetch('/api/datasets')
+          .then(response => response.json())
+          .then((datasetData) => {
+              this.setState({ drugsData, loading: false, drugsData: drugsData, datasetData: datasetData});
+          })
+        
       });
   }
 
@@ -92,9 +120,14 @@ class Drugs extends Component {
         <main className="summary">
           <StyledWrapper className="wrapper">
             <h1>Number of Drugs per Dataset</h1>
-            <RadialBarChart
-              plotId="drugPlot"
-            />
+            {this.state.datasetData.length == 0 ? null : (
+              <BarChart
+                plotId="drugPlot"
+                formatData={this.formatData}
+                drugsData={this.state.drugsData}
+                datasetData={this.state.datasetData}
+              />
+            )}
           </StyledWrapper>
           <StyledWrapper className="wrapper">
             <h1>List of Compounds</h1>

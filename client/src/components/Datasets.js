@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import ReactTable from 'react-table';
 // import colors from '../styles/colors';
 import 'react-table/react-table.css';
+import DonutPlot from './Plots/DonutPlot';
 
 // import transitions from '../styles/transitions';
 
@@ -34,6 +35,22 @@ class Datasets extends Component {
       });
   }
 
+  formatData(data, keyName) {
+    // initialize
+    let result = []
+    data.forEach((val) => {
+      let temp = {}
+      temp.name = val.name
+      if (keyName === "Compounds") {
+        temp.num = val.no_drugs
+      } else if (keyName === "Cell Lines") {
+        temp.num = val.no_samples
+      }
+      result.push(temp)
+    })
+    return result;
+  }
+
   render() {
     const { databaseData, loading } = this.state;
     const columns = [{
@@ -61,9 +78,38 @@ class Datasets extends Component {
       accessor: 'combo',
       sortable: false,
     }];
+
+    const miniDims = {
+      width: 500,
+      height: 420,
+      radius: 200,
+      rectY: -50,
+      textY: -63,
+      translate:30
+    }
     return (
       <Fragment>
-        {/* <style>{'#root { background: #e7f3f8  !important; }'}</style> */}
+        {databaseData.length === 0 ? null : (
+          <StyledWrapper className="wrapper">
+            <h1>Relative Percentage of Data in Datasets</h1>
+            <DonutPlot
+              keyName="Compounds"
+              plotId="dsetMiniPlot"
+              dimensions={miniDims}
+              formatData={this.formatData}
+              donutData={databaseData}
+            />
+
+            <DonutPlot
+              keyName="Cell Lines"
+              plotId="dsetMiniPlot"
+              dimensions={miniDims}
+              formatData={this.formatData}
+              donutData={databaseData}
+            />
+          </StyledWrapper>
+
+        )}
         <main className="summary">
           <StyledWrapper className="wrapper">
             <h1>List of Datasets</h1>

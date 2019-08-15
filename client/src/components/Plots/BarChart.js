@@ -10,42 +10,13 @@ class BarChart extends React.Component {
 
     componentDidMount() {
         const {
-            plotId
+            plotId, formatData, drugsData, datasetData
           } = this.props;
-        fetch('/api/drugs/')
-            .then(response => response.json())
-            .then((drugData) => {
-                fetch('/api/datasets')
-                    .then(response => response.json())
-                    .then((datasetData) => {
-                        const barData = this.formatData(drugData, datasetData);
-                        this.plotBarChart(barData[0], barData[1], plotId);
-                    })
-                
-
-            });        
+        const data = formatData(drugsData, datasetData);
+        this.plotBarChart(data[0], data[1], plotId);     
     }
 
-    formatData(drugData, datasetData) {
-        // return result;
-        let names = [], nums = [];
-        datasetData.forEach(function(x) {
-            names.push(x.name)
-            nums.push(0)
-        })
-
-        drugData.forEach(function(x) {
-            let datasets = x.dataset_names.split(",");
-            datasets.forEach(function(dset) {
-                const ind = names.findIndex(function(item, i) {
-                    return item === dset;
-                })
-                nums[ind] = nums[ind] + 1
-            })
-        })
-        return [names, nums]
-    }
-
+    
     plotBarChart(names, nums, plotId) {
         //positions and dimensions
         var margin = {

@@ -6,7 +6,7 @@ import 'react-table/react-table.css';
 // import transitions from '../styles/transitions';
 
 import LoadingComponent from './Loading';
-import CellLinePlot from './Plots/CellLinePlot';
+import DonutPlot from './Plots/DonutPlot';
 
 const StyledWrapper = styled.div`
   display: flex;
@@ -19,13 +19,119 @@ const StyledWrapper = styled.div`
 `;
 
 
+
 class Databases extends Component {
   constructor() {
     super();
     this.state = {
       cellLineData: [],
       loading: true,
+      donutData: [],
     };
+  }
+
+  formatData(data, keyName) {
+    // legend names
+    const names = [...new Set(data.map(x => x[keyName]))];
+    console.log(names)
+    let result = [];
+
+    if (keyName == 'age') {
+      result = [
+        {
+          name: '> 50',
+          num: 0,
+        },
+        {
+          name: '<= 50',
+          num: 0,
+        },
+        {
+          name: 'Unknown',
+          num: 0,
+        },
+      ];
+      data.forEach((val) => {
+        let ind = 0;
+        if (val[keyName] > 50) {
+          ind = 0;
+        } else if (val[keyName] <= 50 && val[keyName] != null) {
+          ind = 1;
+        } else if (val[keyName] == null) {
+          ind = 2;
+        }
+
+        // increment the counter
+        result[ind].num = result[ind].num + 1;
+      });
+    } else if (keyName == 'origin') {
+      result = [
+        {
+          name: 'Primary',
+          num: 0,
+        },
+        {
+          name: 'Metastasis',
+          num: 0,
+        },
+      ];
+      data.forEach((val) => {
+        let ind = 0;
+        if (val[keyName] == null) {
+          ind = 0;
+        } else {
+          ind = 1;
+        }
+        // increment the counter
+        result[ind].num = result[ind].num + 1;
+      });
+    } else if (keyName == 'sex') {
+      result = [
+        {
+          name: 'Female',
+          num: 0,
+        },
+        {
+          name: 'Male',
+          num: 0,
+        },
+        {
+          name: 'Unknown',
+          num: 0,
+        },
+      ];
+      data.forEach((val) => {
+        let ind = 0;
+        if (val[keyName] == 'F') {
+          ind = 0;
+        } else if (val[keyName] == 'M') {
+          ind = 1;
+        } else if (val[keyName] == null) {
+          ind = 2;
+        }
+        // increment the counter
+        result[ind].num = result[ind].num + 1;
+      });
+    } else {
+      // populate result with names first
+      names.forEach((val) => {
+        result.push({
+          name: val,
+          num: 0,
+        });
+      });
+
+      // count the number of each name
+      data.forEach((val) => {
+        // get index of the name in the result array
+        const ind = result.findIndex((item, i) => item.name === val[keyName]);
+
+        // increment the counter
+        result[ind].num = result[ind].num + 1;
+      });
+    }
+
+    return result;
   }
 
   componentDidMount() {
@@ -41,8 +147,8 @@ class Databases extends Component {
             tissue, name, sex, age, idCellosaurus, disease: { name: disease, origin },
           };
         });
-        this.setState({ cellLineData, loading: false });
-      });
+        this.setState({ cellLineData, loading: false, donutData: data})
+      })
   }
 
   render() {
@@ -92,38 +198,67 @@ class Databases extends Component {
       maxWidth: 125,
       sortable: false,
     }];
+
+    const miniDims = {
+      width: 300,
+      height: 230,
+      radius: 100,
+      rectY: -30,
+      textY: -43,
+      translate:85
+    }
+    const normalDims = {
+      width: 600,
+      height: 400,
+      radius: 230,
+      rectY: 20,
+      textY: 8,
+      translate:5
+    }
     return (
 
       <Fragment>
         {/* <style>{'#root { background: #e7f3f8  !important; }'}</style> */}
         <main className="summary">
           <StyledWrapper className="wrapper">
-            <h1>Relative Percentage of Cell Lines Per Tissue</h1>
-            <CellLinePlot
-              keyName="tissue"
-              mini={false}
-              plotId="cellTissuePlot"
-            />
+            <h1>Relative Percentage of Cell Lines</h1>
+            {this.state.donutData.length == 0 ? null : (
+              <Fragment>
+                <DonutPlot
+                  keyName="tissue"
+                  plotId="cellTissuePlot"
+                  dimensions={normalDims}
+                  formatData={this.formatData}
+                  donutData={this.state.donutData}
+                />
 
-            <CellLinePlot
-              keyName="sex"
-              mini
-              plotId="cellMiniPlot"
-            />
+                <DonutPlot
+                  keyName="sex"
+                  plotId="cellMiniPlot"
+                  dimensions={miniDims}
+                  formatData={this.formatData}
+                  donutData={this.state.donutData}
+                />
 
+                <DonutPlot
+                  keyName="origin"
+                  plotId="cellMiniPlot"
+                  dimensions={miniDims}
+                  formatData={this.formatData}
+                  donutData={this.state.donutData}
+                />
 
-            <CellLinePlot
-              keyName="origin"
-              mini
-              plotId="cellMiniPlot"
-            />
-
-
-            <CellLinePlot
-              keyName="age"
-              mini
-              plotId="cellMiniPlot"
-            />
+                <DonutPlot
+                  keyName="age"
+                  plotId="cellMiniPlot"
+                  dimensions={miniDims}
+                  formatData={this.formatData}
+                  donutData={this.state.donutData}
+                />
+              </Fragment>
+              
+            )}
+            
           </StyledWrapper>
           <StyledWrapper className="wrapper">
             <h1>List of Cell Lines</h1>

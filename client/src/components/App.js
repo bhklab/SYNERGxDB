@@ -262,7 +262,7 @@ const GlobalStyles = createGlobalStyle`
     width: 100px;
   }
 
-  #cellMiniPlot {
+  #cellMiniPlot, #dsetMiniPlot {
     display:flex;
     justify-content: space-around;
   }
