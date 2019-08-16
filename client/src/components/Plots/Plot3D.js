@@ -27,6 +27,7 @@ class Plot3D extends React.Component {
     this.state = {
       data: [],
       layout: {},
+      display: false,
     };
   }
 
@@ -43,90 +44,107 @@ class Plot3D extends React.Component {
     }
   }
 
+  checkDataValidity(xData, yData) {
+    if (xData.length < 2 || (xData.length === 2 && xData[0] === 0)) {
+      this.setState({ display: false });
+      return false;
+    }
+    if (yData.length < 2 || (yData.length === 2 && yData[0] === 0)) {
+      this.setState({ display: false });
+      return false;
+    }
+    this.setState({ display: true });
+    return true;
+  }
+
   updatePlotData() {
     const {
       data, type,
     } = this.props;
     const { drugsData } = this.context;
-    const zData = [];
-    let currentConc;
-    data.forEach((item) => {
-      if (item.concA === currentConc) {
-        zData[zData.length - 1].push(item[types[type - 1].accessor] * 100);
-      } else {
-        zData.push([item[types[type - 1].accessor] * 100]);
-        currentConc = item.concA;
-      }
-    });
     const xData = [...new Set(data.map(item => item.concB))];
     const yData = [...new Set(data.map(item => item.concA))];
-    const plotData = [{
-      x: xData,
-      y: yData,
-      z: zData,
-      type: 'surface',
-      contours: {
-        z: {
-          show: true,
-          usecolormap: true,
-          highlightcolor: '#42f462',
-          project: { z: true },
+
+    // Checks if the data enough to render a 3D plot
+    if (this.checkDataValidity(xData, yData)) {
+      const zData = [];
+      let currentConc;
+      data.forEach((item) => {
+        if (item.concA === currentConc) {
+          zData[zData.length - 1].push(item[types[type - 1].accessor] * 100);
+        } else {
+          zData.push([item[types[type - 1].accessor] * 100]);
+          currentConc = item.concA;
+        }
+      });
+      const plotData = [{
+        x: xData,
+        y: yData,
+        z: zData,
+        type: 'surface',
+        contours: {
+          z: {
+            show: true,
+            usecolormap: true,
+            highlightcolor: '#42f462',
+            project: { z: true },
+          },
         },
-      },
-      colorscale: [[0, `${colors.color_accent_1}`], [1, `${types[type - 1].color}`]],
-      colorbar: {
-        exponentformat: 'E',
-      },
-    }];
-    const layout = {
-      margin: {
-        l: 0,
-        r: 0,
-        t: 0,
-        b: 0,
-      },
-      title: {
-        text: types[type - 1].name,
-        size: 18,
-      },
-      scene: {
-        camera: {
-          eye: { x: -1.75, y: -1.75, z: 0.25 },
+        colorscale: [[0, `${colors.color_accent_1}`], [1, `${types[type - 1].color}`]],
+        colorbar: {
+          exponentformat: 'E',
         },
-        domain: {
-          x: [0, 2],
+      }];
+      const layout = {
+        margin: {
+          l: 0,
+          r: 0,
+          t: 0,
+          b: 0,
         },
-        xaxis: {
-          title: `${drugsData[0].name}`,
-          type: 'log',
-          tickmode: 'array',
-          tickvals: xData,
-          ticktext: xData,
-          // showticklabels: false,
-          showspikes: false,
+        title: {
+          text: types[type - 1].name,
+          size: 18,
         },
-        yaxis: {
-          title: `${drugsData[1].name}`,
-          type: 'log',
-          tickmode: 'array',
-          tickvals: yData,
-          ticktext: yData,
-          // showticklabels: false,
-          showspikes: false,
+        scene: {
+          camera: {
+            eye: { x: -1.75, y: -1.75, z: 0.25 },
+          },
+          domain: {
+            x: [0, 2],
+          },
+          xaxis: {
+            title: `${drugsData[0].name}`,
+            type: 'log',
+            tickmode: 'array',
+            tickvals: xData,
+            ticktext: xData,
+            // showticklabels: false,
+            showspikes: false,
+          },
+          yaxis: {
+            title: `${drugsData[1].name}`,
+            type: 'log',
+            tickmode: 'array',
+            tickvals: yData,
+            ticktext: yData,
+            // showticklabels: false,
+            showspikes: false,
+          },
+          zaxis: { title: types[type - 1].name },
         },
-        zaxis: { title: types[type - 1].name },
-      },
-      autosize: true,
-      paper_bgcolor: 'white',
-      plot_bgcolor: 'white',
-    };
-    this.setState({ data: plotData, layout });
+        autosize: true,
+        paper_bgcolor: 'white',
+        plot_bgcolor: 'white',
+      };
+      this.setState({ data: plotData, layout });
+    }
   }
 
   // Render this compoenent
   render() {
-    const { data, layout } = this.state;
-    return (
+    const { data, layout, display } = this.state;
+    return display ? (
       <PlotlyContainer>
         <Plot
           graphDiv="graph"
@@ -135,7 +153,7 @@ class Plot3D extends React.Component {
           layout={layout}
         />
       </PlotlyContainer>
-    );
+    ) : null;
   }
 }
 

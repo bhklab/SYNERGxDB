@@ -12,6 +12,13 @@ const StyledDiv = styled.div`
     height: 250px;
 `;
 
+const standarizeData = (num) => {
+  let output = num;
+  if (output > 100) output = 100;
+  if (output < 0) output = 0;
+  return output;
+};
+
 class SingleDrugInhibitionPlot extends React.Component {
   static contextType = ComboContext
 
@@ -28,10 +35,10 @@ class SingleDrugInhibitionPlot extends React.Component {
     const { synergyData, cellData, drugsData } = this.context;
     const monoDrugData = synergyData.filter(item => (drugA ? item.concB === 0 : item.concA === 0));
     monoDrugData.shift();
-    const inhibData = monoDrugData.map(item => 100 - item.raw_matrix * 100);
+    const inhibData = monoDrugData.map(item => standarizeData(100 - item.raw_matrix * 100));
     const concData = monoDrugData.map(item => (drugA ? item.concA : item.concB));
     const drugName = drugA ? drugsData[0].name : drugsData[1].name;
-    const hoverData = monoDrugData.map(item => `${(100 - item.raw_matrix * 100).toFixed(2)}% inhibition (${drugA ? item.concA : item.concB} µM ${drugName})`);
+    const hoverData = monoDrugData.map(item => `${standarizeData(100 - item.raw_matrix * 100).toFixed(2)}% inhibition (${drugA ? item.concA : item.concB} µM ${drugName})`);
     const data = [{
       type: 'scatter',
       x: concData,
@@ -96,7 +103,7 @@ class SingleDrugInhibitionPlot extends React.Component {
         color: colors.color_main_1,
         tickcolor: colors.color_main_1,
         linecolor: colors.color_main_1,
-        range: [0, 100],
+        range: [0, 105],
         fixedrange: true,
         tickfont: {
           family: 'Nunito Sans, sans-serif',
