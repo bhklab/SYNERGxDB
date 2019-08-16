@@ -40,25 +40,22 @@ const generateCoordinates = (data, type, comboId) => {
   return outputCoordinates;
 };
 
-// Checks if there is any data to display in the cumulative density plot (needed for zip and bliss scores)
-const checkSynergyScore = (data) => {
-  console.log(data.every(item => item === null) ? 'legendonly' : 'true');
-  return data.every(item => item === null) ? 'legendonly' : 'true';
-};
+// Checks if there is any data to display in the cumulative density plot
+const checkSynergyScore = data => data.filter(item => item !== null).length > 1;
 
 class CumulativeDensity extends React.Component {
   static contextType = ComboContext
 
-  _isMounted = false;
+  // _isMounted = false;
 
   constructor(props) {
     super(props);
     this.state = {
-      bliss: {},
-      loewe: {},
-      hsa: {},
-      zip: {},
-      layout: {},
+      bliss: null,
+      loewe: null,
+      hsa: null,
+      zip: null,
+      layout: null,
       loading: true,
       displayPlot: true,
     };
@@ -66,7 +63,7 @@ class CumulativeDensity extends React.Component {
 
   // Methods called on loading
   componentDidMount() {
-    this._isMounted = true;
+    // this._isMounted = true;
     const {
       drugsData, comboId, idSource, cellData,
     } = this.context;
@@ -81,86 +78,84 @@ class CumulativeDensity extends React.Component {
     })
       .then(response => response.json())
       .then((comboData) => {
-        console.log(comboData);
         if (comboData.length > 1) {
           const blissCoordinates = generateCoordinates(comboData, 'bliss', comboId);
           const zipCoordinates = generateCoordinates(comboData, 'zip', comboId);
           const hsaCoordinates = generateCoordinates(comboData, 'hsa', comboId);
           const loeweCoordinates = generateCoordinates(comboData, 'loewe', comboId);
 
-          if (this._isMounted) {
-            this.setState({
-              loading: false,
-              displayPlot: true,
-              bliss: {
-                x: comboData.map(item => item.bliss),
-                nbinsx: comboData.length,
-                histnorm: 'probability',
-                name: 'Bliss',
-                opacity: 0.35,
-                type: 'histogram',
-                cumulative: { enabled: true },
-                marker: { color: colors.color_main_2 },
-                legendgroup: 'bliss',
-                visible: checkSynergyScore(comboData.map(item => item.bliss)),
-              },
-              blissMarker: {
-                x: [blissCoordinates.x],
-                y: [blissCoordinates.y],
-                name: `${cellData.name} Bliss`,
-                marker: { color: colors.color_main_2, size: scatterSize },
-                showlegend: false,
-                mode: 'markers',
-                type: 'scatter',
-                legendgroup: 'bliss',
-              },
-              loewe: {
-                x: comboData.map(item => item.loewe),
-                nbinsx: comboData.length,
-                histnorm: 'probability',
-                name: 'Loewe',
-                opacity: 0.35,
-                type: 'histogram',
-                cumulative: { enabled: true },
-                marker: { color: colors.color_main_1 },
-                visible: 'legendonly',
-                legendgroup: 'loewe',
-              },
-              loeweMarker: {
-                x: [loeweCoordinates.x],
-                y: [loeweCoordinates.y],
-                name: `${cellData.name} Loewe`,
-                showlegend: false,
-                marker: { color: colors.color_main_1, size: scatterSize },
-                mode: 'markers',
-                type: 'scatter',
-                visible: 'legendonly',
-                legendgroup: 'loewe',
-              },
-              hsa: {
-                x: comboData.map(item => item.hsa),
-                nbinsx: comboData.length,
-                histnorm: 'probability',
-                name: 'HSA',
-                type: 'histogram',
-                opacity: 0.35,
-                cumulative: { enabled: true },
-                marker: { color: colors.color_main_4 },
-                visible: 'legendonly',
-                legendgroup: 'hsa',
-              },
-              hsaMarker: {
-                x: [hsaCoordinates.x],
-                y: [hsaCoordinates.y],
-                showlegend: false,
-                name: `${cellData.name} HSA`,
-                marker: { color: colors.color_main_4, size: scatterSize },
-                mode: 'markers',
-                type: 'scatter',
-                visible: 'legendonly',
-                legendgroup: 'hsa',
-              },
-              zip:
+          // if (this._isMounted) {
+          this.setState({
+            loading: false,
+            displayPlot: true,
+            bliss: {
+              x: comboData.map(item => item.bliss),
+              nbinsx: comboData.length,
+              histnorm: 'probability',
+              name: 'Bliss',
+              opacity: 0.35,
+              type: 'histogram',
+              cumulative: { enabled: true },
+              marker: { color: colors.color_main_2 },
+              legendgroup: 'bliss',
+            },
+            blissMarker: {
+              x: [blissCoordinates.x],
+              y: [blissCoordinates.y],
+              name: `${cellData.name} Bliss`,
+              marker: { color: colors.color_main_2, size: scatterSize },
+              showlegend: false,
+              mode: 'markers',
+              type: 'scatter',
+              legendgroup: 'bliss',
+            },
+            loewe: {
+              x: comboData.map(item => item.loewe),
+              nbinsx: comboData.length,
+              histnorm: 'probability',
+              name: 'Loewe',
+              opacity: 0.35,
+              type: 'histogram',
+              cumulative: { enabled: true },
+              marker: { color: colors.color_main_1 },
+              visible: 'legendonly',
+              legendgroup: 'loewe',
+            },
+            loeweMarker: {
+              x: [loeweCoordinates.x],
+              y: [loeweCoordinates.y],
+              name: `${cellData.name} Loewe`,
+              showlegend: false,
+              marker: { color: colors.color_main_1, size: scatterSize },
+              mode: 'markers',
+              type: 'scatter',
+              visible: 'legendonly',
+              legendgroup: 'loewe',
+            },
+            hsa: {
+              x: comboData.map(item => item.hsa),
+              nbinsx: comboData.length,
+              histnorm: 'probability',
+              name: 'HSA',
+              type: 'histogram',
+              opacity: 0.35,
+              cumulative: { enabled: true },
+              marker: { color: colors.color_main_4 },
+              visible: 'legendonly',
+              legendgroup: 'hsa',
+            },
+            hsaMarker: {
+              x: [hsaCoordinates.x],
+              y: [hsaCoordinates.y],
+              showlegend: false,
+              name: `${cellData.name} HSA`,
+              marker: { color: colors.color_main_4, size: scatterSize },
+              mode: 'markers',
+              type: 'scatter',
+              visible: 'legendonly',
+              legendgroup: 'hsa',
+            },
+            zip:
                 {
                   x: comboData.map(item => item.zip),
                   nbinsx: comboData.length,
@@ -171,46 +166,45 @@ class CumulativeDensity extends React.Component {
                   cumulative: { enabled: true },
                   marker: { color: colors.color_main_5 },
                   legendgroup: 'zip',
-                  visible: checkSynergyScore(comboData.map(item => item.bliss)),
                 },
-              zipMarker: {
-                x: [zipCoordinates.x],
-                y: [zipCoordinates.y],
-                showlegend: false,
-                name: `${cellData.name} ZIP`,
-                marker: { color: colors.color_main_5, size: scatterSize },
-                mode: 'markers',
-                type: 'scatter',
-                legendgroup: 'zip',
+            zipMarker: {
+              x: [zipCoordinates.x],
+              y: [zipCoordinates.y],
+              showlegend: false,
+              name: `${cellData.name} ZIP`,
+              marker: { color: colors.color_main_5, size: scatterSize },
+              mode: 'markers',
+              type: 'scatter',
+              legendgroup: 'zip',
+            },
+            layout: {
+              height: 450,
+              paper_bgcolor: 'white',
+              plot_bgcolor: 'white',
+              yaxis: { title: 'Cumulative density' },
+              xaxis: { title: `Synergy Score (Cell Lines, N=${comboData.length})` },
+              barmode: 'overlay',
+              font: {
+                size: 16,
+                color: colors.nav_links,
+                family: 'Raleway',
               },
-              layout: {
-                height: 450,
-                paper_bgcolor: 'white',
-                plot_bgcolor: 'white',
-                yaxis: { title: 'Cumulative density' },
-                xaxis: { title: `Synergy Score (Cell Lines, N=${comboData.length})` },
-                barmode: 'overlay',
-                font: {
-                  size: 16,
-                  color: colors.nav_links,
-                  family: 'Raleway',
-                },
-                title: {
-                  text: `${drugsData[0].name} * ${drugsData[1].name}`,
-                  size: 18,
-                },
+              title: {
+                text: `${drugsData[0].name} * ${drugsData[1].name}`,
+                size: 18,
               },
-            });
-          }
+            },
+          });
+          // }
         } else {
           this.setState({ loading: false, displayPlot: false });
         }
       });
   }
 
-  componentWillUnmount() {
-    this._isMounted = false;
-  }
+  // componentWillUnmount() {
+  //   this._isMounted = false;
+  // }
 
   // Render this compoenent
   render() {
@@ -218,7 +212,12 @@ class CumulativeDensity extends React.Component {
       bliss, loewe, hsa, zip, blissMarker, loeweMarker,
       hsaMarker, zipMarker, layout, loading, displayPlot,
     } = this.state;
-    const data = [zipMarker, zip, bliss, blissMarker, loewe, loeweMarker, hsa, hsaMarker];
+    const data = [];
+    if (bliss && checkSynergyScore(bliss.x)) data.push(blissMarker, bliss);
+    if (zip && checkSynergyScore(zip.x)) data.push(zipMarker, zip);
+    if (loewe && checkSynergyScore(loewe.x)) data.push(loeweMarker, loewe);
+    if (hsa && checkSynergyScore(hsa.x)) data.push(hsaMarker, hsa);
+    // const data = [bliss, blissMarker, loewe, loeweMarker, hsa, hsaMarker];
     // const data = [bliss, loewe, hsa, zip];
     // const data = [bliss, blissMarker, loewe, loeweMarker, hsa, hsaMarker];
     return displayPlot ? (
