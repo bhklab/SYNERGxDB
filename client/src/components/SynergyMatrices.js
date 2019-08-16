@@ -146,6 +146,7 @@ class SynergyMatrices extends Component {
         });
         return ({ key: item[0], [dataTypes[selectedType]]: scoreObj });
       });
+
       return (
         <ReactTable
           data={tableData}

@@ -153,6 +153,15 @@ class ComboResults extends Component {
       Header: 'Source',
       accessor: 'sourceName',
     }];
+    const filterCaseInsensitive = (filter, row) => {
+      const id = filter.pivotId || filter.id;
+      return (
+        row[id] !== undefined ?
+          String(row[id].toLowerCase()).startsWith(filter.value.toLowerCase())
+        :
+          true
+      );
+    }
     return (
       <Fragment>
         {showBiomarker}
@@ -169,6 +178,7 @@ class ComboResults extends Component {
             sortable={false}
             defaultPageSize={25}
             filterable
+            defaultFilterMethod={filterCaseInsensitive}
             className=" -highlight"
             getTdProps={(state, rowInfo) => ({
               onClick: (e, handleOriginal) => {

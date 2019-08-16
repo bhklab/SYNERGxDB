@@ -215,6 +215,15 @@ class Databases extends Component {
       textY: 8,
       translate:5
     }
+    const filterCaseInsensitive = (filter, row) => {
+      const id = filter.pivotId || filter.id;
+      return (
+        row[id] !== undefined ?
+          String(row[id].toLowerCase()).startsWith(filter.value.toLowerCase())
+        :
+          true
+      );
+    }
     return (
 
       <Fragment>
@@ -267,6 +276,7 @@ class Databases extends Component {
               columns={columns}
               defaultPageSize={25}
               filterable
+              defaultFilterMethod={filterCaseInsensitive}
               className="-highlight"
               loading={loading}
               LoadingComponent={LoadingComponent}

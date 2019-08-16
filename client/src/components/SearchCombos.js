@@ -318,7 +318,6 @@ class SearchCombos extends Component {
             }
           ],
         });
-        console.log(tissueData)
       });
     fetch('/api/datasets/')
       .then(response => response.json())

@@ -114,6 +114,15 @@ class Drugs extends Component {
       accessor: 'idDrugBank',
       Cell: props => <a className="hover" target="_blank" rel="noopener noreferrer" href={`https://www.drugbank.ca/drugs/${props.value}`}>{props.value}</a>,
     }];
+    const filterCaseInsensitive = (filter, row) => {
+      const id = filter.pivotId || filter.id;
+      return (
+        row[id] !== undefined ?
+          String(row[id].toLowerCase()).startsWith(filter.value.toLowerCase())
+        :
+          true
+      );
+    }
     return (
       <Fragment>
         {/* <style>{'#root { background: #e7f3f8  !important; }'}</style> */}
@@ -137,6 +146,7 @@ class Drugs extends Component {
               sortable={false}
               defaultPageSize={25}
               filterable
+              defaultFilterMethod={filterCaseInsensitive}
               className="-highlight"
               loading={loading}
               LoadingComponent={LoadingComponent}
