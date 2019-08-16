@@ -78,6 +78,10 @@ const StyledForm = styled.form`
       color: white;
     }
   }
+  .option-label {
+    font-size: 25px;
+  }
+  
 `;
 
 const customStyles = {
@@ -123,6 +127,38 @@ const customStyles = {
     color: state.isSelected ? colors.color_main_2 : colors.nav_links,
   }),
 };
+
+// to style group label https://codesandbox.io/s/hhgf4?module=/example.js
+const groupStyles = {
+  fontSize: 20,
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-between",
+  borderBottom:"1px solid " + colors.blue_main,
+  color: colors.blue_main,
+  padding: "5px"
+};
+const groupBadgeStyles = {
+  backgroundColor: colors.blue_main,
+  borderRadius: "2em",
+  color: "white",
+  display: "inline-block",
+  fontSize: 15,
+  fontWeight: "normal",
+  lineHeight: "1",
+  minWidth: 1,
+  padding: "0.2em 0.5em",
+  textAlign: "center"
+};
+
+const formatGroupLabel = data => (
+  <div style={groupStyles}>
+    <span>{data.label}</span>
+    <span style={groupBadgeStyles}>{data.options.length}</span>
+  </div>
+);
+
+// end group label style
 
 const ButtonContainer = styled.div`
   width: 100%;
@@ -256,19 +292,33 @@ class SearchCombos extends Component {
         // const tissueData = tissueList.map(item => ({ value: item, label: item }));
         const tissueData = Object.keys(tissueObject).map(tissue => ({ value: tissue, label: `${tissue.toUpperCase()} (${tissueObject[tissue]} cell lines)` }));
         const cellsData = data.map(item => ({ value: item.idSample, label: `${item.name.toUpperCase()} (${item.tissue.toUpperCase()})` }));
+        // this.setState({
+        //   sampleData: [
+        //     { value: 'Any', label: 'Any Sample' },
+        //     {
+        //       value: 'Tissue', label: 'Tissues', isDisabled: true, isSearchable: false,
+        //     },
+        //     ...tissueData,
+        //     {
+        //       value: 'Cells', label: 'Cell Lines', isDisabled: true, isSearchable: false,
+        //     },
+        //     ...cellsData,
+        //   ],
+        // });
         this.setState({
           sampleData: [
-            { value: 'Any', label: 'Any Sample' },
             {
-              value: 'Tissue', label: 'Tissues', isDisabled: true, isSearchable: false,
+              label: "Tissues",
+              options: tissueData,
             },
-            ...tissueData,
+            
             {
-              value: 'Cells', label: 'Cell Lines', isDisabled: true, isSearchable: false,
-            },
-            ...cellsData,
+              label: "Cell Lines",
+              options: cellsData,
+            }
           ],
         });
+        console.log(tissueData)
       });
     fetch('/api/datasets/')
       .then(response => response.json())
@@ -421,7 +471,7 @@ class SearchCombos extends Component {
             <Select
               components={{
                 Option: CustomOption,
-                MenuList: props => (<MenuList {...props} />),
+                // MenuList: props => (<MenuList {...props} />),
               }}
               styles={customStyles}
               options={sampleData}
@@ -429,6 +479,7 @@ class SearchCombos extends Component {
               onChange={handleSampleSearch}
               value={selectedSample}
               filterOption={customFilterOption}
+              formatGroupLabel={formatGroupLabel}
             />
           </div>
           <div className="select-container">

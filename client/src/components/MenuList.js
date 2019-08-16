@@ -9,8 +9,8 @@ export default class MenuList extends PureComponent {
     const {
       children, maxHeight,
     } = this.props;
+  
     const height = 65;
-
     const rows = Array.isArray(children) ? children : [];
     const rowRenderer = ({
       key, index, style,

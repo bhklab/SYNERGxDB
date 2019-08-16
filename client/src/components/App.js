@@ -267,7 +267,6 @@ const GlobalStyles = createGlobalStyle`
     justify-content: space-around;
   }
 
-
 `;
 
 const StyledApp = styled.div`
