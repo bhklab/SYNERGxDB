@@ -216,24 +216,24 @@ class Databases extends Component {
       translate:5
     }
     const filterCaseInsensitive = (filter, row) => {
-      console.log(filter);
       const id = filter.pivotId || filter.id;
-      console.log(id, row);
       let rowData
-      console.log(typeof row[id], row[id]);
-      console.log(typeof undefined);
       switch (typeof row[id]) {
         case 'object':
+          // checks for metastasis label
           if (row[id] && row[id].origin) {
             return String('metastasis').includes(filter.value.toLowerCase())
           }
-          return row[id] && row[id].name ? String(row[id].name.toLowerCase()).startsWith(filter.value.toLowerCase()) : false
-          break
+          // checks for disease name
+          return row[id] && row[id].name ? String(row[id].name.toLowerCase()).includes(filter.value.toLowerCase()) : false
+        // handles age filtering
+        case 'number':
+          return row[id].toString().includes(filter.value)
+        case 'string':
+          return String(row[id].toLowerCase()).includes(filter.value.toLowerCase())
         default:
           return false
-          break
       }
-      // return !row[id] ? false : String(row[id].toLowerCase()).includes(filter.value.toLowerCase())
     }
     return (
 
