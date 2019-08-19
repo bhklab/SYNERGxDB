@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable react/no-unused-state */
 import React, { Component, Fragment } from 'react';
 import ReactRouterPropTypes from 'react-router-prop-types';
@@ -45,28 +46,6 @@ const Logo = styled.img`
   width: auto;
   display: inline-block;
 `;
-
-function ShowPlots(props) {
-  const { dataAvailable } = props;
-  const { value } = props;
-  if (dataAvailable) {
-    return (
-      <ComboContext.Provider value={value}>
-        <CumulativeDensity />
-        <SynergyMatrices />
-        <SynergisticInhibition dataAvailable={dataAvailable} />
-        <SingleAgents />
-      </ComboContext.Provider>
-    );
-  }
-  return (
-    <ComboContext.Provider value={value}>
-      <SynergyMatrices />
-      <SynergisticInhibition dataAvailable={dataAvailable} />
-    </ComboContext.Provider>
-  );
-}
-
 export default class ComboDetails extends Component {
   static propTypes = {
     location: ReactRouterPropTypes.location.isRequired,
@@ -136,18 +115,17 @@ export default class ComboDetails extends Component {
     fetch(`/api/combos/matrix?comboId=${comboId}&idSource=${idSource}`)
       .then(response => response.json())
       .then((synergyData) => {
-        this.setState({ synergyData, loadingSynergyData: false });
+        this.setState({ synergyData, loadingSynergyData: false, isDataAvailable: true });
 
-        // determining if the data is available to render the inhibition plots etc
-        const monoDrugData = synergyData.filter(item => (item.concB === 0));
-        monoDrugData.shift();
-        const inhibData = monoDrugData.map(item => 100 - item.raw_matrix * 100);
+        // // determining if the data is available to render the inhibition plots etc
+        // const monoDrugData = synergyData.filter(item => (item.concB === 0));
+        // monoDrugData.shift();
+        // const inhibData = monoDrugData.map(item => 100 - item.raw_matrix * 100);
 
-        // if there is negative data in the array, no data available
-        const negNumbers = inhibData.filter(number => number > 0);
-        if (negNumbers.length !== 0) {
-        }
-        this.setState({ isDataAvailable: true });
+        // // if there is negative data in the array, no data available
+        // const negNumbers = inhibData.filter(number => number > 0);
+        // if (negNumbers.length !== 0) {
+        // }
       });
   }
 
@@ -242,8 +220,19 @@ export default class ComboDetails extends Component {
         <main>
           {loadingSummary || loadingSynergyData
             ? null
-            : (
-              <ShowPlots dataAvailable={isDataAvailable} value={this.state} />
+            : (isDataAvailable ? (
+              <ComboContext.Provider value={this.state}>
+                <CumulativeDensity />
+                <SynergyMatrices />
+                <SynergisticInhibition dataAvailable={isDataAvailable} />
+                <SingleAgents />
+              </ComboContext.Provider>
+            ) : (
+              <ComboContext.Provider value={this.state}>
+                <SynergyMatrices />
+                <SynergisticInhibition dataAvailable={isDataAvailable} />
+              </ComboContext.Provider>
+            )
             )}
         </main>
       </SynergyDetail>

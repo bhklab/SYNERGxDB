@@ -22,6 +22,46 @@ const StyledWrapper = styled.div`
   padding:0px 30px;
 `;
 
+const formatData = (drugData, datasetData) => {
+  // return result;
+  const names = []; const
+    nums = [];
+  datasetData.forEach((x) => {
+    names.push(x.name);
+    nums.push(0);
+  });
+
+  drugData.forEach((x) => {
+    const datasets = x.dataset_names.split(',');
+    datasets.forEach((dset) => {
+      const ind = names.findIndex(item => item === dset);
+      nums[ind] += 1;
+    });
+  });
+  return [names, nums];
+};
+
+const filterCaseInsensitive = (filter, row) => {
+  const id = filter.pivotId || filter.id;
+  switch (typeof row[id]) {
+    case 'object':
+      // checks for metastasis label
+      if (row[id] && row[id].origin) {
+        return String('metastasis').includes(filter.value.toLowerCase());
+      }
+      // checks for disease name (additional check is to filter out null values)
+      return row[id] && row[id].name
+        ? String(row[id].name.toLowerCase()).includes(filter.value.toLowerCase())
+        : false;
+    // handles age filtering
+    case 'number':
+      return row[id].toString().includes(filter.value);
+    case 'string':
+      return String(row[id].toLowerCase()).includes(filter.value.toLowerCase());
+    default:
+      return false;
+  }
+};
 
 class Drugs extends Component {
   constructor() {
@@ -29,31 +69,9 @@ class Drugs extends Component {
     this.state = {
       drugsData: [],
       loading: true,
-      drugsData: [],
-      datasetData: []
+      datasetData: [],
     };
   }
-
-  formatData(drugData, datasetData) {
-    // return result;
-    let names = [], nums = [];
-    datasetData.forEach(function(x) {
-        names.push(x.name)
-        nums.push(0)
-    })
-
-    drugData.forEach(function(x) {
-        let datasets = x.dataset_names.split(",");
-        datasets.forEach(function(dset) {
-            const ind = names.findIndex(function(item, i) {
-                return item === dset;
-            })
-            nums[ind] = nums[ind] + 1
-        })
-    })
-    return [names, nums]
-  }
-
 
   componentDidMount() {
     fetch('/api/drugs/')
@@ -90,14 +108,15 @@ class Drugs extends Component {
         fetch('/api/datasets')
           .then(response => response.json())
           .then((datasetData) => {
-              this.setState({ drugsData, loading: false, drugsData: drugsData, datasetData: datasetData});
-          })
-        
+            this.setState({
+              drugsData, loading: false, datasetData,
+            });
+          });
       });
   }
 
   render() {
-    const { drugsData, loading } = this.state;
+    const { drugsData, loading, datasetData } = this.state;
     const columns = [{
       Header: 'Name',
       accessor: 'name', // String-based value accessors!
@@ -114,27 +133,26 @@ class Drugs extends Component {
       accessor: 'idDrugBank',
       Cell: props => <a className="hover" target="_blank" rel="noopener noreferrer" href={`https://www.drugbank.ca/drugs/${props.value}`}>{props.value}</a>,
     }];
-    const filterCaseInsensitive = (filter, row) => {
-      const id = filter.pivotId || filter.id;
-      return (
-        row[id] !== undefined ?
-          String(row[id].toLowerCase()).startsWith(filter.value.toLowerCase())
-        :
-          true
-      );
-    }
+    // const filterCaseInsensitive = (filter, row) => {
+    //   const id = filter.pivotId || filter.id;
+    //   return (
+    //     row[id] !== undefined
+    //       ? String(row[id].toLowerCase()).startsWith(filter.value.toLowerCase())
+    //       : true
+    //   );
+    // };
     return (
       <Fragment>
         {/* <style>{'#root { background: #e7f3f8  !important; }'}</style> */}
         <main className="summary">
           <StyledWrapper className="wrapper">
             <h1>Number of Drugs per Dataset</h1>
-            {this.state.datasetData.length == 0 ? null : (
+            {datasetData.length === 0 ? null : (
               <BarChart
                 plotId="drugPlot"
-                formatData={this.formatData}
-                drugsData={this.state.drugsData}
-                datasetData={this.state.datasetData}
+                formatData={formatData}
+                drugsData={drugsData}
+                datasetData={datasetData}
               />
             )}
           </StyledWrapper>
