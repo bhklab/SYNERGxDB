@@ -170,7 +170,7 @@ class Databases extends Component {
       accessor: 'sex',
       maxWidth: 55,
       minWidth: 55,
-      sortable: false,
+      // sortable: false,
     }, {
       Header: 'Age',
       accessor: 'age',
@@ -189,7 +189,7 @@ class Databases extends Component {
           </span>
         ) : <span>{value.name}</span>;
       },
-      filterable: false,
+      // filterable: false,
       sortable: false,
     }, {
       Header: 'Cellosaurus',
@@ -216,13 +216,24 @@ class Databases extends Component {
       translate:5
     }
     const filterCaseInsensitive = (filter, row) => {
+      console.log(filter);
       const id = filter.pivotId || filter.id;
-      return (
-        row[id] !== undefined ?
-          String(row[id].toLowerCase()).startsWith(filter.value.toLowerCase())
-        :
-          true
-      );
+      console.log(id, row);
+      let rowData
+      console.log(typeof row[id], row[id]);
+      console.log(typeof undefined);
+      switch (typeof row[id]) {
+        case 'object':
+          if (row[id] && row[id].origin) {
+            return String('metastasis').includes(filter.value.toLowerCase())
+          }
+          return row[id] && row[id].name ? String(row[id].name.toLowerCase()).startsWith(filter.value.toLowerCase()) : false
+          break
+        default:
+          return false
+          break
+      }
+      // return !row[id] ? false : String(row[id].toLowerCase()).includes(filter.value.toLowerCase())
     }
     return (
 
