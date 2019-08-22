@@ -8,8 +8,7 @@ import { ComboContext } from '../Context/ComboContext';
 import colors from '../../styles/colors';
 
 const StyledDiv = styled.div`
-    grid-column: 1;
-    height: 250px;
+    width: 50%;
 `;
 
 const standarizeData = (num) => {

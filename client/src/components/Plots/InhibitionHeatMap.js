@@ -18,13 +18,13 @@ const StyledDiv = styled.div`
 
 
 const standarizeData = (num) => {
-  let output = 100 - num * 100;
+  let output = num * 100;
   if (output > 100) output = 100;
   if (output < 0) output = 0;
   return output.toFixed(2);
 };
 
-class InhibitionHeatMap extends React.Component {
+class ViabilityHeatMap extends React.Component {
   static contextType = ComboContext
 
   constructor(props) {
@@ -61,13 +61,13 @@ class InhibitionHeatMap extends React.Component {
       const hoverStr = `${item.concA} µM of ${drugsData[0].name} and ${item.concB} µM of ${drugsData[1].name}`;
       annotationData.push(standarizeData(item.raw_matrix));
       if (item.concA === currentConc) {
-        plotData[plotData.length - 1].push(100 - item.raw_matrix * 100);
+        plotData[plotData.length - 1].push(item.raw_matrix * 100);
         hoverData[hoverData.length - 1].push(hoverStr);
         xCounter++;
         xData.push(xCounter);
         yData.push(yCounter - 1);
       } else {
-        plotData.push([100 - item.raw_matrix * 100]);
+        plotData.push([item.raw_matrix * 100]);
         hoverData.push([hoverStr]);
         currentConc = item.concA;
         xCounter = 0;
@@ -93,7 +93,7 @@ class InhibitionHeatMap extends React.Component {
         },
         ypad: 0,
         title: {
-          text: 'Inhibition, %',
+          text: 'Viability, %',
           side: 'right',
           font: {
             family: 'Nunito Sans, sans-serif',
@@ -191,4 +191,4 @@ class InhibitionHeatMap extends React.Component {
   }
 }
 
-export default InhibitionHeatMap;
+export default ViabilityHeatMap;

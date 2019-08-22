@@ -8,16 +8,16 @@ import styled from 'styled-components';
 
 import colors from '../styles/colors';
 import cellosaurus from '../images/logos/cellosaurus.jpg';
-import drugbank from '../images/logos/drugbank.svg';
+import drugbank from '../images/logos/drugbank.png';
 import pubchem from '../images/logos/pubchem.gif';
-import pubmed from '../images/logos/pubmed.png';
+import pubmed from '../images/logos/pubmed.jpeg';
 
 
 import CumulativeDensity from './Plots/CumulativeDensity';
 import SynergyMatrices from './SynergyMatrices';
 import { ComboContext } from './Context/ComboContext';
 import SynergisticInhibition from './SynergisticInhibition';
-import SingleAgents from './SingleAgents';
+// import SingleAgents from './SingleAgents';
 
 
 const StyledSummary = styled.div`
@@ -42,9 +42,11 @@ const SynergyDetail = styled.div`
 `;
 
 const Logo = styled.img`
-  max-height: 1rem;
+  max-height: 1.5rem;
   width: auto;
   display: inline-block;
+  vertical-align:middle;
+}
 `;
 export default class ComboDetails extends Component {
   static propTypes = {
@@ -116,16 +118,6 @@ export default class ComboDetails extends Component {
       .then(response => response.json())
       .then((synergyData) => {
         this.setState({ synergyData, loadingSynergyData: false, isDataAvailable: true });
-
-        // // determining if the data is available to render the inhibition plots etc
-        // const monoDrugData = synergyData.filter(item => (item.concB === 0));
-        // monoDrugData.shift();
-        // const inhibData = monoDrugData.map(item => 100 - item.raw_matrix * 100);
-
-        // // if there is negative data in the array, no data available
-        // const negNumbers = inhibData.filter(number => number > 0);
-        // if (negNumbers.length !== 0) {
-        // }
       });
   }
 
@@ -165,7 +157,10 @@ export default class ComboDetails extends Component {
                     {' '}
                     {cellData.disease}
                     {' '}
-                    <a className="hover" href={`https://web.expasy.org/cellosaurus/${cellData.idCellosaurus}`} rel="noopener noreferrer" target="_blank"><Logo src={cellosaurus} alt="Cellosaurus" /></a>
+                    <a className="hover" href={`https://web.expasy.org/cellosaurus/${cellData.idCellosaurus}`} rel="noopener noreferrer" target="_blank">
+                      {' '}
+                      <Logo src={cellosaurus} alt="Cellosaurus" />
+                    </a>
                   </p>
                   <p>
                     Drug A:
@@ -179,7 +174,10 @@ export default class ComboDetails extends Component {
                         {' '}
                         {drugsData[0].description}
                         {' '}
-                        <a className="hover" href={`https://pubchem.ncbi.nlm.nih.gov/compound/${drugsData[0].idPubChem}`} rel="noopener noreferrer" target="_blank"><Logo src={pubchem} alt="Pubchem" /></a>
+                        <a className="hover" href={`https://pubchem.ncbi.nlm.nih.gov/compound/${drugsData[0].idPubChem}`} rel="noopener noreferrer" target="_blank">
+                          {' '}
+                          <Logo src={pubchem} alt="Pubchem" />
+                        </a>
                         {' '}
                         <a className="hover" href={`https://www.drugbank.ca/drugs/${drugsData[0].idDrugBank}`} rel="noopener noreferrer" target="_blank"><Logo src={drugbank} alt="Drug Bank" /></a>
                       </span>
@@ -197,7 +195,10 @@ export default class ComboDetails extends Component {
                         {' '}
                         {drugsData[1].description}
                         {' '}
-                        <a className="hover" href={`https://pubchem.ncbi.nlm.nih.gov/compound/${drugsData[1].idPubChem}`} rel="noopener noreferrer" target="_blank"><Logo src={pubchem} alt="Pubchem" /></a>
+                        <a className="hover" href={`https://pubchem.ncbi.nlm.nih.gov/compound/${drugsData[1].idPubChem}`} rel="noopener noreferrer" target="_blank">
+                          {' '}
+                          <Logo src={pubchem} alt="Pubchem" />
+                        </a>
                         {' '}
                         <a className="hover" href={`https://www.drugbank.ca/drugs/${drugsData[1].idDrugBank}`} rel="noopener noreferrer" target="_blank"><Logo src={drugbank} alt="Drug Bank" /></a>
                       </span>
@@ -210,7 +211,10 @@ export default class ComboDetails extends Component {
                       {sourceData.name}
                     </b>
                     {' '}
-                    <a className="hover" href={`https://www.ncbi.nlm.nih.gov/pubmed/${sourceData.pmID}`} rel="noopener noreferrer" target="_blank"><Logo src={pubmed} alt="Pubmed" /></a>
+                    <a className="hover" href={`https://www.ncbi.nlm.nih.gov/pubmed/${sourceData.pmID}`} rel="noopener noreferrer" target="_blank">
+                      {' '}
+                      <Logo src={pubmed} alt="Pubmed" />
+                    </a>
                   </p>
                 </StyledSummary>
               </Fragment>
@@ -225,7 +229,7 @@ export default class ComboDetails extends Component {
                 <CumulativeDensity />
                 <SynergyMatrices />
                 <SynergisticInhibition dataAvailable={isDataAvailable} />
-                <SingleAgents />
+                {/* <SingleAgents /> */}
               </ComboContext.Provider>
             ) : (
               <ComboContext.Provider value={this.state}>

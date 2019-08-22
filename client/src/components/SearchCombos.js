@@ -131,24 +131,24 @@ const customStyles = {
 // to style group label https://codesandbox.io/s/hhgf4?module=/example.js
 const groupStyles = {
   fontSize: 20,
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "space-between",
-  borderBottom:"1px solid " + colors.blue_main,
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  borderBottom: '1px solid ' + colors.blue_main,
   color: colors.blue_main,
-  padding: "5px"
+  padding: '5px',
 };
 const groupBadgeStyles = {
   backgroundColor: colors.blue_main,
-  borderRadius: "2em",
-  color: "white",
-  display: "inline-block",
+  borderRadius: '2em',
+  color: 'white',
+  display: 'inline-block',
   fontSize: 15,
-  fontWeight: "normal",
-  lineHeight: "1",
+  fontWeight: 'normal',
+  lineHeight: '1',
   minWidth: 1,
-  padding: "0.2em 0.5em",
-  textAlign: "center"
+  padding: '0.2em 0.5em',
+  textAlign: 'center',
 };
 
 const formatGroupLabel = data => (
@@ -308,14 +308,14 @@ class SearchCombos extends Component {
         this.setState({
           sampleData: [
             {
-              label: "Tissues",
+              label: 'Tissues',
               options: tissueData,
             },
-            
+
             {
-              label: "Cell Lines",
+              label: 'Cell Lines',
               options: cellsData,
-            }
+            },
           ],
         });
       });

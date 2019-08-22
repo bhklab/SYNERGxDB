@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import SingleDrugInhibitionPlot from './Plots/SingleDrugInhibitionPlot';
+// import SingleDrugInhibitionPlot from './Plots/SingleDrugInhibitionPlot';
+import SingleAgentPlot from './Plots/SingleAgentPlot';
 import InhibitionHeatMap from './Plots/InhibitionHeatMap';
 
 import colors from '../styles/colors';
@@ -30,8 +31,8 @@ function SynergisticInhibition(props) {
       <StyledContainer>
         <h2>Synergistic Inhibition</h2>
         <InhibitionContainer>
-          <SingleDrugInhibitionPlot drugA />
-          <SingleDrugInhibitionPlot drugA={false} />
+          <SingleAgentPlot drugA />
+          <SingleAgentPlot drugA={false} />
           <InhibitionHeatMap />
         </InhibitionContainer>
       </StyledContainer>
