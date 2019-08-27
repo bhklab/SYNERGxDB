@@ -26,11 +26,11 @@ const formatData = (data, keyName) => {
   if (keyName === 'age') {
     result = [
       {
-        name: '> 50',
+        name: 'Younger than 50',
         num: 0,
       },
       {
-        name: '<= 50',
+        name: '50 or over',
         num: 0,
       },
       {
