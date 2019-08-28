@@ -23,6 +23,7 @@ const StyledWrapper = styled.div`
     color: ${colors.nav_links};
     font-family:'Raleway', sans-serif;
     font-weight:700;
+    margin: 0px 0px 50px 0px;
   }
   h1 span {
     color: ${colors.nav_link_hov};
@@ -543,12 +544,11 @@ class SearchCombos extends Component {
 
     return (
       <Fragment>
-        <header />
-        <main className="landing">
+        <div className="landing">
           <StyledWrapper className="form-wrapper">
             {searchForm}
           </StyledWrapper>
-        </main>
+        </div>
       </Fragment>
     );
   }
