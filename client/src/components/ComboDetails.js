@@ -138,7 +138,10 @@ export default class ComboDetails extends Component {
 
 
     return (
-      <SynergyDetail>
+      
+        
+        <main className="summary">
+        <SynergyDetail>
         <StyledHeader>
           {loadingSummary
             ? null
@@ -221,7 +224,6 @@ export default class ComboDetails extends Component {
             )
             }
         </StyledHeader>
-        <main>
           {loadingSummary || loadingSynergyData
             ? null
             : (isDataAvailable ? (
@@ -238,8 +240,9 @@ export default class ComboDetails extends Component {
               </ComboContext.Provider>
             )
             )}
+             </SynergyDetail>
         </main>
-      </SynergyDetail>
+     
     );
   }
 }

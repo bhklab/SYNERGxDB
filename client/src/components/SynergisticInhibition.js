@@ -8,7 +8,7 @@ import colors from '../styles/colors';
 
 const StyledContainer = styled.div`
     padding-bottom: 10px;
-    border-bottom: 2px solid ${colors.color_main_3};
+    // border-bottom: 2px solid ${colors.color_main_3};
     margin-bottom: 10px;
 `;
 

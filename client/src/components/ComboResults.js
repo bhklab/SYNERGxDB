@@ -16,8 +16,8 @@ import LoadingComponent from './Loading';
 const SynergyDiv = styled.div`
   width: 100%;
   background:white;
-  padding:0px 30px;
-
+  padding:20px 30px;
+  margin-bottom:30px;
   .rt-tr-group:hover {
     background-color: ${colors.summary_bg}
   }
@@ -163,6 +163,7 @@ class ComboResults extends Component {
       );
     }
     return (
+      <main>
       <Fragment>
         {showBiomarker}
         <SynergyDiv>
@@ -197,6 +198,7 @@ class ComboResults extends Component {
           />
         </SynergyDiv>
       </Fragment>
+      </main>
     );
   }
 }
