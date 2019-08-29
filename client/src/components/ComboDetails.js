@@ -127,7 +127,7 @@ export default class ComboDetails extends Component {
           return -1;
         });
         console.log(sortedData);
-        this.setState({ synergyData: sortedData, loadingSynergyData: false, isDataAvailable: true });
+        this.setState({ synergyData: data, loadingSynergyData: false, isDataAvailable: true });
       });
   }
 
