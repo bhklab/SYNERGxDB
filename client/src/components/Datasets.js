@@ -89,6 +89,7 @@ class Datasets extends Component {
     }
     return (
       <Fragment>
+        <main className="summary">
         {databaseData.length === 0 ? null : (
           <StyledWrapper className="wrapper">
             <h1>Relative Percentage of Data in Datasets</h1>
@@ -110,7 +111,7 @@ class Datasets extends Component {
           </StyledWrapper>
 
         )}
-        <main className="summary">
+        
           <StyledWrapper className="wrapper">
             <h1>List of Datasets</h1>
             <ReactTable

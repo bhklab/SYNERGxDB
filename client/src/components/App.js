@@ -63,6 +63,7 @@ const GlobalStyles = createGlobalStyle`
   }
   main {
     width: 100%;
+    margin-top:150px;
   }
   table {
     max-width: 100%;
@@ -98,10 +99,11 @@ const GlobalStyles = createGlobalStyle`
     font-weight:700;
   }
   
-  main.landing {
-    position:absolute;
-    max-width:1000px;
-    top:25%;
+  .landing {
+    height:100%;
+    display:flex;
+    align-items: center;
+    justify-content: center;
   }
 
   main.summary {
@@ -109,7 +111,6 @@ const GlobalStyles = createGlobalStyle`
   }
 
   main.documentation {
-    margin-top:30px;
     background:white;
     font-family: Nunito Sans, sans-serif;
     color:${colors.nav_links};
@@ -267,15 +268,21 @@ const GlobalStyles = createGlobalStyle`
     justify-content: space-around;
   }
 
+  .app {
+    display:flex;
+    align-items: center;
+    justify-content: center;
+  }
+
 `;
 
 const StyledApp = styled.div`
   margin: 0 auto;
-  padding: 12.5vh 0 25px;
-  min-height: 100vh;
+  // padding: 12.5vh 0 25px;
+  min-height:100vh;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: space-around;
   align-items: center;
   flex-grow: 1;
   min-width: 300px;

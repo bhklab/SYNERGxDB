@@ -116,8 +116,18 @@ export default class ComboDetails extends Component {
       });
     fetch(`/api/combos/matrix?comboId=${comboId}&idSource=${idSource}`)
       .then(response => response.json())
-      .then((synergyData) => {
-        this.setState({ synergyData, loadingSynergyData: false, isDataAvailable: true });
+      .then((data) => {
+        // Sorts data (this step is required for some datasets to standarize data for synergy table and heat map)
+        const sortedData = data.sort((a, b) => {
+          if (a.concA > b.concA) {
+            return 1;
+          } if (a.concA === b.concA) {
+            return a.concB > b.concB ? 1 : -1;
+          }
+          return -1;
+        });
+        console.log(sortedData);
+        this.setState({ synergyData: sortedData, loadingSynergyData: false, isDataAvailable: true });
       });
   }
 
@@ -138,90 +148,92 @@ export default class ComboDetails extends Component {
 
 
     return (
-      <SynergyDetail>
-        <StyledHeader>
-          {loadingSummary
-            ? null
-            : (
-              <Fragment>
-                <h1>Drug combination synergy</h1>
-                <h2>Combo Summary</h2>
-                <StyledSummary>
-                  <p>
+
+
+      <main className="summary">
+        <SynergyDetail>
+          <StyledHeader>
+            {loadingSummary
+              ? null
+              : (
+                <Fragment>
+                  <h1>Drug combination synergy</h1>
+                  <h2>Combo Summary</h2>
+                  <StyledSummary>
+                    <p>
                     Sample:
-                    {' '}
-                    <b>
-                      {cellData.name ? cellData.name.toUpperCase() : null}
-                    </b>
+                      {' '}
+                      <b>
+                        {cellData.name ? cellData.name.toUpperCase() : null}
+                      </b>
                     ,
-                    {' '}
-                    {cellData.disease}
-                    {' '}
-                    <a className="hover" href={`https://web.expasy.org/cellosaurus/${cellData.idCellosaurus}`} rel="noopener noreferrer" target="_blank">
                       {' '}
-                      <Logo src={cellosaurus} alt="Cellosaurus" />
-                    </a>
-                  </p>
-                  <p>
+                      {cellData.disease}
+                      {' '}
+                      <a className="hover" href={`https://web.expasy.org/cellosaurus/${cellData.idCellosaurus}`} rel="noopener noreferrer" target="_blank">
+                        {' '}
+                        <Logo src={cellosaurus} alt="Cellosaurus" />
+                      </a>
+                    </p>
+                    <p>
                     Drug A:
-                    {' '}
-                    {drugsData.length > 0 ? (
-                      <span>
-                        <b>
-                          {drugsData[0].name}
-                        </b>
-                        ,
-                        {' '}
-                        {drugsData[0].description}
-                        {' '}
-                        <a className="hover" href={`https://pubchem.ncbi.nlm.nih.gov/compound/${drugsData[0].idPubChem}`} rel="noopener noreferrer" target="_blank">
-                          {' '}
-                          <Logo src={pubchem} alt="Pubchem" />
-                        </a>
-                        {' '}
-                        <a className="hover" href={`https://www.drugbank.ca/drugs/${drugsData[0].idDrugBank}`} rel="noopener noreferrer" target="_blank"><Logo src={drugbank} alt="Drug Bank" /></a>
-                      </span>
-                    ) : null}
-                  </p>
-                  <p>
-                    Drug B:
-                    {' '}
-                    {drugsData.length > 0 ? (
-                      <span>
-                        <b>
-                          {drugsData[1].name}
-                        </b>
-                          ,
-                        {' '}
-                        {drugsData[1].description}
-                        {' '}
-                        <a className="hover" href={`https://pubchem.ncbi.nlm.nih.gov/compound/${drugsData[1].idPubChem}`} rel="noopener noreferrer" target="_blank">
-                          {' '}
-                          <Logo src={pubchem} alt="Pubchem" />
-                        </a>
-                        {' '}
-                        <a className="hover" href={`https://www.drugbank.ca/drugs/${drugsData[1].idDrugBank}`} rel="noopener noreferrer" target="_blank"><Logo src={drugbank} alt="Drug Bank" /></a>
-                      </span>
-                    ) : null}
-                  </p>
-                  <p>
-                    Source:
-                    {' '}
-                    <b>
-                      {sourceData.name}
-                    </b>
-                    {' '}
-                    <a className="hover" href={`https://www.ncbi.nlm.nih.gov/pubmed/${sourceData.pmID}`} rel="noopener noreferrer" target="_blank">
                       {' '}
-                      <Logo src={pubmed} alt="Pubmed" />
-                    </a>
-                  </p>
-                </StyledSummary>
-              </Fragment>
-            )
+                      {drugsData.length > 0 ? (
+                        <span>
+                          <b>
+                            {drugsData[0].name}
+                          </b>
+                        ,
+                          {' '}
+                          {drugsData[0].description}
+                          {' '}
+                          <a className="hover" href={`https://pubchem.ncbi.nlm.nih.gov/compound/${drugsData[0].idPubChem}`} rel="noopener noreferrer" target="_blank">
+                            {' '}
+                            <Logo src={pubchem} alt="Pubchem" />
+                          </a>
+                          {' '}
+                          <a className="hover" href={`https://www.drugbank.ca/drugs/${drugsData[0].idDrugBank}`} rel="noopener noreferrer" target="_blank"><Logo src={drugbank} alt="Drug Bank" /></a>
+                        </span>
+                      ) : null}
+                    </p>
+                    <p>
+                    Drug B:
+                      {' '}
+                      {drugsData.length > 0 ? (
+                        <span>
+                          <b>
+                            {drugsData[1].name}
+                          </b>
+                          ,
+                          {' '}
+                          {drugsData[1].description}
+                          {' '}
+                          <a className="hover" href={`https://pubchem.ncbi.nlm.nih.gov/compound/${drugsData[1].idPubChem}`} rel="noopener noreferrer" target="_blank">
+                            {' '}
+                            <Logo src={pubchem} alt="Pubchem" />
+                          </a>
+                          {' '}
+                          <a className="hover" href={`https://www.drugbank.ca/drugs/${drugsData[1].idDrugBank}`} rel="noopener noreferrer" target="_blank"><Logo src={drugbank} alt="Drug Bank" /></a>
+                        </span>
+                      ) : null}
+                    </p>
+                    <p>
+                    Source:
+                      {' '}
+                      <b>
+                        {sourceData.name}
+                      </b>
+                      {' '}
+                      <a className="hover" href={`https://www.ncbi.nlm.nih.gov/pubmed/${sourceData.pmID}`} rel="noopener noreferrer" target="_blank">
+                        {' '}
+                        <Logo src={pubmed} alt="Pubmed" />
+                      </a>
+                    </p>
+                  </StyledSummary>
+                </Fragment>
+              )
             }
-        </StyledHeader>
-        <main>
+          </StyledHeader>
           {loadingSummary || loadingSynergyData
             ? null
             : (isDataAvailable ? (
@@ -238,8 +250,9 @@ export default class ComboDetails extends Component {
               </ComboContext.Provider>
             )
             )}
-        </main>
-      </SynergyDetail>
+        </SynergyDetail>
+      </main>
+
     );
   }
 }

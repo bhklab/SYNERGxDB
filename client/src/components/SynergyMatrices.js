@@ -98,6 +98,7 @@ class SynergyMatrices extends Component {
     const {
       dataTypes, selectedType,
     } = this.state;
+    console.log(synergyData);
     const generateTable = () => {
       const comboInfo = {};
       synergyData.forEach((item) => {
@@ -115,7 +116,7 @@ class SynergyMatrices extends Component {
       const subcolumns = concBArray.map((item, index) => ({
         Header: `${item} µM`,
         accessor: `${dataTypes[selectedType]}.${index}`,
-        Cell: props => <div style={{ textAlign: 'center' }}>{props.value.toFixed(4)}</div>,
+        Cell: props => <div style={{ textAlign: 'center' }}>{props.value ? props.value.toFixed(4) : '0'}</div>,
       }));
       const columns = [{
         Header: `${cellData.name}`,

@@ -23,6 +23,7 @@ const StyledWrapper = styled.div`
     color: ${colors.nav_links};
     font-family:'Raleway', sans-serif;
     font-weight:700;
+    margin: 0px 0px 50px 0px;
   }
   h1 span {
     color: ${colors.nav_link_hov};
@@ -134,7 +135,7 @@ const groupStyles = {
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'space-between',
-  borderBottom: '1px solid ' + colors.blue_main,
+  borderBottom: `1px solid ${colors.blue_main}`,
   color: colors.blue_main,
   padding: '5px',
 };
@@ -448,11 +449,11 @@ class SearchCombos extends Component {
     };
     const exampleDatasetUrl = {
       pathname: '/synergy_score',
-      search: '?&dataset=4',
+      search: '?&dataset=5',
     };
     const exampleSampleUrl = {
       pathname: '/synergy_score',
-      search: '?&sample=bladder',
+      search: '?&sample=pancreas',
     };
 
     const searchForm = (
@@ -528,9 +529,9 @@ class SearchCombos extends Component {
             <ExampleSpan>
             Examples:
               {' '}
-              <Link className="hover" to={exampleSampleUrl}>BLADDER</Link>
+              <Link className="hover" to={exampleSampleUrl}>PANCREAS</Link>
                 &nbsp;&nbsp;|&nbsp;&nbsp;
-              <Link className="hover" to={exampleDatasetUrl}>YALE-PDAC</Link>
+              <Link className="hover" to={exampleDatasetUrl}>YALE-TNBC</Link>
                 &nbsp;&nbsp;|&nbsp;&nbsp;
               <Link className="hover" to={exampleDrugUrl}>Bortezomib + Topotecan</Link>
             </ExampleSpan>
@@ -543,12 +544,11 @@ class SearchCombos extends Component {
 
     return (
       <Fragment>
-        <header />
-        <main className="landing">
+        <div className="landing">
           <StyledWrapper className="form-wrapper">
             {searchForm}
           </StyledWrapper>
-        </main>
+        </div>
       </Fragment>
     );
   }
