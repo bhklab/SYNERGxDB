@@ -118,7 +118,12 @@ export default class ComboDetails extends Component {
     fetch(`/api/combos/matrix?comboId=${comboId}&idSource=${idSource}`)
       .then(response => response.json())
       .then((data) => {
-        // Sorts data (this step is required for some datasets to standarize data for synergy table and heat map)
+        // Sorts data this step is required for some datasets
+        // to standarize data for synergy table and heat map
+        const setConcA = [...new Set(data.map(item => item.concA))].sort((a, b) => a - b);
+        const setConcB = [...new Set(data.map(item => item.concB))].sort((a, b) => a - b);
+        // setConcA.sort((a, b) => a - b);
+        // setConcB.sort((a, b) => a - b);
         const sortedData = data.sort((a, b) => {
           if (a.concA > b.concA) {
             return 1;
@@ -128,7 +133,30 @@ export default class ComboDetails extends Component {
           return -1;
         });
         console.log(sortedData);
-        this.setState({ synergyData: data, loadingSynergyData: false, isDataAvailable: true });
+        let indexCounter = 0;
+        const synergyData = [];
+        setConcA.forEach((concA) => {
+          setConcB.forEach((concB) => {
+            if (sortedData[indexCounter]
+              && sortedData[indexCounter].concA === concA
+              && sortedData[indexCounter].concB === concB) {
+              indexCounter += 1;
+              synergyData.push(sortedData[indexCounter - 1]);
+            } else {
+              synergyData.push({
+                concA,
+                concB,
+                raw_matrix: null,
+                bliss_matrix: null,
+                hsa_matrix: null,
+                idSource: sortedData[indexCounter - 1].idSource,
+                loewe_matrix: null,
+                zip_matrix: null,
+              });
+            }
+          });
+        });
+        this.setState({ synergyData, loadingSynergyData: false, isDataAvailable: true });
       });
   }
 

@@ -18,10 +18,13 @@ const StyledDiv = styled.div`
 
 
 const standarizeData = (num) => {
-  let output = num * 100;
-  if (output > 100) output = 100;
-  if (output < 0) output = 0;
-  return output.toFixed(2);
+  if (num !== null) {
+    const output = num * 100;
+    if (output > 100) return '100';
+    if (output < 0) return '0';
+    return output.toFixed(2);
+  }
+  return '-';
 };
 
 class ViabilityHeatMap extends React.Component {

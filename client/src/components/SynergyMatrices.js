@@ -116,7 +116,7 @@ class SynergyMatrices extends Component {
       const subcolumns = concBArray.map((item, index) => ({
         Header: `${item} µM`,
         accessor: `${dataTypes[selectedType]}.${index}`,
-        Cell: props => <div style={{ textAlign: 'center' }}>{props.value ? props.value.toFixed(4) : '0'}</div>,
+        Cell: props => <div style={{ textAlign: 'center' }}>{props.value !== null ? props.value.toFixed(3) : '-'}</div>,
       }));
       const columns = [{
         Header: `${cellData.name}`,
