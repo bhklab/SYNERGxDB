@@ -21,18 +21,10 @@ router.get('/', (req, res) => {
     });
 });
 
-router.get('/:drugId', (req, res) => {
-  db.select("name", "atcCode", "idDrugBank", "idPubChem", "idDrug")
-    .from("Drug")
-    .where({ idDrug: req.params.drugId})
-    .then((data) => {
-      res.json(data)
-    })
-})
-
 
 // Information necessary for ComboDetails component
 router.get('/info', (req, res) => {
+  console.log('HERE');
   const {
     idDrugA, idDrugB,
   } = req.query;
@@ -40,6 +32,7 @@ router.get('/info', (req, res) => {
     .where({ idDrug: idDrugA })
     .orWhere({ idDrug: idDrugB })
     .then((data) => {
+      console.log('HERE', data);
       res.json(data);
     });
 });
@@ -202,6 +195,15 @@ router.post('/', (req, res) => {
     .orderBy('name')
     .then((drugList) => {
       res.json(drugList);
+    });
+});
+
+router.get('/:drugId', (req, res) => {
+  db.select('name', 'atcCode', 'idDrugBank', 'idPubChem', 'idDrug')
+    .from('Drug')
+    .where({ idDrug: req.params.drugId })
+    .then((data) => {
+      res.json(data);
     });
 });
 

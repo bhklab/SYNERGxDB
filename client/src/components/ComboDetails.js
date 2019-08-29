@@ -101,6 +101,7 @@ export default class ComboDetails extends Component {
     })
       .then(response => response.json())
       .then((drugsData) => {
+        console.log(drugsData);
         this.setState({ drugsData });
       });
     fetch(`/api/datasets?idSource=${idSource}`, {
