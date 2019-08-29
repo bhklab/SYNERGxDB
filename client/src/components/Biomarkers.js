@@ -13,7 +13,8 @@ const StyledBiomarkers = styled.div`
   width: 100%;
   height: auto;
   background:white;
-  padding:0px 30px;
+  padding:20px 30px;
+  margin-bottom:20px;
 `;
 
 

@@ -31,6 +31,16 @@ router.get('/datasets', (req, res) => {
   }
 });
 
+router.get("/datasets/:datasetId", (req, res) => {
+  db.select("idSource","name","no_samples","no_drugs","pmID","author","combo")
+    .from("Source")
+    .where({ idSource: req.params.datasetId})
+    .then((data) => {
+      res.json(data)
+    })
+})
+
+
 router.get('/stats', (req, res) => {
   const responseObject = {};
   const getCellsAndTissues = new Promise((resolve, reject) => {

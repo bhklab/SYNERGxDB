@@ -234,6 +234,9 @@ const GlobalStyles = createGlobalStyle`
     background:none !important;
   }
   
+  .biomarkerPlot {
+    margin-bottom:20px;
+  }
   #root {
     width: 100vw;
     display: flex;

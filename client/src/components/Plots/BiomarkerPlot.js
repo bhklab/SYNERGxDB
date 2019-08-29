@@ -161,6 +161,7 @@ export default class BiomarkerPlot extends React.Component {
         data={[box1, box2, box3]}
         layout={layout}
         graphDiv="graph"
+        className="biomarkerPlot"
         config={{
           responsive: true,
           displayModeBar: false,

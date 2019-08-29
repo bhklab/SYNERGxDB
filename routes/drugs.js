@@ -21,6 +21,15 @@ router.get('/', (req, res) => {
     });
 });
 
+router.get('/:drugId', (req, res) => {
+  db.select("name", "atcCode", "idDrugBank", "idPubChem", "idDrug")
+    .from("Drug")
+    .where({ idDrug: req.params.drugId})
+    .then((data) => {
+      res.json(data)
+    })
+})
+
 
 // Information necessary for ComboDetails component
 router.get('/info', (req, res) => {
