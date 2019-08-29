@@ -10,6 +10,15 @@ router.get('/', (req, res) => {
     });
 });
 
+router.get("/:cellId", (req, res) => {
+  db.select('name', 'idSample', 'tissue', 'sex', 'age', 'disease', 'idCellosaurus', 'origin')
+    .from("Sample")
+    .where({ idSample: req.params.cellId})
+    .then((data) => {
+      res.json(data)
+    })
+})
+
 // Information necessary for ComboDetails component
 router.get('/info', (req, res) => {
   const {

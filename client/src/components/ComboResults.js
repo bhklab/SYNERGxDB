@@ -23,6 +23,24 @@ const SynergyDiv = styled.div`
   }
 `;
 
+const QueryDiv = styled.div`
+  width: 100%;
+  background:white;
+  padding:20px 30px;
+  margin-bottom:30px;
+  font-size:18px;
+  color: ${colors.blue_main};
+
+  .query-container {
+    display:flex;
+    align-items:center;
+  }
+  .col {
+    position:inherit;
+    flex: 1;
+  }
+`;
+
 class ComboResults extends Component {
   static propTypes = {
     history: ReactRouterPropTypes.history.isRequired,
@@ -37,6 +55,10 @@ class ComboResults extends Component {
       drugId2: null,
       loading: true,
       dataset: null,
+      datasetName: null,
+      drugName1: null,
+      drugName2: null,
+      cellLineName: null
     };
     this.handleCombo = this.handleCombo.bind(this);
   }
@@ -56,6 +78,7 @@ class ComboResults extends Component {
     if (sample) queryParams = queryParams.concat(`&sample=${sample}`);
     if (dataset) queryParams = queryParams.concat(`&dataset=${dataset}`);
     if (drugId2) queryParams = queryParams.concat(`&drugId2=${drugId2}`);
+
     fetch('/api/combos'.concat(queryParams), {
       method: 'GET',
       headers: {
@@ -67,6 +90,34 @@ class ComboResults extends Component {
       .then((data) => {
         this.setState({ results: data, loading: false });
       });
+
+    if (drugId1) {
+      fetch('/api/drugs/'.concat(drugId1))
+      .then(response => response.json())
+      .then((data) => {
+        this.setState({drugName1: data[0].name})
+      })
+    }
+     
+
+    if (drugId2) {
+      fetch('/api/drugs/'.concat(drugId2))
+        .then(response => response.json())
+        .then((data) => {
+          this.setState({drugName2: data[0].name})
+        })
+    }
+
+    if (dataset) {
+      fetch('/api/datasets/'.concat(dataset))
+      .then(response => response.json())
+      .then((data) => {
+        this.setState({datasetName: data[0].name})
+      })
+    }
+    
+    this.setState({cellLineName: sample})
+    
   }
 
   handleCombo(index) {
@@ -165,6 +216,25 @@ class ComboResults extends Component {
     return (
       <main>
       <Fragment>
+        <QueryDiv>
+          <h2>
+            Query:
+          </h2>
+          
+          <div className="query-container">
+            <div className="col">
+              <b>Cell Line:</b> {!this.state.cellLineName ? "Any" : this.state.cellLineName}<p></p>
+              <b>Dataset:</b> {!this.state.datasetName ? "Any" : this.state.datasetName}
+            </div>
+            <div className="col">
+              <b>Drug A: </b> {!this.state.drugName1 ? "None" : this.state.drugName1}<p></p>
+              <b>Drug B:</b> {!this.state.drugName2 ? "None" : this.state.drugName2}<p></p>
+            </div>
+          </div>
+          
+          
+          
+        </QueryDiv>
         {showBiomarker}
         <SynergyDiv>
           <h2>
