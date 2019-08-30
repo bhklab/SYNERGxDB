@@ -173,6 +173,16 @@ class SynergyMatrices extends Component {
           >
             Input
           </button>
+          { scoreExist('zip_matrix')
+            ? (
+              <button
+                type="button"
+                onClick={() => handleClick(4)}
+                className={selectedType === 4 ? 'active-score' : null}
+              >
+                ZIP
+              </button>
+            ) : null }
           { scoreExist('bliss_matrix')
             ? (
               <button
@@ -206,16 +216,7 @@ class SynergyMatrices extends Component {
               </button>
             ) : null }
 
-          { scoreExist('zip_matrix')
-            ? (
-              <button
-                type="button"
-                onClick={() => handleClick(4)}
-                className={selectedType === 4 ? 'active-score' : null}
-              >
-                ZIP
-              </button>
-            ) : null }
+          
 
         </ButtonContainer>
         {synergyData.length > 0 ? generateTable() : null}

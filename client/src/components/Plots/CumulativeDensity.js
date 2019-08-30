@@ -213,8 +213,8 @@ class CumulativeDensity extends React.Component {
       hsaMarker, zipMarker, layout, loading, displayPlot,
     } = this.state;
     const data = [];
-    if (bliss && checkSynergyScore(bliss.x)) data.push(blissMarker, bliss);
     if (zip && checkSynergyScore(zip.x)) data.push(zipMarker, zip);
+    if (bliss && checkSynergyScore(bliss.x)) data.push(blissMarker, bliss);
     if (loewe && checkSynergyScore(loewe.x)) data.push(loeweMarker, loewe);
     if (hsa && checkSynergyScore(hsa.x)) data.push(hsaMarker, hsa);
     // const data = [bliss, blissMarker, loewe, loeweMarker, hsa, hsaMarker];

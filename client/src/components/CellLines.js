@@ -26,11 +26,11 @@ const formatData = (data, keyName) => {
   if (keyName === 'age') {
     result = [
       {
-        name: 'Younger than 50',
+        name: '50 or over',
         num: 0,
       },
       {
-        name: '50 or over',
+        name: 'Under 50',
         num: 0,
       },
       {
@@ -40,9 +40,9 @@ const formatData = (data, keyName) => {
     ];
     data.forEach((val) => {
       let ind = 0;
-      if (val[keyName] > 50) {
-        ind = 0;
-      } else if (val[keyName] <= 50 && val[keyName] != null) {
+      if (val[keyName] >= 50) {
+        ind = 0
+      } else if (val[keyName] < 50 && val[keyName] != null) {
         ind = 1;
       } else if (val[keyName] == null) {
         ind = 2;
@@ -225,7 +225,7 @@ class Databases extends Component {
       height: 230,
       radius: 100,
       rectY: -30,
-      textY: -43,
+      textY: -30,
       translate: 85,
     };
     const normalDims = {
@@ -233,7 +233,7 @@ class Databases extends Component {
       height: 400,
       radius: 230,
       rectY: 20,
-      textY: 8,
+      textY: 18,
       translate: 5,
     };
     return (
@@ -242,7 +242,7 @@ class Databases extends Component {
         {/* <style>{'#root { background: #e7f3f8  !important; }'}</style> */}
         <main className="summary">
           <StyledWrapper className="wrapper">
-            <h1>Relative Percentage of Cell Lines</h1>
+            <h1>Cell Lines, <i>N</i> = {donutData.length}</h1>
             {donutData.length === 0 ? null : (
               <Fragment>
                 <DonutPlot
