@@ -259,13 +259,11 @@ class SearchCombos extends Component {
       selectedDataset: { value: 'Any', label: 'Any Dataset' },
       drug2Placeholder: 'Enter Compound B',
       allowRedirect: true,
-      popup: false,
     };
     this.handleDrug1Search = this.handleDrug1Search.bind(this);
     this.handleDrug2Search = this.handleDrug2Search.bind(this);
     this.handleSampleSearch = this.handleSampleSearch.bind(this);
     this.userRedirect = this.userRedirect.bind(this);
-    // this.handleExample = this.handleExample.bind(this);
     this.handleDatasetSearch = this.handleDatasetSearch.bind(this);
     this.handleEnterPress = this.handleEnterPress.bind(this);
     this.checkUserInput = this.checkUserInput.bind(this);
@@ -282,7 +280,6 @@ class SearchCombos extends Component {
       .then(response => response.json())
       .then((data) => {
         // Generates an array of unique tissue names
-        // const tissueList = [...new Set(data.map(item => item.tissue))];
         const tissueObject = {};
         data.forEach((item) => {
           if (!tissueObject[item.tissue]) {
@@ -291,22 +288,8 @@ class SearchCombos extends Component {
             tissueObject[item.tissue]++;
           }
         });
-        // const tissueData = tissueList.map(item => ({ value: item, label: item }));
         const tissueData = Object.keys(tissueObject).map(tissue => ({ value: tissue, label: `${tissue.toUpperCase()} (${tissueObject[tissue]} cell lines)` }));
         const cellsData = data.map(item => ({ value: item.idSample, label: `${item.name.toUpperCase()} (${item.tissue.toUpperCase()})` }));
-        // this.setState({
-        //   sampleData: [
-        //     { value: 'Any', label: 'Any Sample' },
-        //     {
-        //       value: 'Tissue', label: 'Tissues', isDisabled: true, isSearchable: false,
-        //     },
-        //     ...tissueData,
-        //     {
-        //       value: 'Cells', label: 'Cell Lines', isDisabled: true, isSearchable: false,
-        //     },
-        //     ...cellsData,
-        //   ],
-        // });
         this.setState({
           sampleData: [
             {
@@ -331,20 +314,19 @@ class SearchCombos extends Component {
 
   userRedirect() {
     const {
-      drugId1, drugId2, sample, dataset, allowRedirect, popup,
+      drugId1, drugId2, sample, dataset, allowRedirect,
     } = this.state;
-    // if (this.checkUserInput() && allowRedirect) {
-    //   const { history } = this.props;
-    //   let queryParams = '';
-    //   if (drugId1 !== 'Any') queryParams = queryParams.concat(`drugId1=${drugId1}`);
-    //   if (sample !== 'Any') queryParams = queryParams.concat(`&sample=${sample}`);
-    //   if (dataset !== 'Any') queryParams = queryParams.concat(`&dataset=${dataset}`);
-    //   if (drugId2 !== 'Any') queryParams = queryParams.concat(`&drugId2=${drugId2}`);
-    //   // Redirects user to synergy scores page
-    //   history.push('/synergy_score?'.concat(queryParams));
-    // }
-    // return null;
-    this.setState({ popup: true });
+    if (allowRedirect) {
+      const { history } = this.props;
+      let queryParams = '';
+      if (drugId1 !== 'Any') queryParams = queryParams.concat(`drugId1=${drugId1}`);
+      if (sample !== 'Any') queryParams = queryParams.concat(`&sample=${sample}`);
+      if (dataset !== 'Any') queryParams = queryParams.concat(`&dataset=${dataset}`);
+      if (drugId2 !== 'Any') queryParams = queryParams.concat(`&drugId2=${drugId2}`);
+      // Redirects user to synergy scores page
+      history.push('/synergy_score?'.concat(queryParams));
+    }
+    return null;
   }
 
   // verify if user inputs at least one serach parameter
@@ -407,41 +389,22 @@ class SearchCombos extends Component {
         });
         if (data.length > 0) {
           const drugsData = data.map(item => ({ value: item.idDrug, label: item.name }));
-          this.setState({ drugsData2: [{ value: 'Any', label: "Any Compound" }, ...drugsData], drug2Placeholder: 'Enter Compound B', allowRedirect: true });
+          this.setState({ drugsData2: [{ value: 'Any', label: 'Any Compound' }, ...drugsData], drug2Placeholder: 'Enter Compound B', allowRedirect: true });
         } else {
           this.setState({ drug2Placeholder: 'No drug combos for entered request parameters', allowRedirect: false });
         }
       });
   }
 
-
-  // Generates an example for user and updates react component
-  // handleExample() {
-  //   this.updateDrug2Data('Any', 11);
-  //   // updateDrug2Data is asynchronous function and drugId2 can only be updated after it executes
-  //   setTimeout(
-  //     () => {
-  //       this.setState({
-  //         selectedSample: { value: 'Any', label: 'Any Sample' },
-  //         selectedDrug1: { label: 'Bortezomib', value: 11 },
-  //         selectedDrug2: { label: 'Topotecan', value: 97 },
-  //         drugId1: 11,
-  //         drugId2: 97,
-  //       });
-  //     },
-  //     500,
-  //   );
-  // }
-
   render() {
     const {
       drugsData1, drugsData2, sampleData,
       selectedSample, selectedDrug1, selectedDrug2, drug2Placeholder, datasetData,
-      selectedDataset, popup,
+      selectedDataset,
     } = this.state;
     const {
       handleSampleSearch, handleDrug1Search, handleDrug2Search, userRedirect,
-      handleDatasetSearch, handleEnterPress,
+      handleDatasetSearch, handleEnterPress, checkUserInput,
     } = this;
 
     const isDisabled = !(drugsData2.length > 0);
@@ -537,26 +500,30 @@ class SearchCombos extends Component {
                 &nbsp;&nbsp;|&nbsp;&nbsp;
               <Link className="hover" to={exampleDrugUrl}>Bortezomib + Topotecan</Link>
             </ExampleSpan>
-            {/* <StyledButton onClick={userRedirect} type="button">Search</StyledButton> */}
-            <Popup
-              trigger={<StyledButton onClick={userRedirect} type="button">Search</StyledButton>}
-              modal
-              closeOnDocumentClick
-            >
-              {close => (
-                <div>
-                  <p>
+            { checkUserInput() ? (
+              <StyledButton onClick={userRedirect} type="button">Search</StyledButton>
+            ) : (
+              <Popup
+                trigger={<StyledButton onClick={userRedirect} type="button">Search</StyledButton>}
+                modal
+                closeOnDocumentClick
+              >
+                {close => (
+                  <div>
+                    <p>
                     None of the request parameters has been specified and it may take longer
                     to retrieve your results. Do you want to proceed?
-                  </p>
-                  <ButtonContainer>
-                    <button type="button" onClick={userRedirect}>Yes</button>
-                    <button type="button" onClick={close}>No</button>
-                  </ButtonContainer>
-                </div>
-              )}
+                    </p>
+                    <ButtonContainer>
+                      <button type="button" onClick={userRedirect}>Yes</button>
+                      <button type="button" onClick={close}>No</button>
+                    </ButtonContainer>
+                  </div>
+                )}
+              </Popup>
+            )
+          }
 
-            </Popup>
 
           </ButtonContainer>
         </StyledForm>
