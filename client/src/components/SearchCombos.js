@@ -6,6 +6,7 @@ import React, { Component, Fragment } from 'react';
 import { withRouter, Link } from 'react-router-dom';
 import styled from 'styled-components';
 import Select, { components } from 'react-select';
+import Popup from 'reactjs-popup';
 
 // import { FixedSizeList as List } from 'react-window';
 import colors from '../styles/colors';
@@ -240,7 +241,6 @@ const CustomOption = innerProps => (
   </components.Option>
 );
 
-
 class SearchCombos extends Component {
   constructor() {
     super();
@@ -259,6 +259,7 @@ class SearchCombos extends Component {
       selectedDataset: { value: 'Any', label: 'Any Dataset' },
       drug2Placeholder: 'Enter Drug B',
       allowRedirect: true,
+      popup: false,
     };
     this.handleDrug1Search = this.handleDrug1Search.bind(this);
     this.handleDrug2Search = this.handleDrug2Search.bind(this);
@@ -330,19 +331,20 @@ class SearchCombos extends Component {
 
   userRedirect() {
     const {
-      drugId1, drugId2, sample, dataset, allowRedirect,
+      drugId1, drugId2, sample, dataset, allowRedirect, popup,
     } = this.state;
-    if (this.checkUserInput() && allowRedirect) {
-      const { history } = this.props;
-      let queryParams = '';
-      if (drugId1 !== 'Any') queryParams = queryParams.concat(`drugId1=${drugId1}`);
-      if (sample !== 'Any') queryParams = queryParams.concat(`&sample=${sample}`);
-      if (dataset !== 'Any') queryParams = queryParams.concat(`&dataset=${dataset}`);
-      if (drugId2 !== 'Any') queryParams = queryParams.concat(`&drugId2=${drugId2}`);
-      // Redirects user to synergy scores page
-      history.push('/synergy_score?'.concat(queryParams));
-    }
-    return null;
+    // if (this.checkUserInput() && allowRedirect) {
+    //   const { history } = this.props;
+    //   let queryParams = '';
+    //   if (drugId1 !== 'Any') queryParams = queryParams.concat(`drugId1=${drugId1}`);
+    //   if (sample !== 'Any') queryParams = queryParams.concat(`&sample=${sample}`);
+    //   if (dataset !== 'Any') queryParams = queryParams.concat(`&dataset=${dataset}`);
+    //   if (drugId2 !== 'Any') queryParams = queryParams.concat(`&drugId2=${drugId2}`);
+    //   // Redirects user to synergy scores page
+    //   history.push('/synergy_score?'.concat(queryParams));
+    // }
+    // return null;
+    this.setState({ popup: true });
   }
 
   // verify if user inputs at least one serach parameter
@@ -435,7 +437,7 @@ class SearchCombos extends Component {
     const {
       drugsData1, drugsData2, sampleData,
       selectedSample, selectedDrug1, selectedDrug2, drug2Placeholder, datasetData,
-      selectedDataset,
+      selectedDataset, popup,
     } = this.state;
     const {
       handleSampleSearch, handleDrug1Search, handleDrug2Search, userRedirect,
@@ -535,7 +537,27 @@ class SearchCombos extends Component {
                 &nbsp;&nbsp;|&nbsp;&nbsp;
               <Link className="hover" to={exampleDrugUrl}>Bortezomib + Topotecan</Link>
             </ExampleSpan>
-            <StyledButton onClick={userRedirect} type="button">Search</StyledButton>
+            {/* <StyledButton onClick={userRedirect} type="button">Search</StyledButton> */}
+            <Popup
+              trigger={<StyledButton onClick={userRedirect} type="button">Search</StyledButton>}
+              modal
+              closeOnDocumentClick
+            >
+              {close => (
+                <div>
+                  <p>
+                    None of the request parameters has been specified and it may take longer
+                    to retrieve your results. Do you want to proceed?
+                  </p>
+                  <ButtonContainer>
+                    <button type="button" onClick={userRedirect}>Yes</button>
+                    <button type="button" onClick={close}>No</button>
+                  </ButtonContainer>
+                </div>
+              )}
+
+            </Popup>
+
           </ButtonContainer>
         </StyledForm>
         <Stats />
