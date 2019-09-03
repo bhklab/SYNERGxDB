@@ -237,6 +237,30 @@ const GlobalStyles = createGlobalStyle`
   .biomarkerPlot {
     margin-bottom:20px;
   }
+  
+  .plot {
+    font-family: Nunito Sans, sans-serif;
+  }
+
+  .loading-container {
+    align-item: center;
+    margin: auto;
+    width: 100px;
+  }
+
+  .app {
+    display:flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .popup-content {
+    max-width: 400px;
+  }
+  
+  #cellMiniPlot, #dsetMiniPlot {
+    display:flex;
+    justify-content: space-around;
+  }
   #root {
     width: 100vw;
     display: flex;
@@ -256,27 +280,6 @@ const GlobalStyles = createGlobalStyle`
     }
 
   }
-
-  .plot {
-    font-family: Nunito Sans, sans-serif;
-  }
-  .loading-container {
-    align-item: center;
-    margin: auto;
-    width: 100px;
-  }
-
-  #cellMiniPlot, #dsetMiniPlot {
-    display:flex;
-    justify-content: space-around;
-  }
-
-  .app {
-    display:flex;
-    align-items: center;
-    justify-content: center;
-  }
-
 `;
 
 const StyledApp = styled.div`

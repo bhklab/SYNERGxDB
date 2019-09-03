@@ -1,3 +1,6 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable react/prop-types */
 /* eslint-disable max-len */
@@ -205,6 +208,54 @@ const ExampleSpan = styled.span`
 
     &:hover {
       color:${colors.nav_link_hov};
+    }
+  }
+`;
+const PopupBox = styled.div`
+  div {
+    display: flex;
+    justify-content: space-between;
+    margin: 0 20px 10px;
+  }
+  button {
+    background: ${colors.nav_links};
+    border: 1px solid ${colors.nav_links};
+    border-radius:10px;
+    width: 150px
+    color: #ffffff;
+    transition: ${transitions.main_trans};
+    outline-style: none;
+    font-size: 1.5em;
+
+    &:hover {
+      color: ${colors.nav_links};
+      background: ${colors.nav_bg};
+      border: 1px solid ${colors.nav_links};
+      cursor:pointer;
+    }
+  }
+  p {
+    color: ${colors.blue_main};
+    line-height: 1.5em;
+  }
+  .close {
+    cursor: pointer;
+    position: absolute;
+    display: block;
+    padding: 2px 5px 5px;
+    line-height: 15px;
+    right: -10px;
+    top: -10px;
+    font-size: 30px;
+    background: #ffffff;
+    color: ${colors.blue_main};
+    transition: ${transitions.main_trans};
+    border-radius: 18px;
+    border: 1px solid #cfcece;
+
+    &:hover {
+      color: #ffffff;
+      background: ${colors.blue_main};
     }
   }
 `;
@@ -509,16 +560,19 @@ class SearchCombos extends Component {
                 closeOnDocumentClick
               >
                 {close => (
-                  <div>
+                  <PopupBox className="modal">
+                    <a className="close" onClick={close}>
+                      &times;
+                    </a>
                     <p>
-                    None of the request parameters has been specified and it may take longer
-                    to retrieve your results. Do you want to proceed?
+                      None of the request parameters has been specified and it may take longer
+                      to retrieve your results. Do you want to proceed?
                     </p>
-                    <ButtonContainer>
+                    <div>
                       <button type="button" onClick={userRedirect}>Yes</button>
                       <button type="button" onClick={close}>No</button>
-                    </ButtonContainer>
-                  </div>
+                    </div>
+                  </PopupBox>
                 )}
               </Popup>
             )
