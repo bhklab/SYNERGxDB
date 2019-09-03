@@ -23,6 +23,11 @@ class DonutPlot extends React.Component {
       left: 20,
     };
 
+    if (keyName == "Compounds") {
+      margin.right = 200
+      dims.width = 500
+    }
+
     // zips two arrays together, sorts increasing
     function zip(a, b) {
       var zipped = [];
@@ -47,7 +52,6 @@ class DonutPlot extends React.Component {
     }
     
     const dataSorted = zip(donutData.map(x => x.name), donutData.map(x => x.num))
-    console.log(dataSorted)
     const names = dataSorted[0]
     const nums = dataSorted[1]
 
@@ -128,32 +132,37 @@ class DonutPlot extends React.Component {
       });
 
     
+    if (keyName != "Cell Lines") {
+      // legend
+      for (let i = 0; i < names.length; i++) {
+        svg.append('rect')
+          .attr('x', dims.width - (dims.width / 2 + 30))
+          .attr('y', i * 35 - (dims.height/2 + dims.rectY)) 
+          .attr('width', 15)
+          .attr('height', 15)
+          .style('fill', () => {
+            const ind = colorMap.findIndex(item => item.name === names[i]);
+            return colorMap[ind].color
+          })
+          .style('opacity', 0.7);
 
-    // legend
-    for (let i = 0; i < names.length; i++) {
-      svg.append('rect')
-        .attr('x', dims.width - (dims.width / 2 + 30))
-        .attr('y', i * 35 - (dims.height/2 + dims.rectY)) 
-        .attr('width', 15)
-        .attr('height', 15)
-        .style('fill', () => {
-          const ind = colorMap.findIndex(item => item.name === names[i]);
-          return colorMap[ind].color
-        })
-        .style('opacity', 0.7);
 
-
-      svg.append('text')
-        .attr('x', dims.width - (dims.width / 2 + 10))
-        .attr('y', i * 35 - (dims.height / 2 + dims.textY)) 
-        .attr('id', `legendLabel${donutData[i].name}`)
-        .style('text-anchor', 'start')
-        .style('font-size', function() {if (keyName == "tissue") {return 13} else {return 14}})
-        .style("text-transform", function() {if (keyName == "tissue") {return "uppercase"} else {return "normal"}})
-        .style('opacity', 1)
-        .attr('fill', colors.blue_main)
-        .text(function() {if (keyName == "tissue") {return names[i] + ", N = " + nums[i]} else {return names[i]}});
-    }
+        svg.append('foreignObject')
+          .attr('x', dims.width - (dims.width / 2 + 10))
+          .attr('y', i * 35 - (dims.height / 2 + dims.textY)) 
+          .attr('id', `legendLabel${donutData[i].name}`)
+          .style('text-anchor', 'start')
+          .style("text-align", "left")
+          .style('font-size', function() {if (keyName == "tissue") {return 13} else {return 14}})
+          .style("text-transform", function() {if (keyName == "tissue") {return "uppercase"} else {return "normal"}})
+          .style('opacity', 1)
+          .attr('fill', colors.blue_main)
+          .attr("width", 180)
+          .attr("height", 30)
+          .html(function() {if (keyName) {return names[i] + ", <i>N</i> = " + nums[i]} else {return names[i]}});
+      }
+    } 
+    
   }
 
   render() {

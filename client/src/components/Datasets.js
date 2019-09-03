@@ -16,6 +16,11 @@ const StyledWrapper = styled.div`
   text-align: center;
   background:white;
   padding:0px 30px;
+
+  #dsetMiniPlot {
+    margin-left:100px;
+  }
+ 
 `;
 
 class Datasets extends Component {
@@ -68,11 +73,13 @@ class Datasets extends Component {
       accessor: 'no_samples',
       style: { textAlign: 'right' },
       sortable: true,
+      Cell: props => new Intl.NumberFormat().format(props.value)
     }, {
       Header: '# of compounds',
       accessor: 'no_drugs',
       style: { textAlign: 'right' },
       sortable: true,
+      Cell: props => new Intl.NumberFormat().format(props.value)
     }, {
       Header: 'Design',
       accessor: 'combo',
@@ -80,11 +87,11 @@ class Datasets extends Component {
     }];
 
     const miniDims = {
-      width: 500,
+      width: 380,
       height: 420,
       radius: 200,
       rectY: -50,
-      textY: -63,
+      textY: -50,
       translate:30
     }
     return (
@@ -93,14 +100,7 @@ class Datasets extends Component {
         {databaseData.length === 0 ? null : (
           <StyledWrapper className="wrapper">
             <h1>Relative Percentage of Data in Datasets</h1>
-            <DonutPlot
-              keyName="Compounds"
-              plotId="dsetMiniPlot"
-              dimensions={miniDims}
-              formatData={this.formatData}
-              donutData={databaseData}
-            />
-
+            
             <DonutPlot
               keyName="Cell Lines"
               plotId="dsetMiniPlot"
@@ -108,6 +108,15 @@ class Datasets extends Component {
               formatData={this.formatData}
               donutData={databaseData}
             />
+
+          <DonutPlot
+              keyName="Compounds"
+              plotId="dsetMiniPlot"
+              dimensions={miniDims}
+              formatData={this.formatData}
+              donutData={databaseData}
+            />
+
           </StyledWrapper>
 
         )}

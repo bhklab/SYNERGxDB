@@ -257,7 +257,7 @@ class SearchCombos extends Component {
       selectedDrug1: null,
       selectedDrug2: null,
       selectedDataset: { value: 'Any', label: 'Any Dataset' },
-      drug2Placeholder: 'Enter Drug B',
+      drug2Placeholder: 'Enter Compound B',
       allowRedirect: true,
       popup: false,
     };
@@ -276,7 +276,7 @@ class SearchCombos extends Component {
       .then(response => response.json())
       .then((data) => {
         const drugsData1 = data.map(item => ({ value: item.idDrug, label: item.name }));
-        this.setState({ drugsData1: [{ value: 'Any', label: 'Any Sample' }, ...drugsData1] });
+        this.setState({ drugsData1: [{ value: 'Any', label: 'Any Compound' }, ...drugsData1] });
       });
     fetch('/api/cell_lines')
       .then(response => response.json())
@@ -407,7 +407,7 @@ class SearchCombos extends Component {
         });
         if (data.length > 0) {
           const drugsData = data.map(item => ({ value: item.idDrug, label: item.name }));
-          this.setState({ drugsData2: [{ value: 'Any', label: 'Any Drug' }, ...drugsData], drug2Placeholder: 'Enter Drug B', allowRedirect: true });
+          this.setState({ drugsData2: [{ value: 'Any', label: "Any Compound" }, ...drugsData], drug2Placeholder: 'Enter Compound B', allowRedirect: true });
         } else {
           this.setState({ drug2Placeholder: 'No drug combos for entered request parameters', allowRedirect: false });
         }
@@ -492,7 +492,7 @@ class SearchCombos extends Component {
               }}
               styles={customStyles}
               options={drugsData1}
-              placeholder="Enter Drug A"
+              placeholder="Enter Compound A"
               onChange={e => handleDrug1Search('drugId1', e)}
               value={selectedDrug1}
               filterOption={customFilterOption}

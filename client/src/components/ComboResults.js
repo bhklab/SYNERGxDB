@@ -55,10 +55,10 @@ class ComboResults extends Component {
       drugId2: null,
       loading: true,
       dataset: null,
-      datasetName: null,
-      drugName1: null,
-      drugName2: null,
-      cellLineName: null
+      datasetName: "Any",
+      drugName1: "Any",
+      drugName2: "Any",
+      cellLineName: "Any"
     };
     this.handleCombo = this.handleCombo.bind(this);
   }
@@ -116,7 +116,20 @@ class ComboResults extends Component {
       })
     }
     
-    this.setState({cellLineName: sample})
+    if (sample) {
+      if (parseInt(sample)) {
+        fetch('/api/cell_lines/'.concat(sample))
+        .then(response => response.json())
+        .then((data) => {
+          this.setState({cellLineName: data[0].name})
+        })
+      } else {
+        this.setState({cellLineName: sample.toUpperCase()})
+      }
+      
+      
+    }
+    
     
   }
 
@@ -223,19 +236,19 @@ class ComboResults extends Component {
           
           <div className="query-container">
             <div className="col">
-              <b>Cell Line:</b> {!this.state.cellLineName ? "Any" : this.state.cellLineName}<p></p>
-              <b>Dataset:</b> {!this.state.datasetName ? "Any" : this.state.datasetName}
+              <b>Cell Line:</b> {this.state.cellLineName}<p></p>
+              <b>Dataset:</b> {this.state.datasetName}
             </div>
             <div className="col">
-              <b>Drug A: </b> {!this.state.drugName1 ? "None" : this.state.drugName1}<p></p>
-              <b>Drug B:</b> {!this.state.drugName2 ? "None" : this.state.drugName2}<p></p>
+              <b>Drug A: </b> {this.state.drugName1}<p></p>
+              <b>Drug B:</b> {this.state.drugName2}<p></p>
             </div>
           </div>
           
           
           
         </QueryDiv>
-        {showBiomarker}
+        {/* {showBiomarker} */}
         <SynergyDiv>
           <h2>
             Synergy Scores, N=
