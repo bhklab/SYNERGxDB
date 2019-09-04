@@ -93,36 +93,36 @@ const customStyles = {
   control: provided => ({
     ...provided,
     background: 'rgb(0,0,0,0)',
-    border: '1px solid #3a5386',
+    border: `1px solid ${colors.nav_links}`,
     margin: '5px 0px',
     '&:hover': {
-      border: '1px solid #3a5386',
+      border: `1px solid ${colors.nav_links}`,
       cursor: 'text',
     },
   }),
   placeholder: provided => ({
     ...provided,
-    color: '#3a5386',
+    color: `${colors.nav_links}`,
   }),
   dropdownIndicator: provided => ({
     ...provided,
-    color: '#3a5386',
+    color: `${colors.nav_links}`,
     '&:hover': {
-      color: '#3a5386',
+      color: `${colors.nav_links}`,
       cursor: 'pointer',
     },
   }),
 
   indicatorSeparator: provided => ({
     ...provided,
-    background: '#3a5386',
+    background: `${colors.nav_links}`,
     '&:hover': {
-      background: '#3a5386',
+      background: `${colors.nav_links}`,
     },
   }),
   singleValue: provided => ({
     ...provided,
-    color: '#3a5386',
+    color: `${colors.nav_links}`,
   }),
   option: (provided, state) => ({
     ...provided,
@@ -532,7 +532,40 @@ class SearchCombos extends Component {
                 Option: CustomOption,
                 MenuList: props => (<MenuList {...props} />),
               }}
-              styles={customStyles}
+              styles={{
+                ...customStyles,
+                control: provided => ({
+                  ...provided,
+                  background: 'rgb(0,0,0,0)',
+                  margin: '5px 0px',
+                  border: isDisabled ? `1px solid ${colors.color_accent_1}` : `1px solid ${colors.nav_links}`,
+                  '&:hover': {
+                    border: isDisabled ? `1px solid ${colors.color_accent_1}` : `1px solid ${colors.nav_links}`,
+                  },
+                }),
+                placeholder: provided => ({
+                  ...provided,
+                  color: isDisabled ? colors.color_accent_1 : colors.nav_links,
+                }),
+                dropdownIndicator: provided => ({
+                  ...provided,
+                  color: isDisabled ? colors.color_accent_1 : colors.nav_links,
+                  '&:hover': {
+                    color: isDisabled ? colors.color_accent_1 : colors.nav_links,
+                  },
+                }),
+                indicatorSeparator: provided => ({
+                  ...provided,
+                  background: isDisabled ? colors.color_accent_1 : colors.nav_links,
+                  '&:hover': {
+                    background: isDisabled ? colors.color_accent_1 : colors.nav_links,
+                  },
+                }),
+                singleValue: provided => ({
+                  ...provided,
+                  color: isDisabled ? colors.color_accent_1 : colors.nav_links,
+                }),
+              }}
               options={drugsData2}
               isDisabled={isDisabled}
               placeholder={drug2Placeholder}
@@ -577,8 +610,6 @@ class SearchCombos extends Component {
               </Popup>
             )
           }
-
-
           </ButtonContainer>
         </StyledForm>
         <Stats />

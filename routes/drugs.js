@@ -12,7 +12,7 @@ router.get('/', (req, res) => {
 
   db.select('Drug.name as name', 'atcCode', 'idDrugBank', 'idPubChem', 'drug.idDrug as idDrug',
     db.raw('group_concat(??) as ??', ['source.name', 'dataset_names']))
-    .from('Drug', 'Drug_source', 'source')
+    .from('drug', 'drug_source', 'source')
     .join('drug_source', 'drug.idDrug', '=', 'drug_source.idDrug')
     .join('source', 'drug_source.idSource', '=', 'source.idSource')
     .groupBy('name', 'atcCode', 'idDrugBank', 'idPubChem', 'idDrug')
@@ -24,7 +24,6 @@ router.get('/', (req, res) => {
 
 // Information necessary for ComboDetails component
 router.get('/info', (req, res) => {
-  console.log('HERE');
   const {
     idDrugA, idDrugB,
   } = req.query;
