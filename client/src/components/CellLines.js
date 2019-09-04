@@ -154,6 +154,9 @@ class Databases extends Component {
     };
   }
 
+  legendCallBack = (colorMap) => {
+    return null;
+  }
 
   componentDidMount() {
     fetch('/api/cell_lines/')
@@ -251,6 +254,7 @@ class Databases extends Component {
                   dimensions={normalDims}
                   formatData={formatData}
                   donutData={donutData}
+                  legendCallBack={this.legendCallBack}
                 />
 
                 <DonutPlot
@@ -259,6 +263,7 @@ class Databases extends Component {
                   dimensions={miniDims}
                   formatData={formatData}
                   donutData={donutData}
+                  legendCallBack={this.legendCallBack}
                 />
 
                 <DonutPlot
@@ -267,6 +272,7 @@ class Databases extends Component {
                   dimensions={miniDims}
                   formatData={formatData}
                   donutData={donutData}
+                  legendCallBack={this.legendCallBack}
                 />
 
                 <DonutPlot
@@ -275,6 +281,7 @@ class Databases extends Component {
                   dimensions={miniDims}
                   formatData={formatData}
                   donutData={donutData}
+                  legendCallBack={this.legendCallBack}
                 />
               </Fragment>
 

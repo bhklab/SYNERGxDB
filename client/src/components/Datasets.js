@@ -4,6 +4,9 @@ import ReactTable from 'react-table';
 // import colors from '../styles/colors';
 import 'react-table/react-table.css';
 import DonutPlot from './Plots/DonutPlot';
+import DatasetLegend from './Plots/DatasetLegend';
+import ReactLoading from 'react-loading';
+import colors from '../styles/colors';
 
 // import transitions from '../styles/transitions';
 
@@ -18,7 +21,17 @@ const StyledWrapper = styled.div`
   padding:0px 30px;
 
   #dsetMiniPlot {
-    margin-left:100px;
+    margin-left:40px;
+  }
+
+  #dsetLegend {
+    margin: 20px 0px 0px 40px;
+    
+    &span {
+      line-height:5px;
+      font-size:85%;
+    }
+    
   }
  
 `;
@@ -28,6 +41,8 @@ class Datasets extends Component {
     super();
     this.state = {
       databaseData: [],
+      datasetData: [],
+      colorMap: [],
       loading: true,
     };
   }
@@ -36,7 +51,13 @@ class Datasets extends Component {
     fetch('/api/datasets/')
       .then(response => response.json())
       .then((databaseData) => {
-        this.setState({ databaseData, loading: false });
+        this.setState({ databaseData: databaseData});
+      });
+
+    fetch('/api/combos/stats')
+      .then(response => response.json())
+      .then((datasetData) => {
+        this.setState({ datasetData: datasetData, loading: false });
       });
   }
 
@@ -46,18 +67,24 @@ class Datasets extends Component {
     data.forEach((val) => {
       let temp = {}
       temp.name = val.name
-      if (keyName === "Compounds") {
-        temp.num = val.no_drugs
-      } else if (keyName === "Cell Lines") {
-        temp.num = val.no_samples
+      if (keyName === "Combinations") {
+        temp.num = val.nCombos
+      } else if (keyName === "Experiments") {
+        temp.num = val.nExperiments
+      } else if (keyName === "Datapoints") {
+        temp.num = val.nDatapoints
       }
       result.push(temp)
     })
     return result;
   }
 
+  legendCallBack = (colorMap) => {
+    this.setState({colorMap: colorMap})
+  }
+
   render() {
-    const { databaseData, loading } = this.state;
+    const { databaseData, datasetData, colorMap, loading } = this.state;
     const columns = [{
       Header: 'Name',
       accessor: 'name', // String-based value accessors!
@@ -87,9 +114,9 @@ class Datasets extends Component {
     }];
 
     const miniDims = {
-      width: 380,
-      height: 420,
-      radius: 200,
+      width: 220,
+      height: 250,
+      radius: 150,
       rectY: -50,
       textY: -50,
       translate:30
@@ -97,29 +124,59 @@ class Datasets extends Component {
     return (
       <Fragment>
         <main className="summary">
-        {databaseData.length === 0 ? null : (
+        
           <StyledWrapper className="wrapper">
-            <h1>Relative Percentage of Data in Datasets</h1>
-            
-            <DonutPlot
-              keyName="Cell Lines"
-              plotId="dsetMiniPlot"
-              dimensions={miniDims}
-              formatData={this.formatData}
-              donutData={databaseData}
-            />
+            { loading
+              ? (
+                <div className="loading-container">
+                  <ReactLoading type="bubbles" width={150} height={150} color={colors.color_main_2} />
+                </div>
+              )
+              : (
+                
+                <Fragment>
+                <h1>Datasets, <i>N</i> = {datasetData.length}</h1>
+                {datasetData.length === 0 ? null : (
+                  <Fragment>
+                    <DonutPlot
+                      keyName="Combinations"
+                      plotId="dsetMiniPlot"
+                      dimensions={miniDims}
+                      formatData={this.formatData}
+                      donutData={datasetData}
+                      legendCallBack={this.legendCallBack}
+                    />
 
-          <DonutPlot
-              keyName="Compounds"
-              plotId="dsetMiniPlot"
-              dimensions={miniDims}
-              formatData={this.formatData}
-              donutData={databaseData}
-            />
+                    <DonutPlot
+                      keyName="Experiments"
+                      plotId="dsetMiniPlot"
+                      dimensions={miniDims}
+                      formatData={this.formatData}
+                      donutData={datasetData}
+                      legendCallBack={this.legendCallBack}
+                    />
 
+                    <DonutPlot
+                      keyName="Datapoints"
+                      plotId="dsetMiniPlot"
+                      dimensions={miniDims}
+                      formatData={this.formatData}
+                      donutData={datasetData}
+                      legendCallBack={this.legendCallBack}
+                    />   
+                    {colorMap.length === 0 ? null : (
+                      <DatasetLegend
+                        data={colorMap}
+                        datasetData={datasetData}
+                        plotId="dsetLegend"
+                      />
+                    )} 
+                    </Fragment>
+                )}
+                </Fragment>             
+              )}
           </StyledWrapper>
-
-        )}
+        )
         
           <StyledWrapper className="wrapper">
             <h1>List of Datasets</h1>
