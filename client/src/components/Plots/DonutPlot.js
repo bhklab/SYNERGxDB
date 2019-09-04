@@ -6,12 +6,12 @@ class DonutPlot extends React.Component {
 
   componentDidMount() {
     const {
-      keyName, plotId, dimensions, formatData, donutData
+      keyName, plotId, dimensions, formatData, donutData, legendCallBack
     } = this.props;
     
     const data = formatData(donutData, keyName);
     const sum = data.reduce((count, item) => count + item.num, 0);
-    this.plotDonut(data, sum, plotId, dimensions, keyName);
+    this.plotDonut(data, sum, plotId, dimensions, keyName, legendCallBack);
   }
 
   plotDonut(donutData, sum, plotId, dims, keyName) {
@@ -23,9 +23,8 @@ class DonutPlot extends React.Component {
       left: 20,
     };
 
-    if (keyName == "Compounds") {
-      margin.right = 200
-      dims.width = 500
+    if (["Combinations", "Datapoints", "Experiments"].includes(keyName)) {
+      margin.right = 130
     }
 
     // zips two arrays together, sorts increasing
@@ -73,7 +72,7 @@ class DonutPlot extends React.Component {
         .attr('id', `g-${ keyName}`);
 
 
-    const title = svg.append('text')
+    let title = svg.append('text')
       .attr('text-anchor', 'middle')
       .attr('fill', colors.blue_main)
       .style('font-size', '24px')
@@ -82,6 +81,20 @@ class DonutPlot extends React.Component {
       .attr('transform', `translate(0,5)`)
       .text(d => (keyName == "origin" ? "biopsy": keyName));
 
+    // subtitle for N
+    if (["Combinations", "Datapoints", "Experiments"].includes(keyName)) {
+      title.attr('transform', `translate(0,0)`)
+      const subtitle = svg.append('foreignObject')
+        .attr('fill', colors.blue_main)
+        .style('font-size', '18px')
+        .style('font-weight', '700')
+        .style('text-transform', 'capitalize')
+        .attr("x", -90)
+        .attr("y", 5)
+        .attr("width", 180)
+        .attr("height", 30)
+        .html(function() {return "<i>N</i> = " + sum});
+    }
 
     const arc = d3.arc()
       .outerRadius(dims.radius)
@@ -110,13 +123,29 @@ class DonutPlot extends React.Component {
       .append('svg:g')
       .attr('class', (d, i) => donutData[i].name);
 
-    let colorMap = []
+    let colorMap = [];
     arcs.append('svg:path')
       .attr('fill', (d, i) => {
-        colorMap.push({
-          name: d.data.name,
-          color: colorPlot(i)
-        })
+        if (["Combinations", "Datapoints", "Experiments"].includes(keyName)) {
+          const ind = colorMap.findIndex(item => item.name === d.data.name);
+          if (ind == -1) {
+            colorMap.push({
+              name: d.data.name,
+              num: d.data.num,
+              color: colorPlot(i)
+            })
+          } else {
+            colorMap[ind][keyName] = d.data.num
+          }
+          
+        } else {
+          colorMap.push({
+            name: d.data.name,
+            num: d.data.num,
+            color: colorPlot(i)
+          })
+        }
+        
         return colorPlot(i)
       })
       .style('opacity', 0.7)
@@ -131,8 +160,10 @@ class DonutPlot extends React.Component {
         tooltip.style('visibility', 'hidden');
       });
 
-    
-    if (keyName != "Cell Lines") {
+    // passing the color map back to Datasets.js to create the legend in a separate component
+    this.props.legendCallBack(colorMap);
+
+    if (!["Combinations", "Datapoints", "Experiments"].includes(keyName)) {
       // legend
       for (let i = 0; i < names.length; i++) {
         svg.append('rect')
@@ -161,7 +192,7 @@ class DonutPlot extends React.Component {
           .attr("height", 30)
           .html(function() {if (keyName) {return names[i] + ", <i>N</i> = " + nums[i]} else {return names[i]}});
       }
-    } 
+    }
     
   }
 

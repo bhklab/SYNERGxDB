@@ -158,6 +158,12 @@ export default class ComboDetails extends Component {
         });
         this.setState({ synergyData, loadingSynergyData: false, isDataAvailable: true });
       });
+
+    fetch("/api/combos/stats")
+    .then(response => response.json())
+    .then((data) => {
+      console.log(data)
+    })
   }
 
   componentDidUpdate() {

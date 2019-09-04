@@ -65,10 +65,10 @@ class Stats extends Component {
       datasets: 7,
       tissues: 11,
       compounds: 1965,
-      cells: 184,
-      combos: 14634,
-      experiments: 475278,
-      datapoints: 6059248,
+      cells: 124,
+      combos: 15268,
+      experiments: 477595,
+      datapoints: 5981762,
     });
   }
 
