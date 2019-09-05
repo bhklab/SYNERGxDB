@@ -310,6 +310,7 @@ class SearchCombos extends Component {
       selectedDataset: { value: 'Any', label: 'Any Dataset' },
       drug2Placeholder: 'Enter Compound B',
       allowRedirect: true,
+      alertDisplay: false
     };
     this.handleDrug1Search = this.handleDrug1Search.bind(this);
     this.handleDrug2Search = this.handleDrug2Search.bind(this);
@@ -451,7 +452,7 @@ class SearchCombos extends Component {
     const {
       drugsData1, drugsData2, sampleData,
       selectedSample, selectedDrug1, selectedDrug2, drug2Placeholder, datasetData,
-      selectedDataset,
+      selectedDataset, alertDisplay
     } = this.state;
     const {
       handleSampleSearch, handleDrug1Search, handleDrug2Search, userRedirect,
@@ -538,32 +539,32 @@ class SearchCombos extends Component {
                   ...provided,
                   background: 'rgb(0,0,0,0)',
                   margin: '5px 0px',
-                  border: isDisabled ? `1px solid ${colors.color_accent_1}` : `1px solid ${colors.nav_links}`,
+                  border: alertDisplay ? `1px solid ${colors.color_accent_1}` : `1px solid ${colors.nav_links}`,
                   '&:hover': {
-                    border: isDisabled ? `1px solid ${colors.color_accent_1}` : `1px solid ${colors.nav_links}`,
+                    border: alertDisplay ? `1px solid ${colors.color_accent_1}` : `1px solid ${colors.nav_links}`,
                   },
                 }),
                 placeholder: provided => ({
                   ...provided,
-                  color: isDisabled ? colors.color_accent_1 : colors.nav_links,
+                  color: alertDisplay ? colors.color_accent_1 : colors.nav_links,
                 }),
                 dropdownIndicator: provided => ({
                   ...provided,
-                  color: isDisabled ? colors.color_accent_1 : colors.nav_links,
+                  color: alertDisplay ? colors.color_accent_1 : colors.nav_links,
                   '&:hover': {
-                    color: isDisabled ? colors.color_accent_1 : colors.nav_links,
+                    color: alertDisplay ? colors.color_accent_1 : colors.nav_links,
                   },
                 }),
                 indicatorSeparator: provided => ({
                   ...provided,
-                  background: isDisabled ? colors.color_accent_1 : colors.nav_links,
+                  background: alertDisplay ? colors.color_accent_1 : colors.nav_links,
                   '&:hover': {
-                    background: isDisabled ? colors.color_accent_1 : colors.nav_links,
+                    background: alertDisplay ? colors.color_accent_1 : colors.nav_links,
                   },
                 }),
                 singleValue: provided => ({
                   ...provided,
-                  color: isDisabled ? colors.color_accent_1 : colors.nav_links,
+                  color: alertDisplay ? colors.color_accent_1 : colors.nav_links,
                 }),
               }}
               options={drugsData2}
