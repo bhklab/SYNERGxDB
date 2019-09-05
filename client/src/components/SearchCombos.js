@@ -539,32 +539,32 @@ class SearchCombos extends Component {
                   ...provided,
                   background: 'rgb(0,0,0,0)',
                   margin: '5px 0px',
-                  border: alertDisplay ? `1px solid ${colors.color_accent_1}` : `1px solid ${colors.nav_links}`,
+                  border: isDisabled ? `1px solid ${colors.color_accent_1}` : `1px solid ${colors.nav_links}`,
                   '&:hover': {
-                    border: alertDisplay ? `1px solid ${colors.color_accent_1}` : `1px solid ${colors.nav_links}`,
+                    border: isDisabled ? `1px solid ${colors.color_accent_1}` : `1px solid ${colors.nav_links}`,
                   },
                 }),
                 placeholder: provided => ({
                   ...provided,
-                  color: alertDisplay ? colors.color_accent_1 : colors.nav_links,
+                  color: isDisabled ? colors.color_accent_1 : colors.nav_links,
                 }),
                 dropdownIndicator: provided => ({
                   ...provided,
-                  color: alertDisplay ? colors.color_accent_1 : colors.nav_links,
+                  color: isDisabled ? colors.color_accent_1 : colors.nav_links,
                   '&:hover': {
-                    color: alertDisplay ? colors.color_accent_1 : colors.nav_links,
+                    color: isDisabled ? colors.color_accent_1 : colors.nav_links,
                   },
                 }),
                 indicatorSeparator: provided => ({
                   ...provided,
-                  background: alertDisplay ? colors.color_accent_1 : colors.nav_links,
+                  background: isDisabled ? colors.color_accent_1 : colors.nav_links,
                   '&:hover': {
-                    background: alertDisplay ? colors.color_accent_1 : colors.nav_links,
+                    background: isDisabled ? colors.color_accent_1 : colors.nav_links,
                   },
                 }),
                 singleValue: provided => ({
                   ...provided,
-                  color: alertDisplay ? colors.color_accent_1 : colors.nav_links,
+                  color: isDisabled ? colors.color_accent_1 : colors.nav_links,
                 }),
               }}
               options={drugsData2}
