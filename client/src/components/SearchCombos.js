@@ -400,8 +400,10 @@ class SearchCombos extends Component {
   handleDrug1Search(drugId, event) {
     const { value, label } = event;
     const { sample, dataset } = this.state;
+    
     if (event.value == "Any") {
       this.setState({isDisabled: true, drug2Placeholder: "Please specify Compound A"})
+      console.log(this.state.drug2Placeholder)
     } else {
       this.setState({isDisabled: false, drug2Placeholder: "Enter Compound B"})
     }
@@ -582,7 +584,7 @@ class SearchCombos extends Component {
               options={drugsData2}
               isDisabled={isDisabled}
               placeholder={drug2Placeholder}
-              value={selectedDrug2}
+              value={isDisabled ? "" : selectedDrug2}
               onChange={handleDrug2Search}
               filterOption={customFilterOption}
             />

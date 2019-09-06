@@ -179,7 +179,7 @@ class Datasets extends Component {
                 </Fragment>             
               )}
           </StyledWrapper>
-        )
+        
         
           <StyledWrapper className="wrapper">
             <h1>List of Datasets</h1>
