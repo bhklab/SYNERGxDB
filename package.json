@@ -4,8 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node app.js",
-    "devstart": "nodemon app.js",
-    "postinstall": "cd client && npm i && npm build"
+    "devstart": "nodemon app.js"
   },
   "dependencies": {
     "body-parser": "^1.19.0",
