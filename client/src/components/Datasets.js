@@ -7,6 +7,7 @@ import DonutPlot from './Plots/DonutPlot';
 import DatasetLegend from './Plots/DatasetLegend';
 import ReactLoading from 'react-loading';
 import colors from '../styles/colors';
+import dataset_stats from '../dataset_stats.json';
 
 // import transitions from '../styles/transitions';
 
@@ -54,11 +55,13 @@ class Datasets extends Component {
         this.setState({ databaseData: databaseData});
       });
 
-    fetch('/api/combos/stats')
-      .then(response => response.json())
-      .then((datasetData) => {
-        this.setState({ datasetData: datasetData, loading: false });
-      });
+    // fetch('/api/combos/stats')
+    //   .then(response => response.json())
+    //   .then((datasetData) => {
+    //     this.setState({ datasetData: datasetData, loading: false });
+    //   });
+    this.setState({ datasetData: dataset_stats, loading: false });
+
   }
 
   formatData(data, keyName) {

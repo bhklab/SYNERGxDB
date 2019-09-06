@@ -1,0 +1,44 @@
+[
+ {
+   "name": "MIT-MELANOMA",
+   "nCombos": 5778,
+   "nExperiments": 201254,
+   "nDatapoints": 1407169
+ },
+ {
+   "name": "NCI-ALMANAC",
+   "nCombos": 4184,
+   "nExperiments": 242969,
+   "nDatapoints": 3887504
+ },
+ {
+   "name": "STANFORD",
+   "nCombos": 1818,
+   "nExperiments": 1818,
+   "nDatapoints": 7272
+ },
+ {
+   "name": "CLOUD",
+   "nCombos": 1327,
+   "nExperiments": 1327,
+   "nDatapoints": 5308
+ },
+ {
+   "name": "YALE-PDAC",
+   "nCombos": 820,
+   "nExperiments": 2974,
+   "nDatapoints": 49294
+ },
+ {
+   "name": "YALE-TNBC",
+   "nCombos": 758,
+   "nExperiments": 4516,
+   "nDatapoints": 54570
+ },
+ {
+   "name": "MERCK",
+   "nCombos": 583,
+   "nExperiments": 22737,
+   "nDatapoints": 570645
+ }
+]
