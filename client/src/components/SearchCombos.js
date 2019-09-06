@@ -310,7 +310,7 @@ class SearchCombos extends Component {
       selectedDataset: { value: 'Any', label: 'Any Dataset' },
       drug2Placeholder: 'Enter Compound B',
       allowRedirect: true,
-      alertDisplay: false
+      isDisabled: null
     };
     this.handleDrug1Search = this.handleDrug1Search.bind(this);
     this.handleDrug2Search = this.handleDrug2Search.bind(this);
@@ -344,6 +344,10 @@ class SearchCombos extends Component {
         const cellsData = data.map(item => ({ value: item.idSample, label: `${item.name.toUpperCase()} (${item.tissue.toUpperCase()})` }));
         this.setState({
           sampleData: [
+            {
+              label: 'Any Sample',
+              value: "Any"
+            },
             {
               label: 'Tissues',
               options: tissueData,
@@ -396,8 +400,12 @@ class SearchCombos extends Component {
   handleDrug1Search(drugId, event) {
     const { value, label } = event;
     const { sample, dataset } = this.state;
+    if (event.value == "Any") {
+      this.setState({isDisabled: true, drug2Placeholder: "Please specify Compound A"})
+    } else {
+      this.setState({isDisabled: false, drug2Placeholder: "Enter Compound B"})
+    }
     this.setState({ drugId1: value, selectedDrug1: { value, label } });
-
     // Sends a post request to the API to retrieve relevant combo drugs for drugsData2
     if (sample && dataset) this.updateDrug2Data(sample, dataset, value);
   }
@@ -449,17 +457,21 @@ class SearchCombos extends Component {
   }
 
   render() {
-    const {
+    let {
       drugsData1, drugsData2, sampleData,
       selectedSample, selectedDrug1, selectedDrug2, drug2Placeholder, datasetData,
-      selectedDataset, alertDisplay
+      selectedDataset, isDisabled
     } = this.state;
     const {
       handleSampleSearch, handleDrug1Search, handleDrug2Search, userRedirect,
       handleDatasetSearch, handleEnterPress, checkUserInput,
     } = this;
 
-    const isDisabled = !(drugsData2.length > 0);
+    // if isDisabled is not set yet, set
+    if (!isDisabled) {
+      isDisabled = !(drugsData2.length > 0);
+    }
+    
     const exampleDrugUrl = {
       pathname: '/synergy_score',
       search: '?drugId1=11&drugId2=97',
