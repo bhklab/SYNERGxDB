@@ -138,7 +138,7 @@ class Datasets extends Component {
               : (
                 
                 <Fragment>
-                <h1>Datasets, <i>N</i> = {datasetData.length}</h1>
+                <h1>Datasets, <i>N</i> = {datasetData.length.toLocaleString()}</h1>
                 {datasetData.length === 0 ? null : (
                   <Fragment>
                     <DonutPlot

@@ -93,7 +93,7 @@ class DonutPlot extends React.Component {
         .attr("y", 5)
         .attr("width", 180)
         .attr("height", 30)
-        .html(function() {return "<i>N</i> = " + sum});
+        .html(function() {return "<i>N</i> = " + sum.toLocaleString()});
     }
 
     const arc = d3.arc()

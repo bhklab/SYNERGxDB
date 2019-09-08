@@ -142,13 +142,13 @@ class BarChart extends React.Component {
         for (var i = 1; i < nums.length; i++) {
         svg.append("text")
             .attr('x', xrange(i))
-            .attr('y', yrange(nums[i])-10)
+            .attr('y', (yrange(nums[i])-10) + "px")
             .attr("id", names[i] + "vertnum")
             .style("text-anchor", "middle")
             .style("font-size", "13px")
             .attr("fill", "black")
             .style("opacity", 0)
-            .text(nums[i])
+            .text(nums[i].toLocaleString())
         }
 
 

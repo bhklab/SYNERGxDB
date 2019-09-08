@@ -232,7 +232,7 @@ class Databases extends Component {
       translate: 85,
     };
     const normalDims = {
-      width: 600,
+      width: 620,
       height: 400,
       radius: 230,
       rectY: 20,
@@ -245,7 +245,7 @@ class Databases extends Component {
         {/* <style>{'#root { background: #e7f3f8  !important; }'}</style> */}
         <main className="summary">
           <StyledWrapper className="wrapper">
-            <h1>Cell Lines, <i>N</i> = {donutData.length}</h1>
+            <h1>Cell Lines, <i>N</i> = {donutData.length.toLocaleString()}</h1>
             {donutData.length === 0 ? null : (
               <Fragment>
                 <DonutPlot

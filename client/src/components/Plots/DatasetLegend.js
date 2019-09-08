@@ -36,15 +36,16 @@ class DatasetLegend extends React.Component {
         })
         datasets.sort();
 
-        const width = 500;
-        const height = 50;
+        const width = 1050;
+        const height = 110;
         const svg = d3.select(`#${plotId}`)
             .append('svg')
             .attr('fill', 'white')
-            .attr('width', 1050)
-            .attr('height', 100)
+            .attr('width', width)
+            .attr('height', height)
             .attr('id', 'legend')
             .append('g')
+
         for (let i = 0; i < datasets.length; i++) {
             // find the name in the array
             const ind = data.findIndex(item => item.name === datasets[i]);
