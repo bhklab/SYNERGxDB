@@ -113,9 +113,9 @@ class BarChart extends React.Component {
             .attr("class", "bar")
             .attr('width', 50)
             .attr('x', function(d,i){ return xrange(i)-25}) 
-            .attr('y', function(d){ return yrange(0)}) 
+            .attr('y', function(d){ return yrange(d)}) 
             .style('fill', (d, i) => color(i))
-            .attr('height',function(d){ return height - yrange(0);})
+            .attr('height',function(d){ return height - yrange(d);})
             .on("mouseover", function(d,i) {
                 d3.select(this).transition()
                 .duration(300).style("opacity", 0.6);
@@ -131,11 +131,11 @@ class BarChart extends React.Component {
                     d3.select(this).style("cursor", "default");
             })
          
-        bars.transition()
-        .duration(800)
-        .ease(d3.easeLinear)
-        .attr('height',function(d){ return height - yrange(d);})
-        .attr('y', function(d){ return yrange(d)}) 
+        // bars.transition()
+        // .duration(800)
+        // .ease(d3.easeLinear)
+        // .attr('height',function(d){ return height - yrange(d);})
+        // .attr('y', function(d){ return yrange(d)}) 
                 
 
         // appending text on hover
