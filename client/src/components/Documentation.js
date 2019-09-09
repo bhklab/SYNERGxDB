@@ -71,7 +71,7 @@ const Documentation = () => {
               </li>
               <br />
               <li>
-                    Compounds: Metadata is provided for each drug compound in SYNERGxDB (N = 1,964), which includes: (compound name, ATC code, PubChem CID,
+                    Compounds: Metadata is provided for each drug compound in SYNERGxDB (N = 1,962), which includes: (compound name, ATC code, PubChem CID,
                     and DrugBank ID). In addition, users may browse drugs with ATC code in tree at the top panel.
               </li>
               <br />
