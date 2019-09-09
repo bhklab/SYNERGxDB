@@ -64,7 +64,7 @@ class Stats extends Component {
     this.setState({
       datasets: 7,
       tissues: 11,
-      compounds: 1965,
+      compounds: 1962,
       cells: 124,
       combos: 15268,
       experiments: 477595,
