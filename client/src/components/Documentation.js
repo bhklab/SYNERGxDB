@@ -40,8 +40,8 @@ const Documentation = () => {
                 {' '}
                 <b>SYNERGxDB</b>
                 , a web-application that possesses the
-                largest database of seven collections of pharmacological and molecular profiles of corresponding cell lines (123 cell lines in 11
-                tissue types and 1,965 unique drugs/compounds - 14,634 unique combos). This application allows researchers and clinicians to identify
+                largest database of seven collections of pharmacological and molecular profiles of corresponding cell lines (124 cell lines in 11 tissue types and 
+                1,964 drugs/compounds - 15,268 combinations). This application allows researchers and clinicians to identify
                 novel synergistic drug combinations, in order to discover potential prognostic and predictive biomarkers that can help improve
                 patient prognosis and selection.
               </li>
@@ -62,7 +62,7 @@ const Documentation = () => {
               <li>
                     Samples: All of the cell lines in SYNERGxDB are visually represented in a pie-chart based upon the following categories: (age, sex,
                     tissues, biopsy). By hovering over each slice of a chart, users can gain additional information about the cell lines (e.g. number
-                    of cell lines derived from a male). Metadata is provided for each cell line in SYNERGxDB (N = 123), which includes: (cell line name,
+                    of cell lines derived from a male). Metadata is provided for each cell line in SYNERGxDB (N = 124), which includes: (cell line name,
                     tissue origin, sex, age, associated disease, and
                 {' '}
                 <i>Cellosaurus</i>
@@ -71,7 +71,7 @@ const Documentation = () => {
               </li>
               <br />
               <li>
-                    Drugs: Metadata is provided for each drug compound in SYNERGxDB (N = 1,965), which includes: (compound name, ATC code, PubChem CID,
+                    Compounds: Metadata is provided for each drug compound in SYNERGxDB (N = 1,964), which includes: (compound name, ATC code, PubChem CID,
                     and DrugBank ID). In addition, users may browse drugs with ATC code in tree at the top panel.
               </li>
               <br />
@@ -81,11 +81,11 @@ const Documentation = () => {
               </li>
               <br />
               <li>
-                    Synergy scores: Synergy scores are calculated for each drug combo experiment in SYNERGxDB (N = 475,278), which includes:
+                    Synergy scores: Synergy scores are calculated for each drug combo experiment in SYNERGxDB (N = 477,595), which includes:
                     (tissue, cell line, first drug in combo, second drug in combo, ZIP, Bliss, Loewe, and HSA).
               </li>
               <br />
-              <li>
+              {/* <li>
                     Potential biomarkers: From these synergy scores, potential biomarkers were identified by ANOVA for FPKM values in three cell
                     line groups based on the synergy score via ZIP model (synergy, ZIP
                 {' '}
@@ -102,11 +102,11 @@ const Documentation = () => {
                     0.2; none or antagonism
                     for the others), with the following characteristics provided: (HUGO gene symbol and P-value).
               </li>
-              <br />
+              <br /> */}
               <li>
                     Detailed synergy scores: Users are able to delve into the synergy scores calculated for each drug combo experiment through a
                     detailed synergy pane. Cumulative density is plotted across all of the synergy scores for a drug combo experiment of interest.
-                    Experiment consists of sample, drug combo one (drugA) and drug combo two (drugB).
+                    Experiment consists of sample, drug combo one (compound A) and drug combo two (compound B).
                 {' '}
                 <br />
                     Synergy matrices are provided for each score that is calculated for an experiment, where concentrations of drugA and drugB and

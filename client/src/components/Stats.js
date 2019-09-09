@@ -82,6 +82,7 @@ class Stats extends Component {
       if ((t /= d / 2) < 1) return c / 2 * Math.pow(2, 10 * (t - 1)) + b;
       return c / 2 * (-Math.pow(2, -10 * --t) + 2) + b;
     };
+    console.log(this.state)
     return (
       <StyledDiv className="stats">
         <div>
@@ -91,7 +92,7 @@ class Stats extends Component {
                 start={0}
                 end={datasets}
                 duration={3}
-                easingFn={easeInOut}
+                // easingFn={easeInOut}
                 separator=","
               />
             </h2>
@@ -105,7 +106,7 @@ class Stats extends Component {
                 start={0}
                 end={tissues}
                 duration={3}
-                easingFn={easeInOut}
+                // easingFn={easeInOut}
                 separator=","
               />
             </h2>
@@ -119,7 +120,7 @@ class Stats extends Component {
                 start={0}
                 end={cells}
                 duration={3}
-                easingFn={easeInOut}
+                // easingFn={easeInOut}
                 separator=","
               />
             </h2>
@@ -133,7 +134,7 @@ class Stats extends Component {
                 start={0}
                 end={compounds}
                 duration={3}
-                easingFn={easeInOut}
+                // easingFn={easeInOut}
                 separator=","
               />
             </h2>
@@ -146,7 +147,7 @@ class Stats extends Component {
               start={0}
               end={combos}
               duration={3}
-              easingFn={easeInOut}
+              // easingFn={easeInOut}
               separator=","
             />
           </h2>
@@ -159,7 +160,7 @@ class Stats extends Component {
               start={0}
               end={experiments}
               duration={3}
-              easingFn={easeInOut}
+              // easingFn={easeInOut}
               separator=","
             />
           </h2>
@@ -172,7 +173,7 @@ class Stats extends Component {
               start={0}
               end={datapoints}
               duration={3}
-              easingFn={easeInOut}
+              // easingFn={easeInOut}
               separator=","
             />
           </h2>
