@@ -42,7 +42,7 @@ class Biomarkers extends Component {
     const { drugId1, drugId2} = requestParams;
 
     if (drugId1 && drugId2) {
-    fetch('/api/biomarkers?drugId1', {
+    fetch(`/api/biomarkers?drugId1=${drugId1}&drugId2=${drugId2}`, {
       method: 'GET',
       headers: {
         Accept: 'application/json',
@@ -51,6 +51,7 @@ class Biomarkers extends Component {
     })
       .then(response => response.json())
       .then((data) => {
+        console.log(data);
         this.setState({ results: data });
         if (data.length > 0) {
           this.setState({
@@ -93,7 +94,7 @@ class Biomarkers extends Component {
         <Fragment>
           <StyledBiomarkers className="biomarkers">
             <h2>Potential Biomarkers, Top 10</h2>
-            {/* <ReactTable
+            <ReactTable
               data={results}
               columns={columns}
               className="-highlight"
@@ -118,15 +119,15 @@ class Biomarkers extends Component {
                 },
               })
               }
-            /> */}
+            />
           </StyledBiomarkers>
-          {/* <BiomarkerPlot
+          <BiomarkerPlot
             idDrugA={drugId1}
             idDrugB={drugId2}
             idSource={results[selectedBiomarker].idSource}
             gene={results[selectedBiomarker].gene}
             pValue={results[selectedBiomarker].p}
-          /> */}
+          />
         </Fragment>
       );
     }

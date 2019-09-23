@@ -4,29 +4,19 @@ const db = require('../db');
 const router = express.Router();
 
 // Route to retrieve list of potential biomarkers
-router.post('/', (req, res) => {
-  const { drugId1, drugId2, dataset } = req.body;
-
-
+router.get('/', (req, res) => {
+  const { drugId1, drugId2 } = req.query;
+  console.log(drugId1, drugId2);
   function subqueryAnova() {
-    // remove idSource: 2 when more data analyzed (this is a temporary fix)
     let baseQuery = this.select('gene', 'p', 'idSource as id')
       .from('anova');
-    if (dataset) {
+    
       baseQuery = baseQuery.where({
-        idDrugA: drugId1, idDrugB: drugId2, idSource: dataset,
+        idDrugA: drugId1, idDrugB: drugId2,
       })
         .orWhere({
-          idDrugA: drugId2, idDrugB: drugId1, idSource: dataset,
+          idDrugA: drugId2, idDrugB: drugId1,
         });
-    } else {
-      baseQuery = baseQuery.where({
-        idDrugA: drugId1, idDrugB: drugId2, idSource: 2,
-      })
-        .orWhere({
-          idDrugA: drugId2, idDrugB: drugId1, idSource: 2,
-        });
-    }
     return baseQuery.orderBy('p', 'desc')
       .limit(10)
       .as('biomarker');
