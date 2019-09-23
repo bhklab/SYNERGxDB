@@ -2,6 +2,8 @@
 /* eslint-disable react/prop-types */
 import React, { Component, Fragment } from 'react';
 import styled from 'styled-components';
+import ReactRouterPropTypes from 'react-router-prop-types';
+import queryString from 'query-string';
 import ReactTable from 'react-table';
 import colors from '../styles/colors';
 import 'react-table/react-table.css';
@@ -19,6 +21,10 @@ const StyledBiomarkers = styled.div`
 
 
 class Biomarkers extends Component {
+
+  static propTypes = {
+    location: ReactRouterPropTypes.location.isRequired,
+  }
   constructor() {
     super();
     this.state = {
@@ -31,29 +37,35 @@ class Biomarkers extends Component {
   }
 
   componentDidMount() {
-    const { drugId1, drugId2, dataset } = this.props;
-    fetch('/api/biomarkers', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        drugId1,
-        drugId2,
-        dataset,
-      }),
-    })
-      .then(response => response.json())
-      .then((data) => {
-        this.setState({ results: data });
-        if (data.length > 0) {
-          this.setState({
-            biomarkerData: true,
-            loading: false,
-          });
-        }
-      });
+    const { location } = this.props;
+    const requestParams = queryString.parse(location.search);
+    const { idDrugA, idDrugB } = requestParams;
+
+    if (idDrugA && idDrugB) {
+    // fetch('/api/biomarkers', {
+    //   method: 'POST',
+    //   headers: {
+    //     Accept: 'application/json',
+    //     'Content-Type': 'application/json',
+    //   },
+    //   body: JSON.stringify({
+    //     drugId1,
+    //     drugId2,
+    //     dataset,
+    //   }),
+    // })
+    //   .then(response => response.json())
+    //   .then((data) => {
+    //     this.setState({ results: data });
+    //     if (data.length > 0) {
+    //       this.setState({
+    //         biomarkerData: true,
+    //         loading: false,
+    //       });
+    //     }
+    //   });
+    }
+    
   }
 
   handleSelect(index) {
@@ -86,7 +98,7 @@ class Biomarkers extends Component {
         <Fragment>
           <StyledBiomarkers className="biomarkers">
             <h2>Potential Biomarkers, Top 10</h2>
-            <ReactTable
+            {/* <ReactTable
               data={results}
               columns={columns}
               className="-highlight"
@@ -111,19 +123,19 @@ class Biomarkers extends Component {
                 },
               })
               }
-            />
+            /> */}
           </StyledBiomarkers>
-          <BiomarkerPlot
+          {/* <BiomarkerPlot
             idDrugA={drugId1}
             idDrugB={drugId2}
             idSource={results[selectedBiomarker].idSource}
             gene={results[selectedBiomarker].gene}
             pValue={results[selectedBiomarker].p}
-          />
+          /> */}
         </Fragment>
       );
     }
-    return null;
+    return (<h2>Something went wrong!</h2>);
   }
 }
 export default Biomarkers;
