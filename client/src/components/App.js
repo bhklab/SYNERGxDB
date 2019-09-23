@@ -319,6 +319,10 @@ const App = () => (
           <Route exact path="/documentation/" component={Documentation} />
           <Route path="/drug_combo" component={ComboDetails} />
           <Route path="/synergy_score" component={ComboResults} />
+          <Route path="/biomarker" component={Biomarkers} />
+          <Route path="/sensitivity" component={Sensitivity} />
+          <Route path="/enrichment" component={Enrichment} />
+          <Route path="/consistency" component={Consistency} />
         </Switch>
       </StyledApp>
     </div>
