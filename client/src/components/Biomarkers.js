@@ -39,31 +39,26 @@ class Biomarkers extends Component {
   componentDidMount() {
     const { location } = this.props;
     const requestParams = queryString.parse(location.search);
-    const { idDrugA, idDrugB } = requestParams;
+    const { drugId1, drugId2} = requestParams;
 
-    if (idDrugA && idDrugB) {
-    // fetch('/api/biomarkers', {
-    //   method: 'POST',
-    //   headers: {
-    //     Accept: 'application/json',
-    //     'Content-Type': 'application/json',
-    //   },
-    //   body: JSON.stringify({
-    //     drugId1,
-    //     drugId2,
-    //     dataset,
-    //   }),
-    // })
-    //   .then(response => response.json())
-    //   .then((data) => {
-    //     this.setState({ results: data });
-    //     if (data.length > 0) {
-    //       this.setState({
-    //         biomarkerData: true,
-    //         loading: false,
-    //       });
-    //     }
-    //   });
+    if (drugId1 && drugId2) {
+    fetch('/api/biomarkers?drugId1', {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      }
+    })
+      .then(response => response.json())
+      .then((data) => {
+        this.setState({ results: data });
+        if (data.length > 0) {
+          this.setState({
+            biomarkerData: true,
+            loading: false,
+          });
+        }
+      });
     }
     
   }

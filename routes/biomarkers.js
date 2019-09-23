@@ -90,5 +90,41 @@ router.post('/fpkm', (req, res) => {
     });
 });
 
+// // Route to retrieve list of potential biomarkers
+// router.post('/', (req, res) => {
+//   const { drugId1, drugId2, dataset } = req.body;
+
+
+//   function subqueryAnova() {
+//     // remove idSource: 2 when more data analyzed (this is a temporary fix)
+//     let baseQuery = this.select('gene', 'p', 'idSource as id')
+//       .from('anova');
+//     if (dataset) {
+//       baseQuery = baseQuery.where({
+//         idDrugA: drugId1, idDrugB: drugId2, idSource: dataset,
+//       })
+//         .orWhere({
+//           idDrugA: drugId2, idDrugB: drugId1, idSource: dataset,
+//         });
+//     } else {
+//       baseQuery = baseQuery.where({
+//         idDrugA: drugId1, idDrugB: drugId2, idSource: 2,
+//       })
+//         .orWhere({
+//           idDrugA: drugId2, idDrugB: drugId1, idSource: 2,
+//         });
+//     }
+//     return baseQuery.orderBy('p', 'desc')
+//       .limit(10)
+//       .as('biomarker');
+//   }
+//   db.select('gene', 'p', 'idSource', 'name')
+//     .from(subqueryAnova)
+//     .join('source', 'source.idSource', '=', 'biomarker.id')
+//     .then((data) => {
+//       res.json(data);
+//     });
+// });
+
 
 module.exports = router;
