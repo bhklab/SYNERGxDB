@@ -42,6 +42,28 @@ const QueryDiv = styled.div`
   }
 `;
 
+const ButtonsDiv = styled.div`
+  width:100%;
+  background:white;
+  padding: 20px 30px;
+  margin-bottom:30px;
+  font-size:18px;
+  display: flex;
+  align-items:center;
+
+  a {
+    height:70px;
+    background:${colors.blue_main};
+    color: white;
+    flex:1;
+    margin:0px 10px;
+    padding: 0px 15px;
+
+    &:hover {
+    }
+  }
+`;
+
 class ComboResults extends Component {
   static propTypes = {
     history: ReactRouterPropTypes.history.isRequired,
@@ -145,7 +167,7 @@ class ComboResults extends Component {
   render() {
     const {
       results, cellLineName, datasetName, drugName1, drugName2, loading,
-      // drugId1, drugId2, dataset,
+      drugId1, drugId2, dataset,
     } = this.state;
     const { handleCombo } = this;
     // const showBiomarker = typeof drugId2 === 'number' && <Biomarkers drugId1={drugId1} drugId2={drugId2} sourceName={results} dataset={dataset} />;
@@ -255,6 +277,13 @@ class ComboResults extends Component {
 
 
           </QueryDiv>
+          <ButtonsDiv>
+            <a href={`/biomarker?drugId1=${drugId1}&drugId2=${drugId2}`}>Biomarker <br></br> Discovery</a>
+            <a href={`/sensitivity?drugId1=${drugId1}&drugId2=${drugId2}`}>Cell Line <br></br>Sensitivity Analysis</a>
+            <a href={`/enrichment?drugId1=${drugId1}&drugId2=${drugId2}`}>Tissue-Specific <br></br>Enrichment Analysis</a>
+            <a href={`/consistency?drugId1=${drugId1}&drugId2=${drugId2}`}>Consistency in <br></br>Synergy Scores</a>
+          </ButtonsDiv>
+
           {/* {showBiomarker} */}
           <SynergyDiv>
             <h2>
