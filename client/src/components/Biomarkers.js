@@ -1,9 +1,12 @@
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable react/prop-types */
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import styled from 'styled-components';
-import ReactTable from 'react-table';
-import colors from '../styles/colors';
+import ReactRouterPropTypes from 'react-router-prop-types';
+import queryString from 'query-string';
+import QueryCard from './QueryCard';
+// import ReactTable from 'react-table';
+// import colors from '../styles/colors';
 import 'react-table/react-table.css';
 // import transitions from '../styles/transitions';
 
@@ -19,33 +22,110 @@ const StyledBiomarkers = styled.div`
 
 
 class Biomarkers extends Component {
+  static propTypes = {
+    location: ReactRouterPropTypes.location.isRequired,
+  }
+
   constructor() {
     super();
     this.state = {
       results: [],
-      biomarkerData: false,
+      // biomarkerData: [],
+      biomarkerData: null,
       selectedBiomarker: 0,
       loading: true,
+      drugId1: null,
+      drugId2: null,
+      dataset: null,
+      sample: null,
+      datasetName: 'Any',
+      drugName1: 'Any',
+      drugName2: 'Any',
+      cellLineName: 'Any',
     };
-    this.handleSelect = this.handleSelect.bind(this);
+    // this.handleSelect = this.handleSelect.bind(this);
   }
 
   componentDidMount() {
-    const { drugId1, drugId2, dataset } = this.props;
-    fetch('/api/biomarkers', {
-      method: 'POST',
+    const { location } = this.props;
+    const requestParams = queryString.parse(location.search);
+    const {
+      sample, drugId1, drugId2, dataset,
+    } = requestParams;
+    let queryParams = '';
+    this.setState({
+      drugId1: parseInt(drugId1, 10),
+      drugId2: parseInt(drugId2, 10),
+      dataset: parseInt(dataset, 10),
+      sample,
+    });
+    if (sample) queryParams = queryParams.concat(`&sample=${sample}`);
+    if (dataset) queryParams = queryParams.concat(`&dataset=${dataset}`);
+    if (drugId1) queryParams = queryParams.concat(`&drugId1=${drugId1}`);
+    if (drugId2) queryParams = queryParams.concat(`&drugId2=${drugId2}`);
+
+    // API call to retrieve all relevant synergy scores
+    console.log(queryParams);
+    fetch('/api/combos'.concat(queryParams), {
+      method: 'GET',
+      headers: {
+        // 'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+    })
+      .then(response => response.json())
+      .then((data) => {
+        console.log(data);
+        this.setState({ results: data, loading: false });
+      });
+
+    if (drugId1) {
+      fetch('/api/drugs/'.concat(drugId1))
+        .then(response => response.json())
+        .then((data) => {
+          this.setState({ drugName1: data[0].name });
+        });
+    }
+
+
+    if (drugId2) {
+      fetch('/api/drugs/'.concat(drugId2))
+        .then(response => response.json())
+        .then((data) => {
+          this.setState({ drugName2: data[0].name });
+        });
+    }
+
+    if (dataset) {
+      fetch('/api/datasets/'.concat(dataset))
+        .then(response => response.json())
+        .then((data) => {
+          this.setState({ datasetName: data[0].name });
+        });
+    }
+
+    if (sample) {
+      if (parseInt(sample, 10)) {
+        fetch('/api/cell_lines/'.concat(sample))
+          .then(response => response.json())
+          .then((data) => {
+            this.setState({ cellLineName: data[0].name });
+          });
+      } else {
+        this.setState({ cellLineName: sample.toUpperCase() });
+      }
+    }
+
+    fetch('/api/biomarkers'.concat(queryParams), {
+      method: 'GET',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        drugId1,
-        drugId2,
-        dataset,
-      }),
     })
       .then(response => response.json())
       .then((data) => {
+        console.log(data);
         this.setState({ results: data });
         if (data.length > 0) {
           this.setState({
@@ -56,37 +136,44 @@ class Biomarkers extends Component {
       });
   }
 
-  handleSelect(index) {
-    this.setState({
-      selectedBiomarker: index,
-    });
-  }
+  // handleSelect(index) {
+  //   this.setState({
+  //     selectedBiomarker: index,
+  //   });
+  // }
 
   render() {
-    const { handleSelect } = this;
+    // const { handleSelect } = this;
+    const { location } = this.props;
+    const requestParams = queryString.parse(location.search);
     const {
-      biomarkerData, results, selectedBiomarker, loading,
+      sample, drugId1, drugId2, dataset,
+    } = requestParams;
+    const {
+      loading,
     } = this.state;
-    const {
-      drugId1, drugId2,
-    } = this.props;
-    if (biomarkerData) {
-      const columns = [{
-        Header: 'Gene Symbol',
-        accessor: 'gene', // String-based value accessors!
-      }, {
-        Header: 'One-way ANOVA P',
-        accessor: 'p',
-      }, {
-        Header: 'Source',
-        accessor: 'name',
-      }];
+    if (loading) {
+      // const columns = [{
+      //   Header: 'Gene Symbol',
+      //   accessor: 'gene', // String-based value accessors!
+      // }, {
+      //   Header: 'One-way ANOVA P',
+      //   accessor: 'p',
+      // }, {
+      //   Header: 'Source',
+      //   accessor: 'name',
+      // }];
 
       return (
-        <Fragment>
+        <main className="summary">
+          <QueryCard
+            drugId1={drugId1}
+            drugId2={drugId2}
+            dataset={dataset}
+            sample={sample}
+          />
           <StyledBiomarkers className="biomarkers">
-            <h2>Potential Biomarkers, Top 10</h2>
-            <ReactTable
+            {/* <ReactTable
               data={results}
               columns={columns}
               className="-highlight"
@@ -111,19 +198,21 @@ class Biomarkers extends Component {
                 },
               })
               }
-            />
+            /> */}
+            {/* <div className="plot-container">
+              <BiomarkerPlot
+                idDrugA={drugId1}
+                idDrugB={drugId2}
+                idSource={results[selectedBiomarker].idSource}
+                gene={results[selectedBiomarker].gene}
+                pValue={results[selectedBiomarker].p}
+              />
+            </div> */}
           </StyledBiomarkers>
-          <BiomarkerPlot
-            idDrugA={drugId1}
-            idDrugB={drugId2}
-            idSource={results[selectedBiomarker].idSource}
-            gene={results[selectedBiomarker].gene}
-            pValue={results[selectedBiomarker].p}
-          />
-        </Fragment>
+        </main>
       );
     }
-    return null;
+    return (<h2>Something went wrong!</h2>);
   }
 }
 export default Biomarkers;

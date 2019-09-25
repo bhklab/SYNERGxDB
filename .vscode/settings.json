@@ -1,5 +1,5 @@
 {
-    "eslint.enable": false,
+    "eslint.enable": true,
     "workbench.colorCustomizations": {
         "activityBar.background": "#1accff",
         "activityBar.foreground": "#15202b",

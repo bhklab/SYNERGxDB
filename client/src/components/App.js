@@ -14,8 +14,8 @@ import Drugs from './Drugs';
 import Documentation from './Documentation';
 import ComboDetails from './ComboDetails';
 import ComboResults from './ComboResults';
-
 import Biomarkers from './Biomarkers';
+
 import Sensitivity from './Sensitivity';
 import Enrichment from './Enrichment';
 import Consistency from './Consistency';
@@ -319,9 +319,9 @@ const App = () => (
           <Route path="/drug_combo" component={ComboDetails} />
           <Route path="/synergy_score" component={ComboResults} />
           <Route path="/biomarker" component={Biomarkers} />
-          <Route path="/sensitivity" component={Sensitivity} />
+          {/* <Route path="/sensitivity" component={Sensitivity} />
           <Route path="/enrichment" component={Enrichment} />
-          <Route path="/consistency" component={Consistency} />
+          <Route path="/consistency" component={Consistency} /> */}
         </Switch>
       </StyledApp>
     </div>
