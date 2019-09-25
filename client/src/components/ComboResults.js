@@ -57,10 +57,9 @@ const ButtonsDiv = styled.div`
     color: white;
     flex:1;
     margin:0px 10px;
-    padding: 0px 15px;
-
-    &:hover {
-    }
+    padding: 15px;
+    font-weight:700;
+    text-align:center;
   }
 `;
 
@@ -82,6 +81,7 @@ class ComboResults extends Component {
       drugName1: 'Any',
       drugName2: 'Any',
       cellLineName: 'Any',
+      queryParams: "",
     };
     this.handleCombo = this.handleCombo.bind(this);
   }
@@ -89,10 +89,12 @@ class ComboResults extends Component {
   componentDidMount() {
     const { location } = this.props;
     const requestParams = queryString.parse(location.search);
+    console.log(requestParams)
     const {
       sample, drugId1, drugId2, dataset,
     } = requestParams;
     let queryParams = `?drugId1=${drugId1}`;
+    
     this.setState({
       drugId1: parseInt(drugId1, 10),
       drugId2: parseInt(drugId2, 10),
@@ -101,6 +103,8 @@ class ComboResults extends Component {
     if (sample) queryParams = queryParams.concat(`&sample=${sample}`);
     if (dataset) queryParams = queryParams.concat(`&dataset=${dataset}`);
     if (drugId2) queryParams = queryParams.concat(`&drugId2=${drugId2}`);
+
+    this.setState({queryParams: queryParams})
 
     fetch('/api/combos'.concat(queryParams), {
       method: 'GET',
@@ -160,6 +164,8 @@ class ComboResults extends Component {
     const {
       idSource, idDrugA, idDrugB, idSample, comboId,
     } = results[index];
+
+
     // Redirects user to combo details page
     history.push(`/drug_combo?idSource=${idSource}&idDrugA=${idDrugA}&idDrugB=${idDrugB}&idSample=${idSample}&comboId=${comboId}`);
   }
@@ -167,7 +173,7 @@ class ComboResults extends Component {
   render() {
     const {
       results, cellLineName, datasetName, drugName1, drugName2, loading,
-      drugId1, drugId2, dataset,
+      drugId1, drugId2, dataset, queryParams,
     } = this.state;
     const { handleCombo } = this;
     // const showBiomarker = typeof drugId2 === 'number' && <Biomarkers drugId1={drugId1} drugId2={drugId2} sourceName={results} dataset={dataset} />;
@@ -278,10 +284,10 @@ class ComboResults extends Component {
 
           </QueryDiv>
           <ButtonsDiv>
-            <a href={`/biomarker?drugId1=${drugId1}&drugId2=${drugId2}`}>Biomarker <br></br> Discovery</a>
-            <a href={`/sensitivity?drugId1=${drugId1}&drugId2=${drugId2}`}>Cell Line <br></br>Sensitivity Analysis</a>
-            <a href={`/enrichment?drugId1=${drugId1}&drugId2=${drugId2}`}>Tissue-Specific <br></br>Enrichment Analysis</a>
-            <a href={`/consistency?drugId1=${drugId1}&drugId2=${drugId2}`}>Consistency in <br></br>Synergy Scores</a>
+            <a href={`/biomarker${queryParams}`}>Biomarker <br></br> Discovery</a>
+            <a href={`/sensitivity${queryParams}`}>Cell Line <br></br>Sensitivity Analysis</a>
+            <a href={`/enrichment${queryParams}`}>Tissue-Specific <br></br>Enrichment Analysis</a>
+            <a href={`/consistency${queryParams}`}>Consistency in <br></br>Synergy Scores</a>
           </ButtonsDiv>
 
           {/* {showBiomarker} */}
@@ -302,6 +308,7 @@ class ComboResults extends Component {
               className=" -highlight"
               getTdProps={(state, rowInfo) => ({
                 onClick: (e, handleOriginal) => {
+                  console.log(results)
                   if (rowInfo) handleCombo(rowInfo.index);
                   // IMPORTANT! React-Table uses onClick internally to trigger
                   // events like expanding SubComponents and pivots.

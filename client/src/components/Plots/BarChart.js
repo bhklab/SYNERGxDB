@@ -19,7 +19,7 @@ class BarChart extends React.Component {
     
     plotBarChart(names, nums, plotId) {
         //positions and dimensions
-        var margin = {
+        let margin = {
             top: 20,
             right: 50,
             bottom: 90,
@@ -34,7 +34,7 @@ class BarChart extends React.Component {
         const color = d3.scaleOrdinal(["#e69a61", "#9817ff", "#18c61a", "#33b4ff", "#c9167e", "#297853", "#d7011b", "#7456c7", "#7e6276", "#afb113", "#fd879c", "#fb78fa", "#24c373", "#45bbc5", "#766b21", "#abad93", "#c19ce3", "#fd8f11", "#2f56ff", "#307a11", "#b3483c", "#0d7396", "#94b665", "#9d4d91", "#b807c8", "#086cbf", "#a2abc5", "#a35702", "#d3084b", "#8c6148", "#fa82ce", "#71be42", "#2bc0a0", "#b64064", "#d09fa2", "#daa229", "#5a6f68", "#c1aa5f", "#8943dc", "#b72ba6", "#6e629e", "#e094bf", "#dd8df2", "#c03d0b", "#7db799", "#617046", "#ff8a78", "#1263e2", "#91aaea", "#cea37e", "#9e555c", "#67b4db", "#05767b", "#537428", "#04c553", "#88b3b7", "#ff8d52", "#8abb0b", "#9b43b9", "#c83030", "#6fbc7c", "#596c83", "#926023", "#e9958d", "#a127e3", "#027b36", "#94577d", "#7543f8", "#8257ab", "#c0ab3c", "#416ca4", "#a3b444", "#b53c7e", "#ca2064", "#64c104", "#5662c0", "#c1a0c6", "#5e56e3", "#9cb37c", "#9f573b", "#65bf64", "#7e6839", "#d6a250", "#c0384a", "#75685b", "#657105", "#b1a9a9", "#ab5025", "#ea9940", "#a1a4f9", "#a9409f", "#48745a", "#dd92d5", "#c90392", "#53bcaf", "#c298f9", "#6d668a", "#aa31c0", "#e89777", "#b5ac76", "#8b5f62", "#fb85b9", "#43763f", "#38c18a", "#8ab94c", "#f87fe4", "#e196aa", "#a74b77", "#885997", "#c9a918", "#50c237", "#d50438", "#d2a267", "#acb05e", "#c1a693", "#6d696f", "#b04950", "#ba4327", "#4f7603", "#3a7282", "#2cbada", "#ed990a", "#b24c07" ]);
 
         // Add the svg canvas
-        var svg = d3.select("#" + plotId)
+        let svg = d3.select("#" + plotId)
             .append("svg")
             .attr("fill", "white")
                 .attr("width", width + margin.left + margin.right)
@@ -45,25 +45,25 @@ class BarChart extends React.Component {
                 "translate(" + margin.left + "," + margin.top + ")")
 
         //calculating max for data
-        var maxNum = Math.max.apply(null, nums)
+        let maxNum = Math.max.apply(null, nums)
     
         //set range for data by domain, and scale by range
-        var xrange = d3.scaleLinear()
+        let xrange = d3.scaleLinear()
             .domain([0, names.length])
             .range([0, width]);
     
-        var yrange = d3.scaleLinear()
+        let yrange = d3.scaleLinear()
             .domain([0, maxNum+10])
             .range([height, 0]);
     
         //set axes for graph
-        var xAxis = d3.axisBottom()
+        let xAxis = d3.axisBottom()
             .scale(xrange)
             .tickPadding(2)
             .tickFormat(function(d,i){ return names[i] })
                 .tickValues(d3.range(names.length));
     
-        var yAxis = d3.axisLeft()
+        let yAxis = d3.axisLeft()
             .scale(yrange)
             .tickSize(5)
             // .tickFormat(d3.format("s"));
@@ -101,7 +101,7 @@ class BarChart extends React.Component {
         
 
         //adding chart group
-        var chart = svg.append('g')
+        let chart = svg.append('g')
                 .attr("transform", "translate(0,0)")
                 .attr('id','chart')
 
@@ -139,7 +139,7 @@ class BarChart extends React.Component {
                 
 
         // appending text on hover
-        for (var i = 1; i < nums.length; i++) {
+        for (let i = 1; i < nums.length; i++) {
         svg.append("text")
             .attr('x', xrange(i))
             .attr('y', (yrange(nums[i])-10) + "px")

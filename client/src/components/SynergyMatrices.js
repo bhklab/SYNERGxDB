@@ -98,7 +98,6 @@ class SynergyMatrices extends Component {
     const {
       dataTypes, selectedType,
     } = this.state;
-    console.log(synergyData);
     const generateTable = () => {
       const comboInfo = {};
       synergyData.forEach((item) => {
