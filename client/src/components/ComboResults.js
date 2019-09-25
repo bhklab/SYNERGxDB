@@ -118,10 +118,7 @@ class ComboResults extends Component {
   render() {
     const {
       results, cellLineName, datasetName, drugName1, drugName2, loading,
-<<<<<<< HEAD
       queryParams,
-=======
->>>>>>> Refactored query card component
     } = this.state;
     const { location } = this.props;
     const requestParams = queryString.parse(location.search);
@@ -205,11 +202,6 @@ class ComboResults extends Component {
           : true
       );
     };
-    const { location } = this.props;
-    const requestParams = queryString.parse(location.search);
-    const {
-      sample, drugId1, drugId2, dataset,
-    } = requestParams;
     return (
       <main>
         <QueryCard
