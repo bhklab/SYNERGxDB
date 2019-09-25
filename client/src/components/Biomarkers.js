@@ -69,8 +69,8 @@ class Biomarkers extends Component {
     fetch('/api/combos'.concat(queryParams), {
       method: 'GET',
       headers: {
+        // 'Content-Type': 'application/json',
         Accept: 'application/json',
-        'Content-Type': 'application/json',
       },
     })
       .then(response => response.json())
@@ -146,6 +146,7 @@ class Biomarkers extends Component {
     // const { handleSelect } = this;
     const { location } = this.props;
     const requestParams = queryString.parse(location.search);
+<<<<<<< HEAD
     const {
       sample, drugId1, drugId2, dataset,
     } = requestParams;
@@ -153,6 +154,15 @@ class Biomarkers extends Component {
       loading,
     } = this.state;
     if (loading) {
+=======
+    const {
+      sample, drugId1, drugId2, dataset,
+    } = requestParams;
+    const {
+      biomarkerData, results, selectedBiomarker, loading,
+    } = this.state;
+    if (biomarkerData) {
+>>>>>>> Refactored query card component
       // const columns = [{
       //   Header: 'Gene Symbol',
       //   accessor: 'gene', // String-based value accessors!

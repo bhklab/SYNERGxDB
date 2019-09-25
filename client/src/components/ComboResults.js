@@ -99,43 +99,6 @@ class ComboResults extends Component {
       .then((data) => {
         this.setState({ results: data, loading: false });
       });
-
-    if (drugId1) {
-      fetch('/api/drugs/'.concat(drugId1))
-        .then(response => response.json())
-        .then((data) => {
-          this.setState({ drugName1: data[0].name });
-        });
-    }
-
-
-    if (drugId2) {
-      fetch('/api/drugs/'.concat(drugId2))
-        .then(response => response.json())
-        .then((data) => {
-          this.setState({ drugName2: data[0].name });
-        });
-    }
-
-    if (dataset) {
-      fetch('/api/datasets/'.concat(dataset))
-        .then(response => response.json())
-        .then((data) => {
-          this.setState({ datasetName: data[0].name });
-        });
-    }
-
-    if (sample) {
-      if (parseInt(sample, 10)) {
-        fetch('/api/cell_lines/'.concat(sample))
-          .then(response => response.json())
-          .then((data) => {
-            this.setState({ cellLineName: data[0].name });
-          });
-      } else {
-        this.setState({ cellLineName: sample.toUpperCase() });
-      }
-    }
   }
 
   handleCombo(index) {
@@ -155,7 +118,10 @@ class ComboResults extends Component {
   render() {
     const {
       results, cellLineName, datasetName, drugName1, drugName2, loading,
+<<<<<<< HEAD
       queryParams,
+=======
+>>>>>>> Refactored query card component
     } = this.state;
     const { location } = this.props;
     const requestParams = queryString.parse(location.search);
@@ -239,6 +205,11 @@ class ComboResults extends Component {
           : true
       );
     };
+    const { location } = this.props;
+    const requestParams = queryString.parse(location.search);
+    const {
+      sample, drugId1, drugId2, dataset,
+    } = requestParams;
     return (
       <main>
         <QueryCard
