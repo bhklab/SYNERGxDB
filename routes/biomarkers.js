@@ -10,13 +10,12 @@ router.get('/', (req, res) => {
   function subqueryAnova() {
     let baseQuery = this.select('gene', 'p', 'idSource as id')
       .from('anova');
-    
-      baseQuery = baseQuery.where({
-        idDrugA: drugId1, idDrugB: drugId2,
-      })
-        .orWhere({
-          idDrugA: drugId2, idDrugB: drugId1,
-        });
+    baseQuery = baseQuery.where({
+      idDrugA: drugId1, idDrugB: drugId2,
+    })
+      .orWhere({
+        idDrugA: drugId2, idDrugB: drugId1,
+      });
     return baseQuery.orderBy('p', 'desc')
       .limit(10)
       .as('biomarker');

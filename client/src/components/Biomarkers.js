@@ -4,6 +4,7 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 import ReactRouterPropTypes from 'react-router-prop-types';
 import queryString from 'query-string';
+import QueryCard from './QueryCard';
 // import ReactTable from 'react-table';
 // import colors from '../styles/colors';
 import 'react-table/react-table.css';
@@ -37,6 +38,10 @@ class Biomarkers extends Component {
       drugId2: null,
       dataset: null,
       sample: null,
+      datasetName: 'Any',
+      drugName1: 'Any',
+      drugName2: 'Any',
+      cellLineName: 'Any',
     };
     // this.handleSelect = this.handleSelect.bind(this);
   }
@@ -60,6 +65,7 @@ class Biomarkers extends Component {
     if (drugId2) queryParams = queryParams.concat(`&drugId2=${drugId2}`);
 
     // API call to retrieve all relevant synergy scores
+    console.log(queryParams);
     fetch('/api/combos'.concat(queryParams), {
       method: 'GET',
       headers: {
@@ -69,29 +75,65 @@ class Biomarkers extends Component {
     })
       .then(response => response.json())
       .then((data) => {
+        console.log(data);
         this.setState({ results: data, loading: false });
       });
 
-    if (drugId1 && drugId2) {
-      fetch(`/api/biomarkers?drugId1=${drugId1}&drugId2=${drugId2}`, {
-        method: 'GET',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-      })
+    if (drugId1) {
+      fetch('/api/drugs/'.concat(drugId1))
         .then(response => response.json())
         .then((data) => {
-          console.log(data);
-          this.setState({ results: data });
-          if (data.length > 0) {
-            this.setState({
-              biomarkerData: true,
-              loading: false,
-            });
-          }
+          this.setState({ drugName1: data[0].name });
         });
     }
+
+
+    if (drugId2) {
+      fetch('/api/drugs/'.concat(drugId2))
+        .then(response => response.json())
+        .then((data) => {
+          this.setState({ drugName2: data[0].name });
+        });
+    }
+
+    if (dataset) {
+      fetch('/api/datasets/'.concat(dataset))
+        .then(response => response.json())
+        .then((data) => {
+          this.setState({ datasetName: data[0].name });
+        });
+    }
+
+    if (sample) {
+      if (parseInt(sample, 10)) {
+        fetch('/api/cell_lines/'.concat(sample))
+          .then(response => response.json())
+          .then((data) => {
+            this.setState({ cellLineName: data[0].name });
+          });
+      } else {
+        this.setState({ cellLineName: sample.toUpperCase() });
+      }
+    }
+
+    fetch('/api/biomarkers'.concat(queryParams), {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(response => response.json())
+      .then((data) => {
+        console.log(data);
+        this.setState({ results: data });
+        if (data.length > 0) {
+          this.setState({
+            biomarkerData: true,
+            loading: false,
+          });
+        }
+      });
   }
 
   // handleSelect(index) {
@@ -102,13 +144,15 @@ class Biomarkers extends Component {
 
   render() {
     // const { handleSelect } = this;
+    const { location } = this.props;
+    const requestParams = queryString.parse(location.search);
     const {
-      biomarkerData, results, selectedBiomarker, loading,
+      sample, drugId1, drugId2, dataset,
+    } = requestParams;
+    const {
+      loading,
     } = this.state;
-    const {
-      drugId1, drugId2,
-    } = this.props;
-    if (biomarkerData) {
+    if (loading) {
       // const columns = [{
       //   Header: 'Gene Symbol',
       //   accessor: 'gene', // String-based value accessors!
@@ -122,9 +166,14 @@ class Biomarkers extends Component {
 
       return (
         <main className="summary">
+          <QueryCard
+            drugId1={drugId1}
+            drugId2={drugId2}
+            dataset={dataset}
+            sample={sample}
+          />
           <StyledBiomarkers className="biomarkers">
-            {/* <h2>Potential Biomarkers, Top 10</h2>
-            <ReactTable
+            {/* <ReactTable
               data={results}
               columns={columns}
               className="-highlight"
@@ -150,7 +199,7 @@ class Biomarkers extends Component {
               })
               }
             /> */}
-            <div className="plot-container">
+            {/* <div className="plot-container">
               <BiomarkerPlot
                 idDrugA={drugId1}
                 idDrugB={drugId2}
@@ -158,8 +207,7 @@ class Biomarkers extends Component {
                 gene={results[selectedBiomarker].gene}
                 pValue={results[selectedBiomarker].p}
               />
-
-            </div>
+            </div> */}
           </StyledBiomarkers>
         </main>
       );
