@@ -71,11 +71,9 @@ class ComboResults extends Component {
   componentDidMount() {
     const { location } = this.props;
     const requestParams = queryString.parse(location.search);
-    console.log(requestParams);
     const {
       sample, drugId1, drugId2, dataset,
     } = requestParams;
-    console.log(drugId1);
     let queryParams = '?';
 
     this.setState({
@@ -119,7 +117,7 @@ class ComboResults extends Component {
 
   render() {
     const {
-      results, cellLineName, datasetName, drugName1, drugName2, loading,
+      results, loading,
       queryParams,
     } = this.state;
     const { location } = this.props;
@@ -258,7 +256,6 @@ class ComboResults extends Component {
             className=" -highlight"
             getTdProps={(state, rowInfo) => ({
               onClick: (e, handleOriginal) => {
-                console.log(results);
                 if (rowInfo) handleCombo(rowInfo.index);
                 // IMPORTANT! React-Table uses onClick internally to trigger
                 // events like expanding SubComponents and pivots.

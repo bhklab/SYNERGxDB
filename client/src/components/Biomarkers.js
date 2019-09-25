@@ -32,14 +32,13 @@ class Biomarkers extends Component {
       results: [],
       // biomarkerData: [],
       biomarkerData: null,
-      selectedBiomarker: 0,
+      // selectedBiomarker: 0,
       loading: false,
     };
     // this.handleSelect = this.handleSelect.bind(this);
   }
 
   componentDidMount() {
-    console.log('biomarker');
     const { location } = this.props;
     const requestParams = queryString.parse(location.search);
     const {
@@ -53,7 +52,6 @@ class Biomarkers extends Component {
     if (drugId2) queryParams = queryParams.concat(`&drugId2=${drugId2}`);
 
     // API call to retrieve all relevant synergy scores
-    console.log(queryParams);
     fetch('/api/combos'.concat(queryParams), {
       method: 'GET',
       headers: {
@@ -63,46 +61,8 @@ class Biomarkers extends Component {
     })
       .then(response => response.json())
       .then((data) => {
-        console.log(data);
         this.setState({ results: data, loading: false });
       });
-
-    if (drugId1) {
-      fetch('/api/drugs/'.concat(drugId1))
-        .then(response => response.json())
-        .then((data) => {
-          this.setState({ drugName1: data[0].name });
-        });
-    }
-
-
-    if (drugId2) {
-      fetch('/api/drugs/'.concat(drugId2))
-        .then(response => response.json())
-        .then((data) => {
-          this.setState({ drugName2: data[0].name });
-        });
-    }
-
-    if (dataset) {
-      fetch('/api/datasets/'.concat(dataset))
-        .then(response => response.json())
-        .then((data) => {
-          this.setState({ datasetName: data[0].name });
-        });
-    }
-
-    if (sample) {
-      if (parseInt(sample, 10)) {
-        fetch('/api/cell_lines/'.concat(sample))
-          .then(response => response.json())
-          .then((data) => {
-            this.setState({ cellLineName: data[0].name });
-          });
-      } else {
-        this.setState({ cellLineName: sample.toUpperCase() });
-      }
-    }
 
     // fetch('/api/biomarkers'.concat(queryParams), {
     //   method: 'GET',
@@ -152,14 +112,14 @@ class Biomarkers extends Component {
       // }];
 
     return (
-      <main className="summary">
+      <main>
         <QueryCard
           drugId1={drugId1}
           drugId2={drugId2}
           dataset={dataset}
           sample={sample}
         />
-        <StyledBiomarkers className="biomarkers">
+        <StyledBiomarkers>
           {/* <ReactTable
               data={results}
               columns={columns}
@@ -181,7 +141,7 @@ class Biomarkers extends Component {
                   }
                 },
                 style: {
-                  background: rowInfo.index === selectedBiomarker ? colors.summary_bg : 'transparent',
+                background: rowInfo.index === selectedBiomarker ? colors.summary_bg : 'transparent',
                 },
               })
               }
