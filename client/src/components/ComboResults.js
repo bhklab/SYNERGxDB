@@ -75,7 +75,8 @@ class ComboResults extends Component {
     const {
       sample, drugId1, drugId2, dataset,
     } = requestParams;
-    let queryParams = `?drugId1=${drugId1}`;
+    console.log(drugId1);
+    let queryParams = '?';
 
     this.setState({
       drugId1: parseInt(drugId1, 10),
@@ -84,6 +85,7 @@ class ComboResults extends Component {
     });
     if (sample) queryParams = queryParams.concat(`&sample=${sample}`);
     if (dataset) queryParams = queryParams.concat(`&dataset=${dataset}`);
+    if (drugId1) queryParams = queryParams.concat(`&drugId1=${drugId1}`);
     if (drugId2) queryParams = queryParams.concat(`&drugId2=${drugId2}`);
 
     this.setState({ queryParams });

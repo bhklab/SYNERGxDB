@@ -10,7 +10,7 @@ import QueryCard from './QueryCard';
 import 'react-table/react-table.css';
 // import transitions from '../styles/transitions';
 
-import BiomarkerPlot from './Plots/BiomarkerPlot';
+// import BiomarkerPlot from './Plots/BiomarkerPlot';
 
 const StyledBiomarkers = styled.div`
   width: 100%;
@@ -33,32 +33,20 @@ class Biomarkers extends Component {
       // biomarkerData: [],
       biomarkerData: null,
       selectedBiomarker: 0,
-      loading: true,
-      drugId1: null,
-      drugId2: null,
-      dataset: null,
-      sample: null,
-      datasetName: 'Any',
-      drugName1: 'Any',
-      drugName2: 'Any',
-      cellLineName: 'Any',
+      loading: false,
     };
     // this.handleSelect = this.handleSelect.bind(this);
   }
 
   componentDidMount() {
+    console.log('biomarker');
     const { location } = this.props;
     const requestParams = queryString.parse(location.search);
     const {
       sample, drugId1, drugId2, dataset,
     } = requestParams;
-    let queryParams = '';
-    this.setState({
-      drugId1: parseInt(drugId1, 10),
-      drugId2: parseInt(drugId2, 10),
-      dataset: parseInt(dataset, 10),
-      sample,
-    });
+    let queryParams = '?';
+
     if (sample) queryParams = queryParams.concat(`&sample=${sample}`);
     if (dataset) queryParams = queryParams.concat(`&dataset=${dataset}`);
     if (drugId1) queryParams = queryParams.concat(`&drugId1=${drugId1}`);
@@ -116,24 +104,24 @@ class Biomarkers extends Component {
       }
     }
 
-    fetch('/api/biomarkers'.concat(queryParams), {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-    })
-      .then(response => response.json())
-      .then((data) => {
-        console.log(data);
-        this.setState({ results: data });
-        if (data.length > 0) {
-          this.setState({
-            biomarkerData: true,
-            loading: false,
-          });
-        }
-      });
+    // fetch('/api/biomarkers'.concat(queryParams), {
+    //   method: 'GET',
+    //   headers: {
+    //     Accept: 'application/json',
+    //     'Content-Type': 'application/json',
+    //   },
+    // })
+    //   .then(response => response.json())
+    //   .then((data) => {
+    //     console.log(data);
+    //     this.setState({ results: data });
+    //     if (data.length > 0) {
+    //       this.setState({
+    //         biomarkerData: true,
+    //         loading: false,
+    //       });
+    //     }
+    //   });
   }
 
   // handleSelect(index) {
@@ -152,7 +140,6 @@ class Biomarkers extends Component {
     const {
       loading,
     } = this.state;
-    if (loading) {
       // const columns = [{
       //   Header: 'Gene Symbol',
       //   accessor: 'gene', // String-based value accessors!
@@ -164,16 +151,16 @@ class Biomarkers extends Component {
       //   accessor: 'name',
       // }];
 
-      return (
-        <main className="summary">
-          <QueryCard
-            drugId1={drugId1}
-            drugId2={drugId2}
-            dataset={dataset}
-            sample={sample}
-          />
-          <StyledBiomarkers className="biomarkers">
-            {/* <ReactTable
+    return (
+      <main className="summary">
+        <QueryCard
+          drugId1={drugId1}
+          drugId2={drugId2}
+          dataset={dataset}
+          sample={sample}
+        />
+        <StyledBiomarkers className="biomarkers">
+          {/* <ReactTable
               data={results}
               columns={columns}
               className="-highlight"
@@ -199,7 +186,7 @@ class Biomarkers extends Component {
               })
               }
             /> */}
-            {/* <div className="plot-container">
+          {/* <div className="plot-container">
               <BiomarkerPlot
                 idDrugA={drugId1}
                 idDrugB={drugId2}
@@ -208,11 +195,9 @@ class Biomarkers extends Component {
                 pValue={results[selectedBiomarker].p}
               />
             </div> */}
-          </StyledBiomarkers>
-        </main>
-      );
-    }
-    return (<h2>Something went wrong!</h2>);
+        </StyledBiomarkers>
+      </main>
+    );
   }
 }
 export default Biomarkers;
