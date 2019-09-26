@@ -28,6 +28,62 @@ router.get('/', (req, res) => {
     });
 });
 
+router.get('/association', (req, res) => {
+  const { gene, sample } = req.query;
+
+  function subqueryGeneIdentifier() {
+    this.select('gene_id')
+      .from('gene_identifiers')
+      .where({ hgnc_symbol: gene });
+  }
+
+  function subquerySamples() {
+    let subquery = this.select('model_id', 'name')
+      .from('sample')
+      .join('model_identifiers', 'model_identifiers.idSample', '=', 'sample.idSample');
+    if (sample) subquery = subquery.where({ tissue: sample });
+    return subquery.as('S');
+  }
+
+  // db.select('model_id', 'name')
+  //   .from('sample')
+  //   .join('model_identifiers', 'model_identifiers.idSample', '=', 'sample.idSample')
+  //   // .where({ tissue: sample })
+  //   .as('S')
+  //   .orderBy('model_id', 'asc')
+  //   .then(data => console.log(data));
+
+  function subqueryAssociations() {
+    this.select('model_id', 'fpkm')
+      .from('rnaseq')
+      .where('gene_id', 'in', subqueryGeneIdentifier)
+      .as('A');
+  }
+  db.select('fpkm', 'name')
+    .from(subqueryAssociations)
+    .join(subquerySamples, 'A.model_id', '=', 'S.model_id')
+    .then(data => console.log(data));
+  // db.select('fpkm', 'name')
+  //   .from(subquerySamples)
+  //   .join('rnaseq', 'rnaseq.model_id', '=', 'S.model_id')
+  //   .then((data) => {
+  //     res.json(data);
+  //   })
+  //   .catch((err) => {
+  //     res.json(err);
+  //   });
+  // db.select('fpkm', 'model_id')
+  //   .from('rnaseq')
+  //   .where('gene_id', 'in', subqueryGeneIdentifier)
+  //   .andWhere({ model_id: 'SIDM00003' })
+  //   .then((data) => {
+  //     res.json(data);
+  //   })
+  //   .catch((err) => {
+  //     res.json(err);
+  //   });
+});
+
 // Database call to get data for Plot.js box plots
 router.post('/fpkm', (req, res) => {
   const {

@@ -101,37 +101,35 @@ router.get('/matrix', (req, res) => {
     .then(data => res.json(data));
 });
 
-router.get("/stats", (req, res) => {
+router.get('/stats', (req, res) => {
   // COMBOS
   function subqueryCombos() {
-    let baseQuery = this.select("idSource", db.raw("count(distinct concat(??, ?, ??)) as ??", ["CD.idDrugA", "--", "CD.idDrugB", "nCombos"]))
-    .from("Combo_Design as CD")
-    .innerJoin("Synergy_Score as SS", "CD.idCombo_Design", "=", "SS.idCombo_Design")
-    .groupBy("SS.idSource")
-    
-    return baseQuery.as("CMBS")
+    const baseQuery = this.select('idSource', db.raw('count(distinct concat(??, ?, ??)) as ??', ['CD.idDrugA', '--', 'CD.idDrugB', 'nCombos']))
+      .from('Combo_Design as CD')
+      .innerJoin('Synergy_Score as SS', 'CD.idCombo_Design', '=', 'SS.idCombo_Design')
+      .groupBy('SS.idSource');
+
+    return baseQuery.as('CMBS');
   }
 
-  //EXPERIMENTS
+  // EXPERIMENTS
   function subqueryExperiments() {
-    let baseQuery = this.select("idSource", db.raw("count(*) as ??", ["nExperiments"]))
-    .from("Synergy_Score")
-    .groupBy("idSource")
-    
-    return baseQuery.as("EXPS")
+    const baseQuery = this.select('idSource', db.raw('count(*) as ??', ['nExperiments']))
+      .from('Synergy_Score')
+      .groupBy('idSource');
+
+    return baseQuery.as('EXPS');
   }
 
   // major query + DATAPOINTS
-  db.select("CM.idSource as idSource", "name", db.raw("count(*) as ??", ["nDatapoints"]), "nCombos", "nExperiments")
-    .from("Combo_Matrix as CM", subqueryCombos)
-    .join(subqueryCombos, "CM.idSource", "=", "CMBS.idSource")
-    .join(subqueryExperiments, "CM.idSource", "=", "EXPS.idSource")
-    .join("Source", "CM.idSource", "=", "Source.idSource")
-    .groupBy("idSource", "nCombos", "nExperiments")
+  db.select('CM.idSource as idSource', 'name', db.raw('count(*) as ??', ['nDatapoints']), 'nCombos', 'nExperiments')
+    .from('Combo_Matrix as CM', subqueryCombos)
+    .join(subqueryCombos, 'CM.idSource', '=', 'CMBS.idSource')
+    .join(subqueryExperiments, 'CM.idSource', '=', 'EXPS.idSource')
+    .join('Source', 'CM.idSource', '=', 'Source.idSource')
+    .groupBy('idSource', 'nCombos', 'nExperiments')
     .then((data) => {
       res.json(data);
     });
-
-  
-})
+});
 module.exports = router;

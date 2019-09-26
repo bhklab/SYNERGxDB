@@ -1,5 +1,4 @@
 /* eslint-disable react/no-array-index-key */
-/* eslint-disable react/prop-types */
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import ReactRouterPropTypes from 'react-router-prop-types';
@@ -55,7 +54,7 @@ class Biomarkers extends Component {
     fetch('/api/combos'.concat(queryParams), {
       method: 'GET',
       headers: {
-        // 'Content-Type': 'application/json',
+        'Content-Type': 'application/json',
         Accept: 'application/json',
       },
     })
@@ -82,6 +81,19 @@ class Biomarkers extends Component {
     //       });
     //     }
     //   });
+
+    const gene = 'A2M';
+
+    fetch(`/api/biomarkers/association?gene=${gene}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+    }).then(response => response.json())
+      .then((data) => {
+        console.log(data);
+      });
   }
 
   // handleSelect(index) {
