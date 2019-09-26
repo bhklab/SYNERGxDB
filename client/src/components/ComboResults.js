@@ -1,7 +1,7 @@
 /* eslint-disable react/no-unused-state */
 /* eslint-disable max-len */
 /* eslint-disable react/no-array-index-key */
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import ReactRouterPropTypes from 'react-router-prop-types';
 import queryString from 'query-string';
 import styled from 'styled-components';
@@ -11,8 +11,8 @@ import colors from '../styles/colors';
 import 'react-table/react-table.css';
 // import transitions from '../styles/transitions';
 
-// import Biomarkers from './Biomarkers';
 import LoadingComponent from './Loading';
+import QueryCard from './QueryCard';
 
 const SynergyDiv = styled.div`
   width: 100%;
@@ -21,24 +21,6 @@ const SynergyDiv = styled.div`
   margin-bottom:30px;
   .rt-tr-group:hover {
     background-color: ${colors.summary_bg}
-  }
-`;
-
-const QueryDiv = styled.div`
-  width: 100%;
-  background:white;
-  padding:20px 30px;
-  margin-bottom:30px;
-  font-size:18px;
-  color: ${colors.blue_main};
-
-  .query-container {
-    display:flex;
-    align-items:center;
-  }
-  .col {
-    position:inherit;
-    flex: 1;
   }
 `;
 
@@ -81,7 +63,7 @@ class ComboResults extends Component {
       drugName1: 'Any',
       drugName2: 'Any',
       cellLineName: 'Any',
-      queryParams: "",
+      queryParams: '',
     };
     this.handleCombo = this.handleCombo.bind(this);
   }
@@ -89,12 +71,11 @@ class ComboResults extends Component {
   componentDidMount() {
     const { location } = this.props;
     const requestParams = queryString.parse(location.search);
-    console.log(requestParams)
     const {
       sample, drugId1, drugId2, dataset,
     } = requestParams;
-    let queryParams = `?drugId1=${drugId1}`;
-    
+    let queryParams = '?';
+
     this.setState({
       drugId1: parseInt(drugId1, 10),
       drugId2: parseInt(drugId2, 10),
@@ -102,9 +83,10 @@ class ComboResults extends Component {
     });
     if (sample) queryParams = queryParams.concat(`&sample=${sample}`);
     if (dataset) queryParams = queryParams.concat(`&dataset=${dataset}`);
+    if (drugId1) queryParams = queryParams.concat(`&drugId1=${drugId1}`);
     if (drugId2) queryParams = queryParams.concat(`&drugId2=${drugId2}`);
 
-    this.setState({queryParams: queryParams})
+    this.setState({ queryParams });
 
     fetch('/api/combos'.concat(queryParams), {
       method: 'GET',
@@ -117,43 +99,6 @@ class ComboResults extends Component {
       .then((data) => {
         this.setState({ results: data, loading: false });
       });
-
-    if (drugId1) {
-      fetch('/api/drugs/'.concat(drugId1))
-        .then(response => response.json())
-        .then((data) => {
-          this.setState({ drugName1: data[0].name });
-        });
-    }
-
-
-    if (drugId2) {
-      fetch('/api/drugs/'.concat(drugId2))
-        .then(response => response.json())
-        .then((data) => {
-          this.setState({ drugName2: data[0].name });
-        });
-    }
-
-    if (dataset) {
-      fetch('/api/datasets/'.concat(dataset))
-        .then(response => response.json())
-        .then((data) => {
-          this.setState({ datasetName: data[0].name });
-        });
-    }
-
-    if (sample) {
-      if (parseInt(sample, 10)) {
-        fetch('/api/cell_lines/'.concat(sample))
-          .then(response => response.json())
-          .then((data) => {
-            this.setState({ cellLineName: data[0].name });
-          });
-      } else {
-        this.setState({ cellLineName: sample.toUpperCase() });
-      }
-    }
   }
 
   handleCombo(index) {
@@ -172,9 +117,15 @@ class ComboResults extends Component {
 
   render() {
     const {
-      results, cellLineName, datasetName, drugName1, drugName2, loading,
-      drugId1, drugId2, dataset, queryParams,
+      results, loading,
+      queryParams,
     } = this.state;
+    const { location } = this.props;
+    const requestParams = queryString.parse(location.search);
+    const {
+      sample, drugId1, drugId2, dataset,
+    } = requestParams;
+
     const { handleCombo } = this;
     // const showBiomarker = typeof drugId2 === 'number' && <Biomarkers drugId1={drugId1} drugId2={drugId2} sourceName={results} dataset={dataset} />;
     const totalSynergyScores = results.length;
@@ -253,77 +204,72 @@ class ComboResults extends Component {
     };
     return (
       <main>
-        <Fragment>
-          <QueryDiv>
-            <h2>
-            Query:
-            </h2>
+        <QueryCard
+          drugId1={drugId1}
+          drugId2={drugId2}
+          dataset={dataset}
+          sample={sample}
+        />
+        <ButtonsDiv>
+          <a href={`/biomarker${queryParams}`}>
+            Biomarker
+            {' '}
+            <br />
+            {' '}
+            Discovery
+          </a>
+          <a href={`/sensitivity${queryParams}`}>
+            Cell Line
+            {' '}
+            <br />
+            Sensitivity Analysis
+          </a>
+          <a href={`/enrichment${queryParams}`}>
+            Tissue-Specific
+            {' '}
+            <br />
+            Enrichment Analysis
+          </a>
+          <a href={`/consistency${queryParams}`}>
+            Consistency in
+            {' '}
+            <br />
+            Synergy Scores
+          </a>
+        </ButtonsDiv>
 
-            <div className="query-container">
-              <div className="col">
-                <b>Cell Line:</b>
-                {' '}
-                {cellLineName}
-                <p />
-                <b>Dataset:</b>
-                {' '}
-                {datasetName}
-              </div>
-              <div className="col">
-                <b>Drug A: </b>
-                {' '}
-                {drugName1}
-                <p />
-                <b>Drug B:</b>
-                {' '}
-                {drugName2}
-                <p />
-              </div>
-            </div>
-
-
-          </QueryDiv>
-          <ButtonsDiv>
-            <a href={`/biomarker${queryParams}`}>Biomarker <br></br> Discovery</a>
-            <a href={`/sensitivity${queryParams}`}>Cell Line <br></br>Sensitivity Analysis</a>
-            <a href={`/enrichment${queryParams}`}>Tissue-Specific <br></br>Enrichment Analysis</a>
-            <a href={`/consistency${queryParams}`}>Consistency in <br></br>Synergy Scores</a>
-          </ButtonsDiv>
-
-          {/* {showBiomarker} */}
-          <SynergyDiv>
-            <h2>
+        {/* {showBiomarker} */}
+        <SynergyDiv>
+          <h2>
             Synergy Scores, N=
-              {totalSynergyScores}
-            </h2>
-            <ReactTable
-              loading={loading}
-              LoadingComponent={LoadingComponent}
-              data={results}
-              columns={columns}
-              sortable={false}
-              defaultPageSize={25}
-              filterable
-              defaultFilterMethod={filterCaseInsensitive}
-              className=" -highlight"
-              getTdProps={(state, rowInfo) => ({
-                onClick: (e, handleOriginal) => {
-                  console.log(results)
-                  if (rowInfo) handleCombo(rowInfo.index);
-                  // IMPORTANT! React-Table uses onClick internally to trigger
-                  // events like expanding SubComponents and pivots.
-                  // By default a custom 'onClick' handler will override this functionality.
-                  // If you want to fire the original onClick handler, call the
-                  // 'handleOriginal' function.
-                  if (handleOriginal) {
-                    handleOriginal();
-                  }
-                },
-              })
+            {totalSynergyScores}
+          </h2>
+          <ReactTable
+            loading={loading}
+            LoadingComponent={LoadingComponent}
+            data={results}
+            columns={columns}
+            sortable={false}
+            defaultPageSize={25}
+            filterable
+            defaultFilterMethod={filterCaseInsensitive}
+            className=" -highlight"
+            getTdProps={(state, rowInfo) => ({
+              onClick: (e, handleOriginal) => {
+                if (rowInfo) handleCombo(rowInfo.index);
+                // IMPORTANT! React-Table uses onClick internally to trigger
+                // events like expanding SubComponents and pivots.
+                // By default a custom 'onClick' handler will override this functionality.
+                // If you want to fire the original onClick handler, call the
+                // 'handleOriginal' function.
+                if (handleOriginal) {
+                  handleOriginal();
+                }
+              },
+            })
             }
-            />
-          </SynergyDiv>
-        </Fragment>
+          />
+        </SynergyDiv>
       </main>
     );
   }

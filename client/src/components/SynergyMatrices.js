@@ -215,8 +215,6 @@ class SynergyMatrices extends Component {
               </button>
             ) : null }
 
-          
-
         </ButtonContainer>
         {synergyData.length > 0 ? generateTable() : null}
         {synergyData.length > 0 && selectedType !== 0

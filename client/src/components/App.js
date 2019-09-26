@@ -14,8 +14,8 @@ import Drugs from './Drugs';
 import Documentation from './Documentation';
 import ComboDetails from './ComboDetails';
 import ComboResults from './ComboResults';
-
 import Biomarkers from './Biomarkers';
+
 import Sensitivity from './Sensitivity';
 import Enrichment from './Enrichment';
 import Consistency from './Consistency';
