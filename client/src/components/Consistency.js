@@ -23,6 +23,30 @@ const QueryDiv = styled.div`
   }
 `;
 
+const StyledWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background:white;
+  padding:0px 30px;
+
+  select {
+    position:absolute;
+  }
+
+  .selectX {
+    margin-left: 400px;
+    margin-top: 500px;
+  }
+
+  .selectY {
+    margin-left: -60px;
+    margin-top: 250px;
+  }
+`;
+
 class Consistency extends Component {
     static propTypes = {
         location: ReactRouterPropTypes.location.isRequired,
@@ -145,12 +169,17 @@ class Consistency extends Component {
                             </div>
                         </div>
                     </QueryDiv>
-                    {results.length === 0 ? null : (
-                        <ConsistencyPlot
-                            plotId={`consistencyPlot`}
-                            data={results}
-                        />
-                    )}
+                        {results.length === 0 ? null : (
+                            <StyledWrapper className="wrapper">
+                            <div id="consistencyPlot"></div>
+                            <ConsistencyPlot
+                                plotId={`consistencyPlot`}
+                                data={results}
+                            />
+                            </StyledWrapper>
+                        )}
+                    
+                    
                 </Fragment>
             </main>
         )
