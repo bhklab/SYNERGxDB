@@ -6,9 +6,13 @@ const router = express.Router();
 
 router.get('/', (req, res) => {
   // db('Drug').select('name', 'atcCode', 'idDrugBank', 'idPubChem', 'idDrug')
-  //   .then((data) => {
-  //     res.json(data);
-  //   });
+  // .then((data) => {
+  //   res.json(data);
+  // })
+  // .catch((err) => {
+  //   console.log(err);
+  //   res.json(err);
+  // });
 
   db.select('Drug.name as name', 'atcCode', 'idDrugBank', 'idPubChem', 'drug.idDrug as idDrug',
     db.raw('group_concat(??) as ??', ['source.name', 'dataset_names']))
@@ -18,6 +22,10 @@ router.get('/', (req, res) => {
     .groupBy('name', 'atcCode', 'idDrugBank', 'idPubChem', 'idDrug')
     .then((data) => {
       res.json(data);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.json(err);
     });
 });
 
@@ -31,8 +39,11 @@ router.get('/info', (req, res) => {
     .where({ idDrug: idDrugA })
     .orWhere({ idDrug: idDrugB })
     .then((data) => {
-      console.log('HERE', data);
       res.json(data);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.json(err);
     });
 });
 
@@ -84,6 +95,10 @@ router.get('/mono', (req, res) => {
         .then((drugData) => {
           drugData.forEach((item, index) => { outputArray[index].drugName = item.name; });
           res.json(outputArray);
+        })
+        .catch((err) => {
+          console.log(err);
+          res.json(err);
         });
     });
 });
@@ -192,8 +207,12 @@ router.post('/', (req, res) => {
   db.select('idDrug', 'name').from(subqueryDrugA).join('Drug', 'a1.idDrugA', '=', 'Drug.idDrug')
     .union(queryB)
     .orderBy('name')
-    .then((drugList) => {
-      res.json(drugList);
+    .then((data) => {
+      res.json(data);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.json(err);
     });
 });
 
@@ -203,6 +222,10 @@ router.get('/:drugId', (req, res) => {
     .where({ idDrug: req.params.drugId })
     .then((data) => {
       res.json(data);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.json(err);
     });
 });
 

@@ -88,6 +88,10 @@ router.get('/', (req, res) => {
     .orderBy('zip', 'desc')
     .then((data) => {
       res.json(data);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.json(err);
     });
 });
 
@@ -98,7 +102,13 @@ router.get('/matrix', (req, res) => {
   db.select('concA', 'concB', 'raw_matrix', 'bliss_matrix', 'loewe_matrix', 'hsa_matrix', 'zip_matrix', 'idSource')
     .from('Combo_matrix')
     .where({ idCombo_Design: comboId, idSource })
-    .then(data => res.json(data));
+    .then((data) => {
+      res.json(data);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.json(err);
+    });
 });
 
 router.get('/stats', (req, res) => {
@@ -130,6 +140,10 @@ router.get('/stats', (req, res) => {
     .groupBy('idSource', 'nCombos', 'nExperiments')
     .then((data) => {
       res.json(data);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.json(err);
     });
 });
 module.exports = router;
