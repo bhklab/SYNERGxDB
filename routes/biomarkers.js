@@ -40,7 +40,7 @@ router.get('/association', (req, res) => {
       .where({ hgnc_symbol: gene });
   }
   function subquerySamples() {
-    let subquery = this.select('model_id', 'name')
+    let subquery = this.select('model_id', 'name', 'sample.idSample as idSample')
       .from('sample')
       .join('model_identifiers', 'model_identifiers.idSample', '=', 'sample.idSample');
     if (sample) subquery = subquery.where({ tissue: sample });
@@ -52,9 +52,10 @@ router.get('/association', (req, res) => {
       .where('gene_id', 'in', subqueryGeneIdentifier)
       .as('A');
   }
-  db.select('fpkm', 'name')
+  db.select('idSample', 'fpkm', 'name')
     .from(subqueryAssociations)
     .join(subquerySamples, 'A.model_id', '=', 'S.model_id')
+    .orderBy('idSample', 'asc')
     .then((data) => {
       res.json(data);
     })

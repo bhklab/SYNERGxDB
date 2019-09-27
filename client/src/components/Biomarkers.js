@@ -33,6 +33,7 @@ class Biomarkers extends Component {
       biomarkerData: null,
       // selectedBiomarker: 0,
       loading: false,
+      cellLineExpressionData: [],
     };
     // this.handleSelect = this.handleSelect.bind(this);
   }
@@ -66,6 +67,8 @@ class Biomarkers extends Component {
     })
       .then(response => response.json())
       .then((data) => {
+        data.sort((a, b) => a.idSample - b.idSample);
+        console.log(data);
         this.setState({ results: data, loading: false });
       });
 
@@ -77,8 +80,9 @@ class Biomarkers extends Component {
         Accept: 'application/json',
       },
     }).then(response => response.json())
-      .then((data) => {
-        console.log(data);
+      .then((cellLineExpressionData) => {
+        this.setState({ cellLineExpressionData });
+        console.log(cellLineExpressionData);
       });
   }
 
