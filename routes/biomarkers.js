@@ -25,6 +25,43 @@ router.get('/', (req, res) => {
     .join('source', 'source.idSource', '=', 'biomarker.id')
     .then((data) => {
       res.json(data);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.json(err);
+    });
+});
+
+router.get('/association', (req, res) => {
+  const { gene, sample } = req.query;
+  function subqueryGeneIdentifier() {
+    this.select('gene_id')
+      .from('gene_identifiers')
+      .where({ hgnc_symbol: gene });
+  }
+  function subquerySamples() {
+    let subquery = this.select('model_id', 'name', 'sample.idSample as idSample')
+      .from('sample')
+      .join('model_identifiers', 'model_identifiers.idSample', '=', 'sample.idSample');
+    if (sample) subquery = subquery.where({ tissue: sample });
+    return subquery.as('S');
+  }
+  function subqueryAssociations() {
+    this.select('model_id', 'fpkm')
+      .from('rnaseq')
+      .where('gene_id', 'in', subqueryGeneIdentifier)
+      .as('A');
+  }
+  db.select('idSample', 'fpkm', 'name')
+    .from(subqueryAssociations)
+    .join(subquerySamples, 'A.model_id', '=', 'S.model_id')
+    .orderBy('idSample', 'asc')
+    .then((data) => {
+      res.json(data);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.json(err);
     });
 });
 
@@ -76,6 +113,10 @@ router.post('/fpkm', (req, res) => {
     .andWhere('rna.FPKM', '>', 0)
     .then((data) => {
       res.json(data);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.json(err);
     });
 });
 

@@ -16,6 +16,10 @@ router.get('/datasets', (req, res) => {
       .where({ idSource })
       .then((data) => {
         res.json(data);
+      })
+      .catch((err) => {
+        console.log(err);
+        res.json(err);
       });
   } else {
     baseQuery
@@ -27,18 +31,26 @@ router.get('/datasets', (req, res) => {
       ])
       .then((data) => {
         res.json(data);
+      })
+      .catch((err) => {
+        console.log(err);
+        res.json(err);
       });
   }
 });
 
-router.get("/datasets/:datasetId", (req, res) => {
-  db.select("idSource","name","no_samples","no_drugs","pmID","author","combo")
-    .from("Source")
-    .where({ idSource: req.params.datasetId})
+router.get('/datasets/:datasetId', (req, res) => {
+  db.select('idSource', 'name', 'no_samples', 'no_drugs', 'pmID', 'author', 'combo')
+    .from('Source')
+    .where({ idSource: req.params.datasetId })
     .then((data) => {
-      res.json(data)
+      res.json(data);
     })
-})
+    .catch((err) => {
+      console.log(err);
+      res.json(err);
+    });
+});
 
 
 router.get('/stats', (req, res) => {

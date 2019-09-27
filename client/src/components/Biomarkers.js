@@ -1,5 +1,4 @@
 /* eslint-disable react/no-array-index-key */
-/* eslint-disable react/prop-types */
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import ReactRouterPropTypes from 'react-router-prop-types';
@@ -34,19 +33,26 @@ class Biomarkers extends Component {
       biomarkerData: null,
       // selectedBiomarker: 0,
       loading: false,
+      cellLineExpressionData: [],
     };
     // this.handleSelect = this.handleSelect.bind(this);
   }
 
   componentDidMount() {
+    const gene = 'A2M';
+
     const { location } = this.props;
     const requestParams = queryString.parse(location.search);
     const {
       sample, drugId1, drugId2, dataset,
     } = requestParams;
     let queryParams = '?';
+    let biomarkerParams = `?gene=${gene}`;
 
-    if (sample) queryParams = queryParams.concat(`&sample=${sample}`);
+    if (sample) {
+      queryParams = queryParams.concat(`&sample=${sample}`);
+      biomarkerParams = biomarkerParams.concat(`&sample=${sample}`);
+    }
     if (dataset) queryParams = queryParams.concat(`&dataset=${dataset}`);
     if (drugId1) queryParams = queryParams.concat(`&drugId1=${drugId1}`);
     if (drugId2) queryParams = queryParams.concat(`&drugId2=${drugId2}`);
@@ -55,34 +61,49 @@ class Biomarkers extends Component {
     fetch('/api/combos'.concat(queryParams), {
       method: 'GET',
       headers: {
-        // 'Content-Type': 'application/json',
+        'Content-Type': 'application/json',
         Accept: 'application/json',
       },
     })
       .then(response => response.json())
       .then((data) => {
+        data.sort((a, b) => a.idSample - b.idSample);
+        console.log(data);
         this.setState({ results: data, loading: false });
       });
 
-    // fetch('/api/biomarkers'.concat(queryParams), {
-    //   method: 'GET',
-    //   headers: {
-    //     Accept: 'application/json',
-    //     'Content-Type': 'application/json',
-    //   },
-    // })
-    //   .then(response => response.json())
-    //   .then((data) => {
-    //     console.log(data);
-    //     this.setState({ results: data });
-    //     if (data.length > 0) {
-    //       this.setState({
-    //         biomarkerData: true,
-    //         loading: false,
-    //       });
-    //     }
-    //   });
+    console.log(biomarkerParams);
+    fetch('/api/biomarkers/association'.concat(biomarkerParams), {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+    }).then(response => response.json())
+      .then((cellLineExpressionData) => {
+        this.setState({ cellLineExpressionData });
+        console.log(cellLineExpressionData);
+      });
   }
+
+  // fetch('/api/biomarkers'.concat(queryParams), {
+  //   method: 'GET',
+  //   headers: {
+  //     Accept: 'application/json',
+  //     'Content-Type': 'application/json',
+  //   },
+  // })
+  //   .then(response => response.json())
+  //   .then((data) => {
+  //     console.log(data);
+  //     this.setState({ results: data });
+  //     if (data.length > 0) {
+  //       this.setState({
+  //         biomarkerData: true,
+  //         loading: false,
+  //       });
+  //     }
+  //   });
 
   // handleSelect(index) {
   //   this.setState({
