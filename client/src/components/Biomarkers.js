@@ -29,12 +29,10 @@ class Biomarkers extends Component {
   constructor() {
     super();
     this.state = {
-      results: [],
       // biomarkerData: [],
       biomarkerData: null,
       // selectedBiomarker: 0,
       loading: false,
-      cellLineExpressionData: [],
     };
     // this.handleSelect = this.handleSelect.bind(this);
   }
@@ -63,6 +61,8 @@ class Biomarkers extends Component {
       if (drugId1) queryParams = queryParams.concat(`&drugId1=${drugId1}`);
       if (drugId2) queryParams = queryParams.concat(`&drugId2=${drugId2}`);
 
+      const synergyObj = {};
+
       // API call to retrieve all relevant synergy scores
       await fetch('/api/combos'.concat(queryParams), {
         method: 'GET',
@@ -75,7 +75,16 @@ class Biomarkers extends Component {
         .then((data) => {
           data.sort((a, b) => a.idSample - b.idSample);
           console.log(data);
-          this.setState({ results: data, loading: false });
+          // Doesn't take into account significance of the data
+          // Duplicated data should be filtered based on significance, use C-index
+          data.forEach((score) => {
+            if (!synergyObj[score.idSample]) {
+              synergyObj[score.idSample] = {
+                zip: score.zip,
+                bliss: score.bliss,
+              };
+            }
+          });
         });
 
       // API call to retrieve all fpkm expression levels
@@ -87,13 +96,22 @@ class Biomarkers extends Component {
         },
       }).then(response => response.json())
         .then((cellLineExpressionData) => {
-          this.setState({ cellLineExpressionData });
           console.log(cellLineExpressionData);
+          // Doesn't take into account significance of the data
+          // Duplicated data should be filtered based on significance, use C-index
+          cellLineExpressionData.forEach((item) => {
+            if (synergyObj[item.idSample]) {
+              synergyObj[item.idSample].fpkm = item.fpkm;
+              synergyObj[item.idSample].cellName = item.name;
+            }
+          });
         });
-      console.log(this.state);
+      console.log(synergyObj);
+      this.setState({ loading: false, biomarkerData: synergyObj });
     } catch (err) {
       // eslint-disable-next-line no-console
       console.log(err);
+      this.setState({ loading: false });
     }
   }
   // fetch('/api/biomarkers'.concat(queryParams), {

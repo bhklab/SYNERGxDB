@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable react/require-default-props */
 import React, { Component } from 'react';
 import styled from 'styled-components';
