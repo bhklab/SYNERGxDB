@@ -2,6 +2,8 @@
 import React from 'react';
 import Plot from 'react-plotly.js';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
+import regression from 'regression';
 
 import colors from '../../styles/colors';
 
@@ -15,7 +17,7 @@ const PlotlyContainer = styled.div`
     flex-direction: column; 
 `;
 
-class CumulativeDensity extends React.Component {
+class ExpressionProfile extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -32,7 +34,7 @@ class CumulativeDensity extends React.Component {
           family: 'Raleway',
         },
         title: {
-          text: `Zip x ${props.selectedBiomarker}`,
+          text: `ZIP x ${props.selectedBiomarker}`,
           size: 18,
         },
       },
@@ -44,8 +46,10 @@ class CumulativeDensity extends React.Component {
     const { biomarkerData } = this.props;
 
     const scatterSize = 10;
-    Object.values(biomarkerData).forEach(item => console.log(item));
-    console.log(Object.keys(biomarkerData).map(item => item.fpkm));
+    const regressionData = Object.values(biomarkerData).map(item => [item.fpkm, item.zip]);
+    console.log(regressionData);
+    const bestFitCoefficients = regression.linear(regressionData);
+    console.log(bestFitCoefficients);
     const data = [{
       x: Object.values(biomarkerData).map(item => item.fpkm),
       y: Object.values(biomarkerData).map(item => item.zip),
@@ -55,6 +59,8 @@ class CumulativeDensity extends React.Component {
       mode: 'markers',
       type: 'scatter',
       legendgroup: 'bliss',
+      hoverinfo: 'text',
+      hovertext: Object.values(biomarkerData).map(item => `${item.fpkm} (${item.cellName})`),
     }];
     this.setState({ data });
   }
@@ -79,4 +85,10 @@ class CumulativeDensity extends React.Component {
   }
 }
 
-export default CumulativeDensity;
+ExpressionProfile.propTypes = {
+  selectedBiomarker: PropTypes.string.isRequired,
+  biomarkerData: PropTypes.objectOf(PropTypes.object).isRequired,
+};
+
+
+export default ExpressionProfile;
