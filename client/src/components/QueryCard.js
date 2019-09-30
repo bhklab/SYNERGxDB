@@ -43,6 +43,9 @@ class QueryCard extends Component {
         .then(response => response.json())
         .then((data) => {
           this.setState({ drugName1: data[0].name });
+        })
+        .catch((err) => {
+          console.log(err);
         });
     }
 
@@ -52,6 +55,9 @@ class QueryCard extends Component {
         .then(response => response.json())
         .then((data) => {
           this.setState({ drugName2: data[0].name });
+        })
+        .catch((err) => {
+          console.log(err);
         });
     }
 
@@ -60,6 +66,9 @@ class QueryCard extends Component {
         .then(response => response.json())
         .then((data) => {
           this.setState({ datasetName: data[0].name });
+        })
+        .catch((err) => {
+          console.log(err);
         });
     }
 
@@ -69,6 +78,9 @@ class QueryCard extends Component {
           .then(response => response.json())
           .then((data) => {
             this.setState({ cellLineName: data[0].name });
+          })
+          .catch((err) => {
+            console.log(err);
           });
       } else {
         this.setState({ cellLineName: sample.toUpperCase() });
@@ -86,9 +98,8 @@ class QueryCard extends Component {
     return (
       <QueryDiv>
         <h2>
-                  Query:
+          Query:
         </h2>
-
         <div className="query-container">
           <div className="col">
             <b>Cell Line:</b>
@@ -110,8 +121,6 @@ class QueryCard extends Component {
             <p />
           </div>
         </div>
-
-
       </QueryDiv>
     );
   }

@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable react/no-array-index-key */
 import React, { Component } from 'react';
 import styled from 'styled-components';
@@ -40,52 +41,61 @@ class Biomarkers extends Component {
 
   componentDidMount() {
     const gene = 'A2M';
-
-    const { location } = this.props;
-    const requestParams = queryString.parse(location.search);
-    const {
-      sample, drugId1, drugId2, dataset,
-    } = requestParams;
-    let queryParams = '?';
-    let biomarkerParams = `?gene=${gene}`;
-
-    if (sample) {
-      queryParams = queryParams.concat(`&sample=${sample}`);
-      biomarkerParams = biomarkerParams.concat(`&sample=${sample}`);
-    }
-    if (dataset) queryParams = queryParams.concat(`&dataset=${dataset}`);
-    if (drugId1) queryParams = queryParams.concat(`&drugId1=${drugId1}`);
-    if (drugId2) queryParams = queryParams.concat(`&drugId2=${drugId2}`);
-
-    // API call to retrieve all relevant synergy scores
-    fetch('/api/combos'.concat(queryParams), {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-      },
-    })
-      .then(response => response.json())
-      .then((data) => {
-        data.sort((a, b) => a.idSample - b.idSample);
-        console.log(data);
-        this.setState({ results: data, loading: false });
-      });
-
-    console.log(biomarkerParams);
-    fetch('/api/biomarkers/association'.concat(biomarkerParams), {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-      },
-    }).then(response => response.json())
-      .then((cellLineExpressionData) => {
-        this.setState({ cellLineExpressionData });
-        console.log(cellLineExpressionData);
-      });
+    this.getPlotData(gene);
   }
 
+
+  async getPlotData(gene) {
+    try {
+      const { location } = this.props;
+      const requestParams = queryString.parse(location.search);
+      const {
+        sample, drugId1, drugId2, dataset,
+      } = requestParams;
+      let queryParams = '?';
+      let biomarkerParams = `?gene=${gene}`;
+
+      if (sample) {
+        queryParams = queryParams.concat(`&sample=${sample}`);
+        biomarkerParams = biomarkerParams.concat(`&sample=${sample}`);
+      }
+      if (dataset) queryParams = queryParams.concat(`&dataset=${dataset}`);
+      if (drugId1) queryParams = queryParams.concat(`&drugId1=${drugId1}`);
+      if (drugId2) queryParams = queryParams.concat(`&drugId2=${drugId2}`);
+
+      // API call to retrieve all relevant synergy scores
+      await fetch('/api/combos'.concat(queryParams), {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+      })
+        .then(response => response.json())
+        .then((data) => {
+          data.sort((a, b) => a.idSample - b.idSample);
+          console.log(data);
+          this.setState({ results: data, loading: false });
+        });
+
+      // API call to retrieve all fpkm expression levels
+      await fetch('/api/biomarkers/association'.concat(biomarkerParams), {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+      }).then(response => response.json())
+        .then((cellLineExpressionData) => {
+          this.setState({ cellLineExpressionData });
+          console.log(cellLineExpressionData);
+        });
+      console.log(this.state);
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.log(err);
+    }
+  }
   // fetch('/api/biomarkers'.concat(queryParams), {
   //   method: 'GET',
   //   headers: {
