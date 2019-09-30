@@ -32,14 +32,15 @@ class Biomarkers extends Component {
     this.state = {
       // biomarkerData: [],
       biomarkerData: null,
-      // selectedBiomarker: 0,
-      loading: false,
+      selectedBiomarker: null,
+      loading: true,
     };
     // this.handleSelect = this.handleSelect.bind(this);
   }
 
   componentDidMount() {
     const gene = 'A2M';
+    this.setState({ selectedBiomarker: gene });
     this.getPlotData(gene);
   }
 
@@ -148,18 +149,20 @@ class Biomarkers extends Component {
       sample, drugId1, drugId2, dataset,
     } = requestParams;
     const {
-      loading, biomarkerData,
+      loading, biomarkerData, selectedBiomarker,
     } = this.state;
-      // const columns = [{
-      //   Header: 'Gene Symbol',
-      //   accessor: 'gene', // String-based value accessors!
-      // }, {
-      //   Header: 'One-way ANOVA P',
-      //   accessor: 'p',
-      // }, {
-      //   Header: 'Source',
-      //   accessor: 'name',
-      // }];
+    console.log(loading);
+    console.log(biomarkerData);
+    // const columns = [{
+    //   Header: 'Gene Symbol',
+    //   accessor: 'gene', // String-based value accessors!
+    // }, {
+    //   Header: 'One-way ANOVA P',
+    //   accessor: 'p',
+    // }, {
+    //   Header: 'Source',
+    //   accessor: 'name',
+    // }];
 
     return (
       <main>
@@ -197,7 +200,12 @@ class Biomarkers extends Component {
               }
             /> */}
           <div className="plot-container">
-            <ExpressionProfile biomarkerData={biomarkerData} />
+            { !loading ? (
+              <ExpressionProfile
+                biomarkerData={biomarkerData}
+                selectedBiomarker={selectedBiomarker}
+              />
+            ) : null}
 
             {/* <BiomarkerPlot
                 idDrugA={drugId1}

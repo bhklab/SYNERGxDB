@@ -32,7 +32,7 @@ class CumulativeDensity extends React.Component {
           family: 'Raleway',
         },
         title: {
-          text: 'Change',
+          text: `Zip x ${props.selectedBiomarker}`,
           size: 18,
         },
       },
@@ -42,11 +42,13 @@ class CumulativeDensity extends React.Component {
   // Methods called on loading
   componentDidMount() {
     const { biomarkerData } = this.props;
-    console.log(biomarkerData);
+
     const scatterSize = 10;
+    Object.values(biomarkerData).forEach(item => console.log(item));
+    console.log(Object.keys(biomarkerData).map(item => item.fpkm));
     const data = [{
-      x: [0],
-      y: [1],
+      x: Object.values(biomarkerData).map(item => item.fpkm),
+      y: Object.values(biomarkerData).map(item => item.zip),
       name: 'Cell line',
       marker: { color: colors.color_main_2, size: scatterSize },
       showlegend: false,
