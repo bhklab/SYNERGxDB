@@ -10,6 +10,7 @@ import QueryCard from './QueryCard';
 import 'react-table/react-table.css';
 // import transitions from '../styles/transitions';
 
+import ExpressionProfile from './Plots/ExpressionProfile';
 // import BiomarkerPlot from './Plots/BiomarkerPlot';
 
 const StyledBiomarkers = styled.div`
@@ -147,7 +148,7 @@ class Biomarkers extends Component {
       sample, drugId1, drugId2, dataset,
     } = requestParams;
     const {
-      loading,
+      loading, biomarkerData,
     } = this.state;
       // const columns = [{
       //   Header: 'Gene Symbol',
@@ -195,15 +196,17 @@ class Biomarkers extends Component {
               })
               }
             /> */}
-          {/* <div className="plot-container">
-              <BiomarkerPlot
+          <div className="plot-container">
+            <ExpressionProfile biomarkerData={biomarkerData} />
+
+            {/* <BiomarkerPlot
                 idDrugA={drugId1}
                 idDrugB={drugId2}
                 idSource={results[selectedBiomarker].idSource}
                 gene={results[selectedBiomarker].gene}
                 pValue={results[selectedBiomarker].p}
-              />
-            </div> */}
+              /> */}
+          </div>
         </StyledBiomarkers>
       </main>
     );
