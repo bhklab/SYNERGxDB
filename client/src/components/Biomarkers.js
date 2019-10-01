@@ -65,7 +65,7 @@ class Biomarkers extends Component {
   }
 
   componentDidMount() {
-    const gene = 'A2M';
+    const gene = 'ARL13A';
     this.setState({ selectedBiomarker: gene });
     this.getPlotData(gene);
   }
@@ -133,6 +133,11 @@ class Biomarkers extends Component {
               synergyObj[item.idSample].cellName = item.name;
             }
           });
+          // Loops through synergyObj and deletes incomplete key value pair
+          // if it has incomplete data
+          Object.entries(synergyObj).forEach((item) => {
+            if (item[1].fpkm === undefined) delete synergyObj[item[0]];
+          });
         });
       console.log(synergyObj);
       this.setState({ loading: false, biomarkerData: synergyObj });
@@ -177,8 +182,6 @@ class Biomarkers extends Component {
     const {
       loading, biomarkerData, selectedBiomarker,
     } = this.state;
-    console.log(loading);
-    console.log(biomarkerData);
     // const columns = [{
     //   Header: 'Gene Symbol',
     //   accessor: 'gene', // String-based value accessors!
