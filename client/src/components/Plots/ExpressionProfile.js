@@ -64,7 +64,10 @@ class ExpressionProfile extends React.Component {
       x: Object.values(biomarkerData).map(item => item.fpkm),
       y: Object.values(biomarkerData).map(item => item.zip),
       name: 'Cell line',
-      marker: { color: colors.color_main_2, size: 10 },
+      marker: {
+        color: colors.color_main_2,
+        size: 7,
+      },
       showlegend: false,
       mode: 'markers',
       type: 'scatter',
@@ -72,16 +75,24 @@ class ExpressionProfile extends React.Component {
       hovertext: Object.values(biomarkerData).map(item => `${item.fpkm} (${item.cellName})`),
     };
     const data = [datapoints];
-    if (bestFitCoefficients.equation[0]) {
-      const bestFitLine = {
-        x: [0, -bestFitCoefficients.equation[1] / bestFitCoefficients.equation[0]],
-        y: [bestFitCoefficients.equation[1], 0],
-        mode: 'lines',
-        type: 'scatter',
-        showlegend: false,
-      };
-      data.unshift(bestFitLine);
-    }
+    // Renders best fit line using previously calculated coefficients
+    const bestFitLine = {
+      x: xRange,
+      y: [
+        (lowestFPKM - rangeFPKM * paddingPercent)
+          * bestFitCoefficients.equation[0] + bestFitCoefficients.equation[1],
+        (highestFPKM + rangeFPKM * paddingPercent)
+          * bestFitCoefficients.equation[0] + bestFitCoefficients.equation[1],
+      ],
+      mode: 'lines',
+      type: 'scatter',
+      showlegend: false,
+      marker: {
+        color: colors.color_main_5,
+      },
+      hoverinfo: 'none',
+    };
+    data.unshift(bestFitLine);
     const layout = {
       title: {
         text: `ZIP x ${selectedBiomarker}`,
