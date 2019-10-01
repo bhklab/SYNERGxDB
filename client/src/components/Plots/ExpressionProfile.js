@@ -30,6 +30,32 @@ class ExpressionProfile extends React.Component {
   componentDidMount() {
     const { biomarkerData, selectedBiomarker } = this.props;
 
+    // Sets plot range (Start)
+    const paddingPercent = 0.05;
+    let lowestFPKM = 0;
+    let highestFPKM = 0;
+    let lowestSynScore = 0;
+    let highestSynScore = 0;
+    Object.values(biomarkerData).forEach((item) => {
+      if (item.fpkm < lowestFPKM) lowestFPKM = item.fpkm;
+      if (item.fpkm > highestFPKM) highestFPKM = item.fpkm;
+      if (item.zip < lowestSynScore) lowestSynScore = item.zip;
+      if (item.zip > highestSynScore) highestSynScore = item.zip;
+    });
+    const rangeFPKM = highestFPKM - lowestFPKM;
+    const xRange = [
+      lowestFPKM - rangeFPKM * paddingPercent,
+      highestFPKM + rangeFPKM * paddingPercent,
+    ];
+    const rangeSynScore = highestSynScore - lowestSynScore;
+    const yRange = [
+      lowestSynScore - rangeSynScore * paddingPercent,
+      highestSynScore + rangeSynScore * paddingPercent,
+    ];
+    // Sets plot range (Finish)
+
+
+    console.log(biomarkerData);
     // calculates coefficients for best fit line
     const regressionData = Object.values(biomarkerData).map(item => [item.fpkm, item.zip]);
     const bestFitCoefficients = regression.linear(regressionData);
@@ -67,7 +93,7 @@ class ExpressionProfile extends React.Component {
       },
       margin: {
         l: 50,
-        r: 0,
+        r: 10,
         t: 30,
         b: 55,
       },
@@ -86,9 +112,38 @@ class ExpressionProfile extends React.Component {
         color: colors.color_main_1,
         tickcolor: colors.color_main_1,
         linecolor: colors.color_main_1,
-
+        range: xRange,
+        fixedrange: true,
+        mirror: true,
+        font: {
+          size: 16,
+          color: colors.nav_links,
+          family: 'Raleway',
+        },
+        linewidth: 3,
       },
-      yaxis: { title: 'Synergy Score' },
+      yaxis: {
+        title: {
+          text: 'Synergy Score',
+          font: {
+            family: 'Nunito Sans, sans-serif',
+            color: colors.color_main_1,
+            size: 16,
+          },
+        },
+        color: colors.color_main_1,
+        tickcolor: colors.color_main_1,
+        linecolor: colors.color_main_1,
+        range: yRange,
+        fixedrange: true,
+        mirror: true,
+        linewidth: 3,
+        tickfont: {
+          family: 'Nunito Sans, sans-serif',
+          color: colors.color_main_1,
+          size: 13,
+        },
+      },
       font: {
         size: 16,
         color: colors.nav_links,
