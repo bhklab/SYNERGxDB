@@ -50,7 +50,7 @@ class ExpressionProfile extends React.Component {
     console.log(regressionData);
     const bestFitCoefficients = regression.linear(regressionData);
     console.log(bestFitCoefficients);
-    const data = [{
+    const datapoints = {
       x: Object.values(biomarkerData).map(item => item.fpkm),
       y: Object.values(biomarkerData).map(item => item.zip),
       name: 'Cell line',
@@ -61,7 +61,18 @@ class ExpressionProfile extends React.Component {
       legendgroup: 'bliss',
       hoverinfo: 'text',
       hovertext: Object.values(biomarkerData).map(item => `${item.fpkm} (${item.cellName})`),
-    }];
+    };
+
+    const data = [datapoints];
+    if (bestFitCoefficients.equation[0]) {
+      const bestFitLine = {
+        x: [0, -bestFitCoefficients.equation[1] / bestFitCoefficients.equation[0]],
+        y: [bestFitCoefficients.equation[1], 0],
+        mode: 'lines',
+        type: 'scatter',
+      };
+      data.push(bestFitLine);
+    }
     this.setState({ data });
   }
 
