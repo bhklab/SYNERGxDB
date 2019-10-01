@@ -65,8 +65,8 @@ class Biomarkers extends Component {
   }
 
   componentDidMount() {
-    const gene = 'ARL13A';
-    // const gene = 'A2M';
+    // const gene = 'ARL13A';
+    const gene = 'A2M';
 
     this.setState({ selectedBiomarker: gene });
     this.getPlotData(gene);
@@ -244,7 +244,8 @@ class Biomarkers extends Component {
               >
                 {/* <RailContainer />
                 Add a rail as a child.  Later we'll make it interactive. */}
-                <div style={railStyle /* Add a rail as a child.  Later we'll make it interactive. */} />
+                <div style={railStyle} />
+                {/* Add a rail as a child.  Later we'll make it interactive. */}
               </Slider>
               {/* <BiomarkerPlot
                 idDrugA={drugId1}

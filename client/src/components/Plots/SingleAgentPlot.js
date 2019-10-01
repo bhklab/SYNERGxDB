@@ -61,6 +61,7 @@ class SingleAgentPlot extends React.Component {
           size: 18,
         },
       },
+      hovermode: 'closest',
       autosize: true,
       height: 250,
       margin: {

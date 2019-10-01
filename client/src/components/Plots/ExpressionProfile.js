@@ -22,47 +22,29 @@ class ExpressionProfile extends React.Component {
     super(props);
     this.state = {
       data: null,
-      layout: {
-        height: 450,
-        paper_bgcolor: 'white',
-        plot_bgcolor: 'white',
-        yaxis: { title: 'Synergy Score' },
-        xaxis: { title: 'FPKM' },
-        font: {
-          size: 16,
-          color: colors.nav_links,
-          family: 'Raleway',
-        },
-        title: {
-          text: `ZIP x ${props.selectedBiomarker}`,
-          size: 18,
-        },
-      },
+      layout: null,
     };
   }
 
   // Methods called on loading
   componentDidMount() {
-    const { biomarkerData } = this.props;
+    const { biomarkerData, selectedBiomarker } = this.props;
 
-    const scatterSize = 10;
+    // calculates coefficients for best fit line
     const regressionData = Object.values(biomarkerData).map(item => [item.fpkm, item.zip]);
-    console.log(regressionData);
     const bestFitCoefficients = regression.linear(regressionData);
-    console.log(bestFitCoefficients);
+
     const datapoints = {
       x: Object.values(biomarkerData).map(item => item.fpkm),
       y: Object.values(biomarkerData).map(item => item.zip),
       name: 'Cell line',
-      marker: { color: colors.color_main_2, size: scatterSize },
+      marker: { color: colors.color_main_2, size: 10 },
       showlegend: false,
       mode: 'markers',
       type: 'scatter',
-      legendgroup: 'bliss',
       hoverinfo: 'text',
       hovertext: Object.values(biomarkerData).map(item => `${item.fpkm} (${item.cellName})`),
     };
-
     const data = [datapoints];
     if (bestFitCoefficients.equation[0]) {
       const bestFitLine = {
@@ -70,10 +52,50 @@ class ExpressionProfile extends React.Component {
         y: [bestFitCoefficients.equation[1], 0],
         mode: 'lines',
         type: 'scatter',
+        showlegend: false,
       };
-      data.push(bestFitLine);
+      data.unshift(bestFitLine);
     }
-    this.setState({ data });
+    const layout = {
+      title: {
+        text: `ZIP x ${selectedBiomarker}`,
+        font: {
+          family: 'Nunito Sans, sans-serif',
+          color: colors.color_main_1,
+          size: 18,
+        },
+      },
+      margin: {
+        l: 50,
+        r: 0,
+        t: 30,
+        b: 55,
+      },
+      autosize: true,
+      height: 450,
+      hovermode: 'closest',
+      xaxis: {
+        title: {
+          text: 'FPKM',
+          font: {
+            family: 'Nunito Sans, sans-serif',
+            color: colors.color_main_1,
+            size: 16,
+          },
+        },
+        color: colors.color_main_1,
+        tickcolor: colors.color_main_1,
+        linecolor: colors.color_main_1,
+
+      },
+      yaxis: { title: 'Synergy Score' },
+      font: {
+        size: 16,
+        color: colors.nav_links,
+        family: 'Raleway',
+      },
+    };
+    this.setState({ data, layout });
   }
 
   render() {

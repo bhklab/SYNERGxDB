@@ -61,6 +61,7 @@ class SingleDrugInhibitionPlot extends React.Component {
       },
       autosize: true,
       height: 250,
+      hovermode: 'closest',
       margin: {
         l: 50,
         r: 0,

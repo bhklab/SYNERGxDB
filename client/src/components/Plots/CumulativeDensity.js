@@ -184,6 +184,7 @@ class CumulativeDensity extends React.Component {
               yaxis: { title: 'Cumulative density' },
               xaxis: { title: `Synergy Score (Cell Lines, N=${comboData.length})` },
               barmode: 'overlay',
+              hovermode: 'closest',
               font: {
                 size: 16,
                 color: colors.nav_links,
