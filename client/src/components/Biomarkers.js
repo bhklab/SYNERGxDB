@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 import ReactRouterPropTypes from 'react-router-prop-types';
 import queryString from 'query-string';
-import { Slider } from 'react-compound-slider';
+import Slider from '@material-ui/core/Slider';
 import QueryCard from './QueryCard';
 // import ReactTable from 'react-table';
 // import colors from '../styles/colors';
@@ -14,6 +14,12 @@ import 'react-table/react-table.css';
 import ExpressionProfile from './Plots/ExpressionProfile';
 // import BiomarkerPlot from './Plots/BiomarkerPlot';
 
+// used to align plot and slider (in px)
+const dimensions = {
+  top: 30,
+  bottom: 55,
+};
+
 const StyledBiomarkers = styled.div`
   width: 100%;
   height: auto;
@@ -22,30 +28,18 @@ const StyledBiomarkers = styled.div`
   margin-bottom:20px;
 `;
 
-const sliderStyle = { // Give the slider some width
-  position: 'relative',
-  width: '100%',
-  height: 80,
-  border: '1px solid steelblue',
-};
+const StyledPlotContainer = styled.div`
+  display: flex;
+  div.slider {
+    height: 450px;
+    padding-top: ${dimensions.top}px;
+    padding-bottom: ${dimensions.bottom}px
+  }
+`;
 
-const railStyle = {
-  position: 'absolute',
-  width: '100%',
-  height: 10,
-  marginTop: 35,
-  borderRadius: 5,
-  backgroundColor: '#8B9CB6',
-};
-
-// const RailContainer = styled.div`
-//   position: absolute,
-//   width: 100%,
-//   height: 10,
-//   marginTop: 35,
-//   borderRadius: 5,
-//   backgroundColor: '#8B9CB6',
-// `;
+function valuetext(value) {
+  return `${value}°C`;
+}
 
 
 class Biomarkers extends Component {
@@ -231,22 +225,21 @@ class Biomarkers extends Component {
               }
             /> */}
           { !loading ? (
-            <div className="plot-container">
+            <StyledPlotContainer>
               <ExpressionProfile
                 biomarkerData={biomarkerData}
                 selectedBiomarker={selectedBiomarker}
+                dimensions={dimensions}
               />
-              <Slider
-                rootStyle={sliderStyle
-                /* inline styles for the outer div. Can also use className prop. */}
-                domain={[0, 100]}
-                values={[10]}
-              >
-                {/* <RailContainer />
-                Add a rail as a child.  Later we'll make it interactive. */}
-                <div style={railStyle} />
-                {/* Add a rail as a child.  Later we'll make it interactive. */}
-              </Slider>
+              <div className="slider">
+                <Slider
+                  orientation="vertical"
+                  getAriaValueText={valuetext}
+                  defaultValue={30}
+                  aria-labelledby="vertical-slider"
+                />
+
+              </div>
               {/* <BiomarkerPlot
                 idDrugA={drugId1}
                 idDrugB={drugId2}
@@ -254,7 +247,7 @@ class Biomarkers extends Component {
                 gene={results[selectedBiomarker].gene}
                 pValue={results[selectedBiomarker].p}
               /> */}
-            </div>
+            </StyledPlotContainer>
           ) : null}
         </StyledBiomarkers>
       </main>

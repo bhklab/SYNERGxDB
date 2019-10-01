@@ -11,7 +11,6 @@ import colors from '../../styles/colors';
 const PlotlyContainer = styled.div`
     min-height: 450px;
     padding-bottom: 10px;
-    border-bottom: 2px solid ${colors.color_main_3};
     margin-bottom: 10px;
     display: flex;
     flex-direction: column; 
@@ -28,7 +27,7 @@ class ExpressionProfile extends React.Component {
 
   // Methods called on loading
   componentDidMount() {
-    const { biomarkerData, selectedBiomarker } = this.props;
+    const { biomarkerData, selectedBiomarker, dimensions } = this.props;
 
     // Sets plot range (Start)
     const paddingPercent = 0.05;
@@ -105,8 +104,8 @@ class ExpressionProfile extends React.Component {
       margin: {
         l: 50,
         r: 10,
-        t: 30,
-        b: 55,
+        t: dimensions.top,
+        b: dimensions.bottom,
       },
       autosize: true,
       height: 450,
@@ -169,7 +168,7 @@ class ExpressionProfile extends React.Component {
       data, layout,
     } = this.state;
     return (
-      <PlotlyContainer className="cumulative-container">
+      <PlotlyContainer>
         <Plot
           data={data}
           layout={layout}
@@ -187,6 +186,7 @@ class ExpressionProfile extends React.Component {
 ExpressionProfile.propTypes = {
   selectedBiomarker: PropTypes.string.isRequired,
   biomarkerData: PropTypes.objectOf(PropTypes.object).isRequired,
+  dimensions: PropTypes.objectOf(PropTypes.number).isRequired,
 };
 
 
