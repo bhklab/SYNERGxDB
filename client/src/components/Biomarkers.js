@@ -4,6 +4,7 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 import ReactRouterPropTypes from 'react-router-prop-types';
 import queryString from 'query-string';
+import { Slider } from 'react-compound-slider';
 import QueryCard from './QueryCard';
 // import ReactTable from 'react-table';
 // import colors from '../styles/colors';
@@ -20,6 +21,31 @@ const StyledBiomarkers = styled.div`
   padding:20px 30px;
   margin-bottom:20px;
 `;
+
+const sliderStyle = { // Give the slider some width
+  position: 'relative',
+  width: '100%',
+  height: 80,
+  border: '1px solid steelblue',
+};
+
+const railStyle = {
+  position: 'absolute',
+  width: '100%',
+  height: 10,
+  marginTop: 35,
+  borderRadius: 5,
+  backgroundColor: '#8B9CB6',
+};
+
+// const RailContainer = styled.div`
+//   position: absolute,
+//   width: 100%,
+//   height: 10,
+//   marginTop: 35,
+//   borderRadius: 5,
+//   backgroundColor: '#8B9CB6',
+// `;
 
 
 class Biomarkers extends Component {
@@ -199,22 +225,31 @@ class Biomarkers extends Component {
               })
               }
             /> */}
-          <div className="plot-container">
-            { !loading ? (
+          { !loading ? (
+            <div className="plot-container">
               <ExpressionProfile
                 biomarkerData={biomarkerData}
                 selectedBiomarker={selectedBiomarker}
               />
-            ) : null}
-
-            {/* <BiomarkerPlot
+              <Slider
+                rootStyle={sliderStyle
+                /* inline styles for the outer div. Can also use className prop. */}
+                domain={[0, 100]}
+                values={[10]}
+              >
+                {/* <RailContainer />
+                Add a rail as a child.  Later we'll make it interactive. */}
+                <div style={railStyle /* Add a rail as a child.  Later we'll make it interactive. */} />
+              </Slider>
+              {/* <BiomarkerPlot
                 idDrugA={drugId1}
                 idDrugB={drugId2}
                 idSource={results[selectedBiomarker].idSource}
                 gene={results[selectedBiomarker].gene}
                 pValue={results[selectedBiomarker].p}
               /> */}
-          </div>
+            </div>
+          ) : null}
         </StyledBiomarkers>
       </main>
     );
