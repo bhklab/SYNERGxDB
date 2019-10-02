@@ -5,14 +5,14 @@ import styled from 'styled-components';
 import ReactRouterPropTypes from 'react-router-prop-types';
 import queryString from 'query-string';
 import Slider from '@material-ui/core/Slider';
-import QueryCard from './QueryCard';
 // import ReactTable from 'react-table';
 // import colors from '../styles/colors';
 import 'react-table/react-table.css';
 // import transitions from '../styles/transitions';
 
 import ExpressionProfile from './Plots/ExpressionProfile';
-// import BiomarkerPlot from './Plots/BiomarkerPlot';
+import QueryCard from './QueryCard';
+import BiomarkerBoxPlot from './Plots/BiomarkerBoxPlot';
 
 // used to align plot and slider (in px)
 const dimensions = {
@@ -306,13 +306,7 @@ class Biomarkers extends Component {
                   />
                 </div>
               </div>
-              {/* <BiomarkerPlot
-                idDrugA={drugId1}
-                idDrugB={drugId2}
-                idSource={results[selectedBiomarker].idSource}
-                gene={results[selectedBiomarker].gene}
-                pValue={results[selectedBiomarker].p}
-              /> */}
+              <BiomarkerBoxPlot />
             </StyledExpressionProfile>
           ) : null}
         </StyledBiomarkers>
