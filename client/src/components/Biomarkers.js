@@ -54,6 +54,8 @@ class Biomarkers extends Component {
       biomarkerData: null,
       selectedBiomarker: null,
       loading: true,
+      xRange: null,
+      yRange: null,
     };
     // this.handleSelect = this.handleSelect.bind(this);
   }
@@ -135,8 +137,36 @@ class Biomarkers extends Component {
             if (item[1].fpkm === undefined) delete synergyObj[item[0]];
           });
         });
-      console.log(synergyObj);
-      this.setState({ loading: false, biomarkerData: synergyObj });
+
+      // ***************************
+      // Sets plot range
+      // ***************************
+      const paddingPercent = 0.05;
+      let lowestFPKM = 0;
+      let highestFPKM = 0;
+      let lowestSynScore = 0;
+      let highestSynScore = 0;
+      Object.values(synergyObj).forEach((item) => {
+        if (item.fpkm < lowestFPKM) lowestFPKM = item.fpkm;
+        if (item.fpkm > highestFPKM) highestFPKM = item.fpkm;
+        if (item.zip < lowestSynScore) lowestSynScore = item.zip;
+        if (item.zip > highestSynScore) highestSynScore = item.zip;
+      });
+      const rangeFPKM = highestFPKM - lowestFPKM;
+      const xRange = [
+        lowestFPKM - rangeFPKM * paddingPercent,
+        highestFPKM + rangeFPKM * paddingPercent,
+      ];
+      const rangeSynScore = highestSynScore - lowestSynScore;
+      const yRange = [
+        lowestSynScore - rangeSynScore * paddingPercent,
+        highestSynScore + rangeSynScore * paddingPercent,
+      ];
+
+
+      this.setState({
+        loading: false, biomarkerData: synergyObj, xRange, yRange,
+      });
     } catch (err) {
       // eslint-disable-next-line no-console
       console.log(err);
@@ -176,7 +206,7 @@ class Biomarkers extends Component {
       sample, drugId1, drugId2, dataset,
     } = requestParams;
     const {
-      loading, biomarkerData, selectedBiomarker,
+      loading, biomarkerData, selectedBiomarker, xRange, yRange,
     } = this.state;
     // const columns = [{
     //   Header: 'Gene Symbol',
@@ -230,6 +260,8 @@ class Biomarkers extends Component {
                 biomarkerData={biomarkerData}
                 selectedBiomarker={selectedBiomarker}
                 dimensions={dimensions}
+                xRange={xRange}
+                yRange={yRange}
               />
               <div className="slider">
                 <Slider

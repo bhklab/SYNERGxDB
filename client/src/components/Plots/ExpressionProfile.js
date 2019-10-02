@@ -27,32 +27,9 @@ class ExpressionProfile extends React.Component {
 
   // Methods called on loading
   componentDidMount() {
-    const { biomarkerData, selectedBiomarker, dimensions } = this.props;
-
-    // Sets plot range (Start)
-    const paddingPercent = 0.05;
-    let lowestFPKM = 0;
-    let highestFPKM = 0;
-    let lowestSynScore = 0;
-    let highestSynScore = 0;
-    Object.values(biomarkerData).forEach((item) => {
-      if (item.fpkm < lowestFPKM) lowestFPKM = item.fpkm;
-      if (item.fpkm > highestFPKM) highestFPKM = item.fpkm;
-      if (item.zip < lowestSynScore) lowestSynScore = item.zip;
-      if (item.zip > highestSynScore) highestSynScore = item.zip;
-    });
-    const rangeFPKM = highestFPKM - lowestFPKM;
-    const xRange = [
-      lowestFPKM - rangeFPKM * paddingPercent,
-      highestFPKM + rangeFPKM * paddingPercent,
-    ];
-    const rangeSynScore = highestSynScore - lowestSynScore;
-    const yRange = [
-      lowestSynScore - rangeSynScore * paddingPercent,
-      highestSynScore + rangeSynScore * paddingPercent,
-    ];
-    // Sets plot range (Finish)
-
+    const {
+      biomarkerData, selectedBiomarker, dimensions, xRange, yRange,
+    } = this.props;
 
     console.log(biomarkerData);
     // calculates coefficients for best fit line
@@ -78,10 +55,8 @@ class ExpressionProfile extends React.Component {
     const bestFitLine = {
       x: xRange,
       y: [
-        (lowestFPKM - rangeFPKM * paddingPercent)
-          * bestFitCoefficients.equation[0] + bestFitCoefficients.equation[1],
-        (highestFPKM + rangeFPKM * paddingPercent)
-          * bestFitCoefficients.equation[0] + bestFitCoefficients.equation[1],
+        xRange[0] * bestFitCoefficients.equation[0] + bestFitCoefficients.equation[1],
+        xRange[1] * bestFitCoefficients.equation[0] + bestFitCoefficients.equation[1],
       ],
       mode: 'lines',
       type: 'scatter',
@@ -187,6 +162,8 @@ ExpressionProfile.propTypes = {
   selectedBiomarker: PropTypes.string.isRequired,
   biomarkerData: PropTypes.objectOf(PropTypes.object).isRequired,
   dimensions: PropTypes.objectOf(PropTypes.number).isRequired,
+  xRange: PropTypes.arrayOf(PropTypes.number).isRequired,
+  yRange: PropTypes.arrayOf(PropTypes.number).isRequired,
 };
 
 
