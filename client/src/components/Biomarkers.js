@@ -26,14 +26,23 @@ const StyledBiomarkers = styled.div`
   background:white;
   padding:20px 30px;
   margin-bottom:20px;
+  
 `;
 
-const StyledPlotContainer = styled.div`
+const StyledExpressionProfile = styled.div`
   display: flex;
+  flex-wrap: wrap;
   div.slider {
     height: 450px;
     padding-top: ${dimensions.top}px;
     padding-bottom: ${dimensions.bottom}px
+  }
+
+  .expression-profile {
+    width: 50%;
+    min-width: 400px;
+    display: flex
+    justify-content: space-between;
   }
 `;
 
@@ -274,27 +283,28 @@ class Biomarkers extends Component {
               }
             /> */}
           { !loading ? (
-            <StyledPlotContainer>
-              <ExpressionProfile
-                biomarkerData={biomarkerData}
-                selectedBiomarker={selectedBiomarker}
-                dimensions={dimensions}
-                xRange={xRange}
-                yRange={yRange}
-                threshold={customThreshold || defaultThreshold}
-              />
-              <div className="slider">
-                <Slider
-                  orientation="vertical"
-                  defaultValue={customThreshold || defaultThreshold}
-                  min={Math.round(yRange[0] * 100) / 100}
-                  max={Math.round(yRange[1] * 100) / 100}
-                  aria-labelledby="vertical-discrete-slider-restrict"
-                  step={Math.round(((yRange[1] - yRange[0]) / 100) * 100) / 100}
-                  valueLabelDisplay="auto"
-                  onChangeCommitted={(e, value) => this.setState({ customThreshold: value })}
+            <StyledExpressionProfile>
+              <div className="expression-profile">
+                <ExpressionProfile
+                  biomarkerData={biomarkerData}
+                  selectedBiomarker={selectedBiomarker}
+                  dimensions={dimensions}
+                  xRange={xRange}
+                  yRange={yRange}
+                  threshold={customThreshold || defaultThreshold}
                 />
-
+                <div className="slider">
+                  <Slider
+                    orientation="vertical"
+                    defaultValue={customThreshold || defaultThreshold}
+                    min={Math.round(yRange[0] * 100) / 100}
+                    max={Math.round(yRange[1] * 100) / 100}
+                    aria-labelledby="vertical-discrete-slider-restrict"
+                    step={Math.round(((yRange[1] - yRange[0]) / 100) * 100) / 100}
+                    valueLabelDisplay="auto"
+                    onChange={(e, value) => this.setState({ customThreshold: value })}
+                  />
+                </div>
               </div>
               {/* <BiomarkerPlot
                 idDrugA={drugId1}
@@ -303,7 +313,7 @@ class Biomarkers extends Component {
                 gene={results[selectedBiomarker].gene}
                 pValue={results[selectedBiomarker].p}
               /> */}
-            </StyledPlotContainer>
+            </StyledExpressionProfile>
           ) : null}
         </StyledBiomarkers>
       </main>

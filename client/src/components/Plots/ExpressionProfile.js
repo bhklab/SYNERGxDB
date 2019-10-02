@@ -10,6 +10,7 @@ import colors from '../../styles/colors';
 
 const PlotlyContainer = styled.div`
     min-height: 450px;
+    width: 100%;
     padding-bottom: 10px;
     margin-bottom: 10px;
     display: flex;
@@ -27,11 +28,22 @@ class ExpressionProfile extends React.Component {
 
   // Methods called on loading
   componentDidMount() {
+    this.updatePlotData();
+  }
+
+  componentDidUpdate(prevProps) {
+    const { selectedBiomarker, threshold } = this.props;
+    if (selectedBiomarker !== prevProps.selectedBiomarker || threshold !== prevProps.threshold) {
+      this.updatePlotData();
+    }
+  }
+
+
+  updatePlotData() {
     const {
       biomarkerData, selectedBiomarker, dimensions, xRange, yRange, threshold,
     } = this.props;
 
-    console.log(biomarkerData);
     // calculates coefficients for best fit line
     const regressionData = Object.values(biomarkerData).map(item => [item.fpkm, item.zip]);
     const bestFitCoefficients = regression.linear(regressionData);
@@ -93,13 +105,13 @@ class ExpressionProfile extends React.Component {
           size: 18,
         },
       },
+      autosize: true,
       margin: {
         l: 50,
         r: 10,
         t: dimensions.top,
         b: dimensions.bottom,
       },
-      autosize: true,
       height: 450,
       hovermode: 'closest',
       xaxis: {
