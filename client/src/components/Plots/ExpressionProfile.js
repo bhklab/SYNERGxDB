@@ -28,7 +28,7 @@ class ExpressionProfile extends React.Component {
   // Methods called on loading
   componentDidMount() {
     const {
-      biomarkerData, selectedBiomarker, dimensions, xRange, yRange,
+      biomarkerData, selectedBiomarker, dimensions, xRange, yRange, threshold,
     } = this.props;
 
     console.log(biomarkerData);
@@ -67,6 +67,23 @@ class ExpressionProfile extends React.Component {
       hoverinfo: 'none',
     };
     data.unshift(bestFitLine);
+
+    const thresholdLine = {
+      x: xRange,
+      y: [
+        threshold,
+        threshold,
+      ],
+      mode: 'lines',
+      type: 'scatter',
+      showlegend: false,
+      marker: {
+        color: 'black',
+      },
+      hoverinfo: 'none',
+    };
+    data.push(thresholdLine);
+
     const layout = {
       title: {
         text: `ZIP x ${selectedBiomarker}`,
@@ -164,6 +181,7 @@ ExpressionProfile.propTypes = {
   dimensions: PropTypes.objectOf(PropTypes.number).isRequired,
   xRange: PropTypes.arrayOf(PropTypes.number).isRequired,
   yRange: PropTypes.arrayOf(PropTypes.number).isRequired,
+  threshold: PropTypes.number.isRequired,
 };
 
 

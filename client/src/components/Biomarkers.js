@@ -37,10 +37,16 @@ const StyledPlotContainer = styled.div`
   }
 `;
 
-function valuetext(value) {
-  console.log(value);
-  return `${value}°C`;
-}
+const calculateThreshold = (obj) => {
+  if (obj) {
+    const synScoreArray = Object.values(obj).map(item => item.zip);
+    synScoreArray.sort((a, b) => a - b);
+    const output = synScoreArray.length % 2 !== 0 ? synScoreArray[(synScoreArray.length - 1) / 2]
+      : (synScoreArray[synScoreArray.length / 2] + synScoreArray[synScoreArray.length / 2 - 1]) / 2;
+    return Math.floor(output * 100) / 100;
+  }
+  return null;
+};
 
 
 class Biomarkers extends Component {
@@ -57,6 +63,8 @@ class Biomarkers extends Component {
       loading: true,
       xRange: null,
       yRange: null,
+      defaultThreshold: null,
+      customThreshold: null,
     };
     // this.handleSelect = this.handleSelect.bind(this);
   }
@@ -164,9 +172,11 @@ class Biomarkers extends Component {
         highestSynScore + rangeSynScore * paddingPercent,
       ];
 
+      const defaultThreshold = calculateThreshold(synergyObj);
+      console.log(defaultThreshold);
 
       this.setState({
-        loading: false, biomarkerData: synergyObj, xRange, yRange,
+        loading: false, biomarkerData: synergyObj, xRange, yRange, defaultThreshold,
       });
     } catch (err) {
       // eslint-disable-next-line no-console
@@ -207,7 +217,7 @@ class Biomarkers extends Component {
       sample, drugId1, drugId2, dataset,
     } = requestParams;
     const {
-      loading, biomarkerData, selectedBiomarker, xRange, yRange,
+      loading, biomarkerData, selectedBiomarker, xRange, yRange, defaultThreshold, customThreshold,
     } = this.state;
     // const columns = [{
     //   Header: 'Gene Symbol',
@@ -219,11 +229,14 @@ class Biomarkers extends Component {
     //   Header: 'Source',
     //   accessor: 'name',
     // }];
-    let marks;
-    if (!loading) {
-      marks = Object.values(biomarkerData).map(item => ({ value: item.zip, label: item.zip }));
-    }
 
+
+    // let marks;
+    // console.log(loading);
+    // if (!loading) {
+    //   marks = Object.values(biomarkerData).map(item => ({ value: item.zip, label: item.zip }));
+    //   console.log(Math.round(yRange[0] * 100) / 100);
+    // }
 
     return (
       <main>
@@ -268,19 +281,18 @@ class Biomarkers extends Component {
                 dimensions={dimensions}
                 xRange={xRange}
                 yRange={yRange}
+                threshold={customThreshold || defaultThreshold}
               />
               <div className="slider">
                 <Slider
                   orientation="vertical"
-                  getAriaValueText={valuetext}
-                  // defaultValue={0.5}
+                  defaultValue={customThreshold || defaultThreshold}
                   min={Math.round(yRange[0] * 100) / 100}
                   max={Math.round(yRange[1] * 100) / 100}
-                  getAriaValueText={valuetext}
                   aria-labelledby="vertical-discrete-slider-restrict"
-                  step={(yRange[1] - yRange[0]) / 100}
+                  step={Math.round(((yRange[1] - yRange[0]) / 100) * 100) / 100}
                   valueLabelDisplay="auto"
-                  onChange={(e, value) => console.log(value)}
+                  onChangeCommitted={(e, value) => this.setState({ customThreshold: value })}
                 />
 
               </div>
