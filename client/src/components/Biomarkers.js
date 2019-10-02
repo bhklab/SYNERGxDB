@@ -38,6 +38,7 @@ const StyledPlotContainer = styled.div`
 `;
 
 function valuetext(value) {
+  console.log(value);
   return `${value}°C`;
 }
 
@@ -218,6 +219,11 @@ class Biomarkers extends Component {
     //   Header: 'Source',
     //   accessor: 'name',
     // }];
+    let marks;
+    if (!loading) {
+      marks = Object.values(biomarkerData).map(item => ({ value: item.zip, label: item.zip }));
+    }
+
 
     return (
       <main>
@@ -267,8 +273,14 @@ class Biomarkers extends Component {
                 <Slider
                   orientation="vertical"
                   getAriaValueText={valuetext}
-                  defaultValue={30}
-                  aria-labelledby="vertical-slider"
+                  // defaultValue={0.5}
+                  min={Math.round(yRange[0] * 100) / 100}
+                  max={Math.round(yRange[1] * 100) / 100}
+                  getAriaValueText={valuetext}
+                  aria-labelledby="vertical-discrete-slider-restrict"
+                  step={(yRange[1] - yRange[0]) / 100}
+                  valueLabelDisplay="auto"
+                  onChange={(e, value) => console.log(value)}
                 />
 
               </div>
