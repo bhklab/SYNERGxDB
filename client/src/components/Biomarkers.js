@@ -55,7 +55,7 @@ const calculateThreshold = (synScoreArray) => {
   if (synScoreArray) {
     const output = synScoreArray.length % 2 !== 0 ? synScoreArray[(synScoreArray.length - 1) / 2]
       : (synScoreArray[synScoreArray.length / 2] + synScoreArray[synScoreArray.length / 2 - 1]) / 2;
-    return Math.floor(output * 100) / 100;
+    return output;
   }
   return null;
 };
@@ -291,6 +291,7 @@ class Biomarkers extends Component {
               <BiomarkerBoxPlot
                 threshold={confirmedThreshold !== null ? confirmedThreshold : defaultThreshold}
                 data={synScoreArray}
+                dimensions={dimensions}
               />
             </StyledExpressionProfile>
           ) : null}

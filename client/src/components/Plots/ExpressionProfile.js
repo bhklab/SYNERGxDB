@@ -95,6 +95,8 @@ class ExpressionProfile extends React.Component {
     data.push(thresholdLine);
 
     const layout = {
+      height: 450,
+      autosize: true,
       title: {
         text: `ZIP x ${selectedBiomarker}`,
         font: {
@@ -103,14 +105,17 @@ class ExpressionProfile extends React.Component {
           size: 18,
         },
       },
-      autosize: true,
+      font: {
+        size: 16,
+        color: colors.nav_links,
+        family: 'Raleway',
+      },
       margin: {
         l: dimensions.left,
         r: 10,
         t: dimensions.top,
         b: dimensions.bottom,
       },
-      height: 450,
       hovermode: 'closest',
       xaxis: {
         title: {
@@ -155,11 +160,6 @@ class ExpressionProfile extends React.Component {
           color: colors.color_main_1,
           size: 13,
         },
-      },
-      font: {
-        size: 16,
-        color: colors.nav_links,
-        family: 'Raleway',
       },
     };
     this.setState({ data, layout });

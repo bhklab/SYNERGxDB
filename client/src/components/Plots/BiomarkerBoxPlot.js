@@ -9,6 +9,7 @@ const StyledContainer = styled.div`
   width: 50%;
   min-width: 400px
   height: 450x;
+  padding-right: 34px;
 `;
 
 class BiomarkerBoxPlot extends React.Component {
@@ -50,7 +51,7 @@ class BiomarkerBoxPlot extends React.Component {
   }
 
   calculateBoxData(sortArr, threshold) {
-    console.log(sortArr);
+    const { dimensions } = this.props;
     const boxData = [];
     for (let i = 0; i < sortArr.length; i += 1) {
       if (sortArr[i] >= threshold) {
@@ -60,6 +61,55 @@ class BiomarkerBoxPlot extends React.Component {
       }
     }
     this.setState({
+      layout: {
+        height: 450,
+        autoresize: true,
+        showlegend: false,
+        font: {
+          size: 16,
+          color: colors.nav_links,
+          family: 'Raleway',
+        },
+        margin: {
+          l: dimensions.left,
+          r: 10,
+          t: dimensions.top,
+          b: dimensions.bottom,
+        },
+        xaxis: {
+          title: {
+            text: 'Groups',
+            font: {
+              family: 'Nunito Sans, sans-serif',
+              color: colors.color_main_1,
+              size: 16,
+            },
+          },
+          color: colors.color_main_1,
+          tickcolor: colors.color_main_1,
+          linecolor: colors.color_main_1,
+          mirror: true,
+          font: {
+            size: 16,
+            color: colors.nav_links,
+            family: 'Raleway',
+          },
+          linewidth: 3,
+        },
+        yaxis: {
+          color: colors.color_main_1,
+          tickcolor: colors.color_main_1,
+          linecolor: colors.color_main_1,
+          showticklabels: false,
+          mirror: true,
+          linewidth: 3,
+          tickfont: {
+            family: 'Nunito Sans, sans-serif',
+            color: colors.color_main_1,
+            size: 13,
+          },
+        },
+      },
       boxHigh: {
         y: boxData[1],
         type: 'box',
@@ -102,4 +152,5 @@ export default BiomarkerBoxPlot;
 BiomarkerBoxPlot.propTypes = {
   data: PropTypes.arrayOf(PropTypes.number).isRequired,
   threshold: PropTypes.number.isRequired,
+  dimensions: PropTypes.objectOf(PropTypes.number).isRequired,
 };
