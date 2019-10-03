@@ -36,7 +36,6 @@ class BiomarkerBoxPlot extends React.Component {
   componentDidMount() {
     const { calculateBoxData } = this;
     const { data, threshold } = this.props;
-    console.log(data, threshold);
     calculateBoxData(data, threshold);
   }
 
@@ -57,7 +56,6 @@ class BiomarkerBoxPlot extends React.Component {
         break;
       }
     }
-    console.log(this);
     this.setState({
       boxHigh: {
         y: boxData[1],

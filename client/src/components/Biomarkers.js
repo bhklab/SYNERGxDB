@@ -269,7 +269,7 @@ class Biomarkers extends Component {
                   dimensions={dimensions}
                   xRange={xRange}
                   yRange={yRange}
-                  threshold={customThreshold || defaultThreshold}
+                  threshold={customThreshold !== null ? customThreshold : defaultThreshold}
                 />
                 <div className="slider">
                   <Slider
@@ -286,7 +286,7 @@ class Biomarkers extends Component {
                 </div>
               </div>
               <BiomarkerBoxPlot
-                threshold={confirmedThreshold || defaultThreshold}
+                threshold={confirmedThreshold !== null ? confirmedThreshold : defaultThreshold}
                 data={synScoreArray}
               />
             </StyledExpressionProfile>
