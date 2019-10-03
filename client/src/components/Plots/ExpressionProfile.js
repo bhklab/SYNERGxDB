@@ -105,7 +105,7 @@ class ExpressionProfile extends React.Component {
       },
       autosize: true,
       margin: {
-        l: 55,
+        l: dimensions.left,
         r: 10,
         t: dimensions.top,
         b: dimensions.bottom,

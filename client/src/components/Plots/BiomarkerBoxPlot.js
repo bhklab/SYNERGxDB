@@ -50,11 +50,12 @@ class BiomarkerBoxPlot extends React.Component {
   }
 
   calculateBoxData(sortArr, threshold) {
+    console.log(sortArr);
     const boxData = [];
     for (let i = 0; i < sortArr.length; i += 1) {
       if (sortArr[i] >= threshold) {
         boxData.push(sortArr.slice(0, i));
-        boxData.push(sortArr.slice(i, sortArr.length - 1));
+        boxData.push(sortArr.slice(i, sortArr.length));
         break;
       }
     }

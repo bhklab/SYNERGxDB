@@ -16,6 +16,7 @@ import BiomarkerBoxPlot from './Plots/BiomarkerBoxPlot';
 
 // used to align plot and slider (in px)
 const dimensions = {
+  left: 55,
   top: 30,
   bottom: 55,
 };
@@ -32,6 +33,7 @@ const StyledBiomarkers = styled.div`
 const StyledExpressionProfile = styled.div`
   display: flex;
   flex-wrap: wrap;
+  justify-content: space-around;
   div.slider {
     height: 450px;
     padding-top: ${dimensions.top}px;
