@@ -7,6 +7,8 @@ import colors from '../../styles/colors';
 
 const StyledContainer = styled.div`
   width: 50%;
+  min-width: 400px
+  height: 450x;
 `;
 
 class BiomarkerBoxPlot extends React.Component {

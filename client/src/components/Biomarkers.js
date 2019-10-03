@@ -45,6 +45,7 @@ const StyledExpressionProfile = styled.div`
     min-width: 400px;
     display: flex
     justify-content: space-between;
+    height: 450px;
   }
 `;
 

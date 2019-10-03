@@ -9,10 +9,8 @@ import colors from '../../styles/colors';
 
 
 const PlotlyContainer = styled.div`
-    min-height: 450px;
+    height: 450px;
     width: 100%;
-    padding-bottom: 10px;
-    margin-bottom: 10px;
     display: flex;
     flex-direction: column; 
 `;
@@ -107,7 +105,7 @@ class ExpressionProfile extends React.Component {
       },
       autosize: true,
       margin: {
-        l: 50,
+        l: 55,
         r: 10,
         t: dimensions.top,
         b: dimensions.bottom,
