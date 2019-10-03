@@ -3,9 +3,10 @@ import styled from 'styled-components';
 import ReactTable from 'react-table';
 // import colors from '../styles/colors';
 import 'react-table/react-table.css';
+import ReactLoading from 'react-loading';
+
 import DonutPlot from './Plots/DonutPlot';
 import DatasetLegend from './Plots/DatasetLegend';
-import ReactLoading from 'react-loading';
 import colors from '../styles/colors';
 import dataset_stats from '../dataset_stats.json';
 
@@ -52,7 +53,7 @@ class Datasets extends Component {
     fetch('/api/datasets/')
       .then(response => response.json())
       .then((databaseData) => {
-        this.setState({ databaseData: databaseData});
+        this.setState({ databaseData });
       });
 
     // fetch('/api/combos/stats')
@@ -61,33 +62,34 @@ class Datasets extends Component {
     //     this.setState({ datasetData: datasetData, loading: false });
     //   });
     this.setState({ datasetData: dataset_stats, loading: false });
-
   }
 
   formatData(data, keyName) {
     // initialize
-    let result = []
+    const result = [];
     data.forEach((val) => {
-      let temp = {}
-      temp.name = val.name
-      if (keyName === "Combinations") {
-        temp.num = val.nCombos
-      } else if (keyName === "Experiments") {
-        temp.num = val.nExperiments
-      } else if (keyName === "Datapoints") {
-        temp.num = val.nDatapoints
+      const temp = {};
+      temp.name = val.name;
+      if (keyName === 'Combinations') {
+        temp.num = val.nCombos;
+      } else if (keyName === 'Experiments') {
+        temp.num = val.nExperiments;
+      } else if (keyName === 'Datapoints') {
+        temp.num = val.nDatapoints;
       }
-      result.push(temp)
-    })
+      result.push(temp);
+    });
     return result;
   }
 
   legendCallBack = (colorMap) => {
-    this.setState({colorMap: colorMap})
+    this.setState({ colorMap });
   }
 
   render() {
-    const { databaseData, datasetData, colorMap, loading } = this.state;
+    const {
+      databaseData, datasetData, colorMap, loading,
+    } = this.state;
     const columns = [{
       Header: 'Name',
       accessor: 'name', // String-based value accessors!
@@ -103,13 +105,13 @@ class Datasets extends Component {
       accessor: 'no_samples',
       style: { textAlign: 'right' },
       sortable: true,
-      Cell: props => new Intl.NumberFormat().format(props.value)
+      Cell: props => new Intl.NumberFormat().format(props.value),
     }, {
       Header: '# of compounds',
       accessor: 'no_drugs',
       style: { textAlign: 'right' },
       sortable: true,
-      Cell: props => new Intl.NumberFormat().format(props.value)
+      Cell: props => new Intl.NumberFormat().format(props.value),
     }, {
       Header: 'Design',
       accessor: 'combo',
@@ -122,12 +124,12 @@ class Datasets extends Component {
       radius: 150,
       rectY: -50,
       textY: -50,
-      translate:30
-    }
+      translate: 30,
+    };
     return (
       <Fragment>
         <main className="summary">
-        
+
           <StyledWrapper className="wrapper">
             { loading
               ? (
@@ -136,12 +138,20 @@ class Datasets extends Component {
                 </div>
               )
               : (
-                
+
                 <Fragment>
-                <h1>Datasets, <i>N</i> = {datasetData.length.toLocaleString()}</h1>
-                {datasetData.length === 0 ? null : (
-                  <Fragment>
-                    <DonutPlot
+                  <h1>
+Datasets,
+                    {' '}
+                    <i>N</i>
+                    {' '}
+=
+                    {' '}
+                    {datasetData.length.toLocaleString()}
+                  </h1>
+                  {datasetData.length === 0 ? null : (
+                    <Fragment>
+                      <DonutPlot
                       keyName="Combinations"
                       plotId="dsetMiniPlot"
                       dimensions={miniDims}
@@ -150,7 +160,7 @@ class Datasets extends Component {
                       legendCallBack={this.legendCallBack}
                     />
 
-                    <DonutPlot
+                      <DonutPlot
                       keyName="Experiments"
                       plotId="dsetMiniPlot"
                       dimensions={miniDims}
@@ -159,28 +169,28 @@ class Datasets extends Component {
                       legendCallBack={this.legendCallBack}
                     />
 
-                    <DonutPlot
+                      <DonutPlot
                       keyName="Datapoints"
                       plotId="dsetMiniPlot"
                       dimensions={miniDims}
                       formatData={this.formatData}
                       donutData={datasetData}
                       legendCallBack={this.legendCallBack}
-                    />   
-                    {colorMap.length === 0 ? null : (
+                    />
+                      {colorMap.length === 0 ? null : (
                       <DatasetLegend
                         data={colorMap}
                         datasetData={datasetData}
                         plotId="dsetLegend"
                       />
-                    )} 
+                    )}
                     </Fragment>
-                )}
-                </Fragment>             
+                  )}
+                </Fragment>
               )}
           </StyledWrapper>
-        
-        
+
+
           <StyledWrapper className="wrapper">
             <h1>List of Datasets</h1>
             <ReactTable

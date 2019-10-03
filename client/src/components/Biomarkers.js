@@ -4,6 +4,7 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 import ReactRouterPropTypes from 'react-router-prop-types';
 import queryString from 'query-string';
+import ReactLoading from 'react-loading';
 import Slider from '@material-ui/core/Slider';
 import { withStyles } from '@material-ui/core/styles';
 import 'react-table/react-table.css';
@@ -13,7 +14,7 @@ import colors from '../styles/colors';
 // import transitions from '../styles/transitions';
 
 import ExpressionProfile from './Plots/ExpressionProfile';
-import QueryCard from './QueryCard';
+import QueryCard from './UtilComponents/QueryCard';
 import BiomarkerBoxPlot from './Plots/BiomarkerBoxPlot';
 
 // used to align plot and slider (in px)
@@ -302,7 +303,11 @@ class Biomarkers extends Component {
                 dimensions={dimensions}
               />
             </StyledExpressionProfile>
-          ) : null}
+          ) : (
+            <div className="loading-container">
+              <ReactLoading type="bubbles" width={150} height={150} color={colors.color_main_2} />
+            </div>
+          )}
         </StyledBiomarkers>
       </main>
     );

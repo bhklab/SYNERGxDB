@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactLoading from 'react-loading';
 import styled from 'styled-components';
-import colors from '../styles/colors';
+import colors from '../../styles/colors';
 
 const LoadingContainer = styled.div`
   &.-loading.-active {

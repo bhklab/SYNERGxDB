@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 import ReactRouterPropTypes from 'react-router-prop-types';
 import queryString from 'query-string';
-import QueryCard from './QueryCard';
+import QueryCard from './UtilComponents/QueryCard';
 // import colors from '../styles/colors';
 import 'react-table/react-table.css';
 // import transitions from '../styles/transitions';

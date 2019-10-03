@@ -8,7 +8,7 @@ import BarChart from './Plots/BarChart';
 // import colors from '../styles/colors';
 // import transitions from '../styles/transitions';
 
-import LoadingComponent from './Loading';
+import LoadingComponent from './UtilComponents/Loading';
 
 
 const StyledWrapper = styled.div`
@@ -146,7 +146,11 @@ class Drugs extends Component {
         {/* <style>{'#root { background: #e7f3f8  !important; }'}</style> */}
         <main className="summary">
           <StyledWrapper className="wrapper">
-            <h1>Compounds, <i>N = {drugsData.length.toLocaleString()}</i></h1>
+            <h1>
+Compounds,
+{' '}
+<i>N = {drugsData.length.toLocaleString()}</i>
+</h1>
             {datasetData.length === 0 ? null : (
               <BarChart
                 plotId="drugPlot"
