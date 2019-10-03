@@ -36,6 +36,8 @@ const StyledExpressionProfile = styled.div`
     height: 450px;
     padding-top: ${dimensions.top}px;
     padding-bottom: ${dimensions.bottom}px
+    padding-right: 8px;
+    padding-left: 2px;
   }
 
   .expression-profile {
@@ -46,10 +48,8 @@ const StyledExpressionProfile = styled.div`
   }
 `;
 
-const calculateThreshold = (obj) => {
-  if (obj) {
-    const synScoreArray = Object.values(obj).map(item => item.zip);
-    synScoreArray.sort((a, b) => a - b);
+const calculateThreshold = (synScoreArray) => {
+  if (synScoreArray) {
     const output = synScoreArray.length % 2 !== 0 ? synScoreArray[(synScoreArray.length - 1) / 2]
       : (synScoreArray[synScoreArray.length / 2] + synScoreArray[synScoreArray.length / 2 - 1]) / 2;
     return Math.floor(output * 100) / 100;
@@ -74,6 +74,7 @@ class Biomarkers extends Component {
       yRange: null,
       defaultThreshold: null,
       customThreshold: null,
+      confirmedThreshold: null,
     };
     // this.handleSelect = this.handleSelect.bind(this);
   }
@@ -81,7 +82,6 @@ class Biomarkers extends Component {
   componentDidMount() {
     const gene = 'ARL13A';
     // const gene = 'A2M';
-
     this.setState({ selectedBiomarker: gene });
     this.getPlotData(gene);
   }
@@ -118,7 +118,6 @@ class Biomarkers extends Component {
         .then(response => response.json())
         .then((data) => {
           data.sort((a, b) => a.idSample - b.idSample);
-          console.log(data);
           // Doesn't take into account significance of the data
           // Duplicated data should be filtered based on significance, use C-index
           data.forEach((score) => {
@@ -140,7 +139,6 @@ class Biomarkers extends Component {
         },
       }).then(response => response.json())
         .then((cellLineExpressionData) => {
-          console.log(cellLineExpressionData);
           // Doesn't take into account significance of the data
           // Duplicated data should be filtered based on significance, use C-index
           cellLineExpressionData.forEach((item) => {
@@ -181,11 +179,14 @@ class Biomarkers extends Component {
         highestSynScore + rangeSynScore * paddingPercent,
       ];
 
-      const defaultThreshold = calculateThreshold(synergyObj);
-      console.log(defaultThreshold);
+
+      const synScoreArray = Object.values(synergyObj).map(item => item.zip);
+      synScoreArray.sort((a, b) => a - b);
+      const defaultThreshold = calculateThreshold(synScoreArray);
+
 
       this.setState({
-        loading: false, biomarkerData: synergyObj, xRange, yRange, defaultThreshold,
+        loading: false, biomarkerData: synergyObj, xRange, yRange, defaultThreshold, synScoreArray,
       });
     } catch (err) {
       // eslint-disable-next-line no-console
@@ -193,41 +194,18 @@ class Biomarkers extends Component {
       this.setState({ loading: false });
     }
   }
-  // fetch('/api/biomarkers'.concat(queryParams), {
-  //   method: 'GET',
-  //   headers: {
-  //     Accept: 'application/json',
-  //     'Content-Type': 'application/json',
-  //   },
-  // })
-  //   .then(response => response.json())
-  //   .then((data) => {
-  //     console.log(data);
-  //     this.setState({ results: data });
-  //     if (data.length > 0) {
-  //       this.setState({
-  //         biomarkerData: true,
-  //         loading: false,
-  //       });
-  //     }
-  //   });
-
-  // handleSelect(index) {
-  //   this.setState({
-  //     selectedBiomarker: index,
-  //   });
-  // }
 
   render() {
-    // const { handleSelect } = this;
+    const {
+      loading, biomarkerData, selectedBiomarker, xRange,
+      yRange, defaultThreshold, customThreshold, confirmedThreshold,
+      synScoreArray,
+    } = this.state;
     const { location } = this.props;
     const requestParams = queryString.parse(location.search);
     const {
       sample, drugId1, drugId2, dataset,
     } = requestParams;
-    const {
-      loading, biomarkerData, selectedBiomarker, xRange, yRange, defaultThreshold, customThreshold,
-    } = this.state;
     // const columns = [{
     //   Header: 'Gene Symbol',
     //   accessor: 'gene', // String-based value accessors!
@@ -303,10 +281,14 @@ class Biomarkers extends Component {
                     step={Math.round(((yRange[1] - yRange[0]) / 100) * 100) / 100}
                     valueLabelDisplay="auto"
                     onChange={(e, value) => this.setState({ customThreshold: value })}
+                    onChangeCommitted={(e, value) => this.setState({ confirmedThreshold: value })}
                   />
                 </div>
               </div>
-              <BiomarkerBoxPlot />
+              <BiomarkerBoxPlot
+                threshold={confirmedThreshold || defaultThreshold}
+                data={synScoreArray}
+              />
             </StyledExpressionProfile>
           ) : null}
         </StyledBiomarkers>
