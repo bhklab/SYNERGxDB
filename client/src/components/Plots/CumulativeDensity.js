@@ -2,8 +2,8 @@
 import React from 'react';
 import Plot from 'react-plotly.js';
 import styled from 'styled-components';
-
 import ReactLoading from 'react-loading';
+
 import colors from '../../styles/colors';
 import { ComboContext } from '../Context/ComboContext';
 
@@ -16,6 +16,7 @@ const PlotlyContainer = styled.div`
     display: flex;
     flex-direction: column; 
 `;
+
 
 const generateCoordinates = (data, type, comboId) => {
   const outputCoordinates = {};

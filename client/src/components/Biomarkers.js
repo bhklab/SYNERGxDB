@@ -5,9 +5,11 @@ import styled from 'styled-components';
 import ReactRouterPropTypes from 'react-router-prop-types';
 import queryString from 'query-string';
 import Slider from '@material-ui/core/Slider';
-// import ReactTable from 'react-table';
-// import colors from '../styles/colors';
+import { withStyles } from '@material-ui/core/styles';
 import 'react-table/react-table.css';
+// import ReactTable from 'react-table';
+
+import colors from '../styles/colors';
 // import transitions from '../styles/transitions';
 
 import ExpressionProfile from './Plots/ExpressionProfile';
@@ -27,8 +29,14 @@ const StyledBiomarkers = styled.div`
   background:white;
   padding:20px 30px;
   margin-bottom:20px;
-  
 `;
+
+const CustomSlider = withStyles({
+  root: {
+    color: colors.color_main_2,
+    height: 8,
+  },
+})(Slider);
 
 const StyledExpressionProfile = styled.div`
   display: flex;
@@ -275,7 +283,7 @@ class Biomarkers extends Component {
                   threshold={customThreshold !== null ? customThreshold : defaultThreshold}
                 />
                 <div className="slider">
-                  <Slider
+                  <CustomSlider
                     orientation="vertical"
                     defaultValue={customThreshold || defaultThreshold}
                     min={Math.round(yRange[0] * 100) / 100}
