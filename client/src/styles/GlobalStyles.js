@@ -98,36 +98,6 @@ const GlobalStyles = createGlobalStyle`
     padding-bottom:30px;
   }
 
-  main.documentation {
-    background:white;
-    font-family: Nunito Sans, sans-serif;
-    color:${colors.nav_links};
-
-    h1, h2 {
-      padding: 40px 20px 0px 0px;
-      margin: 0px 25px 0px 50px;
-    }
-    
-    span {
-      padding: 0px 50px;
-      font-size: 20px;
-    }
-
-    h2 {
-      padding:20px 0px;
-    }
-
-    // h2::before {
-    //   display: inline-block;
-    //   content: "";
-    //   border-top: 2px solid ${colors.nav_link_hov};
-    //   width: 60px;
-    //   margin: 50px 5px 0px 0px ;
-    //   transform: translateY(-7px);
-    // }
-  }
-  
-
   .main-wrapper {
     width: 100%;
     overflow-x:hidden;
