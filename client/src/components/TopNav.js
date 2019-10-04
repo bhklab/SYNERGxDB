@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { slide as Menu } from 'react-burger-menu';
@@ -122,32 +122,83 @@ const BurgerMenuStyles = {
   },
 };
 
-const TopNav = () => (
-  <StyledNav>
-    <div className="standard-nav">
-      <Link to="/">
-        <StyledLogo src={logo} alt="logo" />
-      </Link>
-      <nav className="top-nav">
-        <Link to="/documentation/">Documentation</Link>
-        <Link to="/cell-lines/">Cell lines</Link>
-        <Link to="/drugs/">Compounds</Link>
-        <Link to="/datasets/">Datasets</Link>
-      </nav>
-    </div>
-    <div className="burger-nav">
-      <Menu styles={BurgerMenuStyles} right>
-        <Link to="/">
-          <StyledLogo src={logo} alt="logo" />
-        </Link>
-        <Link to="/documentation/">Documentation</Link>
-        <Link to="/cell-lines/">Cell lines</Link>
-        <Link to="/drugs/">Compounds</Link>
-        <Link to="/datasets/">Datasets</Link>
-      </Menu>
-    </div>
-  </StyledNav>
+class TopNav extends Component {
+  constructor() {
+    super();
+    this.state = {
+      menuOpen: false,
+    };
+    this.handleStateChange = this.handleStateChange.bind(this);
+    this.closeMenu = this.closeMenu.bind(this);
+  }
 
-);
+  handleStateChange(state) {
+    this.setState({ menuOpen: state.isOpen });
+  }
+
+  closeMenu() {
+    this.setState({ menuOpen: false });
+  }
+
+  render() {
+    const { menuOpen } = this.state;
+    const { handleStateChange, closeMenu } = this;
+    return (
+      <StyledNav>
+        <div className="standard-nav">
+          <Link to="/">
+            <StyledLogo src={logo} alt="logo" />
+          </Link>
+          <nav className="top-nav">
+            <Link to="/documentation/">Documentation</Link>
+            <Link to="/cell-lines/">Cell lines</Link>
+            <Link to="/drugs/">Compounds</Link>
+            <Link to="/datasets/">Datasets</Link>
+          </nav>
+        </div>
+        <div className="burger-nav">
+          <Menu
+            styles={BurgerMenuStyles}
+            right
+            isOpen={menuOpen}
+            onStateChange={state => handleStateChange(state)}
+          >
+            <Link
+              to="/"
+              onClick={() => closeMenu()}
+            >
+              <StyledLogo src={logo} alt="logo" />
+            </Link>
+            <Link
+              to="/documentation/"
+              onClick={() => closeMenu()}
+            >
+              Documentation
+            </Link>
+            <Link
+              to="/cell-lines/"
+              onClick={() => closeMenu()}
+            >
+              Cell lines
+            </Link>
+            <Link
+              to="/drugs/"
+              onClick={() => closeMenu()}
+            >
+              Compounds
+            </Link>
+            <Link
+              to="/datasets/"
+              onClick={() => closeMenu()}
+            >
+              Datasets
+            </Link>
+          </Menu>
+        </div>
+      </StyledNav>
+    );
+  }
+}
+
 
 export default TopNav;
