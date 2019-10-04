@@ -53,7 +53,7 @@ const StyledExpressionProfile = styled.div`
 
   .expression-profile {
     width: 50%;
-    min-width: 400px;
+    min-width: 300px;
     display: flex
     justify-content: space-between;
     height: 450px;

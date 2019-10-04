@@ -3,7 +3,6 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-// import transitions from '../styles/transitions';
 import colors from '../../styles/colors';
 
 const QueryDiv = styled.div`
@@ -15,11 +14,14 @@ const QueryDiv = styled.div`
   color: ${colors.blue_main};
   .query-container {
     display:flex;
-    align-items:center;
   }
   .col {
     position:inherit;
     flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
   }
 `;
 
