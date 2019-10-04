@@ -1,12 +1,13 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-// import logo from '../images/logo.png';
+import { slide as Menu } from 'react-burger-menu';
 import logo from '../images/logo-2.png';
 import colors from '../styles/colors';
 import transitions from '../styles/transitions';
 
-const StyledNav = styled.nav`
+const StyledNav = styled.div`
+  .top-nav {
     padding: 15px 0px 0px 0px;    
     width: 100%;
     right:0px;
@@ -32,8 +33,9 @@ const StyledNav = styled.nav`
             color: ${colors.nav_link_hov};
         }
     }
-  
+  }
 `;
+
 const StyledLogo = styled.img`
     width:150px;
     position:fixed;
@@ -43,20 +45,25 @@ const StyledLogo = styled.img`
     z-index:999;
 `;
 
-const Home = () => (
-  <Fragment>
+const TopNav = () => (
+  <StyledNav>
     <Link to="/">
       <StyledLogo src={logo} alt="logo" />
     </Link>
-    <StyledNav className="top-nav">
+    <nav className="top-nav">
       <Link to="/documentation/">Documentation</Link>
       <Link to="/cell-lines/">Cell lines</Link>
       <Link to="/drugs/">Compounds</Link>
       <Link to="/datasets/">Datasets</Link>
-    </StyledNav>
-
-  </Fragment>
+    </nav>
+    <Menu>
+      <Link to="/documentation/">Documentation</Link>
+      <Link to="/cell-lines/">Cell lines</Link>
+      <Link to="/drugs/">Compounds</Link>
+      <Link to="/datasets/">Datasets</Link>
+    </Menu>
+  </StyledNav>
 
 );
 
-export default Home;
+export default TopNav;

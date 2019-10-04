@@ -14,7 +14,7 @@ const StyledDiv = styled.div`
     left:0px;
     position:fixed;  
     display: flex;
-    height:90px;
+    min-height:90px;
     line-height:1em;
     align-items: flex-end;
     justify-content: space-around;

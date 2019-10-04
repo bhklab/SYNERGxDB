@@ -261,6 +261,15 @@ const GlobalStyles = createGlobalStyle`
   .popup-content {
     max-width: 400px;
   }
+
+  .bm-burger-button {
+    position: fixed;
+    width: 36px;
+    height: 30px;
+    left: 36px;
+    top: 36px;
+    background-color: ${colors.color_main_3}
+  }
   
   #cellMiniPlot, #dsetMiniPlot {
     display:flex;
