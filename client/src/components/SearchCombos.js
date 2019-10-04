@@ -23,6 +23,7 @@ const StyledWrapper = styled.div`
   justify-content: center;
   align-items: center;
   text-align: center;
+  width: 100%;
   h1 {
     color: ${colors.nav_links};
     font-family:'Raleway', sans-serif;
@@ -401,9 +402,8 @@ class SearchCombos extends Component {
     const { value, label } = event;
     const { sample, dataset } = this.state;
 
-    if (event.value == 'Any') {
+    if (event.value === 'Any') {
       this.setState({ isDisabled: true, drug2Placeholder: 'Please specify Compound A' });
-      console.log(this.state.drug2Placeholder);
     } else {
       this.setState({ isDisabled: false, drug2Placeholder: 'Enter Compound B' });
     }
@@ -459,11 +459,12 @@ class SearchCombos extends Component {
   }
 
   render() {
-    let {
+    const {
       drugsData1, drugsData2, sampleData,
       selectedSample, selectedDrug1, selectedDrug2, drug2Placeholder, datasetData,
-      selectedDataset, isDisabled,
+      selectedDataset,
     } = this.state;
+    let { isDisabled } = this.state;
     const {
       handleSampleSearch, handleDrug1Search, handleDrug2Search, userRedirect,
       handleDatasetSearch, handleEnterPress, checkUserInput,

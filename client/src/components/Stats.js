@@ -23,8 +23,13 @@ const StyledDiv = styled.div`
     color: ${colors.nav_links} !important;
     font-family: 'Montserrat', sans-serif;
 
-    &:div {
-        width: 200px;
+    @media (max-width : 650px) {
+      position:static;
+    }
+
+    div {
+        padding: 0 10px; 
+        width: 175px;
         min-width: 150px;
     }
     h2 {
