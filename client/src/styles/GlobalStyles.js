@@ -262,6 +262,9 @@ const GlobalStyles = createGlobalStyle`
     background-attachment: fixed;
     background-position: center;
     flex-wrap: wrap;
+    display: flex;
+    z-index: 0
+
 
     .main-wrapper {
       overflow-x:hidden;

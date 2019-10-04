@@ -12,6 +12,7 @@ const StyledNav = styled.div`
   right:0px;
   height:90px;
   line-height:3em;
+  order:1;
   white-space:nowrap;
   background-color: ${colors.nav_bg};
   position: fixed;
@@ -99,7 +100,7 @@ const BurgerMenuStyles = {
     background: '#373a47',
     padding: '2.5em 1.5em 0',
     fontSize: '1.15em',
-    'z-index': '1000',
+    'z-index': '999',
   },
   bmMorphShape: {
     fill: '#373a47',

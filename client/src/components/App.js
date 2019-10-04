@@ -30,6 +30,8 @@ const StyledApp = styled.div`
   min-width: 300px;
   max-width: 1200px;
   overflow-x:hidden;
+  order:2;
+  z-index:1;
 `;
 
 
@@ -39,7 +41,7 @@ const App = () => (
     <GlobalStyles />
     {/* <SideNav /> */}
     <div className="main-wrapper">
-      <TopNav />
+
       <StyledApp className="app">
         <Switch>
           <Route exact path="/" component={SearchCombos} />
@@ -56,6 +58,7 @@ const App = () => (
         </Switch>
       </StyledApp>
     </div>
+    <TopNav />
   </Fragment>
 );
 
