@@ -17,6 +17,7 @@ import GlobalStyles from '../styles/GlobalStyles';
 import Sensitivity from './Sensitivity';
 import Enrichment from './Enrichment';
 import Consistency from './Consistency';
+import Pharmacogenomics from './Pharmacogenomics';
 
 const StyledApp = styled.div`
   margin: 0 auto;
@@ -39,9 +40,7 @@ const App = () => (
   <Fragment>
     <Normalize />
     <GlobalStyles />
-    {/* <SideNav /> */}
     <div className="main-wrapper">
-
       <StyledApp className="app">
         <Switch>
           <Route exact path="/" component={SearchCombos} />
@@ -49,6 +48,7 @@ const App = () => (
           <Route exact path="/drugs/" component={Drugs} />
           <Route exact path="/datasets/" component={Datasets} />
           <Route exact path="/documentation/" component={Documentation} />
+          <Route exact path="/pharmacogenomics/" component={Pharmacogenomics} />
           <Route path="/drug_combo" component={ComboDetails} />
           <Route path="/synergy_score" component={ComboResults} />
           <Route path="/biomarker" component={Biomarkers} />

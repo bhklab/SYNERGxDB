@@ -102,7 +102,7 @@ const BurgerMenuStyles = {
     background: 'white',
     padding: '2.5em 1.5em 0',
     fontSize: '1.15em',
-    'z-index': '999',
+    Zindex: '999',
   },
   bmMorphShape: {
     fill: '#373a47',
@@ -154,6 +154,7 @@ class TopNav extends Component {
             <Link to="/cell-lines/">Cell lines</Link>
             <Link to="/drugs/">Compounds</Link>
             <Link to="/datasets/">Datasets</Link>
+            <Link to="/pharmacogenomics/">Pharmacogenomics</Link>
           </nav>
         </div>
         <div className="burger-nav">
@@ -192,6 +193,12 @@ class TopNav extends Component {
               onClick={() => closeMenu()}
             >
               Datasets
+            </Link>
+            <Link
+              to="/pharmacogenomics/"
+              onClick={() => closeMenu()}
+            >
+              Pharmacogenomics
             </Link>
           </Menu>
         </div>
