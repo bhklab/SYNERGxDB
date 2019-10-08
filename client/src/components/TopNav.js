@@ -17,7 +17,7 @@ const StyledNav = styled.div`
   position: fixed;
   white-space:nowrap;
   background-color: ${colors.nav_bg};
-  font-size: calc(1em + 0.3vw);
+  font-size: calc(1em + 0.2vw);
   font-family: 'Montserrat', sans-serif;
 
   @media (max-width : 1023px) {
@@ -63,6 +63,7 @@ const StyledNav = styled.div`
     z-index: 10;
     text-align: center;
     padding: 15px 0px 0px 0px;
+    margin-left: 175px;
     a {
       padding:0em 2.5vw;
     }
