@@ -11,7 +11,6 @@ import styled from 'styled-components';
 import Select, { components } from 'react-select';
 import Popup from 'reactjs-popup';
 
-// import { FixedSizeList as List } from 'react-window';
 import colors from '../styles/colors';
 import transitions from '../styles/transitions';
 import Stats from './Stats';

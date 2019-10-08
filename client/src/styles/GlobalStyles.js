@@ -211,6 +211,7 @@ const GlobalStyles = createGlobalStyle`
     align-items: center;
     justify-content: center;
   }
+  
   .popup-content {
     max-width: 400px;
   }
@@ -219,6 +220,7 @@ const GlobalStyles = createGlobalStyle`
     display:flex;
     justify-content: space-around;
   }
+
   #root {
     width: 100vw;
     display: flex;
@@ -234,7 +236,6 @@ const GlobalStyles = createGlobalStyle`
     flex-wrap: wrap;
     display: flex;
     z-index: 0
-
 
     .main-wrapper {
       overflow-x:hidden;
