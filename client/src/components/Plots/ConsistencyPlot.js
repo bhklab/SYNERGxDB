@@ -3,7 +3,6 @@ import React from 'react';
 import colors from '../../styles/colors';
 import ocpu from 'opencpu'
 
-
 export default class ConsistencyPlot extends React.Component {
     constructor(props) {
         super(props);

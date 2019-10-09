@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import ReactTable from 'react-table';
 
 import SingleAgentPlot from './Plots/SingleAgentPlot';
-import Loading from './Loading';
+import Loading from './UtilComponents/Loading';
 
 import { ComboContext } from './Context/ComboContext';
 

@@ -2,8 +2,8 @@
 import React from 'react';
 import Plot from 'react-plotly.js';
 import styled from 'styled-components';
-
 import ReactLoading from 'react-loading';
+
 import colors from '../../styles/colors';
 import { ComboContext } from '../Context/ComboContext';
 
@@ -16,6 +16,7 @@ const PlotlyContainer = styled.div`
     display: flex;
     flex-direction: column; 
 `;
+
 
 const generateCoordinates = (data, type, comboId) => {
   const outputCoordinates = {};
@@ -184,6 +185,7 @@ class CumulativeDensity extends React.Component {
               yaxis: { title: 'Cumulative density' },
               xaxis: { title: `Synergy Score (Cell Lines, N=${comboData.length})` },
               barmode: 'overlay',
+              hovermode: 'closest',
               font: {
                 size: 16,
                 color: colors.nav_links,

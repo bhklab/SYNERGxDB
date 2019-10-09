@@ -2,9 +2,10 @@ import React, { Component, Fragment } from 'react';
 import styled from 'styled-components';
 import ReactRouterPropTypes from 'react-router-prop-types';
 import queryString from 'query-string';
+
 import colors from '../styles/colors';
 import ConsistencyPlot from './Plots/ConsistencyPlot';
-import QueryCard from './QueryCard';
+import QueryCard from './UtilComponents/QueryCard';
 
 const StyledWrapper = styled.div`
   display: flex;
@@ -91,29 +92,29 @@ class Consistency extends Component {
         sample, drugId1, drugId2, dataset,
       } = requestParams;
 
-        return (
-            <main>
-                <Fragment>
+      return (
+        <main>
+            <Fragment>
                 <QueryCard
                     drugId1={drugId1}
                     drugId2={drugId2}
                     dataset={dataset}
                     sample={sample}
-                />
+                  />
                 {results.length === 0 ? null : (
                     <StyledWrapper className="wrapper">
-                    <div id="consistencyPlot"></div>
+                    <div id="consistencyPlot" />
                     <ConsistencyPlot
-                        plotId={`consistencyPlot`}
+                        plotId="consistencyPlot"
                         data={results}
-                    />
-                    </StyledWrapper>
-                )}
-                    
-                    
-                </Fragment>
-            </main>
-        )
+                      />
+                  </StyledWrapper>
+                  )}
+
+
+              </Fragment>
+          </main>
+      );
     }
 }
 

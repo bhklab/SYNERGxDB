@@ -88,6 +88,10 @@ router.get('/', (req, res) => {
     .orderBy('zip', 'desc')
     .then((data) => {
       res.json(data);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.json(err);
     });
 });
 
@@ -98,40 +102,48 @@ router.get('/matrix', (req, res) => {
   db.select('concA', 'concB', 'raw_matrix', 'bliss_matrix', 'loewe_matrix', 'hsa_matrix', 'zip_matrix', 'idSource')
     .from('Combo_matrix')
     .where({ idCombo_Design: comboId, idSource })
-    .then(data => res.json(data));
+    .then((data) => {
+      res.json(data);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.json(err);
+    });
 });
 
-router.get("/stats", (req, res) => {
+router.get('/stats', (req, res) => {
   // COMBOS
   function subqueryCombos() {
-    let baseQuery = this.select("idSource", db.raw("count(distinct concat(??, ?, ??)) as ??", ["CD.idDrugA", "--", "CD.idDrugB", "nCombos"]))
-    .from("Combo_Design as CD")
-    .innerJoin("Synergy_Score as SS", "CD.idCombo_Design", "=", "SS.idCombo_Design")
-    .groupBy("SS.idSource")
-    
-    return baseQuery.as("CMBS")
+    const baseQuery = this.select('idSource', db.raw('count(distinct concat(??, ?, ??)) as ??', ['CD.idDrugA', '--', 'CD.idDrugB', 'nCombos']))
+      .from('Combo_Design as CD')
+      .innerJoin('Synergy_Score as SS', 'CD.idCombo_Design', '=', 'SS.idCombo_Design')
+      .groupBy('SS.idSource');
+
+    return baseQuery.as('CMBS');
   }
 
-  //EXPERIMENTS
+  // EXPERIMENTS
   function subqueryExperiments() {
-    let baseQuery = this.select("idSource", db.raw("count(*) as ??", ["nExperiments"]))
-    .from("Synergy_Score")
-    .groupBy("idSource")
-    
-    return baseQuery.as("EXPS")
+    const baseQuery = this.select('idSource', db.raw('count(*) as ??', ['nExperiments']))
+      .from('Synergy_Score')
+      .groupBy('idSource');
+
+    return baseQuery.as('EXPS');
   }
 
   // major query + DATAPOINTS
-  db.select("CM.idSource as idSource", "name", db.raw("count(*) as ??", ["nDatapoints"]), "nCombos", "nExperiments")
-    .from("Combo_Matrix as CM", subqueryCombos)
-    .join(subqueryCombos, "CM.idSource", "=", "CMBS.idSource")
-    .join(subqueryExperiments, "CM.idSource", "=", "EXPS.idSource")
-    .join("Source", "CM.idSource", "=", "Source.idSource")
-    .groupBy("idSource", "nCombos", "nExperiments")
+  db.select('CM.idSource as idSource', 'name', db.raw('count(*) as ??', ['nDatapoints']), 'nCombos', 'nExperiments')
+    .from('Combo_Matrix as CM', subqueryCombos)
+    .join(subqueryCombos, 'CM.idSource', '=', 'CMBS.idSource')
+    .join(subqueryExperiments, 'CM.idSource', '=', 'EXPS.idSource')
+    .join('Source', 'CM.idSource', '=', 'Source.idSource')
+    .groupBy('idSource', 'nCombos', 'nExperiments')
     .then((data) => {
       res.json(data);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.json(err);
     });
-
-  
-})
+});
 module.exports = router;

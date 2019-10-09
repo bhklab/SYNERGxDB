@@ -14,7 +14,7 @@ const StyledDiv = styled.div`
     left:0px;
     position:fixed;  
     display: flex;
-    height:90px;
+    min-height:90px;
     line-height:1em;
     align-items: flex-end;
     justify-content: space-around;
@@ -23,8 +23,13 @@ const StyledDiv = styled.div`
     color: ${colors.nav_links} !important;
     font-family: 'Montserrat', sans-serif;
 
-    &:div {
-        width: 200px;
+    @media (max-width : 650px) {
+      position:static;
+    }
+
+    div {
+        padding: 0 10px; 
+        width: 175px;
         min-width: 150px;
     }
     h2 {
@@ -76,13 +81,12 @@ class Stats extends Component {
     const {
       datasets, tissues, compounds, combos, experiments, datapoints, cells,
     } = this.state;
-    const easeInOut = (t, b, c, d) => {
-      if (t === 0) return b;
-      if (t === d) return b + c;
-      if ((t /= d / 2) < 1) return c / 2 * Math.pow(2, 10 * (t - 1)) + b;
-      return c / 2 * (-Math.pow(2, -10 * --t) + 2) + b;
-    };
-    console.log(this.state)
+    // const easeInOut = (t, b, c, d) => {
+    //   if (t === 0) return b;
+    //   if (t === d) return b + c;
+    //   if ((t /= d / 2) < 1) return c / 2 * Math.pow(2, 10 * (t - 1)) + b;
+    //   return c / 2 * (-Math.pow(2, -10 * --t) + 2) + b;
+    // };
     return (
       <StyledDiv className="stats">
         <div>

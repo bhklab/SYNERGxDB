@@ -5,7 +5,7 @@ import 'react-table/react-table.css';
 // import colors from '../styles/colors';
 // import transitions from '../styles/transitions';
 
-import LoadingComponent from './Loading';
+import LoadingComponent from './UtilComponents/Loading';
 import DonutPlot from './Plots/DonutPlot';
 
 const StyledWrapper = styled.div`
@@ -41,7 +41,7 @@ const formatData = (data, keyName) => {
     data.forEach((val) => {
       let ind = 0;
       if (val[keyName] >= 50) {
-        ind = 0
+        ind = 0;
       } else if (val[keyName] < 50 && val[keyName] != null) {
         ind = 1;
       } else if (val[keyName] == null) {
@@ -154,9 +154,7 @@ class Databases extends Component {
     };
   }
 
-  legendCallBack = (colorMap) => {
-    return null;
-  }
+  legendCallBack = colorMap => null
 
   componentDidMount() {
     fetch('/api/cell_lines/')
@@ -245,7 +243,15 @@ class Databases extends Component {
         {/* <style>{'#root { background: #e7f3f8  !important; }'}</style> */}
         <main className="summary">
           <StyledWrapper className="wrapper">
-            <h1>Cell Lines, <i>N</i> = {donutData.length.toLocaleString()}</h1>
+            <h1>
+              Cell Lines,
+              {' '}
+              <i>N</i>
+              {' '}
+              =
+              {' '}
+              {donutData.length.toLocaleString()}
+            </h1>
             {donutData.length === 0 ? null : (
               <Fragment>
                 <DonutPlot

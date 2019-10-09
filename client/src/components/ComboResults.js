@@ -11,8 +11,8 @@ import colors from '../styles/colors';
 import 'react-table/react-table.css';
 // import transitions from '../styles/transitions';
 
-import LoadingComponent from './Loading';
-import QueryCard from './QueryCard';
+import LoadingComponent from './UtilComponents/Loading';
+import QueryCard from './UtilComponents/QueryCard';
 
 const SynergyDiv = styled.div`
   width: 100%;

@@ -11,7 +11,6 @@ import styled from 'styled-components';
 import Select, { components } from 'react-select';
 import Popup from 'reactjs-popup';
 
-// import { FixedSizeList as List } from 'react-window';
 import colors from '../styles/colors';
 import transitions from '../styles/transitions';
 import Stats from './Stats';
@@ -23,6 +22,7 @@ const StyledWrapper = styled.div`
   justify-content: center;
   align-items: center;
   text-align: center;
+  width: 100%;
   h1 {
     color: ${colors.nav_links};
     font-family:'Raleway', sans-serif;
@@ -310,7 +310,7 @@ class SearchCombos extends Component {
       selectedDataset: { value: 'Any', label: 'Any Dataset' },
       drug2Placeholder: 'Enter Compound B',
       allowRedirect: true,
-      isDisabled: null
+      isDisabled: null,
     };
     this.handleDrug1Search = this.handleDrug1Search.bind(this);
     this.handleDrug2Search = this.handleDrug2Search.bind(this);
@@ -346,7 +346,7 @@ class SearchCombos extends Component {
           sampleData: [
             {
               label: 'Any Sample',
-              value: "Any"
+              value: 'Any',
             },
             {
               label: 'Tissues',
@@ -400,12 +400,11 @@ class SearchCombos extends Component {
   handleDrug1Search(drugId, event) {
     const { value, label } = event;
     const { sample, dataset } = this.state;
-    
-    if (event.value == "Any") {
-      this.setState({isDisabled: true, drug2Placeholder: "Please specify Compound A"})
-      console.log(this.state.drug2Placeholder)
+
+    if (event.value === 'Any') {
+      this.setState({ isDisabled: true, drug2Placeholder: 'Please specify Compound A' });
     } else {
-      this.setState({isDisabled: false, drug2Placeholder: "Enter Compound B"})
+      this.setState({ isDisabled: false, drug2Placeholder: 'Enter Compound B' });
     }
     this.setState({ drugId1: value, selectedDrug1: { value, label } });
     // Sends a post request to the API to retrieve relevant combo drugs for drugsData2
@@ -459,11 +458,12 @@ class SearchCombos extends Component {
   }
 
   render() {
-    let {
+    const {
       drugsData1, drugsData2, sampleData,
       selectedSample, selectedDrug1, selectedDrug2, drug2Placeholder, datasetData,
-      selectedDataset, isDisabled
+      selectedDataset,
     } = this.state;
+    let { isDisabled } = this.state;
     const {
       handleSampleSearch, handleDrug1Search, handleDrug2Search, userRedirect,
       handleDatasetSearch, handleEnterPress, checkUserInput,
@@ -473,7 +473,7 @@ class SearchCombos extends Component {
     if (!isDisabled) {
       isDisabled = !(drugsData2.length > 0);
     }
-    
+
     const exampleDrugUrl = {
       pathname: '/synergy_score',
       search: '?drugId1=11&drugId2=97',
@@ -584,7 +584,7 @@ class SearchCombos extends Component {
               options={drugsData2}
               isDisabled={isDisabled}
               placeholder={drug2Placeholder}
-              value={isDisabled ? "" : selectedDrug2}
+              value={isDisabled ? '' : selectedDrug2}
               onChange={handleDrug2Search}
               filterOption={customFilterOption}
             />
@@ -633,11 +633,11 @@ class SearchCombos extends Component {
 
     return (
       <Fragment>
-        <div className="landing">
+        <main className="landing">
           <StyledWrapper className="form-wrapper">
             {searchForm}
           </StyledWrapper>
-        </div>
+        </main>
       </Fragment>
     );
   }

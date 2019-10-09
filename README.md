@@ -50,4 +50,4 @@ cd SYNERGxDB-Web-App
 ## Servers
 
 - Production server: [http://synergxdb.ca/](http://synergxdb.ca/)
-- Testing server: [http://testing.synergxdb.ca/](http://testing.synergxdb.ca/)
+- Testing server: [http://beta.synergxdb.ca/](http://testing.synergxdb.ca/)

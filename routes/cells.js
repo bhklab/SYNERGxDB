@@ -21,6 +21,10 @@ router.get('/info', (req, res) => {
     .where({ idSample })
     .then((data) => {
       res.json(data);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.json(err);
     });
 });
 
@@ -30,6 +34,10 @@ router.get('/:cellId', (req, res) => {
     .where({ idSample: req.params.cellId })
     .then((data) => {
       res.json(data);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.json(err);
     });
 });
 
