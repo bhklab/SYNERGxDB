@@ -6,6 +6,7 @@
     "d3": "^5.9.7",
     "fs-extra": "^8.0.1",
     "lodash": "^4.17.15",
+    "opencpu": "^1.1.1",
     "plotly.js": "1.48.3",
     "prop-types": "^15.7.2",
     "query-string": "^6.8.1",

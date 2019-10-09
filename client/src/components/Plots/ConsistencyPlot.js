@@ -1,7 +1,7 @@
 import * as d3 from 'd3';
 import React from 'react';
 import colors from '../../styles/colors';
-
+import ocpu from 'opencpu'
 
 
 export default class ConsistencyPlot extends React.Component {
@@ -74,10 +74,17 @@ export default class ConsistencyPlot extends React.Component {
 
         // call plot at the end to plot it after the dropdowns have been rendered
         this.plotScatter(xvalue.toLowerCase(), yvalue.toLowerCase(), width, height, data, plotId)
+    }
 
-        
-                
-       
+    findCIndex(x,y) {
+        console.log(x, y)
+        // ocpu.seturl("http://public.opencpu.org/ocpu/library/base/R")
+        // fetch('./R_functions/c_index.R')
+        //     .then((r) => r.text())
+        //     .then(text  => {
+        //         console.log(text);
+        //     })  
+
     }
 
     plotScatter(xvalue, yvalue, width, height, data, plotId) {
@@ -185,7 +192,10 @@ export default class ConsistencyPlot extends React.Component {
             .attr("fill", "black")
             .text(function(d) {return d.sampleName})
   
-        
+        // calculating C-Index - map json to arrays and call
+        const firstArr = data.map(x => x[xvalue])
+        const secondArr = data.map(x => x[yvalue])
+        let cInd = this.findCIndex(firstArr, secondArr)
     }
 
     render() {
