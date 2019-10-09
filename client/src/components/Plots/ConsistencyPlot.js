@@ -77,7 +77,7 @@ export default class ConsistencyPlot extends React.Component {
 
     findCIndex(x,y) {
         console.log(x, y)
-        // ocpu.seturl("http://public.opencpu.org/ocpu/library/base/R")
+        // ocpu.rCall("library/base/R")
         // fetch('./R_functions/c_index.R')
         //     .then((r) => r.text())
         //     .then(text  => {
@@ -85,11 +85,73 @@ export default class ConsistencyPlot extends React.Component {
         //     })  
 
     }
+    
+
+    /**
+     * from https://memory.psych.mun.ca/tech/js/correlation.shtml
+     * calculates pearson correlation
+     * @param {number[]} d1
+     * @param {number[]} d2
+     */
+    findPearson(d1, d2) {
+        let { min, pow, sqrt } = Math
+        let add = (a, b) => a + b
+        let n = min(d1.length, d2.length)
+        if (n === 0) {
+            return 0
+        }
+        [d1, d2] = [d1.slice(0, n), d2.slice(0, n)]
+        let [sum1, sum2] = [d1, d2].map(l => l.reduce(add))
+        let [pow1, pow2] = [d1, d2].map(l => l.reduce((a, b) => a + pow(b, 2), 0))
+        let mulSum = d1.map((n, i) => n * d2[i]).reduce(add)
+        let dense = sqrt((pow1 - pow(sum1, 2) / n) * (pow2 - pow(sum2, 2) / n))
+        if (dense === 0) {
+            return 0
+        }
+        return (mulSum - (sum1 * sum2 / n)) / dense
+    }
+
+    /** 
+     * from https://stackoverflow.com/questions/15886527/javascript-library-for-pearson-and-or-spearman-correlations
+    */
+    findSpearman (multiList, p1, p2) {
+        var N=multiList[p1].length;
+        var order=[];
+        var sum=0;
+    
+        for(var i = 0;i<N;i++){
+            order.push([multiList[p1][i], multiList[p2][i]]);
+        }
+
+        order.sort(function(a,b){
+            return a[0]-b[0]
+        });
+
+        for(var i = 0;i<N;i++){
+            order[i].push(i+1);
+        }
+
+        order.sort(function(a,b){
+            return a[1]-b[1]
+        });
+
+        for(var i = 0;i<N;i++){
+            order[i].push(i+1);
+        }
+        for(var i = 0;i<N;i++){
+            sum+=Math.pow((order[i][2])-(order[i][3]), 2);
+
+        }
+
+        var r=1-(6*sum/(N*(N*N-1)));
+
+        return r;
+    }
 
     plotScatter(xvalue, yvalue, width, height, data, plotId) {
         let margin = {
             top: 50,
-            right: 100,
+            right: 120,
             bottom: 90,
             left: 70
         };
@@ -191,10 +253,31 @@ export default class ConsistencyPlot extends React.Component {
             .attr("fill", "black")
             .text(function(d) {return d.sampleName})
   
-        // calculating C-Index - map json to arrays and call
+        // calculating C-Index - map json to arrays and call, pearson, spearman
         const firstArr = data.map(x => x[xvalue])
         const secondArr = data.map(x => x[yvalue])
         let cInd = this.findCIndex(firstArr, secondArr)
+        let pearson = this.findPearson(firstArr, secondArr)
+        let spearman = this.findSpearman([firstArr, secondArr], 0, 1)
+        console.log("pearson: ", pearson, " spearman: ", spearman)
+
+        // append stats to dom
+        svg.append("text")
+            .attr("dx", width)
+            .attr("dy", height/3)
+            .attr("font-size", "13px")
+            .style("opacity", "1")
+            .attr("fill", "black")
+            .text(function(d) {return "Pearson: " + d3.format(".4f")(pearson)})
+
+        svg.append("text")
+            .attr("dx", width)
+            .attr("dy", height/3 + 20)
+            .attr("font-size", "13px")
+            .style("opacity", "1")
+            .attr("fill", "black")
+            .text(function(d) {return "Spearman: " + d3.format(".4f")(spearman)})
+                
     }
 
     render() {
