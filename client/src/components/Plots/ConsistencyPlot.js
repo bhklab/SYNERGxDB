@@ -1,11 +1,13 @@
 import * as d3 from 'd3';
 import React from 'react';
 import colors from '../../styles/colors';
-import ocpu from 'opencpu'
 
 export default class ConsistencyPlot extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            cindex: 0
+        }
     }
 
     componentDidMount() {
@@ -75,15 +77,18 @@ export default class ConsistencyPlot extends React.Component {
         this.plotScatter(xvalue.toLowerCase(), yvalue.toLowerCase(), width, height, data, plotId)
     }
 
-    findCIndex(x,y) {
-        console.log(x, y)
-        // ocpu.rCall("library/base/R")
-        // fetch('./R_functions/c_index.R')
-        //     .then((r) => r.text())
-        //     .then(text  => {
-        //         console.log(text);
-        //     })  
-
+    async findCIndex(x,y) {
+        let response = await fetch("http://52.138.39.182/ocpu/library/wCI/R/paired.concordance.index/json", {
+            method: 'post',
+            headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({
+                "prediction": x,
+                "observation": y,
+                "CPP": false
+            })
+        })
+        let data = await response.json();
+        return data.cindex[0]
     }
     
 
@@ -148,7 +153,7 @@ export default class ConsistencyPlot extends React.Component {
         return r;
     }
 
-    plotScatter(xvalue, yvalue, width, height, data, plotId) {
+    async plotScatter(xvalue, yvalue, width, height, data, plotId) {
         let margin = {
             top: 50,
             right: 120,
@@ -256,14 +261,21 @@ export default class ConsistencyPlot extends React.Component {
         // calculating C-Index - map json to arrays and call, pearson, spearman
         const firstArr = data.map(x => x[xvalue])
         const secondArr = data.map(x => x[yvalue])
-        let cInd = this.findCIndex(firstArr, secondArr)
+        let cindex = await this.findCIndex(firstArr, secondArr);
         let pearson = this.findPearson(firstArr, secondArr)
         let spearman = this.findSpearman([firstArr, secondArr], 0, 1)
-        console.log("pearson: ", pearson, " spearman: ", spearman)
 
         // append stats to dom
         svg.append("text")
-            .attr("dx", width)
+            .attr("dx", width + 5)
+            .attr("dy", height/3 - 20)
+            .attr("font-size", "13px")
+            .style("opacity", "1")
+            .attr("fill", "black")
+            .text(function(d) {return "C-index: " + d3.format(".4f")(cindex)})
+
+        svg.append("text")
+            .attr("dx", width + 5)
             .attr("dy", height/3)
             .attr("font-size", "13px")
             .style("opacity", "1")
@@ -271,7 +283,7 @@ export default class ConsistencyPlot extends React.Component {
             .text(function(d) {return "Pearson: " + d3.format(".4f")(pearson)})
 
         svg.append("text")
-            .attr("dx", width)
+            .attr("dx", width + 5)
             .attr("dy", height/3 + 20)
             .attr("font-size", "13px")
             .style("opacity", "1")
