@@ -101,7 +101,7 @@ class QueryCard extends Component {
     return (
       <QueryDiv>
         <h2>
-          Query:
+          Query
         </h2>
         <div className="query-container">
           <div className="col">
@@ -114,11 +114,11 @@ class QueryCard extends Component {
             {datasetName}
           </div>
           <div className="col">
-            <b>Drug A: </b>
+            <b>Compound A: </b>
             {' '}
             {drugName1}
             <p />
-            <b>Drug B:</b>
+            <b>Compound B:</b>
             {' '}
             {drugName2}
             <p />

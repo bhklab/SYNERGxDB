@@ -8,26 +8,35 @@ import ConsistencyPlot from './Plots/ConsistencyPlot';
 import QueryCard from './UtilComponents/QueryCard';
 
 const StyledWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
+
+  .consistencyContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  text-align: left;
   background:white;
-  padding:0px 30px;
+  padding:10px 30px;
 
   select {
     position:absolute;
   }
 
   .selectX {
-    margin-left: 400px;
+    margin-left: 460px;
     margin-top: 500px;
+    
   }
 
   .selectY {
-    margin-left: -60px;
+    margin-left: 0px;
     margin-top: 250px;
+  }
+
+  h2 {
+    text-align:left;
   }
 `;
 
@@ -103,11 +112,14 @@ class Consistency extends Component {
                   />
                 {results.length === 0 ? null : (
                     <StyledWrapper className="wrapper">
-                    <div id="consistencyPlot" />
-                    <ConsistencyPlot
-                        plotId="consistencyPlot"
-                        data={results}
-                      />
+                    <h2>Consistency in Synergy Scores, <i>N</i> = {results.length}</h2>
+                    <div className="consistencyContainer">
+                      <ConsistencyPlot
+                          plotId="consistencyPlot"
+                          data={results}
+                        />
+                    </div>
+                    
                   </StyledWrapper>
                   )}
 

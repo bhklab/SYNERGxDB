@@ -23,6 +23,7 @@ const StyledWrapper = styled.div`
   align-items: center;
   text-align: center;
   width: 100%;
+  // margin-top: -200px;
   h1 {
     color: ${colors.nav_links};
     font-family:'Raleway', sans-serif;

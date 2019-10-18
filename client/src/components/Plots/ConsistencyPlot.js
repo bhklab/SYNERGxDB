@@ -1,6 +1,8 @@
 import * as d3 from 'd3';
-import React from 'react';
+import * as d3_regression from 'd3-regression'
+import React, {Component, Fragment} from 'react';
 import colors from '../../styles/colors';
+
 
 export default class ConsistencyPlot extends React.Component {
     constructor(props) {
@@ -23,7 +25,7 @@ export default class ConsistencyPlot extends React.Component {
         // set defaults in variables so that X and Y dropdowns can access values
         let xvalue = "Bliss"
         let yvalue = "ZIP"
-        let width = 800;
+        let width = 700;
         let height = 400;
 
         // dropdown to choose the method
@@ -36,6 +38,8 @@ export default class ConsistencyPlot extends React.Component {
                 d3.select("#scatter").remove()
                 this.plotScatter(xvalue.toLowerCase(), yvalue.toLowerCase(), width, height, data, plotId)
             })
+
+        
 
         dropdownX.selectAll('option')
             .data(methods)
@@ -156,9 +160,9 @@ export default class ConsistencyPlot extends React.Component {
     async plotScatter(xvalue, yvalue, width, height, data, plotId) {
         let margin = {
             top: 50,
-            right: 120,
+            right: 170,
             bottom: 90,
-            left: 70
+            left: 180
         };
 
         let svg = d3.select(`#${plotId}`)
@@ -169,7 +173,7 @@ export default class ConsistencyPlot extends React.Component {
                 .attr("height", height + margin.top + margin.bottom)
             .append("g")
                 .attr("transform",
-                "translate(" + margin.left + "," + margin.top + ")")
+                "translate(" + 130 + "," + margin.top + ")")
 
         
         //set range for data by domain, and scale by range
@@ -220,6 +224,18 @@ export default class ConsistencyPlot extends React.Component {
                 .style("font-size", 14)
                 .attr("stroke", "none")
  
+        let dropdownYLabel = svg.append("text")
+            .attr("fill", "black")
+            .attr("dy", height/2 - 10)
+            .attr("dx", -110)
+            .text("Y Axis:")
+
+        let dropdownXLabel = svg.append("text")
+            .attr("fill", "black")
+            .attr("dy", height + 68)
+            .attr("dx", width/2 - 80)
+            .text("X Axis:")
+
         // make group for dots
         let dots = svg.selectAll("dot")
             .data(data)
@@ -251,12 +267,30 @@ export default class ConsistencyPlot extends React.Component {
         //Name Tooltip
         tooltips.append("text")
             .attr("class", function(d,i) {return "dot-name" + i})
-            .attr("dx", width)
+            .attr("dx", width + 5)
             .attr("dy", height/2)
-            .attr("font-size", "13px")
+            .attr("font-size", "17px")
             .style("opacity", "0")
             .attr("fill", "black")
             .text(function(d) {return d.sampleName})
+
+
+        // creating regression line
+        // const linearRegression = d3_regression.regressionLinear()
+        //     .x(d => d[xvalue])
+        //     .y(d => d[yvalue])
+        //     .domain(d3.extent(data, function(d) { return d[xvalue]; }))
+
+        // let regressionLine = svg.append("line")
+        //     .attr("class", "regression")
+        //     .datum(linearRegression(data))
+        //     .attr("x1", d => xrange(d[0][0]))
+        //     .attr("x2", d => xrange(d[1][0]))
+        //     .attr("y1", d => yrange(d[0][1]))
+        //     .attr("y2", d => yrange(d[1][1]))
+        //     .attr("fill", "black")
+        //     .attr("stroke-width", 3)
+
   
         // calculating C-Index - map json to arrays and call, pearson, spearman
         const firstArr = data.map(x => x[xvalue])
@@ -269,30 +303,39 @@ export default class ConsistencyPlot extends React.Component {
         svg.append("text")
             .attr("dx", width + 5)
             .attr("dy", height/3 - 20)
-            .attr("font-size", "13px")
+            .attr("font-size", "17px")
             .style("opacity", "1")
             .attr("fill", "black")
-            .text(function(d) {return "C-index: " + d3.format(".4f")(cindex)})
-
-        svg.append("text")
-            .attr("dx", width + 5)
-            .attr("dy", height/3)
-            .attr("font-size", "13px")
-            .style("opacity", "1")
-            .attr("fill", "black")
-            .text(function(d) {return "Pearson: " + d3.format(".4f")(pearson)})
+            .text(function(d) {return "Concordance index: " + d3.format(".4f")(cindex)})
 
         svg.append("text")
             .attr("dx", width + 5)
             .attr("dy", height/3 + 20)
-            .attr("font-size", "13px")
+            .attr("font-size", "17px")
             .style("opacity", "1")
             .attr("fill", "black")
             .text(function(d) {return "Spearman: " + d3.format(".4f")(spearman)})
+
+        svg.append("text")
+            .attr("dx", width + 5)
+            .attr("dy", height/3)
+            .attr("font-size", "17px")
+            .style("opacity", "1")
+            .attr("fill", "black")
+            .text(function(d) {return "Pearson: " + d3.format(".4f")(pearson)})
+
+        
                 
     }
 
     render() {
-        return <div id={this.props.plotId} className="plot"></div> 
+        const data = this.props.data
+        return (
+            <Fragment>
+                {/* <h2>Consistency in Synergy Scores, <i>N</i> = {data.length}</h2> */}
+                <div id={this.props.plotId} className="plot"></div> 
+            </Fragment>
+        )
+        
     }
 }
