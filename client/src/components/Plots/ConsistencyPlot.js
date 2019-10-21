@@ -1,7 +1,7 @@
 import * as d3 from 'd3';
-import * as d3_regression from 'd3-regression'
 import React, {Component, Fragment} from 'react';
 import colors from '../../styles/colors';
+import regression from 'regression';
 
 
 export default class ConsistencyPlot extends React.Component {
@@ -275,25 +275,31 @@ export default class ConsistencyPlot extends React.Component {
             .text(function(d) {return d.sampleName})
 
 
-        // creating regression line
-        // const linearRegression = d3_regression.regressionLinear()
-        //     .x(d => d[xvalue])
-        //     .y(d => d[yvalue])
-        //     .domain(d3.extent(data, function(d) { return d[xvalue]; }))
+        // calculating regression
+        const regressionData = data.map(item => [item[xvalue], item[yvalue]])
+        const coeffs = regression.linear(regressionData)
+        const m = coeffs.equation[0]
+        const b = coeffs.equation[1]
 
-        // let regressionLine = svg.append("line")
-        //     .attr("class", "regression")
-        //     .datum(linearRegression(data))
-        //     .attr("x1", d => xrange(d[0][0]))
-        //     .attr("x2", d => xrange(d[1][0]))
-        //     .attr("y1", d => yrange(d[0][1]))
-        //     .attr("y2", d => yrange(d[1][1]))
-        //     .attr("fill", "black")
-        //     .attr("stroke-width", 3)
+        // finding the start and end by putting the min x value and max x value into y = mx+b
+        const xval_arr = data.map(item => item[xvalue])
+        const x1 = d3.min(xval_arr)
+        const x2 = d3.max(xval_arr)
+        const y1 = m * x1 + b
+        const y2 = m * x2 + b
+        
+        svg.append("line")
+            .attr("x1", xrange(x1))
+            .attr("x2", xrange(x2))
+            .attr("y1", yrange(y1))
+            .attr("y2", yrange(y2))
+            .attr("stroke-width", 2)
+            .attr("stroke", "#eea228")
+
 
   
         // calculating C-Index - map json to arrays and call, pearson, spearman
-        const firstArr = data.map(x => x[xvalue])
+        const firstArr = xval_arr
         const secondArr = data.map(x => x[yvalue])
         let cindex = await this.findCIndex(firstArr, secondArr);
         let pearson = this.findPearson(firstArr, secondArr)
