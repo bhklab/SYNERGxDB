@@ -25,20 +25,23 @@ const SynergyDiv = styled.div`
 `;
 
 const ButtonsDiv = styled.div`
+
   width:100%;
   background:white;
   padding: 20px 30px;
   margin-bottom:30px;
   font-size:18px;
-  display: flex;
-  align-items:center;
 
-  a {
+  .buttonsContainer {
+    display: flex;
+    justify-content:space-between;
+  }
+ 
+  .buttonsContainer a {
     height:70px;
+    width:250px;
     background:${colors.blue_main};
     color: white;
-    flex:1;
-    margin:0px 10px;
     padding: 15px;
     font-weight:700;
     text-align:center;
@@ -151,7 +154,7 @@ class ComboResults extends Component {
     }, {
       Header: () => (
         <span>
-          Drug
+          Compound
           {' '}
           <em>A</em>
         </span>
@@ -160,7 +163,7 @@ class ComboResults extends Component {
     }, {
       Header: () => (
         <span>
-          Drug
+          Compound
           {' '}
           <em>B</em>
         </span>
@@ -211,38 +214,41 @@ class ComboResults extends Component {
           sample={sample}
         />
         <ButtonsDiv>
-          <a href={`/biomarker${queryParams}`}>
-            Biomarker
-            {' '}
-            <br />
-            {' '}
-            Discovery
-          </a>
-          <a href={`/sensitivity${queryParams}`}>
-            Cell Line
-            {' '}
-            <br />
-            Sensitivity Analysis
-          </a>
-          <a href={`/enrichment${queryParams}`}>
-            Tissue-Specific
-            {' '}
-            <br />
-            Enrichment Analysis
-          </a>
-          <a href={`/consistency${queryParams}`}>
-            Consistency in
-            {' '}
-            <br />
-            Synergy Scores
-          </a>
+          <h2>Analysis </h2>
+          <div className="buttonsContainer">
+            <a href={`/biomarker${queryParams}`}>
+              Biomarker
+              {' '}
+              <br />
+              {' '}
+              Discovery
+            </a>
+            <a href={`/sensitivity${queryParams}`}>
+              Cell Line
+              {' '}
+              <br />
+              Sensitivity Analysis
+            </a>
+            <a href={`/enrichment${queryParams}`}>
+              Tissue-Specific
+              {' '}
+              <br />
+              Enrichment Analysis
+            </a>
+            <a href={`/consistency${queryParams}`}>
+              Consistency in
+              {' '}
+              <br />
+              Synergy Scores
+            </a>
+          </div>
+          
         </ButtonsDiv>
 
         {/* {showBiomarker} */}
         <SynergyDiv>
           <h2>
-            Synergy Scores, N=
-            {totalSynergyScores}
+            Synergy Scores, <i>N</i> = {totalSynergyScores}
           </h2>
           <ReactTable
             loading={loading}
