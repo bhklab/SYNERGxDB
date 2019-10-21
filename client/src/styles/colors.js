@@ -11,6 +11,7 @@ export default {
   trans_color_main_5: 'rgba(242,161,4, 0.5)',
   color_accent_1: 'rgb(184, 178, 178)',
   trans_color_accent_1: 'rgba(251,43,6, 0.5)',
+  red_color_accent: 'rgb(251,43,6)',
   color_accent_2: '#f0f0f0',
   trans_color_accent_2: 'rgba(241,241,241, 0.5)',
   nav_links: '#3a5386',

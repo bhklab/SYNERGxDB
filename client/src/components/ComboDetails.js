@@ -48,6 +48,18 @@ const Logo = styled.img`
   vertical-align:middle;
 }
 `;
+
+// Required due to heterogenous nature of the data
+// There is a need to check if data shows viability or inhibitions
+const standarizeRawData = (array) => {
+  console.log(array);
+  if (array[0].raw_matrix === 0) {
+    // it's viability data
+    return array.map(item => ({ ...item, raw_matrix: (100 - item.raw_matrix) / 100 }));
+  }
+  // it's inhibition data, no changes needed
+  return array;
+};
 export default class ComboDetails extends Component {
   static propTypes = {
     location: ReactRouterPropTypes.location.isRequired,
@@ -101,7 +113,6 @@ export default class ComboDetails extends Component {
     })
       .then(response => response.json())
       .then((drugsData) => {
-
         this.setState({ drugsData });
       });
     fetch(`/api/datasets?idSource=${idSource}`, {
@@ -118,13 +129,18 @@ export default class ComboDetails extends Component {
     fetch(`/api/combos/matrix?comboId=${comboId}&idSource=${idSource}`)
       .then(response => response.json())
       .then((data) => {
+        const standarizedData = standarizeRawData(data);
         // Sorts data this step is required for some datasets
         // to standarize data for synergy table and heat map
-        const setConcA = [...new Set(data.map(item => item.concA))].sort((a, b) => a - b);
-        const setConcB = [...new Set(data.map(item => item.concB))].sort((a, b) => a - b);
+        const setConcA = [...new Set(standarizedData
+          .map(item => item.concA))]
+          .sort((a, b) => a - b);
+        const setConcB = [...new Set(standarizedData
+          .map(item => item.concB))]
+          .sort((a, b) => a - b);
         // setConcA.sort((a, b) => a - b);
         // setConcB.sort((a, b) => a - b);
-        const sortedData = data.sort((a, b) => {
+        const sortedData = standarizedData.sort((a, b) => {
           if (a.concA > b.concA) {
             return 1;
           } if (a.concA === b.concA) {
@@ -158,10 +174,10 @@ export default class ComboDetails extends Component {
         this.setState({ synergyData, loadingSynergyData: false, isDataAvailable: true });
       });
 
-    fetch("/api/combos/stats")
-    .then(response => response.json())
-    .then((data) => {
-    })
+    fetch('/api/combos/stats')
+      .then(response => response.json())
+      .then((data) => {
+      });
   }
 
   componentDidUpdate() {
