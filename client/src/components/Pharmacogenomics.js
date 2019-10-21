@@ -121,7 +121,6 @@ class Pharmacogenomics extends Component {
                   height={300}
                   rowCount={drugsData.length}
                   rowHeight={40}
-                  width={350}
                   rowRenderer={rowRenderer}
                 />
               </RadioGroup>
