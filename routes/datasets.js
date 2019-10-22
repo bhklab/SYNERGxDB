@@ -1,3 +1,4 @@
+/* eslint-disable func-names */
 const express = require('express');
 const db = require('../db');
 
@@ -38,6 +39,51 @@ router.get('/', (req, res) => {
         res.json(err);
       });
   }
+});
+
+// Router primary goal is to filter dataset data based on drug ids and sample
+router.get('/filter', (req, res) => {
+  console.log('here');
+  let {
+    sample, drugId1, drugId2,
+  } = req.query;
+  drugId1 = drugId1 && parseInt(drugId1, 10);
+  drugId2 = drugId2 && parseInt(drugId2, 10);
+  sample = Number.isNaN(parseInt(sample, 10)) ? sample : parseInt(sample, 10);
+  console.log(drugId1, drugId2, sample);
+  let baseQuery = db.select('idCombo_Design', 'idSample', 'idDrugA', 'idDrugB')
+    .from('Combo_Design');
+
+  // Checks type of the request and modifies the query accordingly
+  // Query builder when drug(s) are given
+  if (drugId1) {
+    if (typeof (sample) === 'number') {
+      // Subquery to include all possible idDrugA and idDrugB combinations
+      baseQuery = baseQuery.where(function () {
+        return drugId2 ? this.andWhere({ idDrugA: drugId1, idDrugB: drugId2, idSample: sample })
+          : this.andWhere({ idDrugA: drugId1, idSample: sample });
+      })
+        .orWhere(function () {
+          return drugId2 ? this.where({ idDrugA: drugId2, idDrugB: drugId1, idSample: sample })
+            : this.andWhere({ idDrugB: drugId1, idSample: sample });
+        });
+    } else {
+      baseQuery = baseQuery.where(function () {
+        return drugId2 ? this.andWhere({ idDrugA: drugId1, idDrugB: drugId2 })
+          : this.andWhere({ idDrugA: drugId1 });
+      })
+        .orWhere(function () {
+          return drugId2 ? this.where({ idDrugA: drugId2, idDrugB: drugId1 })
+            : this.where({ idDrugB: drugId1 });
+        });
+    }
+  } else if (typeof (sample) === 'number') {
+    baseQuery = baseQuery.where({ idSample: sample });
+  }
+  return baseQuery.then((data) => {
+    console.log(data);
+    res.json(data);
+  });
 });
 
 router.get('/:datasetId', (req, res) => {
