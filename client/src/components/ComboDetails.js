@@ -52,7 +52,6 @@ const Logo = styled.img`
 // Required due to heterogenous nature of the data
 // There is a need to check if data shows viability or inhibitions
 const standarizeRawData = (array) => {
-  console.log(array);
   if (array[0].raw_matrix === 0) {
     // it's viability data
     return array.map(item => ({ ...item, raw_matrix: (100 - item.raw_matrix) / 100 }));
