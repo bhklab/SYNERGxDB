@@ -12,6 +12,7 @@ const drugRouter = require('./routes/drugs');
 const cellRouter = require('./routes/cells');
 const comboRouter = require('./routes/combos');
 const biomarkerRouter = require('./routes/biomarkers');
+const datasetRouter = require('./routes/datasets');
 
 const app = express();
 
@@ -36,6 +37,7 @@ app.use('/api/cell_lines/', cellRouter);
 app.use('/api/drugs/', drugRouter);
 app.use('/api/combos/', comboRouter);
 app.use('/api/biomarkers/', biomarkerRouter);
+app.use('/api/datasets/', datasetRouter);
 
 app.get('/*', (req, res) => {
   res.sendFile('index.html', { root: './client/build' });
