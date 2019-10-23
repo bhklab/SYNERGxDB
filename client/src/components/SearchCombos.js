@@ -391,9 +391,9 @@ class SearchCombos extends Component {
   filterDatasetData(sample, drugA, drugB) {
     console.log(sample, drugA, drugB);
     let url = '/api/datasets/filter?';
-    if (sample) url = url.concat(`&drugId1=${sample}`);
-    if (drugA) url = url.concat(`&drugId1=${drugA}`);
-    if (drugB) url = url.concat(`&drugId2=${drugB}`);
+    if (sample && sample !== 'Any') url = url.concat(`&sample=${sample}`);
+    if (drugA && drugA !== 'Any') url = url.concat(`&drugId1=${drugA}`);
+    if (drugB && drugB !== 'Any') url = url.concat(`&drugId2=${drugB}`);
     fetch(url)
       .then(response => response.json())
       .then((data) => {

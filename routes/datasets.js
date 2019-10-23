@@ -43,7 +43,8 @@ router.get('/', (req, res) => {
 
 // Router primary goal is to filter dataset data based on drug ids and sample
 router.get('/filter', (req, res) => {
-  console.log('here');
+  console.log('dataset filter route fired');
+  console.log(req.query);
   let {
     sample, drugId1, drugId2,
   } = req.query;
@@ -51,39 +52,74 @@ router.get('/filter', (req, res) => {
   drugId2 = drugId2 && parseInt(drugId2, 10);
   sample = Number.isNaN(parseInt(sample, 10)) ? sample : parseInt(sample, 10);
   console.log(drugId1, drugId2, sample);
-  let baseQuery = db.select('idCombo_Design', 'idSample', 'idDrugA', 'idDrugB')
-    .from('Combo_Design');
 
-  // Checks type of the request and modifies the query accordingly
-  // Query builder when drug(s) are given
-  if (drugId1) {
-    if (typeof (sample) === 'number') {
+  function subqueryCD() {
+    let baseQuery = this.select('idCombo_Design', 'idSample as sampleId', 'idDrugA', 'idDrugB')
+      .from('Combo_Design');
+
+    // Checks type of the request and modifies the query accordingly
+    // Query builder when drug(s) are given
+    if (drugId1) {
+      if (typeof (sample) === 'number') {
       // Subquery to include all possible idDrugA and idDrugB combinations
-      baseQuery = baseQuery.where(function () {
-        return drugId2 ? this.andWhere({ idDrugA: drugId1, idDrugB: drugId2, idSample: sample })
-          : this.andWhere({ idDrugA: drugId1, idSample: sample });
-      })
-        .orWhere(function () {
-          return drugId2 ? this.where({ idDrugA: drugId2, idDrugB: drugId1, idSample: sample })
-            : this.andWhere({ idDrugB: drugId1, idSample: sample });
-        });
-    } else {
-      baseQuery = baseQuery.where(function () {
-        return drugId2 ? this.andWhere({ idDrugA: drugId1, idDrugB: drugId2 })
-          : this.andWhere({ idDrugA: drugId1 });
-      })
-        .orWhere(function () {
-          return drugId2 ? this.where({ idDrugA: drugId2, idDrugB: drugId1 })
-            : this.where({ idDrugB: drugId1 });
-        });
+        baseQuery = baseQuery.where(function () {
+          return drugId2 ? this.andWhere({ idDrugA: drugId1, idDrugB: drugId2, idSample: sample })
+            : this.andWhere({ idDrugA: drugId1, idSample: sample });
+        })
+          .orWhere(function () {
+            return drugId2 ? this.where({ idDrugA: drugId2, idDrugB: drugId1, idSample: sample })
+              : this.andWhere({ idDrugB: drugId1, idSample: sample });
+          });
+      } else {
+        baseQuery = baseQuery.where(function () {
+          return drugId2 ? this.andWhere({ idDrugA: drugId1, idDrugB: drugId2 })
+            : this.andWhere({ idDrugA: drugId1 });
+        })
+          .orWhere(function () {
+            return drugId2 ? this.where({ idDrugA: drugId2, idDrugB: drugId1 })
+              : this.where({ idDrugB: drugId1 });
+          });
+      }
+    } else if (typeof (sample) === 'number') {
+      baseQuery = baseQuery.where({ idSample: sample });
     }
-  } else if (typeof (sample) === 'number') {
-    baseQuery = baseQuery.where({ idSample: sample });
+    return baseQuery.as('CD');
   }
-  return baseQuery.then((data) => {
-    console.log(data);
-    res.json(data);
-  });
+
+  function subqueryS() {
+    let baseQuery = this.select('idCombo_Design', 'idSample', 'idDrugA', 'idDrugB', 'name as sampleName', 'tissue')
+      .from(subqueryCD);
+      // Tissue specific requests
+    if (typeof (sample) === 'string') baseQuery = baseQuery.where({ tissue: sample });
+    return baseQuery
+      .join('Sample', 'CD.sampleId', '=', 'Sample.idSample')
+      .as('S');
+  }
+
+
+  const baseQuery = db.select('idCombo_Design', 'idSample', 'idDrugA', 'idDrugB', 'name as sampleName', 'tissue')
+    .from(subqueryCD);
+  // Tissue specific requests
+  if (typeof (sample) === 'string') {
+    console.log('string');
+    db.select('idCombo_Design', 'idSample', 'idDrugA', 'idDrugB', 'name as sampleName', 'tissue')
+      .from(subqueryCD)
+      .where({ tissue: sample })
+      .join('Sample', 'CD.sampleId', '=', 'Sample.idSample')
+      .then((data) => {
+        console.log(data);
+        res.json(data);
+      });
+  } else {
+    console.log('something else');
+    db.select('idCombo_Design', 'idSample', 'idDrugA', 'idDrugB', 'name as sampleName', 'tissue')
+      .from(subqueryCD)
+      .join('Sample', 'CD.sampleId', '=', 'Sample.idSample')
+      .then((data) => {
+        console.log(data);
+        res.json(data);
+      });
+  }
 });
 
 router.get('/:datasetId', (req, res) => {
