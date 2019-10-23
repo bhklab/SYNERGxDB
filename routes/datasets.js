@@ -54,7 +54,7 @@ router.get('/filter', (req, res) => {
   console.log(drugId1, drugId2, sample);
 
   function subqueryCD() {
-    let baseQuery = this.select('idCombo_Design', 'idSample as sampleId', 'idDrugA', 'idDrugB')
+    let baseQuery = this.select('idCombo_Design', 'idSample as sampleId')
       .from('Combo_Design');
 
     // Checks type of the request and modifies the query accordingly
@@ -87,7 +87,7 @@ router.get('/filter', (req, res) => {
   }
 
   function subqueryS() {
-    let baseQuery = this.select('idCombo_Design', 'idSample', 'idDrugA', 'idDrugB', 'name as sampleName', 'tissue')
+    let baseQuery = this.select('idCombo_Design', 'idSample')
       .from(subqueryCD);
       // Tissue specific requests
     if (typeof (sample) === 'string') baseQuery = baseQuery.where({ tissue: sample });
@@ -97,12 +97,10 @@ router.get('/filter', (req, res) => {
   }
 
 
-  const baseQuery = db.select('idCombo_Design', 'idSample', 'idDrugA', 'idDrugB', 'name as sampleName', 'tissue')
-    .from(subqueryCD);
   // Tissue specific requests
   if (typeof (sample) === 'string') {
     console.log('string');
-    db.select('idCombo_Design', 'idSample', 'idDrugA', 'idDrugB', 'name as sampleName', 'tissue')
+    db.select('idCombo_Design', 'idSample')
       .from(subqueryCD)
       .where({ tissue: sample })
       .join('Sample', 'CD.sampleId', '=', 'Sample.idSample')
@@ -112,7 +110,7 @@ router.get('/filter', (req, res) => {
       });
   } else {
     console.log('something else');
-    db.select('idCombo_Design', 'idSample', 'idDrugA', 'idDrugB', 'name as sampleName', 'tissue')
+    db.select('idCombo_Design', 'idSample')
       .from(subqueryCD)
       .join('Sample', 'CD.sampleId', '=', 'Sample.idSample')
       .then((data) => {
@@ -120,6 +118,7 @@ router.get('/filter', (req, res) => {
         res.json(data);
       });
   }
+  // db.select('');
 });
 
 router.get('/:datasetId', (req, res) => {

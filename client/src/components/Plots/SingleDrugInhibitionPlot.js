@@ -19,8 +19,6 @@ const standarizeData = (num) => {
 };
 
 class SingleDrugInhibitionPlot extends React.Component {
-  static contextType = ComboContext
-
   constructor(props) {
     super(props);
     this.state = {
@@ -114,6 +112,8 @@ class SingleDrugInhibitionPlot extends React.Component {
     };
     this.setState({ data, layout });
   }
+
+  static contextType = ComboContext
 
   // Render this compoenent
   render() {
