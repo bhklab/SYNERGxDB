@@ -79,6 +79,7 @@ class CumulativeDensity extends React.Component {
     })
       .then(response => response.json())
       .then((comboData) => {
+        console.log(comboData)
         if (comboData.length > 1) {
           const blissCoordinates = generateCoordinates(comboData, 'bliss', comboId);
           const zipCoordinates = generateCoordinates(comboData, 'zip', comboId);

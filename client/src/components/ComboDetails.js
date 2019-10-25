@@ -17,6 +17,7 @@ import CumulativeDensity from './Plots/CumulativeDensity';
 import SynergyMatrices from './SynergyMatrices';
 import { ComboContext } from './Context/ComboContext';
 import SynergisticInhibition from './SynergisticInhibition';
+import SynScoreComboPlot from './Plots/SynScoreComboPlot';
 // import SingleAgents from './SingleAgents';
 
 
@@ -271,7 +272,8 @@ export default class ComboDetails extends Component {
             ? null
             : (isDataAvailable ? (
               <ComboContext.Provider value={this.state}>
-                <CumulativeDensity />
+                {/* <CumulativeDensity /> */}
+                <SynScoreComboPlot/>
                 <SynergyMatrices />
                 <SynergisticInhibition dataAvailable={isDataAvailable} />
                 {/* <SingleAgents /> */}

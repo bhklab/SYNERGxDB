@@ -15,7 +15,7 @@ router.get('/info', (req, res) => {
   const {
     idSample,
   } = req.query;
-  db.select('name', 'idCellosaurus', 'disease')
+  db.select('idSample', 'name', 'idCellosaurus', 'disease')
     .first()
     .from('Sample')
     .where({ idSample })
