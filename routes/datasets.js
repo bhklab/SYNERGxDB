@@ -87,7 +87,7 @@ router.get('/filter', (req, res) => {
   }
 
   function subqueryS() {
-    let baseQuery = this.select('idCombo_Design', 'idSample')
+    let baseQuery = this.select('idCombo_Design')
       .from(subqueryCD);
       // Tissue specific requests
     if (typeof (sample) === 'string') baseQuery = baseQuery.where({ tissue: sample });
@@ -98,26 +98,51 @@ router.get('/filter', (req, res) => {
 
 
   // Tissue specific requests
-  if (typeof (sample) === 'string') {
-    console.log('string');
-    db.select('idCombo_Design', 'idSample')
-      .from(subqueryCD)
-      .where({ tissue: sample })
-      .join('Sample', 'CD.sampleId', '=', 'Sample.idSample')
-      .then((data) => {
-        console.log(data);
-        res.json(data);
-      });
-  } else {
-    console.log('something else');
-    db.select('idCombo_Design', 'idSample')
-      .from(subqueryCD)
-      .join('Sample', 'CD.sampleId', '=', 'Sample.idSample')
-      .then((data) => {
-        console.log(data);
-        res.json(data);
-      });
+  //   if (typeof (sample) === 'string') {
+  //     console.log('string');
+  //     db.select('idCombo_Design', 'idSample')
+  //       .from(subqueryCD)
+  //       .where({ tissue: sample })
+  //       .join('Sample', 'CD.sampleId', '=', 'Sample.idSample')
+  //       .then((data) => {
+  //         console.log(data);
+  //         res.json(data);
+  //       });
+  //   } else {
+  //     console.log('something else');
+  //     db.select('idCombo_Design', 'idSample')
+  //       .from(subqueryCD)
+  //       .join('Sample', 'CD.sampleId', '=', 'Sample.idSample')
+  //       .then((data) => {
+  //         console.log(data);
+  //         res.json(data);
+  //       });
+  //   }
+
+  function subquerySrc() {
+    return this.distinct('idSource as sourceId')
+      .from(subqueryS)
+      .join('Combo_matrix', 'Combo_matrix.idCombo_Design', '=', 'S.idCombo_Design')
+      .as('Src');
   }
+
+  //   db.distinct('idSource')
+  //     .from(subqueryS)
+  //     .join('Combo_matrix', 'Combo_matrix.idCombo_Design', '=', 'S.idCombo_Design')
+  //     .then((data) => {
+  //       console.log(data);
+  //       res.json(data);
+  //     })
+  //     .catch(err => res.json(err));
+
+  db.select('idSource', 'name')
+    .from(subquerySrc)
+    .join('Source', 'Src.sourceId', '=', 'Source.idSource')
+    .then((data) => {
+      console.log(data);
+      res.json(data);
+    })
+    .catch(err => res.json(err));
   // db.select('');
 });
 
