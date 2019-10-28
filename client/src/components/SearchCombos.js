@@ -320,6 +320,12 @@ class SearchCombos extends Component {
     this.handleDatasetSearch = this.handleDatasetSearch.bind(this);
     this.handleEnterPress = this.handleEnterPress.bind(this);
     this.checkUserInput = this.checkUserInput.bind(this);
+
+    // New Search/Filtering UI
+    this.filterDrugAData = this.filterDrugAData.bind(this);
+    this.filterDrugBData = this.filterDrugBData.bind(this);
+    this.filterDatasetData = this.filterDatasetData.bind(this);
+    this.filterSampleData = this.filterSampleData.bind(this);
   }
 
   componentDidMount() {
@@ -369,6 +375,32 @@ class SearchCombos extends Component {
       });
   }
 
+  filterDrugAData(sample, drugB, dataset) {
+    console.log(sample, drugB, dataset);
+  }
+
+  filterDrugBData(sample, drugA, dataset) {
+    console.log(sample, drugA, dataset);
+  }
+
+  filterSampleData(drugA, drugB, dataset) {
+    console.log(drugA, drugB, dataset);
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  filterDatasetData(sample, drugA, drugB) {
+    console.log(sample, drugA, drugB);
+    let url = '/api/datasets/filter?';
+    if (sample && sample !== 'Any') url = url.concat(`&sample=${sample}`);
+    if (drugA && drugA !== 'Any') url = url.concat(`&drugId1=${drugA}`);
+    if (drugB && drugB !== 'Any') url = url.concat(`&drugId2=${drugB}`);
+    fetch(url)
+      .then(response => response.json())
+      .then((data) => {
+        console.log(data);
+      });
+  }
+
   userRedirect() {
     const {
       drugId1, drugId2, sample, dataset, allowRedirect,
@@ -400,7 +432,8 @@ class SearchCombos extends Component {
 
   handleDrug1Search(drugId, event) {
     const { value, label } = event;
-    const { sample, dataset } = this.state;
+    const { sample, dataset, drugId2 } = this.state;
+    const { filterDatasetData } = this;
 
     if (event.value === 'Any') {
       this.setState({ isDisabled: true, drug2Placeholder: 'Please specify Compound A' });
@@ -409,19 +442,30 @@ class SearchCombos extends Component {
     }
     this.setState({ drugId1: value, selectedDrug1: { value, label } });
     // Sends a post request to the API to retrieve relevant combo drugs for drugsData2
-    if (sample && dataset) this.updateDrug2Data(sample, dataset, value);
+
+    console.log('handleDrug1Search');
+    filterDatasetData(sample, value, drugId2);
   }
 
   handleDrug2Search(event) {
     const { value, label } = event;
+    const { filterDatasetData } = this;
+    const { sample, dataset, drugId1 } = this.state;
     this.setState({ drugId2: value, selectedDrug2: { value, label } });
+
+    console.log('handleDrug2Search');
+    filterDatasetData(sample, drugId1, value);
   }
 
   handleSampleSearch(event) {
     const { value, label } = event;
-    const { dataset, drugId1 } = this.state;
+    const { dataset, drugId1, drugId2 } = this.state;
+    const { filterDatasetData } = this;
     this.setState({ sample: value, selectedSample: { value, label } });
     if (drugId1 !== 'Any') this.updateDrug2Data(value, dataset, drugId1);
+
+    console.log('handleSampleSearch');
+    filterDatasetData(value, drugId1, drugId2);
   }
 
   handleDatasetSearch(event) {

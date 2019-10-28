@@ -23,20 +23,25 @@ const StyledDiv = styled.div`
     color: ${colors.nav_links} !important;
     font-family: 'Montserrat', sans-serif;
 
+    @media (max-width: 1025px) {
+      h2 {
+        font-size: 1em !important;
+      }
+    }
     @media (max-width : 650px) {
       position:static;
     }
 
     div {
         padding: 0 10px; 
-        width: 175px;
-        min-width: 150px;
+        max-width: 175px;
+        min-width: 126px;
     }
     h2 {
       color: ${colors.nav_links} !important;
       font-family: 'Montserrat', sans-serif;
       font-weight:500;
-      font-size: 1.4em;
+      font-size: 1.5em;
     }
 `;
 

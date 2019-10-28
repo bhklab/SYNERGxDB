@@ -37,7 +37,7 @@ class ViabilityHeatMap extends React.Component {
       layout: {
         autosize: true,
         margin: {
-          l: 65,
+          l: 75,
           r: 0,
           t: 30,
           b: 50,
@@ -46,6 +46,7 @@ class ViabilityHeatMap extends React.Component {
 
     };
   }
+
 
   componentDidMount() {
     const { synergyData } = this.context;
@@ -86,7 +87,7 @@ class ViabilityHeatMap extends React.Component {
       type: 'heatmap',
       hoverinfo: 'text',
       hovertext: hoverData,
-      colorscale: [[0, colors.color_main_3], [1, colors.color_main_5]],
+      colorscale: [[0, colors.red_color_accent], [1, colors.color_main_3]],
       colorbar: {
         tickcolor: colors.color_main_1,
         tickfont: {
