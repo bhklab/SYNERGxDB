@@ -112,7 +112,6 @@ router.get('/filter', (req, res) => {
       .join('Source', 'Src.sourceId', '=', 'Source.idSource');
   }
   mainQuery.then((data) => {
-    console.log(data);
     res.json(data);
   })
     .catch(err => res.json(err));
