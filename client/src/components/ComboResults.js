@@ -1,7 +1,7 @@
 /* eslint-disable react/no-unused-state */
 /* eslint-disable max-len */
 /* eslint-disable react/no-array-index-key */
-import React, { Component } from 'react';
+import React, { Fragment, Component } from 'react';
 import ReactRouterPropTypes from 'react-router-prop-types';
 import queryString from 'query-string';
 import styled from 'styled-components';
@@ -102,6 +102,7 @@ class ComboResults extends Component {
       .then((data) => {
         this.setState({ results: data, loading: false });
       });
+
   }
 
   handleCombo(index) {
@@ -216,13 +217,19 @@ class ComboResults extends Component {
         <ButtonsDiv>
           <h2>Analysis </h2>
           <div className="buttonsContainer">
-            <a href={`/biomarker${queryParams}`}>
-              Biomarker
-              {' '}
-              <br />
-              {' '}
-              Discovery
-            </a>
+            {dataset == 3 || dataset == 4 || dataset == 6 ? null : 
+              <Fragment>
+                <a href={`/biomarker${queryParams}`}>
+                  Biomarker
+                  {' '}
+                  <br />
+                  {' '}
+                  Discovery
+                </a>
+              </Fragment>
+              
+            }
+            
             <a href={`/sensitivity${queryParams}`}>
               Cell Line
               {' '}

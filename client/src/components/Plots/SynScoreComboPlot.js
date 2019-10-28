@@ -164,7 +164,7 @@ class SynScoreComboPlot extends React.Component {
                     plot_bgcolor: 'white',
                     orientation: "h",
                     yaxis: { ticklen: 0},
-                    xaxis: { title: `Synergy Score (Cell Lines, N=${comboData.length})`},
+                    xaxis: { title: `Synergy Score (Cell Lines, N=${comboData.length})`, zeroline: false},
                     hovermode: 'closest',
                     showlegend: false,
                     font: {
