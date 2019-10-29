@@ -92,7 +92,7 @@ class Biomarkers extends Component {
   }
 
   componentDidMount() {
-    const gene = 'ARL13A';
+    const gene = 'CIB3';
     // const gene = 'A2M';
     this.setState({ selectedBiomarker: gene });
     this.getPlotData(gene);

@@ -40,6 +40,8 @@ router.get('/filter', (req, res) => {
   dataset = dataset && parseInt(dataset, 10);
   console.log(drugId1, drugId2, dataset);
   // res.json({ message: 'OK' });
+
+
   let baseQuery = db.select('idCombo_Design', 'idSample as sampleId')
     .from('Combo_Design');
 
