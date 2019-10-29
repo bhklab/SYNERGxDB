@@ -45,15 +45,18 @@ router.get('/association', (req, res) => {
     let subquery = this.select('model_id', 'name', 'model_identifiers.idSample as idSample')
       .from('sample');
 
-    if (typeof (sample) !== 'number') {
+    console.log(sample);
+    if (typeof (sample) === 'string') {
       subquery = subquery
         .join('model_identifiers', 'model_identifiers.idSample', '=', 'sample.idSample')
         .where({ tissue: sample });
-    }
-    if (typeof (sample) === 'number') {
+    } else if (typeof (sample) === 'number') {
       subquery = subquery
         .join('model_identifiers', 'model_identifiers.idSample', '=', 'sample.idSample')
         .where({ 'sample.idSample': sample });
+    } else {
+      subquery = subquery
+        .join('model_identifiers', 'model_identifiers.idSample', '=', 'sample.idSample');
     }
     return subquery.as('S');
   }

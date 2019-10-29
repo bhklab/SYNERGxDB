@@ -92,6 +92,7 @@ class ExpressionProfile extends React.Component {
       },
       hoverinfo: 'none',
     };
+    console.log(thresholdLine);
     data.push(thresholdLine);
 
     const layout = {
