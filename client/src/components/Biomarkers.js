@@ -129,6 +129,7 @@ class Biomarkers extends Component {
       })
         .then(response => response.json())
         .then((data) => {
+          console.log(data);
           data.sort((a, b) => a.idSample - b.idSample);
           // Doesn't take into account significance of the data
           // Duplicated data should be filtered based on significance, use C-index
@@ -151,6 +152,7 @@ class Biomarkers extends Component {
         },
       }).then(response => response.json())
         .then((cellLineExpressionData) => {
+          console.log(cellLineExpressionData);
           // Doesn't take into account significance of the data
           // Duplicated data should be filtered based on significance, use C-index
           cellLineExpressionData.forEach((item) => {
@@ -198,7 +200,12 @@ class Biomarkers extends Component {
 
 
       this.setState({
-        loading: false, biomarkerData: synergyObj, xRange, yRange, defaultThreshold, synScoreArray,
+        loading: false,
+        biomarkerData: synergyObj,
+        xRange,
+        yRange,
+        defaultThreshold,
+        synScoreArray,
       });
     } catch (err) {
       // eslint-disable-next-line no-console

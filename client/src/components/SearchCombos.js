@@ -385,15 +385,12 @@ class SearchCombos extends Component {
   }
 
   filterSampleData(drugA, drugB, dataset) {
-    let url = '/api/sample/filter?';
+    let url = '/api/cell_lines/filter?';
     if (dataset && dataset !== 'Any') url = url.concat(`&dataset=${dataset}`);
     if (drugA && drugA !== 'Any') url = url.concat(`&drugId1=${drugA}`);
     if (drugB && drugB !== 'Any') url = url.concat(`&drugId2=${drugB}`);
     fetch(url)
-      .then((response) => {
-        console.log(response);
-        return response.json();
-      })
+      .then(response => response.json())
       .then((data) => {
         console.log('Sample filtering');
         console.log(data);

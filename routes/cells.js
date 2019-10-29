@@ -1,3 +1,4 @@
+/* eslint-disable func-names */
 const express = require('express');
 const db = require('../db');
 
@@ -44,31 +45,36 @@ router.get('/filter', (req, res) => {
 
   // Checks type of the request and modifies the query accordingly
   // Query builder when drug(s) are given
-  if (drugId1) {
-    if (typeof (sample) === 'number') {
-      // Subquery to include all possible idDrugA and idDrugB combinations
-      baseQuery = baseQuery.where(function () {
-        return drugId2 ? this.andWhere({ idDrugA: drugId1, idDrugB: drugId2, idSample: sample })
-          : this.andWhere({ idDrugA: drugId1, idSample: sample });
-      })
-        .orWhere(function () {
-          return drugId2 ? this.where({ idDrugA: drugId2, idDrugB: drugId1, idSample: sample })
-            : this.andWhere({ idDrugB: drugId1, idSample: sample });
-        });
-    } else {
-      baseQuery = baseQuery.where(function () {
-        return drugId2 ? this.andWhere({ idDrugA: drugId1, idDrugB: drugId2 })
-          : this.andWhere({ idDrugA: drugId1 });
-      })
-        .orWhere(function () {
-          return drugId2 ? this.where({ idDrugA: drugId2, idDrugB: drugId1 })
-            : this.where({ idDrugB: drugId1 });
-        });
-    }
-  } else if (typeof (sample) === 'number') {
-    baseQuery = baseQuery.where({ idSample: sample });
+  if (drugId1 || drugId2) {
+    baseQuery = baseQuery.where(function () {
+      if (drugId1 && drugId2) {
+        return this.andWhere({ idDrugA: drugId1, idDrugB: drugId2 });
+      } if (drugId1) {
+        return this.andWhere({ idDrugA: drugId1 });
+      }
+      // drugId2 only
+      return this.andWhere({ idDrugA: drugId2 });
+    })
+      .orWhere(function () {
+        if (drugId1 && drugId2) {
+          return this.andWhere({ idDrugA: drugId2, idDrugB: drugId1 });
+        } if (drugId1) {
+          return this.andWhere({ idDrugB: drugId1 });
+        }
+        // drugId2 only
+        return this.andWhere({ idDrugB: drugId2 });
+      });
   }
-  return baseQuery.as('CD');
+  // return baseQuery.as('CD');
+  baseQuery
+    .then((data) => {
+      console.log(data);
+      res.json(data);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.json(err);
+    });
 });
 
 router.get('/:cellId', (req, res) => {
