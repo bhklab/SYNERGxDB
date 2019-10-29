@@ -183,10 +183,15 @@ class Biomarkers extends Component {
         if (item.zip > highestSynScore) highestSynScore = item.zip;
       });
       const rangeFPKM = highestFPKM - lowestFPKM;
-      const xRange = [
-        lowestFPKM - rangeFPKM * paddingPercent,
-        highestFPKM + rangeFPKM * paddingPercent,
-      ];
+      let xRange;
+      if (rangeFPKM) {
+        xRange = [
+          lowestFPKM - rangeFPKM * paddingPercent,
+          highestFPKM + rangeFPKM * paddingPercent,
+        ];
+      } else {
+        xRange = [-1, 1];
+      }
       const rangeSynScore = highestSynScore - lowestSynScore;
       const yRange = [
         lowestSynScore - rangeSynScore * paddingPercent,
