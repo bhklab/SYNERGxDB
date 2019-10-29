@@ -59,6 +59,11 @@ class BiomarkerBoxPlot extends React.Component {
         boxData.push(sortArr.slice(i, sortArr.length));
         break;
       }
+      // Creates boxData array when there is no data for high box plot
+      if (i === sortArr.length - 1) {
+        boxData.push(sortArr);
+        boxData.push([]);
+      }
     }
     this.setState({
       layout: {
