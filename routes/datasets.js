@@ -59,25 +59,45 @@ router.get('/filter', (req, res) => {
 
     // Checks type of the request and modifies the query accordingly
     // Query builder when drug(s) are given
-    if (drugId1) {
+    if (drugId1 || drugId2) {
       if (typeof (sample) === 'number') {
       // Subquery to include all possible idDrugA and idDrugB combinations
         baseQuery = baseQuery.where(function () {
-          return drugId2 ? this.andWhere({ idDrugA: drugId1, idDrugB: drugId2, idSample: sample })
-            : this.andWhere({ idDrugA: drugId1, idSample: sample });
+          if (drugId1 && drugId2) {
+            return this.andWhere({ idDrugA: drugId1, idDrugB: drugId2, idSample: sample });
+          } if (drugId1) {
+            return this.andWhere({ idDrugA: drugId1, idSample: sample });
+          }
+          // drugId2 only
+          return this.andWhere({ idDrugA: drugId2, idSample: sample });
         })
           .orWhere(function () {
-            return drugId2 ? this.where({ idDrugA: drugId2, idDrugB: drugId1, idSample: sample })
-              : this.andWhere({ idDrugB: drugId1, idSample: sample });
+            if (drugId1 && drugId2) {
+              return this.andWhere({ idDrugA: drugId2, idDrugB: drugId1, idSample: sample });
+            } if (drugId1) {
+              return this.andWhere({ idDrugB: drugId1, idSample: sample });
+            }
+            // drugId2 only
+            return this.andWhere({ idDrugB: drugId2, idSample: sample });
           });
       } else {
         baseQuery = baseQuery.where(function () {
-          return drugId2 ? this.andWhere({ idDrugA: drugId1, idDrugB: drugId2 })
-            : this.andWhere({ idDrugA: drugId1 });
+          if (drugId1 && drugId2) {
+            return this.andWhere({ idDrugA: drugId1, idDrugB: drugId2 });
+          } if (drugId1) {
+            return this.andWhere({ idDrugA: drugId1 });
+          }
+          // drugId2 only
+          return this.andWhere({ idDrugA: drugId2 });
         })
           .orWhere(function () {
-            return drugId2 ? this.where({ idDrugA: drugId2, idDrugB: drugId1 })
-              : this.where({ idDrugB: drugId1 });
+            if (drugId1 && drugId2) {
+              return this.andWhere({ idDrugA: drugId2, idDrugB: drugId1 });
+            } if (drugId1) {
+              return this.andWhere({ idDrugB: drugId1 });
+            }
+            // drugId2 only
+            return this.andWhere({ idDrugB: drugId2 });
           });
       }
     } else if (typeof (sample) === 'number') {

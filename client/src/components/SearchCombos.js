@@ -647,6 +647,7 @@ class SearchCombos extends Component {
               isDisabled={isDisabled}
               placeholder={drug2Placeholder}
               value={isDisabled ? '' : selectedDrug2}
+              // value={selectedDrug2}
               onChange={handleDrug2Search}
               filterOption={customFilterOption}
             />
