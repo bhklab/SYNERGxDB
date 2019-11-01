@@ -103,8 +103,15 @@ router.get('/mono', (req, res) => {
     });
 });
 
-router.post('/', (req, res) => {
-  const { sample, dataset, drugId } = req.body;
+router.get('/filter', (req, res) => {
+  let {
+    dataset, drugId, sample,
+  } = req.query;
+  drugId = drugId && parseInt(drugId, 10);
+  dataset = dataset && parseInt(dataset, 10);
+  sample = Number.isNaN(parseInt(sample, 10)) ? sample : parseInt(sample, 10);
+
+
   // query to get relevant cell lines
   function subqueryTissue() {
     if (sample) {

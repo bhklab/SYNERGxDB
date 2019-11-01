@@ -43,15 +43,12 @@ router.get('/', (req, res) => {
 
 // Router primary goal is to filter dataset data based on drug ids and sample
 router.get('/filter', (req, res) => {
-  console.log('dataset filter route fired');
-  console.log(req.query);
   let {
     sample, drugId1, drugId2,
   } = req.query;
   drugId1 = drugId1 && parseInt(drugId1, 10);
   drugId2 = drugId2 && parseInt(drugId2, 10);
   sample = Number.isNaN(parseInt(sample, 10)) ? sample : parseInt(sample, 10);
-  console.log(drugId1, drugId2, sample);
 
   function subqueryCD() {
     let baseQuery = this.select('idCombo_Design', 'idSample as sampleId')

@@ -490,20 +490,20 @@ class SearchCombos extends Component {
   }
 
   updateDrug2Data(sample, dataset, drugId) {
-    const requestBody = { };
-    if (drugId !== 'Any') requestBody.drugId = drugId;
-    if (sample !== 'Any') requestBody.sample = sample;
-    if (dataset !== 'Any') requestBody.dataset = dataset;
-    fetch('/api/drugs', {
-      method: 'POST',
+    let queryParams = '';
+    if (drugId !== 'Any') queryParams = queryParams.concat(`&drugId=${drugId}`);
+    if (sample !== 'Any') queryParams = queryParams.concat(`&sample=${sample}`);
+    if (dataset !== 'Any') queryParams = queryParams.concat(`&dataset=${dataset}`);
+    fetch('/api/drugs/filter?'.concat(queryParams), {
+      method: 'GET',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(requestBody),
     })
       .then(response => response.json())
       .then((data) => {
+        console.log(data);
         this.setState({
           drugId2: 'Any', selectedDrug2: null, drugsData2: [],
         });
