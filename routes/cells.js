@@ -30,16 +30,12 @@ router.get('/info', (req, res) => {
 });
 
 router.get('/filter', (req, res) => {
-  console.log('sample filter route fired');
-  console.log(req.query);
   let {
     dataset, drugId1, drugId2,
   } = req.query;
   drugId1 = drugId1 && parseInt(drugId1, 10);
   drugId2 = drugId2 && parseInt(drugId2, 10);
   dataset = dataset && parseInt(dataset, 10);
-  console.log(drugId1, drugId2, dataset);
-  // res.json({ message: 'OK' });
 
   // filters data based on given drugs
   function subqueryCD() {
@@ -99,11 +95,11 @@ router.get('/filter', (req, res) => {
     return baseQuery.as('S');
   }
 
+  // Retrieves cell line names and tissue names
   db.select('Sample.idSample as idSample', 'tissue', 'name')
     .from(subqueryGetSampleIds)
     .join('Sample', 'S.idSample', '=', 'Sample.idSample')
     .then((data) => {
-      console.log(data);
       res.json(data);
     })
     .catch((err) => {
