@@ -66,11 +66,11 @@ router.get('/filter', (req, res) => {
   }
 
   // subquery combo-matrix table (optional, only used when dataset is given)
-  function subqueryCM() {
+  function subquerySS() {
     return this.select('idCombo_Design', 'idSource')
-      .from('Combo_matrix')
+      .from('Synergy_score')
       .where({ idSource: dataset })
-      .as('CM');
+      .as('SS');
   }
 
   // consolidates filtering by dataset and drug(s) together
@@ -87,9 +87,9 @@ router.get('/filter', (req, res) => {
     if (dataset) {
       baseQuery = baseQuery.where({ idSource: dataset });
       if (drugId1 || drugId2) {
-        baseQuery = baseQuery.join(subqueryCM, 'CM.idCombo_Design', '=', 'CD.idCombo_Design');
+        baseQuery = baseQuery.join(subquerySS, 'SS.idCombo_Design', '=', 'CD.idCombo_Design');
       } else {
-        baseQuery = baseQuery.join(subqueryCM, 'CM.idCombo_Design', '=', 'Combo_Design.idCombo_Design');
+        baseQuery = baseQuery.join(subquerySS, 'SS.idCombo_Design', '=', 'Combo_Design.idCombo_Design');
       }
     }
     return baseQuery.as('S');

@@ -116,7 +116,7 @@ router.get('/filter', (req, res) => {
   function subquerySrc() {
     return this.distinct('idSource as sourceId')
       .from(subqueryS)
-      .join('Combo_matrix', 'Combo_matrix.idCombo_Design', '=', 'S.idCombo_Design')
+      .join('Synergy_score', 'Synergy_score.idCombo_Design', '=', 'S.idCombo_Design')
       .as('Src');
   }
 
