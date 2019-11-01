@@ -42,33 +42,41 @@ router.get('/filter', (req, res) => {
   // res.json({ message: 'OK' });
 
 
-  let baseQuery = db.select('idCombo_Design', 'idSample as sampleId')
-    .from('Combo_Design');
+  function subqueryCD() {
+    let subquery = this.select('idCombo_Design', 'idSample')
+      .from('Combo_Design');
 
-  // Checks type of the request and modifies the query accordingly
-  // Query builder when drug(s) are given
-  if (drugId1 || drugId2) {
-    baseQuery = baseQuery.where(function () {
-      if (drugId1 && drugId2) {
-        return this.andWhere({ idDrugA: drugId1, idDrugB: drugId2 });
-      } if (drugId1) {
-        return this.andWhere({ idDrugA: drugId1 });
-      }
-      // drugId2 only
-      return this.andWhere({ idDrugA: drugId2 });
-    })
-      .orWhere(function () {
+    // Checks type of the request and modifies the query accordingly
+    // Query builder when drug(s) are given
+    if (drugId1 || drugId2) {
+      subquery = subquery.where(function () {
         if (drugId1 && drugId2) {
-          return this.andWhere({ idDrugA: drugId2, idDrugB: drugId1 });
+          return this.andWhere({ idDrugA: drugId1, idDrugB: drugId2 });
         } if (drugId1) {
-          return this.andWhere({ idDrugB: drugId1 });
+          return this.andWhere({ idDrugA: drugId1 });
         }
         // drugId2 only
-        return this.andWhere({ idDrugB: drugId2 });
-      });
+        return this.andWhere({ idDrugA: drugId2 });
+      })
+        .orWhere(function () {
+          if (drugId1 && drugId2) {
+            return this.andWhere({ idDrugA: drugId2, idDrugB: drugId1 });
+          } if (drugId1) {
+            return this.andWhere({ idDrugB: drugId1 });
+          }
+          // drugId2 only
+          return this.andWhere({ idDrugB: drugId2 });
+        });
+    }
+    return subquery.as('CD');
   }
-  // return baseQuery.as('CD');
+
+  let baseQuery = db.distinct('idSample')
+    .from(subqueryCD);
+  if (dataset) baseQuery = baseQuery.where({ idSource: dataset });
+
   baseQuery
+    .join('Combo_matrix', 'Combo_matrix.idCombo_Design', '=', 'CD.idCombo_Design')
     .then((data) => {
       console.log(data);
       res.json(data);
