@@ -41,13 +41,11 @@ router.get('/filter', (req, res) => {
   console.log(drugId1, drugId2, dataset);
   // res.json({ message: 'OK' });
 
-
+  // filters data based on given drugs
   function subqueryCD() {
     let subquery = this.select('idCombo_Design', 'idSample')
       .from('Combo_Design');
 
-    // Checks type of the request and modifies the query accordingly
-    // Query builder when drug(s) are given
     if (drugId1 || drugId2) {
       subquery = subquery.where(function () {
         if (drugId1 && drugId2) {
@@ -71,12 +69,39 @@ router.get('/filter', (req, res) => {
     return subquery.as('CD');
   }
 
-  let baseQuery = db.distinct('idSample')
-    .from(subqueryCD);
-  if (dataset) baseQuery = baseQuery.where({ idSource: dataset });
+  // subquery combo-matrix table (optional, only used when dataset is given)
+  function subqueryCM() {
+    return this.select('idCombo_Design', 'idSource')
+      .from('Combo_matrix')
+      .where({ idSource: dataset })
+      .as('CM');
+  }
 
-  baseQuery
-    .join('Combo_matrix', 'Combo_matrix.idCombo_Design', '=', 'CD.idCombo_Design')
+  // consolidates filtering by dataset and drug(s) together
+  function subqueryGetSampleIds() {
+    let baseQuery = this.distinct('idSample');
+    if (drugId1 || drugId2) {
+      baseQuery = baseQuery
+        .from(subqueryCD);
+    } else {
+      baseQuery = baseQuery
+        .from('Combo_Design');
+    }
+
+    if (dataset) {
+      baseQuery = baseQuery.where({ idSource: dataset });
+      if (drugId1 || drugId2) {
+        baseQuery = baseQuery.join(subqueryCM, 'CM.idCombo_Design', '=', 'CD.idCombo_Design');
+      } else {
+        baseQuery = baseQuery.join(subqueryCM, 'CM.idCombo_Design', '=', 'Combo_Design.idCombo_Design');
+      }
+    }
+    return baseQuery.as('S');
+  }
+
+  db.select('Sample.idSample as idSample', 'tissue', 'name')
+    .from(subqueryGetSampleIds)
+    .join('Sample', 'S.idSample', '=', 'Sample.idSample')
     .then((data) => {
       console.log(data);
       res.json(data);
