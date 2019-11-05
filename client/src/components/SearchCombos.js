@@ -382,10 +382,33 @@ class SearchCombos extends Component {
 
   filterDrugAData(sample, drugB, dataset) {
     console.log(sample, drugB, dataset);
+
+    let url = '/api/drugs/filter?';
+    if (sample && sample !== 'Any') url = url.concat(`&sample=${sample}`);
+    if (drugB && drugB !== 'Any') url = url.concat(`&drugId=${drugB}`);
+    if (dataset && dataset !== 'Any') url = url.concat(`&dataset=${dataset}`);
+
+    fetch(url)
+      .then(response => response.json())
+      .then((data) => {
+        console.log('Drug A Filtering');
+        console.log(data);
+      });
   }
 
   filterDrugBData(sample, drugA, dataset) {
     console.log(sample, drugA, dataset);
+    let url = '/api/drugs/filter?';
+    if (sample && sample !== 'Any') url = url.concat(`&sample=${sample}`);
+    if (drugA && drugA !== 'Any') url = url.concat(`&drugId=${drugA}`);
+    if (dataset && dataset !== 'Any') url = url.concat(`&dataset=${dataset}`);
+
+    fetch(url)
+      .then(response => response.json())
+      .then((data) => {
+        console.log('Drug B Filtering');
+        console.log(data);
+      });
   }
 
   filterSampleData(drugA, drugB, dataset) {

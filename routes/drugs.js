@@ -104,6 +104,7 @@ router.get('/mono', (req, res) => {
 });
 
 router.get('/filter', (req, res) => {
+  console.log('Drug filtering');
   let {
     dataset, drugId, sample,
   } = req.query;
@@ -111,7 +112,7 @@ router.get('/filter', (req, res) => {
   dataset = dataset && parseInt(dataset, 10);
   sample = Number.isNaN(parseInt(sample, 10)) ? sample : parseInt(sample, 10);
 
-
+  console.log(dataset, drugId, sample);
   // query to get relevant cell lines
   function subqueryTissue() {
     if (sample) {
@@ -140,34 +141,32 @@ router.get('/filter', (req, res) => {
   // Query to get relevant cell lines that have drug combo for them
   // Checks for all drugs that go after the drugId
   function subqueryDrugA() {
-    let baseQuery;
+    let baseQuery = this.select('idDrugA');
     // Checks if the query cell line or tissue specific/no sample specified
     if (typeof (sample) === 'number') {
       // query with cell line
       if (dataset) {
         // query with dataset
-        baseQuery = this.select('idDrugA')
-          .from(subqueryComboDesign)
-          .where({ idSample: sample, idDrugB: drugId });
+        baseQuery = baseQuery
+          .from(subqueryComboDesign);
       } else {
         // query without dataset
-        baseQuery = this.select('idDrugA')
-          .from('Combo_Design')
-          .where({ idSample: sample, idDrugB: drugId });
+        baseQuery = baseQuery
+          .from('Combo_Design');
       }
+      baseQuery = baseQuery.where({ idSample: sample, idDrugB: drugId });
     } else {
       // query with tissue
+      baseQuery = baseQuery.from(subqueryTissue);
       if (dataset) {
         // query with dataset
-        baseQuery = this.select('idDrugA')
-          .from(subqueryTissue)
+        baseQuery = baseQuery
           .where({ idDrugB: drugId })
           .join(subqueryComboDesign, 't.idSample', '=', 'CD.idSample');
       } else {
         // query without dataset
         console.log('tissue + no dataset');
-        baseQuery = this.select('idDrugA')
-          .from(subqueryTissue)
+        baseQuery = baseQuery
           .where({ idDrugB: drugId })
           .join('Combo_Design', 't.idSample', '=', 'Combo_Design.idSample');
       }
@@ -176,30 +175,29 @@ router.get('/filter', (req, res) => {
   }
   // Checks for all drugs that go before the drugId (subquery)
   function subqueryDrugB() {
-    let baseQuery;
+    let baseQuery = this.select('idDrugB');
     if (typeof (sample) === 'number') {
       // query with cell line
       if (dataset) {
         // query with dataset
-        baseQuery = this.select('idDrugB')
-          .from(subqueryComboDesign)
-          .where({ idSample: sample, idDrugA: drugId });
+        baseQuery = baseQuery
+          .from(subqueryComboDesign);
       } else {
         // query without dataset
-        baseQuery = this.select('idDrugB')
-          .from('Combo_Design')
-          .where({ idSample: sample, idDrugA: drugId });
+        baseQuery = baseQuery
+          .from('Combo_Design');
       }
+      baseQuery = baseQuery.where({ idSample: sample, idDrugA: drugId });
     } else {
       if (dataset) {
         // query with dataset
-        baseQuery = this.select('idDrugB')
+        baseQuery = baseQuery
           .from(subqueryTissue)
           .where({ idDrugA: drugId })
           .join(subqueryComboDesign, 't.idSample', '=', 'CD.idSample');
       } else {
         // query without dataset
-        baseQuery = this.select('idDrugB')
+        baseQuery = baseQuery
           .from(subqueryTissue)
           .where({ idDrugA: drugId })
           .join('Combo_Design', 't.idSample', '=', 'Combo_Design.idSample');
@@ -211,8 +209,16 @@ router.get('/filter', (req, res) => {
   function queryB() {
     this.select('idDrug', 'name').from(subqueryDrugB).join('Drug', 'b1.idDrugB', '=', 'Drug.idDrug');
   }
-  db.select('idDrug', 'name').from(subqueryDrugA).join('Drug', 'a1.idDrugA', '=', 'Drug.idDrug')
-    .union(queryB)
+  let query;
+
+  if (drugId) {
+    query = db.select('idDrug', 'name').from(subqueryDrugA).join('Drug', 'a1.idDrugA', '=', 'Drug.idDrug')
+      .union(queryB);
+  } else {
+    query = db.select('idDrug', 'name').from('Drug');
+  }
+
+  query
     .orderBy('name')
     .then((data) => {
       res.json(data);
