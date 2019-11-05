@@ -128,8 +128,14 @@ router.get('/filter', (req, res) => {
   }
   // query for relevent combo design (intermediary step required to filter by source name)
   function subqueryComboDesign() {
-    return this.select('idSample', 'idDrugA', 'idDrugB')
-      .from(subquerySynergyScore)
+    let subquery;
+    // reduces amount of data in sql query
+    if (typeof (sample) === 'string') {
+      subquery = this.select('idSample', 'idDrugA', 'idDrugB');
+    } else {
+      subquery = this.select('idDrugA', 'idDrugB');
+    }
+    return subquery.from(subquerySynergyScore)
       .join('Combo_Design', 'ss.idCombo_Design', '=', 'Combo_Design.idCombo_Design')
       .as('CD');
   }
@@ -147,11 +153,9 @@ router.get('/filter', (req, res) => {
       }
     } else {
       if (dataset) {
-        baseQuery = baseQuery
-          .from(subqueryComboDesign);
+        baseQuery = baseQuery.from(subqueryComboDesign);
       } else {
-        baseQuery = baseQuery
-          .from('Combo_Design');
+        baseQuery = baseQuery.from('Combo_Design');
       }
       if (drugId) baseQuery = baseQuery.where({ idDrugB: drugId });
       if (typeof (sample) === 'number') baseQuery = baseQuery.andWhere({ idSample: sample });
