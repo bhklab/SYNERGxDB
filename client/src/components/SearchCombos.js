@@ -316,7 +316,6 @@ class SearchCombos extends Component {
       selectedDataset: { value: 'Any', label: 'Any Dataset' },
       drug2Placeholder: 'Enter Compound B',
       allowRedirect: true,
-      isDisabled: null,
     };
     this.handleDrug1Search = this.handleDrug1Search.bind(this);
     this.handleDrug2Search = this.handleDrug2Search.bind(this);
@@ -498,19 +497,12 @@ class SearchCombos extends Component {
     if (e.key === 'Enter') this.userRedirect();
   }
 
-  handleDrug1Search(drugId, event) {
+  handleDrug1Search(event) {
     console.log('handleDrug1Search');
     const { value, label } = event;
     const { sample, dataset, drugId2 } = this.state;
     const { filterDatasetData, filterSampleData, filterDrugBData } = this;
-
-    if (event.value === 'Any') {
-      this.setState({ isDisabled: true, drug2Placeholder: 'Please specify Compound A' });
-    } else {
-      this.setState({ isDisabled: false, drug2Placeholder: 'Enter Compound B' });
-    }
     this.setState({ drugId1: value, selectedDrug1: { value, label } });
-    // Sends a post request to the API to retrieve relevant combo drugs for drugsData2
 
     // Filtering for other option boxes
     filterDatasetData(sample, value, drugId2);
@@ -537,7 +529,6 @@ class SearchCombos extends Component {
     const { dataset, drugId1, drugId2 } = this.state;
     const { filterDatasetData, filterDrugAData, filterDrugBData } = this;
     this.setState({ sample: value, selectedSample: { value, label } });
-    if (drugId1 !== 'Any') this.updateDrug2Data(value, dataset, drugId1);
 
     // Filtering for other option boxes
     filterDatasetData(value, drugId1, drugId2);
@@ -551,39 +542,11 @@ class SearchCombos extends Component {
     const { sample, drugId1, drugId2 } = this.state;
     const { filterSampleData, filterDrugAData, filterDrugBData } = this;
     this.setState({ dataset: value, selectedDataset: { value, label } });
-    if (drugId1 !== 'Any') this.updateDrug2Data(sample, value, drugId1);
 
     // Filtering for other option boxes
     filterSampleData(drugId1, drugId2, value);
     filterDrugAData(sample, drugId2, value);
     filterDrugBData(sample, drugId1, value);
-  }
-
-  updateDrug2Data(sample, dataset, drugId) {
-    let queryParams = '';
-    if (drugId !== 'Any') queryParams = queryParams.concat(`&drugId=${drugId}`);
-    if (sample !== 'Any') queryParams = queryParams.concat(`&sample=${sample}`);
-    if (dataset !== 'Any') queryParams = queryParams.concat(`&dataset=${dataset}`);
-    fetch('/api/drugs/filter?'.concat(queryParams), {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-    })
-      .then(response => response.json())
-      .then((data) => {
-        console.log(data);
-        this.setState({
-          drugId2: 'Any', selectedDrug2: null, drugsData2: [],
-        });
-        if (data.length > 0) {
-          const drugsData = data.map(item => ({ value: item.idDrug, label: item.name }));
-          this.setState({ drugsData2: [{ value: 'Any', label: 'Any Compound' }, ...drugsData], drug2Placeholder: 'Enter Compound B', allowRedirect: true });
-        } else {
-          this.setState({ drug2Placeholder: 'No drug combos for entered request parameters', allowRedirect: false });
-        }
-      });
   }
 
   render() {
@@ -592,16 +555,10 @@ class SearchCombos extends Component {
       selectedSample, selectedDrug1, selectedDrug2, drug2Placeholder, datasetData,
       selectedDataset, filteredSampleData, filteredDrugsData1, filteredDrugsData2, filteredDatasetData,
     } = this.state;
-    let { isDisabled } = this.state;
     const {
       handleSampleSearch, handleDrug1Search, handleDrug2Search, userRedirect,
       handleDatasetSearch, handleEnterPress, checkUserInput,
     } = this;
-
-    // if isDisabled is not set yet, set
-    if (!isDisabled) {
-      isDisabled = !(drugsData2.length > 0);
-    }
 
     const exampleDrugUrl = {
       pathname: '/synergy_score',
@@ -631,7 +588,6 @@ class SearchCombos extends Component {
             <Select
               components={{
                 Option: CustomOption,
-                // MenuList: props => (<MenuList {...props} />),
               }}
               styles={customStyles}
               options={filteredSampleData || sampleData}
@@ -665,7 +621,7 @@ class SearchCombos extends Component {
               styles={customStyles}
               options={filteredDrugsData1 || drugsData1}
               placeholder="Enter Compound A"
-              onChange={e => handleDrug1Search('drugId1', e)}
+              onChange={e => handleDrug1Search(e)}
               value={selectedDrug1}
               filterOption={customFilterOption}
             />
