@@ -337,8 +337,9 @@ class SearchCombos extends Component {
     fetch('/api/drugs')
       .then(response => response.json())
       .then((data) => {
-        const drugsData1 = data.map(item => ({ value: item.idDrug, label: item.name }));
-        this.setState({ drugsData1: [{ value: 'Any', label: 'Any Compound' }, ...drugsData1] });
+        const drugsData = data.map(item => ({ value: item.idDrug, label: item.name }));
+        this.setState({ drugsData1: [{ value: 'Any', label: 'Any Compound' }, ...drugsData] });
+        this.setState({ drugsData2: [{ value: 'Any', label: 'Any Compound' }, ...drugsData] });
       });
     fetch('/api/cell_lines')
       .then(response => response.json())
@@ -381,8 +382,6 @@ class SearchCombos extends Component {
   }
 
   filterDrugAData(sample, drugB, dataset) {
-    console.log(sample, drugB, dataset);
-
     let url = '/api/drugs/filter?';
     if (sample && sample !== 'Any') url = url.concat(`&sample=${sample}`);
     if (drugB && drugB !== 'Any') url = url.concat(`&drugId=${drugB}`);
@@ -393,6 +392,8 @@ class SearchCombos extends Component {
       .then((data) => {
         console.log('Drug A Filtering');
         console.log(data);
+        const drugsData = data.map(item => ({ value: item.idDrug, label: item.name }));
+        this.setState({ filteredDrugsData1: [{ value: 'Any', label: 'Any Compound' }, ...drugsData] });
       });
   }
 
@@ -408,6 +409,8 @@ class SearchCombos extends Component {
       .then((data) => {
         console.log('Drug B Filtering');
         console.log(data);
+        const drugsData = data.map(item => ({ value: item.idDrug, label: item.name }));
+        this.setState({ filteredDrugsData2: [{ value: 'Any', label: 'Any Compound' }, ...drugsData] });
       });
   }
 
@@ -585,7 +588,7 @@ class SearchCombos extends Component {
     const {
       drugsData1, drugsData2, sampleData,
       selectedSample, selectedDrug1, selectedDrug2, drug2Placeholder, datasetData,
-      selectedDataset, filteredSampleData,
+      selectedDataset, filteredSampleData, filteredDrugsData1, filteredDrugsData2,
     } = this.state;
     let { isDisabled } = this.state;
     const {
@@ -644,20 +647,6 @@ class SearchCombos extends Component {
                 MenuList: props => (<MenuList {...props} />),
               }}
               styles={customStyles}
-              options={drugsData1}
-              placeholder="Enter Compound A"
-              onChange={e => handleDrug1Search('drugId1', e)}
-              value={selectedDrug1}
-              filterOption={customFilterOption}
-            />
-          </div>
-          <div className="select-container">
-            <Select
-              components={{
-                Option: CustomOption,
-                MenuList: props => (<MenuList {...props} />),
-              }}
-              styles={customStyles}
               options={datasetData}
               placeholder="Enter Dataset"
               value={selectedDataset}
@@ -671,45 +660,24 @@ class SearchCombos extends Component {
                 Option: CustomOption,
                 MenuList: props => (<MenuList {...props} />),
               }}
-              styles={{
-                ...customStyles,
-                control: provided => ({
-                  ...provided,
-                  background: 'rgb(0,0,0,0)',
-                  margin: '5px 0px',
-                  border: isDisabled ? `1px solid ${colors.color_accent_1}` : `1px solid ${colors.nav_links}`,
-                  '&:hover': {
-                    border: isDisabled ? `1px solid ${colors.color_accent_1}` : `1px solid ${colors.nav_links}`,
-                  },
-                }),
-                placeholder: provided => ({
-                  ...provided,
-                  color: isDisabled ? colors.color_accent_1 : colors.nav_links,
-                }),
-                dropdownIndicator: provided => ({
-                  ...provided,
-                  color: isDisabled ? colors.color_accent_1 : colors.nav_links,
-                  '&:hover': {
-                    color: isDisabled ? colors.color_accent_1 : colors.nav_links,
-                  },
-                }),
-                indicatorSeparator: provided => ({
-                  ...provided,
-                  background: isDisabled ? colors.color_accent_1 : colors.nav_links,
-                  '&:hover': {
-                    background: isDisabled ? colors.color_accent_1 : colors.nav_links,
-                  },
-                }),
-                singleValue: provided => ({
-                  ...provided,
-                  color: isDisabled ? colors.color_accent_1 : colors.nav_links,
-                }),
+              styles={customStyles}
+              options={filteredDrugsData1 || drugsData1}
+              placeholder="Enter Compound A"
+              onChange={e => handleDrug1Search('drugId1', e)}
+              value={selectedDrug1}
+              filterOption={customFilterOption}
+            />
+          </div>
+          <div className="select-container">
+            <Select
+              components={{
+                Option: CustomOption,
+                MenuList: props => (<MenuList {...props} />),
               }}
-              options={drugsData2}
-              isDisabled={isDisabled}
+              styles={customStyles}
+              options={filteredDrugsData2 || drugsData2}
               placeholder={drug2Placeholder}
-              value={isDisabled ? '' : selectedDrug2}
-              // value={selectedDrug2}
+              value={selectedDrug2}
               onChange={handleDrug2Search}
               filterOption={customFilterOption}
             />
@@ -769,3 +737,39 @@ class SearchCombos extends Component {
 }
 
 export default withRouter(SearchCombos);
+
+// Drug B custom styles
+// styles={{
+//   ...customStyles,
+//   control: provided => ({
+//     ...provided,
+//     background: 'rgb(0,0,0,0)',
+//     margin: '5px 0px',
+//     border: isDisabled ? `1px solid ${colors.color_accent_1}` : `1px solid ${colors.nav_links}`,
+//     '&:hover': {
+//       border: isDisabled ? `1px solid ${colors.color_accent_1}` : `1px solid ${colors.nav_links}`,
+//     },
+//   }),
+//   placeholder: provided => ({
+//     ...provided,
+//     color: isDisabled ? colors.color_accent_1 : colors.nav_links,
+//   }),
+//   dropdownIndicator: provided => ({
+//     ...provided,
+//     color: isDisabled ? colors.color_accent_1 : colors.nav_links,
+//     '&:hover': {
+//       color: isDisabled ? colors.color_accent_1 : colors.nav_links,
+//     },
+//   }),
+//   indicatorSeparator: provided => ({
+//     ...provided,
+//     background: isDisabled ? colors.color_accent_1 : colors.nav_links,
+//     '&:hover': {
+//       background: isDisabled ? colors.color_accent_1 : colors.nav_links,
+//     },
+//   }),
+//   singleValue: provided => ({
+//     ...provided,
+//     color: isDisabled ? colors.color_accent_1 : colors.nav_links,
+//   }),
+// }}
