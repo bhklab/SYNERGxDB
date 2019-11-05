@@ -128,14 +128,8 @@ router.get('/filter', (req, res) => {
   }
   // query for relevent combo design (intermediary step required to filter by source name)
   function subqueryComboDesign() {
-    let subquery;
-    // reduces amount of data in sql query
-    if (typeof (sample) === 'string') {
-      subquery = this.select('idSample', 'idDrugA', 'idDrugB');
-    } else {
-      subquery = this.select('idDrugA', 'idDrugB');
-    }
-    return subquery.from(subquerySynergyScore)
+    return this.select('idSample', 'idDrugA', 'idDrugB')
+      .from(subquerySynergyScore)
       .join('Combo_Design', 'ss.idCombo_Design', '=', 'Combo_Design.idCombo_Design')
       .as('CD');
   }

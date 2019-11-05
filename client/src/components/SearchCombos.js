@@ -464,6 +464,8 @@ class SearchCombos extends Component {
       .then((data) => {
         console.log('Dataset filtering');
         console.log(data);
+        const datasets = data.map(source => ({ value: source.idSource, label: source.name }));
+        this.setState({ filteredDatasetData: [{ value: 'Any', label: 'Any Dataset' }, ...datasets] });
       });
   }
 
@@ -588,7 +590,7 @@ class SearchCombos extends Component {
     const {
       drugsData1, drugsData2, sampleData,
       selectedSample, selectedDrug1, selectedDrug2, drug2Placeholder, datasetData,
-      selectedDataset, filteredSampleData, filteredDrugsData1, filteredDrugsData2,
+      selectedDataset, filteredSampleData, filteredDrugsData1, filteredDrugsData2, filteredDatasetData,
     } = this.state;
     let { isDisabled } = this.state;
     const {
@@ -647,7 +649,7 @@ class SearchCombos extends Component {
                 MenuList: props => (<MenuList {...props} />),
               }}
               styles={customStyles}
-              options={datasetData}
+              options={filteredDatasetData || datasetData}
               placeholder="Enter Dataset"
               value={selectedDataset}
               onChange={handleDatasetSearch}
