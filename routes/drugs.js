@@ -188,29 +188,6 @@ router.get('/filter', (req, res) => {
     return baseQuery.as('b1');
   }
 
-  function noDrugQuery() {
-    let baseQuery = this.distinct('idDrugA as idDrug');
-    if (typeof (sample) === 'string') {
-      baseQuery = baseQuery.from(subqueryTissue);
-      if (dataset) {
-        baseQuery = baseQuery
-          .join(subqueryComboDesign, 't.idSample', '=', 'CD.idSample');
-      } else {
-        baseQuery = baseQuery
-          .join('Combo_Design', 't.idSample', '=', 'Combo_Design.idSample');
-      }
-    } else {
-      if (dataset) {
-        baseQuery = baseQuery
-          .from(subqueryComboDesign);
-      } else {
-        baseQuery = baseQuery
-          .from('Combo_Design');
-      }
-      if (typeof (sample) === 'number') baseQuery = baseQuery.where({ idSample: sample });
-    }
-    return baseQuery.as('ND');
-  }
   // Checks for all drugs that go before the drugId (main query)
   function queryB() {
     this.select('idDrug', 'name').from(subqueryDrugB).join('Drug', 'b1.idDrugB', '=', 'Drug.idDrug');

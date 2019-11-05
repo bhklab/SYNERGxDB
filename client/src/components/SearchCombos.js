@@ -421,6 +421,33 @@ class SearchCombos extends Component {
       .then((data) => {
         console.log('Sample filtering');
         console.log(data);
+        const tissueObject = {};
+        data.forEach((item) => {
+          if (!tissueObject[item.tissue]) {
+            tissueObject[item.tissue] = 1;
+          } else {
+            tissueObject[item.tissue]++;
+          }
+        });
+        const tissueData = Object.keys(tissueObject).map(tissue => ({ value: tissue, label: `${tissue.toUpperCase()} (${tissueObject[tissue]} cell lines)` }));
+        const cellsData = data.map(item => ({ value: item.idSample, label: `${item.name.toUpperCase()} (${item.tissue.toUpperCase()})` }));
+        this.setState({
+          filteredSampleData: [
+            {
+              label: 'Any Sample',
+              value: 'Any',
+            },
+            {
+              label: 'Tissues',
+              options: tissueData,
+            },
+
+            {
+              label: 'Cell Lines',
+              options: cellsData,
+            },
+          ],
+        });
       });
   }
 
@@ -558,7 +585,7 @@ class SearchCombos extends Component {
     const {
       drugsData1, drugsData2, sampleData,
       selectedSample, selectedDrug1, selectedDrug2, drug2Placeholder, datasetData,
-      selectedDataset,
+      selectedDataset, filteredSampleData,
     } = this.state;
     let { isDisabled } = this.state;
     const {
@@ -602,7 +629,7 @@ class SearchCombos extends Component {
                 // MenuList: props => (<MenuList {...props} />),
               }}
               styles={customStyles}
-              options={sampleData}
+              options={filteredSampleData || sampleData}
               placeholder="Enter Cell Line or Tissue"
               onChange={handleSampleSearch}
               value={selectedSample}
