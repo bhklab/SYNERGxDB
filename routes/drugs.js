@@ -115,14 +115,9 @@ router.get('/filter', (req, res) => {
   console.log(dataset, drugId, sample);
   // query to get relevant cell lines
   function subqueryTissue() {
-    if (sample) {
-      return this.select('idSample')
-        .from('Sample')
-        .where({ tissue: sample }).as('t');
-    }
-    // query for all sample
     return this.select('idSample')
-      .from('Sample').as('t');
+      .from('Sample')
+      .where({ tissue: sample }).as('t');
   }
   // query for specific dataset
   function subquerySynergyScore() {
@@ -138,70 +133,55 @@ router.get('/filter', (req, res) => {
       .join('Combo_Design', 'ss.idComb', '=', 'Combo_Design.idCombo_Design')
       .as('CD');
   }
-  // Query to get relevant cell lines that have drug combo for them
-  // Checks for all drugs that go after the drugId
+  // Checks all drug A entries
   function subqueryDrugA() {
     let baseQuery = this.select('idDrugA');
-    // Checks if the query cell line or tissue specific/no sample specified
-    if (typeof (sample) === 'number') {
-      // query with cell line
-      if (dataset) {
-        // query with dataset
-        baseQuery = baseQuery
-          .from(subqueryComboDesign);
-      } else {
-        // query without dataset
-        baseQuery = baseQuery
-          .from('Combo_Design');
-      }
-      baseQuery = baseQuery.where({ idSample: sample, idDrugB: drugId });
-    } else {
-      // query with tissue
+    if (typeof (sample) === 'string') {
       baseQuery = baseQuery.from(subqueryTissue);
       if (dataset) {
-        // query with dataset
         baseQuery = baseQuery
           .where({ idDrugB: drugId })
           .join(subqueryComboDesign, 't.idSample', '=', 'CD.idSample');
       } else {
-        // query without dataset
-        console.log('tissue + no dataset');
         baseQuery = baseQuery
           .where({ idDrugB: drugId })
           .join('Combo_Design', 't.idSample', '=', 'Combo_Design.idSample');
       }
+    } else {
+      if (dataset) {
+        baseQuery = baseQuery
+          .from(subqueryComboDesign);
+      } else {
+        baseQuery = baseQuery
+          .from('Combo_Design');
+      }
+      if (typeof (sample) === 'number') baseQuery = baseQuery.where({ idSample: sample, idDrugB: drugId });
     }
     return baseQuery.as('a1');
   }
-  // Checks for all drugs that go before the drugId (subquery)
+  // Checks all drug B entries
   function subqueryDrugB() {
     let baseQuery = this.select('idDrugB');
-    if (typeof (sample) === 'number') {
-      // query with cell line
+    if (typeof (sample) === 'string') {
+      baseQuery = baseQuery.from(subqueryTissue);
       if (dataset) {
-        // query with dataset
         baseQuery = baseQuery
-          .from(subqueryComboDesign);
-      } else {
-        // query without dataset
-        baseQuery = baseQuery
-          .from('Combo_Design');
-      }
-      baseQuery = baseQuery.where({ idSample: sample, idDrugA: drugId });
-    } else {
-      if (dataset) {
-        // query with dataset
-        baseQuery = baseQuery
-          .from(subqueryTissue)
           .where({ idDrugA: drugId })
           .join(subqueryComboDesign, 't.idSample', '=', 'CD.idSample');
       } else {
-        // query without dataset
         baseQuery = baseQuery
-          .from(subqueryTissue)
           .where({ idDrugA: drugId })
           .join('Combo_Design', 't.idSample', '=', 'Combo_Design.idSample');
       }
+    } else {
+      if (dataset) {
+        baseQuery = baseQuery
+          .from(subqueryComboDesign);
+      } else {
+        baseQuery = baseQuery
+          .from('Combo_Design');
+      }
+      if (typeof (sample) === 'number') baseQuery = baseQuery.where({ idSample: sample, idDrugA: drugId });
     }
     return baseQuery.as('b1');
   }
