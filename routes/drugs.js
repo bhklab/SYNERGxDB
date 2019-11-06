@@ -173,9 +173,18 @@ router.get('/filter', (req, res) => {
   function queryB() {
     this.select('idDrug', 'name').from(subqueryDrugB).join('Drug', 'b1.idDrugB', '=', 'Drug.idDrug');
   }
+  // query optimization for dataset only requests
+  let query;
+  if (!drugId && !sample && dataset) {
+    query = db.select('idDrug', 'name').from('Drug').whereIn('idDrug', function () {
+      this.select('idDrug').from('drug_source').where({ idSource: dataset });
+    });
+  } else {
+    query = db.select('idDrug', 'name').from(subqueryDrugA).join('Drug', 'a1.idDrugA', '=', 'Drug.idDrug')
+      .union(queryB);
+  }
 
-  db.select('idDrug', 'name').from(subqueryDrugA).join('Drug', 'a1.idDrugA', '=', 'Drug.idDrug')
-    .union(queryB)
+  query
     .orderBy('name')
     .then((data) => {
       res.json(data);
