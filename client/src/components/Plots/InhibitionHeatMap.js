@@ -28,8 +28,6 @@ const standarizeData = (num) => {
 };
 
 class ViabilityHeatMap extends React.Component {
-  static contextType = ComboContext
-
   constructor(props) {
     super(props);
     this.state = {
@@ -65,13 +63,13 @@ class ViabilityHeatMap extends React.Component {
       const hoverStr = `${item.concA} µM of ${drugsData[0].name} and ${item.concB} µM of ${drugsData[1].name}`;
       annotationData.push(standarizeData(item.raw_matrix));
       if (item.concA === currentConc) {
-        plotData[plotData.length - 1].push(item.raw_matrix * 100);
+        plotData[plotData.length - 1].push(100 - item.raw_matrix * 100);
         hoverData[hoverData.length - 1].push(hoverStr);
         xCounter++;
         xData.push(xCounter);
         yData.push(yCounter - 1);
       } else {
-        plotData.push([item.raw_matrix * 100]);
+        plotData.push([100 - item.raw_matrix * 100]);
         hoverData.push([hoverStr]);
         currentConc = item.concA;
         xCounter = 0;
@@ -88,6 +86,7 @@ class ViabilityHeatMap extends React.Component {
       hoverinfo: 'text',
       hovertext: hoverData,
       colorscale: [[0, colors.red_color_accent], [1, colors.color_main_3]],
+      reversescale: true,
       colorbar: {
         tickcolor: colors.color_main_1,
         tickfont: {
@@ -95,6 +94,8 @@ class ViabilityHeatMap extends React.Component {
           color: colors.color_main_1,
           size: 13,
         },
+        tickvals: [0, 20, 40, 60, 80, 100],
+        ticktext: [100, 80, 60, 40, 20, 0],
         ypad: 0,
         title: {
           text: 'Viability, %',
@@ -176,6 +177,8 @@ class ViabilityHeatMap extends React.Component {
       },
     }));
   }
+
+  static contextType = ComboContext
 
   // Render this compoenent
   render() {
