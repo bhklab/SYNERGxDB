@@ -1,3 +1,4 @@
+/* eslint-disable no-return-assign */
 /* eslint-disable class-methods-use-this */
 /* eslint-disable jsx-a11y/anchor-is-valid */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
@@ -128,10 +129,9 @@ const customStyles = {
   }),
   option: (provided, state) => ({
     ...provided,
-    textAlign: state.isDisabled ? 'left' : 'center',
-    fontWeight: state.isDisabled ? '700' : state.isSelected ? '700' : '400',
-    background: state.isDisabled ? colors.summary_bg : 'white',
-    color: state.isSelected ? colors.color_main_2 : colors.nav_links,
+    background: 'white',
+    fontWeight: state.isSelected ? '700' : '400',
+    color: state.isSelected ? colors.color_main_2 : state.isDisabled ? 'grey' : colors.nav_links,
   }),
 };
 
@@ -285,7 +285,8 @@ const CustomOption = innerProps => (
         padding: 'auto',
         margin: '0',
         display: 'flex',
-        justifyContent: innerProps.isDisabled ? 'flex-start' : 'center',
+        // justifyContent: innerProps.isDisabled ? 'flex-start' : 'center',
+        justifyContent: 'center',
         alignItems: 'center',
       }}
     >
@@ -454,6 +455,7 @@ class SearchCombos extends Component {
   }
 
   filterDatasetData(sample, drugA, drugB) {
+    const { datasetData } = this.state;
     let url = '/api/datasets/filter?';
     if (sample && sample !== 'Any') url = url.concat(`&sample=${sample}`);
     if (drugA && drugA !== 'Any') url = url.concat(`&drugId1=${drugA}`);
@@ -462,9 +464,16 @@ class SearchCombos extends Component {
       .then(response => response.json())
       .then((data) => {
         console.log('Dataset filtering');
-        console.log(data);
-        const datasets = data.map(source => ({ value: source.idSource, label: source.name }));
-        this.setState({ filteredDatasetData: [{ value: 'Any', label: 'Any Dataset' }, ...datasets] });
+        // Disable options based on API data
+        const filteredObj = {};
+        data.forEach(item => (filteredObj[item.idSource] = item.name));
+        const datasetArray = datasetData.map((item) => {
+          const output = { value: item.value, label: item.label };
+          if (!filteredObj[item.value] && item.value !== 'Any') output.isDisabled = true;
+          return output;
+        });
+        console.log(datasetArray);
+        this.setState({ filteredDatasetData: datasetArray });
       });
   }
 
