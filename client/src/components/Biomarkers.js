@@ -8,7 +8,7 @@ import ReactLoading from 'react-loading';
 import Slider from '@material-ui/core/Slider';
 import { withStyles } from '@material-ui/core/styles';
 import 'react-table/react-table.css';
-// import ReactTable from 'react-table';
+import ReactTable from 'react-table';
 
 import colors from '../styles/colors';
 // import transitions from '../styles/transitions';
@@ -230,16 +230,31 @@ class Biomarkers extends Component {
     const {
       sample, drugId1, drugId2, dataset,
     } = requestParams;
-    // const columns = [{
-    //   Header: 'Gene Symbol',
-    //   accessor: 'gene', // String-based value accessors!
-    // }, {
-    //   Header: 'One-way ANOVA P',
-    //   accessor: 'p',
-    // }, {
-    //   Header: 'Source',
-    //   accessor: 'name',
-    // }];
+
+    const columns = [{
+      Header: 'Gene Symbol',
+      accessor: 'gene',
+    }, {
+      Header: 'Compound A',
+      accessor: 'drugA',
+    }, {
+      Header: 'Compound B',
+      accessor: 'drugB',
+    }, {
+      Header: 'C-index (ZIP)',
+      accessor: 'zipCIndex',
+    }, {
+      Header: 'P-value (ZIP)',
+      accessor: 'zipPValue',
+    }, {
+      Header: 'C-index (Bliss)',
+      accessor: 'blissCIndex',
+    }, {
+      Header: 'P-value (Bliss)',
+      accessor: 'blissPValue',
+    }];
+
+    const results = [];
 
 
     // let marks;
@@ -258,32 +273,13 @@ class Biomarkers extends Component {
           sample={sample}
         />
         <StyledBiomarkers>
-          {/* <ReactTable
-              data={results}
-              columns={columns}
-              className="-highlight"
-              showPagination={false}
-              defaultPageSize={10}
-              loading={loading}
-              sortable={false}
-              getTdProps={(state, rowInfo) => ({
-                onClick: (e, handleOriginal) => {
-                  handleSelect(rowInfo.index);
-                  // IMPORTANT! React-Table uses onClick internally to trigger
-                  // events like expanding SubComponents and pivots.
-                  // By default a custom 'onClick' handler will override this functionality.
-                  // If you want to fire the original onClick handler, call the
-                  // 'handleOriginal' function.
-                  if (handleOriginal) {
-                    handleOriginal();
-                  }
-                },
-                style: {
-                background: rowInfo.index === selectedBiomarker ? colors.summary_bg : 'transparent',
-                },
-              })
-              }
-            /> */}
+          <ReactTable
+            data={results}
+            columns={columns}
+            className="-highlight"
+            showPagination={false}
+            defaultPageSize={10}
+          />
           { !loading ? (
             <StyledExpressionProfile>
               <div className="expression-profile">
