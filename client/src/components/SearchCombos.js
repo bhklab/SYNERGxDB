@@ -390,15 +390,12 @@ class SearchCombos extends Component {
     fetch(url)
       .then(response => response.json())
       .then((data) => {
-        console.log('Drug A Filtering');
-        console.log(data);
         const drugsData = data.map(item => ({ value: item.idDrug, label: item.name }));
         this.setState({ filteredDrugsData1: [{ value: 'Any', label: 'Any Compound' }, ...drugsData] });
       });
   }
 
   filterDrugBData(sample, drugA, dataset) {
-    console.log(sample, drugA, dataset);
     let url = '/api/drugs/filter?';
     if (sample && sample !== 'Any') url = url.concat(`&sample=${sample}`);
     if (drugA && drugA !== 'Any') url = url.concat(`&drugId=${drugA}`);
@@ -407,8 +404,6 @@ class SearchCombos extends Component {
     fetch(url)
       .then(response => response.json())
       .then((data) => {
-        console.log('Drug B Filtering');
-        console.log(data);
         const drugsData = data.map(item => ({ value: item.idDrug, label: item.name }));
         this.setState({ filteredDrugsData2: [{ value: 'Any', label: 'Any Compound' }, ...drugsData] });
       });
@@ -422,8 +417,6 @@ class SearchCombos extends Component {
     fetch(url)
       .then(response => response.json())
       .then((data) => {
-        console.log('Sample filtering');
-        console.log(data);
         const tissueObject = {};
         data.forEach((item) => {
           if (!tissueObject[item.tissue]) {
@@ -463,7 +456,6 @@ class SearchCombos extends Component {
     fetch(url)
       .then(response => response.json())
       .then((data) => {
-        console.log('Dataset filtering');
         // Disable options based on API data
         const filteredObj = {};
         data.forEach(item => (filteredObj[item.idSource] = item.name));
@@ -472,7 +464,6 @@ class SearchCombos extends Component {
           if (!filteredObj[item.value] && item.value !== 'Any') output.isDisabled = true;
           return output;
         });
-        console.log(datasetArray);
         this.setState({ filteredDatasetData: datasetArray });
       });
   }
@@ -507,7 +498,6 @@ class SearchCombos extends Component {
   }
 
   handleDrug1Search(event) {
-    console.log('handleDrug1Search');
     const { value, label } = event;
     const { sample, dataset, drugId2 } = this.state;
     const { filterDatasetData, filterSampleData, filterDrugBData } = this;
@@ -520,7 +510,6 @@ class SearchCombos extends Component {
   }
 
   handleDrug2Search(event) {
-    console.log('handleDrug2Search');
     const { value, label } = event;
     const { filterDatasetData, filterSampleData, filterDrugAData } = this;
     const { sample, dataset, drugId1 } = this.state;
@@ -533,7 +522,6 @@ class SearchCombos extends Component {
   }
 
   handleSampleSearch(event) {
-    console.log('handleSampleSearch');
     const { value, label } = event;
     const { dataset, drugId1, drugId2 } = this.state;
     const { filterDatasetData, filterDrugAData, filterDrugBData } = this;
@@ -546,7 +534,6 @@ class SearchCombos extends Component {
   }
 
   handleDatasetSearch(event) {
-    console.log('handleDatasetSearch');
     const { value, label } = event;
     const { sample, drugId1, drugId2 } = this.state;
     const { filterSampleData, filterDrugAData, filterDrugBData } = this;

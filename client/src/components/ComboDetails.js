@@ -12,8 +12,6 @@ import drugbank from '../images/logos/drugbank.png';
 import pubchem from '../images/logos/pubchem.gif';
 import pubmed from '../images/logos/pubmed.jpeg';
 
-
-import CumulativeDensity from './Plots/CumulativeDensity';
 import SynergyMatrices from './SynergyMatrices';
 import { ComboContext } from './Context/ComboContext';
 import SynergisticInhibition from './SynergisticInhibition';
@@ -173,11 +171,6 @@ export default class ComboDetails extends Component {
         });
         this.setState({ synergyData, loadingSynergyData: false, isDataAvailable: true });
       });
-
-    fetch('/api/combos/stats')
-      .then(response => response.json())
-      .then((data) => {
-      });
   }
 
   componentDidUpdate() {
@@ -288,7 +281,7 @@ export default class ComboDetails extends Component {
             : (isDataAvailable ? (
               <ComboContext.Provider value={this.state}>
                 {/* <CumulativeDensity /> */}
-                <SynScoreComboPlot/>
+                <SynScoreComboPlot />
                 <SynergyMatrices />
                 <SynergisticInhibition dataAvailable={isDataAvailable} />
                 {/* <SingleAgents /> */}

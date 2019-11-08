@@ -67,8 +67,10 @@ class ComboResults extends Component {
       drugName2: 'Any',
       cellLineName: 'Any',
       queryParams: '',
+      disableBiomarker: false,
     };
     this.handleCombo = this.handleCombo.bind(this);
+    this.checkBiomarker = this.checkBiomarker.bind(this);
   }
 
   componentDidMount() {
@@ -78,6 +80,8 @@ class ComboResults extends Component {
       sample, drugId1, drugId2, dataset,
     } = requestParams;
     let queryParams = '?';
+
+    this.checkBiomarker(dataset, sample);
 
     this.setState({
       drugId1: parseInt(drugId1, 10),
@@ -102,7 +106,21 @@ class ComboResults extends Component {
       .then((data) => {
         this.setState({ results: data, loading: false });
       });
+  }
 
+  checkBiomarker(inputDataset, inputSample) {
+    let dataset; let
+      sample;
+    if (inputDataset) dataset = parseInt(inputDataset, 10);
+    if (inputSample) sample = Number.isNaN(parseInt(inputSample, 10)) ? inputSample : parseInt(inputSample, 10);
+
+    if (dataset === 4 || dataset === 6 || dataset === 8) {
+      this.setState({ disableBiomarker: true });
+      return;
+    }
+    if (typeof sample === 'number') {
+      this.setState({ disableBiomarker: true });
+    }
   }
 
   handleCombo(index) {
@@ -122,7 +140,7 @@ class ComboResults extends Component {
   render() {
     const {
       results, loading,
-      queryParams,
+      queryParams, disableBiomarker,
     } = this.state;
     const { location } = this.props;
     const requestParams = queryString.parse(location.search);
@@ -217,19 +235,20 @@ class ComboResults extends Component {
         <ButtonsDiv>
           <h2>Analysis </h2>
           <div className="buttonsContainer">
-            {dataset == 3 || dataset == 4 || dataset == 6 ? null : 
-              <Fragment>
-                <a href={`/biomarker${queryParams}`}>
+            {disableBiomarker ? null
+              : (
+                <Fragment>
+                  <a href={`/biomarker${queryParams}`}>
                   Biomarker
-                  {' '}
-                  <br />
-                  {' '}
+                    {' '}
+                    <br />
+                    {' '}
                   Discovery
-                </a>
-              </Fragment>
-              
+                  </a>
+                </Fragment>
+              )
             }
-            
+
             <a href={`/sensitivity${queryParams}`}>
               Cell Line
               {' '}
@@ -249,13 +268,19 @@ class ComboResults extends Component {
               Synergy Scores
             </a>
           </div>
-          
+
         </ButtonsDiv>
 
         {/* {showBiomarker} */}
         <SynergyDiv>
           <h2>
-            Synergy Scores, <i>N</i> = {totalSynergyScores}
+            Synergy Scores,
+            {' '}
+            <i>N</i>
+            {' '}
+=
+            {' '}
+            {totalSynergyScores}
           </h2>
           <ReactTable
             loading={loading}

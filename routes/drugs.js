@@ -6,15 +6,6 @@ const db = require('../db');
 const router = express.Router();
 
 router.get('/', (req, res) => {
-  // db('Drug').select('name', 'atcCode', 'idDrugBank', 'idPubChem', 'idDrug')
-  // .then((data) => {
-  //   res.json(data);
-  // })
-  // .catch((err) => {
-  //   console.log(err);
-  //   res.json(err);
-  // });
-
   db.select('Drug.name as name', 'atcCode', 'idDrugBank', 'idPubChem', 'drug.idDrug as idDrug',
     db.raw('group_concat(??) as ??', ['source.name', 'dataset_names']))
     .from('drug', 'drug_source', 'source')
