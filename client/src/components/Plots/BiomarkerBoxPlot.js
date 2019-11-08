@@ -93,6 +93,7 @@ class BiomarkerBoxPlot extends React.Component {
           color: colors.color_main_1,
           tickcolor: colors.color_main_1,
           linecolor: colors.color_main_1,
+          fixedrange: true,
           mirror: true,
           font: {
             size: 16,
@@ -105,6 +106,7 @@ class BiomarkerBoxPlot extends React.Component {
           color: colors.color_main_1,
           tickcolor: colors.color_main_1,
           linecolor: colors.color_main_1,
+          fixedrange: true,
           showticklabels: false,
           mirror: true,
           linewidth: 3,
