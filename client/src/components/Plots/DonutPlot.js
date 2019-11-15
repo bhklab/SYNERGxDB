@@ -150,15 +150,31 @@ class DonutPlot extends React.Component {
       })
       .style('opacity', 0.7)
       .attr('d', arc)
-      .on('mouseover', (d) => {
-        tooltip.text(`${d.data.name }: ${d3.format('.2f')((d.data.num / sum) * 100)}%`).style('visibility', 'visible');
-      })
-      .on('mousemove', () => {
-        tooltip.style('top', `${d3.event.pageY - 10}px`).style('left', `${d3.event.pageX + 10}px`);
-      })
-      .on('mouseout', () => {
-        tooltip.style('visibility', 'hidden');
-      });
+
+    arcs.transition()
+      .ease(d3.easeLinear)
+      .duration(500)
+      .attrTween('d', arcTween);
+
+      function arcTween(newAngle) {
+        return function(d) {
+          var interpolate = d3.interpolate(d.endAngle, newAngle);
+          return function(t) {
+            d.endAngle = interpolate(t);
+            return arc(d);
+          };
+        };
+      }
+
+    arcs.on('mouseover', (d) => {
+      tooltip.text(`${d.data.name }: ${d3.format('.2f')((d.data.num / sum) * 100)}%`).style('visibility', 'visible');
+    })
+    .on('mousemove', () => {
+      tooltip.style('top', `${d3.event.pageY - 10}px`).style('left', `${d3.event.pageX + 10}px`);
+    })
+    .on('mouseout', () => {
+      tooltip.style('visibility', 'hidden');
+    });
 
     // passing the color map back to Datasets.js to create the legend in a separate component
     this.props.legendCallBack(colorMap);

@@ -320,7 +320,7 @@ export default class ConsistencyPlot extends React.Component {
             .attr("font-size", "17px")
             .style("opacity", "1")
             .attr("fill", "black")
-            .text(function(d) {return "Spearman: " + d3.format(".4f")(spearman)})
+            .text(function(d) {return "Spearman rho: " + d3.format(".4f")(spearman)})
 
         svg.append("text")
             .attr("dx", width + 5)
@@ -328,7 +328,7 @@ export default class ConsistencyPlot extends React.Component {
             .attr("font-size", "17px")
             .style("opacity", "1")
             .attr("fill", "black")
-            .text(function(d) {return "Pearson: " + d3.format(".4f")(pearson)})
+            .text(function(d) {return "Pearson r: " + d3.format(".4f")(pearson)})
 
         
                 
