@@ -79,60 +79,97 @@ router.get('/association', (req, res) => {
     });
 });
 
-// Database call to get data for Plot.js box plots
-router.post('/fpkm', (req, res) => {
-  const {
-    idSource, idDrugA, idDrugB, gene, interaction,
-  } = req.body;
-  // Subquery to get list of idSample from idSource, idDrugA, idDrugB
-  function subquerySL() {
-    const allSample = this.distinct('cd.idSample')
-      .from('Combo_Design as cd')
-      .join('Synergy_Score as ss', 'cd.idCombo_Design', '=', 'ss.idCombo_Design')
-      .where({
-        idSource,
-        idDrugA,
-        idDrugB,
-      });
-    let subQuery;
-    switch (interaction) {
-      case 'SYN':
-        subQuery = allSample.andWhere('ZIP', '>', 0.2);
-        break;
-      case 'MOD':
-        subQuery = allSample.andWhere(0.2, '>=', 'ZIP', '>=', 0);
-        break;
-      case 'ANT':
-        subQuery = allSample.andWhere('ZIP', '<', 0);
-        break;
-      default:
-        break;
-    }
-    return subQuery;
-  }
+router.get('/synergy', (req, res) => {
+  const { type } = req.query;
+  console.log('synergy with a type of ', type);
+  // res.json({ message: type });
 
-  // Subquery to get gene_id from hgnc_symbol
-  function subqueryGI() {
-    this.select('gene_id')
-      .from('gene_identifiers')
-      .where({ hgnc_symbol: gene });
+  function subqueryPValueGene() {
+    this.select('gene').min('pValue as minPValue').from('zip_significant').groupBy('gene');
   }
+  if (type === 'zip') {
+    // db.select('zip.*').from;
 
-  // Select statement to return FPKM
-  db.select('rna.FPKM')
-    .from('RNAseq as rna')
-    .join('model_identifiers as mi', 'rna.model_id', '=', 'mi.model_id')
-    .whereIn('idSample', subquerySL)
-    .andWhere({ gene_id: subqueryGI })
-    .andWhere('rna.FPKM', '>', 0)
-    .then((data) => {
-      res.json(data);
-    })
-    .catch((err) => {
-      console.log(err);
-      res.json(err);
-    });
+  }
+  switch (type) {
+    case 'zip':
+      db.select('gene')
+        .min('pValue as minPValue')
+        .from('zip_significant')
+        .groupBy('gene')
+        .then((data) => {
+          res.json(data);
+        });
+      break;
+    default:
+      res.json({ error: 'Wrong synergy score type specified' });
+  }
 });
+
+// db.select(
+//   'zip.idSource as idSource',
+//   'zip.idDrugA as idDrugA',
+//   'zip.idDrugB as idDrugB',
+//   'zip.gene as gene',
+//   'zip.concordanceIndex as concordanceIndex',
+//   'zip.pValue as pValue',
+// );
+
+// Database call to get data for Plot.js box plots
+// router.post('/fpkm', (req, res) => {
+//   const {
+//     idSource, idDrugA, idDrugB, gene, interaction,
+//   } = req.body;
+//   // Subquery to get list of idSample from idSource, idDrugA, idDrugB
+//   function subquerySL() {
+//     const allSample = this.distinct('cd.idSample')
+//       .from('Combo_Design as cd')
+//       .join('Synergy_Score as ss', 'cd.idCombo_Design', '=', 'ss.idCombo_Design')
+//       .where({
+//         idSource,
+//         idDrugA,
+//         idDrugB,
+//       });
+//     let subQuery;
+//     switch (interaction) {
+//       case 'SYN':
+//         subQuery = allSample.andWhere('ZIP', '>', 0.2);
+//         break;
+//       case 'MOD':
+//         subQuery = allSample.andWhere(0.2, '>=', 'ZIP', '>=', 0);
+//         break;
+//       case 'ANT':
+//         subQuery = allSample.andWhere('ZIP', '<', 0);
+//         break;
+//       default:
+//         break;
+//     }
+//     return subQuery;
+//   }
+
+//   // Subquery to get gene_id from hgnc_symbol
+//   function subqueryGI() {
+//     this.select('gene_id')
+//       .from('gene_identifiers')
+//       .where({ hgnc_symbol: gene });
+//   }
+
+//   // Select statement to return FPKM
+//   db.select('rna.FPKM')
+//     .from('RNAseq as rna')
+//     .join('model_identifiers as mi', 'rna.model_id', '=', 'mi.model_id')
+//     .whereIn('idSample', subquerySL)
+//     .andWhere({ gene_id: subqueryGI })
+//     .andWhere('rna.FPKM', '>', 0)
+//     .then((data) => {
+//       res.json(data);
+//     })
+//     .catch((err) => {
+//       console.log(err);
+//       res.json(err);
+//     });
+// });
+
 
 // // Route to retrieve list of potential biomarkers
 // router.post('/', (req, res) => {

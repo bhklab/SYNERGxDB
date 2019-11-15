@@ -87,15 +87,27 @@ class Biomarkers extends Component {
       defaultThreshold: null,
       customThreshold: null,
       confirmedThreshold: null,
+      selectedScore: 'zip',
     };
     // this.handleSelect = this.handleSelect.bind(this);
   }
 
   componentDidMount() {
+    const { selectedScore } = this.state;
     const gene = 'CIB3';
     // const gene = 'A2M';
     this.setState({ selectedBiomarker: gene });
     this.getPlotData(gene);
+    fetch(`/api/biomarkers/synergy?type=${selectedScore}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+      })
+      .then(response => response.json())
+      .then(data => console.log(data));
   }
 
 
