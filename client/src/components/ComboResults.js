@@ -214,43 +214,46 @@ class ComboResults extends Component {
           dataset={dataset}
           sample={sample}
         />
-        <ButtonsDiv>
-          <h2>Analysis </h2>
-          <div className="buttonsContainer">
-            {dataset == 3 || dataset == 4 || dataset == 6 ? null : 
-              <Fragment>
-                <a href={`/biomarker${queryParams}`}>
-                  Biomarker
-                  {' '}
-                  <br />
-                  {' '}
-                  Discovery
-                </a>
-              </Fragment>
+        {totalSynergyScores == 0 ? null : 
+          <ButtonsDiv>
+            <h2>Analysis </h2>
+            <div className="buttonsContainer">
+              {dataset == 3 || dataset == 4 || dataset == 6 ? null : 
+                <Fragment>
+                  <a href={`/biomarker${queryParams}`}>
+                    Biomarker
+                    {' '}
+                    <br />
+                    {' '}
+                    Discovery
+                  </a>
+                </Fragment>
+                
+              }
               
-            }
+              <a href={`/sensitivity${queryParams}`}>
+                Cell Line
+                {' '}
+                <br />
+                Sensitivity Analysis
+              </a>
+              <a href={`/enrichment${queryParams}`}>
+                Tissue-Specific
+                {' '}
+                <br />
+                Enrichment Analysis
+              </a>
+              <a href={`/consistency${queryParams}`}>
+                Consistency in
+                {' '}
+                <br />
+                Synergy Scores
+              </a>
+            </div>
             
-            <a href={`/sensitivity${queryParams}`}>
-              Cell Line
-              {' '}
-              <br />
-              Sensitivity Analysis
-            </a>
-            <a href={`/enrichment${queryParams}`}>
-              Tissue-Specific
-              {' '}
-              <br />
-              Enrichment Analysis
-            </a>
-            <a href={`/consistency${queryParams}`}>
-              Consistency in
-              {' '}
-              <br />
-              Synergy Scores
-            </a>
-          </div>
-          
-        </ButtonsDiv>
+          </ButtonsDiv>
+        }
+        
 
         {/* {showBiomarker} */}
         <SynergyDiv>
