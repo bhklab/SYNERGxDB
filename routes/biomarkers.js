@@ -1,3 +1,4 @@
+/* eslint-disable func-names */
 const express = require('express');
 const db = require('../db');
 
@@ -85,7 +86,15 @@ router.get('/synergy', (req, res) => {
   // res.json({ message: type });
 
   function subqueryPValueGene() {
-    this.select('gene').min('pValue as minPValue').from('zip_significant').groupBy('gene');
+    let subquery = this.select('gene').min('pValue as minPValue');
+    switch (type) {
+      case 'zip':
+        subquery = subquery.from('zip_significant');
+        break;
+      default:
+        break;
+    }
+    return subquery.groupBy('gene').as('t1');
   }
   if (type === 'zip') {
     // db.select('zip.*').from;
@@ -93,15 +102,23 @@ router.get('/synergy', (req, res) => {
   }
   switch (type) {
     case 'zip':
-      db.select('gene')
-        .min('pValue as minPValue')
-        .from('zip_significant')
+      console.log('zip');
+      db.select('zip_significant.*')
+        .from(subqueryPValueGene)
+        .innerJoin('zip_significant', function () {
+          this.on('zip_significant.gene', '=', 't1.gene');
+          this.andOn('zip_significant.pValue', '=', 't1.minPValue');
+        })
         .groupBy('gene')
+        .orderBy('pValue')
+        .orderBy('concordanceIndex')
         .then((data) => {
+          console.log(data);
           res.json(data);
         });
       break;
     default:
+      console.log('break');
       res.json({ error: 'Wrong synergy score type specified' });
   }
 });
