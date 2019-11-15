@@ -59,6 +59,11 @@ class BiomarkerBoxPlot extends React.Component {
         boxData.push(sortArr.slice(i, sortArr.length));
         break;
       }
+      // Creates boxData array when there is no data for high box plot
+      if (i === sortArr.length - 1) {
+        boxData.push(sortArr);
+        boxData.push([]);
+      }
     }
     this.setState({
       layout: {
@@ -88,6 +93,7 @@ class BiomarkerBoxPlot extends React.Component {
           color: colors.color_main_1,
           tickcolor: colors.color_main_1,
           linecolor: colors.color_main_1,
+          fixedrange: true,
           mirror: true,
           font: {
             size: 16,
@@ -100,6 +106,7 @@ class BiomarkerBoxPlot extends React.Component {
           color: colors.color_main_1,
           tickcolor: colors.color_main_1,
           linecolor: colors.color_main_1,
+          fixedrange: true,
           showticklabels: false,
           mirror: true,
           linewidth: 3,

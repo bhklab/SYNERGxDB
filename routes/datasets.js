@@ -43,15 +43,12 @@ router.get('/', (req, res) => {
 
 // Router primary goal is to filter dataset data based on drug ids and sample
 router.get('/filter', (req, res) => {
-  console.log('dataset filter route fired');
-  console.log(req.query);
   let {
     sample, drugId1, drugId2,
   } = req.query;
   drugId1 = drugId1 && parseInt(drugId1, 10);
   drugId2 = drugId2 && parseInt(drugId2, 10);
   sample = Number.isNaN(parseInt(sample, 10)) ? sample : parseInt(sample, 10);
-  console.log(drugId1, drugId2, sample);
 
   function subqueryCD() {
     let baseQuery = this.select('idCombo_Design', 'idSample as sampleId')
@@ -59,25 +56,45 @@ router.get('/filter', (req, res) => {
 
     // Checks type of the request and modifies the query accordingly
     // Query builder when drug(s) are given
-    if (drugId1) {
+    if (drugId1 || drugId2) {
       if (typeof (sample) === 'number') {
       // Subquery to include all possible idDrugA and idDrugB combinations
         baseQuery = baseQuery.where(function () {
-          return drugId2 ? this.andWhere({ idDrugA: drugId1, idDrugB: drugId2, idSample: sample })
-            : this.andWhere({ idDrugA: drugId1, idSample: sample });
+          if (drugId1 && drugId2) {
+            return this.andWhere({ idDrugA: drugId1, idDrugB: drugId2, idSample: sample });
+          } if (drugId1) {
+            return this.andWhere({ idDrugA: drugId1, idSample: sample });
+          }
+          // drugId2 only
+          return this.andWhere({ idDrugA: drugId2, idSample: sample });
         })
           .orWhere(function () {
-            return drugId2 ? this.where({ idDrugA: drugId2, idDrugB: drugId1, idSample: sample })
-              : this.andWhere({ idDrugB: drugId1, idSample: sample });
+            if (drugId1 && drugId2) {
+              return this.andWhere({ idDrugA: drugId2, idDrugB: drugId1, idSample: sample });
+            } if (drugId1) {
+              return this.andWhere({ idDrugB: drugId1, idSample: sample });
+            }
+            // drugId2 only
+            return this.andWhere({ idDrugB: drugId2, idSample: sample });
           });
       } else {
         baseQuery = baseQuery.where(function () {
-          return drugId2 ? this.andWhere({ idDrugA: drugId1, idDrugB: drugId2 })
-            : this.andWhere({ idDrugA: drugId1 });
+          if (drugId1 && drugId2) {
+            return this.andWhere({ idDrugA: drugId1, idDrugB: drugId2 });
+          } if (drugId1) {
+            return this.andWhere({ idDrugA: drugId1 });
+          }
+          // drugId2 only
+          return this.andWhere({ idDrugA: drugId2 });
         })
           .orWhere(function () {
-            return drugId2 ? this.where({ idDrugA: drugId2, idDrugB: drugId1 })
-              : this.where({ idDrugB: drugId1 });
+            if (drugId1 && drugId2) {
+              return this.andWhere({ idDrugA: drugId2, idDrugB: drugId1 });
+            } if (drugId1) {
+              return this.andWhere({ idDrugB: drugId1 });
+            }
+            // drugId2 only
+            return this.andWhere({ idDrugB: drugId2 });
           });
       }
     } else if (typeof (sample) === 'number') {
@@ -87,7 +104,7 @@ router.get('/filter', (req, res) => {
   }
 
   function subqueryS() {
-    let baseQuery = this.select('idCombo_Design', 'idSample')
+    let baseQuery = this.select('idCombo_Design')
       .from(subqueryCD);
       // Tissue specific requests
     if (typeof (sample) === 'string') baseQuery = baseQuery.where({ tissue: sample });
@@ -96,29 +113,25 @@ router.get('/filter', (req, res) => {
       .as('S');
   }
 
-
-  // Tissue specific requests
-  if (typeof (sample) === 'string') {
-    console.log('string');
-    db.select('idCombo_Design', 'idSample')
-      .from(subqueryCD)
-      .where({ tissue: sample })
-      .join('Sample', 'CD.sampleId', '=', 'Sample.idSample')
-      .then((data) => {
-        console.log(data);
-        res.json(data);
-      });
-  } else {
-    console.log('something else');
-    db.select('idCombo_Design', 'idSample')
-      .from(subqueryCD)
-      .join('Sample', 'CD.sampleId', '=', 'Sample.idSample')
-      .then((data) => {
-        console.log(data);
-        res.json(data);
-      });
+  function subquerySrc() {
+    return this.distinct('idSource as sourceId')
+      .from(subqueryS)
+      .join('Synergy_score', 'Synergy_score.idCombo_Design', '=', 'S.idCombo_Design')
+      .as('Src');
   }
-  // db.select('');
+
+  let mainQuery = db.select('idSource', 'name');
+  if (!drugId1 && !drugId2 && !sample) {
+    mainQuery = mainQuery.from('Source');
+  } else {
+    mainQuery = mainQuery
+      .from(subquerySrc)
+      .join('Source', 'Src.sourceId', '=', 'Source.idSource');
+  }
+  mainQuery.then((data) => {
+    res.json(data);
+  })
+    .catch(err => res.json(err));
 });
 
 router.get('/:datasetId', (req, res) => {
@@ -129,7 +142,6 @@ router.get('/:datasetId', (req, res) => {
       res.json(data);
     })
     .catch((err) => {
-      console.log(err);
       res.json(err);
     });
 });

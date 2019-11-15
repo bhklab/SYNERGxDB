@@ -1,3 +1,5 @@
+/* eslint-disable no-return-assign */
+/* eslint-disable class-methods-use-this */
 /* eslint-disable jsx-a11y/anchor-is-valid */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
@@ -127,10 +129,9 @@ const customStyles = {
   }),
   option: (provided, state) => ({
     ...provided,
-    textAlign: state.isDisabled ? 'left' : 'center',
-    fontWeight: state.isDisabled ? '700' : state.isSelected ? '700' : '400',
-    background: state.isDisabled ? colors.summary_bg : 'white',
-    color: state.isSelected ? colors.color_main_2 : colors.nav_links,
+    background: 'white',
+    fontWeight: state.isSelected ? '700' : '400',
+    color: state.isSelected ? colors.color_main_2 : state.isDisabled ? 'grey' : colors.nav_links,
   }),
 };
 
@@ -284,7 +285,8 @@ const CustomOption = innerProps => (
         padding: 'auto',
         margin: '0',
         display: 'flex',
-        justifyContent: innerProps.isDisabled ? 'flex-start' : 'center',
+        // justifyContent: innerProps.isDisabled ? 'flex-start' : 'center',
+        justifyContent: 'center',
         alignItems: 'center',
       }}
     >
@@ -305,13 +307,16 @@ class SearchCombos extends Component {
       drugsData2: [],
       sampleData: [],
       datasetData: [],
+      filteredDrugsData1: null,
+      filteredDrugsData2: null,
+      filteredSampleData: null,
+      filteredDatasetData: null,
       selectedSample: { value: 'Any', label: 'Any Sample' },
       selectedDrug1: null,
       selectedDrug2: null,
       selectedDataset: { value: 'Any', label: 'Any Dataset' },
       drug2Placeholder: 'Enter Compound B',
       allowRedirect: true,
-      isDisabled: null,
     };
     this.handleDrug1Search = this.handleDrug1Search.bind(this);
     this.handleDrug2Search = this.handleDrug2Search.bind(this);
@@ -332,8 +337,9 @@ class SearchCombos extends Component {
     fetch('/api/drugs')
       .then(response => response.json())
       .then((data) => {
-        const drugsData1 = data.map(item => ({ value: item.idDrug, label: item.name }));
-        this.setState({ drugsData1: [{ value: 'Any', label: 'Any Compound' }, ...drugsData1] });
+        const drugsData = data.map(item => ({ value: item.idDrug, label: item.name }));
+        this.setState({ drugsData1: [{ value: 'Any', label: 'Any Compound' }, ...drugsData] });
+        this.setState({ drugsData2: [{ value: 'Any', label: 'Any Compound' }, ...drugsData] });
       });
     fetch('/api/cell_lines')
       .then(response => response.json())
@@ -376,20 +382,73 @@ class SearchCombos extends Component {
   }
 
   filterDrugAData(sample, drugB, dataset) {
-    console.log(sample, drugB, dataset);
+    let url = '/api/drugs/filter?';
+    if (sample && sample !== 'Any') url = url.concat(`&sample=${sample}`);
+    if (drugB && drugB !== 'Any') url = url.concat(`&drugId=${drugB}`);
+    if (dataset && dataset !== 'Any') url = url.concat(`&dataset=${dataset}`);
+
+    fetch(url)
+      .then(response => response.json())
+      .then((data) => {
+        const drugsData = data.map(item => ({ value: item.idDrug, label: item.name }));
+        this.setState({ filteredDrugsData1: [{ value: 'Any', label: 'Any Compound' }, ...drugsData] });
+      });
   }
 
   filterDrugBData(sample, drugA, dataset) {
-    console.log(sample, drugA, dataset);
+    let url = '/api/drugs/filter?';
+    if (sample && sample !== 'Any') url = url.concat(`&sample=${sample}`);
+    if (drugA && drugA !== 'Any') url = url.concat(`&drugId=${drugA}`);
+    if (dataset && dataset !== 'Any') url = url.concat(`&dataset=${dataset}`);
+
+    fetch(url)
+      .then(response => response.json())
+      .then((data) => {
+        const drugsData = data.map(item => ({ value: item.idDrug, label: item.name }));
+        this.setState({ filteredDrugsData2: [{ value: 'Any', label: 'Any Compound' }, ...drugsData] });
+      });
   }
 
   filterSampleData(drugA, drugB, dataset) {
-    console.log(drugA, drugB, dataset);
+    let url = '/api/cell_lines/filter?';
+    if (dataset && dataset !== 'Any') url = url.concat(`&dataset=${dataset}`);
+    if (drugA && drugA !== 'Any') url = url.concat(`&drugId1=${drugA}`);
+    if (drugB && drugB !== 'Any') url = url.concat(`&drugId2=${drugB}`);
+    fetch(url)
+      .then(response => response.json())
+      .then((data) => {
+        const tissueObject = {};
+        data.forEach((item) => {
+          if (!tissueObject[item.tissue]) {
+            tissueObject[item.tissue] = 1;
+          } else {
+            tissueObject[item.tissue]++;
+          }
+        });
+        const tissueData = Object.keys(tissueObject).map(tissue => ({ value: tissue, label: `${tissue.toUpperCase()} (${tissueObject[tissue]} cell lines)` }));
+        const cellsData = data.map(item => ({ value: item.idSample, label: `${item.name.toUpperCase()} (${item.tissue.toUpperCase()})` }));
+        this.setState({
+          filteredSampleData: [
+            {
+              label: 'Any Sample',
+              value: 'Any',
+            },
+            {
+              label: 'Tissues',
+              options: tissueData,
+            },
+
+            {
+              label: 'Cell Lines',
+              options: cellsData,
+            },
+          ],
+        });
+      });
   }
 
-  // eslint-disable-next-line class-methods-use-this
   filterDatasetData(sample, drugA, drugB) {
-    console.log(sample, drugA, drugB);
+    const { datasetData } = this.state;
     let url = '/api/datasets/filter?';
     if (sample && sample !== 'Any') url = url.concat(`&sample=${sample}`);
     if (drugA && drugA !== 'Any') url = url.concat(`&drugId1=${drugA}`);
@@ -397,7 +456,15 @@ class SearchCombos extends Component {
     fetch(url)
       .then(response => response.json())
       .then((data) => {
-        console.log(data);
+        // Disable options based on API data
+        const filteredObj = {};
+        data.forEach(item => (filteredObj[item.idSource] = item.name));
+        const datasetArray = datasetData.map((item) => {
+          const output = { value: item.value, label: item.label };
+          if (!filteredObj[item.value] && item.value !== 'Any') output.isDisabled = true;
+          return output;
+        });
+        this.setState({ filteredDatasetData: datasetArray });
       });
   }
 
@@ -430,94 +497,64 @@ class SearchCombos extends Component {
     if (e.key === 'Enter') this.userRedirect();
   }
 
-  handleDrug1Search(drugId, event) {
+  handleDrug1Search(event) {
     const { value, label } = event;
     const { sample, dataset, drugId2 } = this.state;
-    const { filterDatasetData } = this;
-
-    if (event.value === 'Any') {
-      this.setState({ isDisabled: true, drug2Placeholder: 'Please specify Compound A' });
-    } else {
-      this.setState({ isDisabled: false, drug2Placeholder: 'Enter Compound B' });
-    }
+    const { filterDatasetData, filterSampleData, filterDrugBData } = this;
     this.setState({ drugId1: value, selectedDrug1: { value, label } });
-    // Sends a post request to the API to retrieve relevant combo drugs for drugsData2
 
-    console.log('handleDrug1Search');
+    // Filtering for other option boxes
     filterDatasetData(sample, value, drugId2);
+    filterSampleData(value, drugId2, dataset);
+    filterDrugBData(sample, value, dataset);
   }
 
   handleDrug2Search(event) {
     const { value, label } = event;
-    const { filterDatasetData } = this;
+    const { filterDatasetData, filterSampleData, filterDrugAData } = this;
     const { sample, dataset, drugId1 } = this.state;
     this.setState({ drugId2: value, selectedDrug2: { value, label } });
 
-    console.log('handleDrug2Search');
+    // Filtering for other option boxes
     filterDatasetData(sample, drugId1, value);
+    filterSampleData(drugId1, value, dataset);
+    filterDrugAData(sample, value, dataset);
   }
 
   handleSampleSearch(event) {
     const { value, label } = event;
     const { dataset, drugId1, drugId2 } = this.state;
-    const { filterDatasetData } = this;
+    const { filterDatasetData, filterDrugAData, filterDrugBData } = this;
     this.setState({ sample: value, selectedSample: { value, label } });
-    if (drugId1 !== 'Any') this.updateDrug2Data(value, dataset, drugId1);
 
-    console.log('handleSampleSearch');
+    // Filtering for other option boxes
     filterDatasetData(value, drugId1, drugId2);
+    filterDrugAData(value, drugId2, dataset);
+    filterDrugBData(value, drugId1, dataset);
   }
 
   handleDatasetSearch(event) {
     const { value, label } = event;
-    const { sample, drugId1 } = this.state;
+    const { sample, drugId1, drugId2 } = this.state;
+    const { filterSampleData, filterDrugAData, filterDrugBData } = this;
     this.setState({ dataset: value, selectedDataset: { value, label } });
-    if (drugId1 !== 'Any') this.updateDrug2Data(sample, value, drugId1);
-  }
 
-  updateDrug2Data(sample, dataset, drugId) {
-    const requestBody = { };
-    if (drugId !== 'Any') requestBody.drugId = drugId;
-    if (sample !== 'Any') requestBody.sample = sample;
-    if (dataset !== 'Any') requestBody.dataset = dataset;
-    fetch('/api/drugs', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(requestBody),
-    })
-      .then(response => response.json())
-      .then((data) => {
-        this.setState({
-          drugId2: 'Any', selectedDrug2: null, drugsData2: [],
-        });
-        if (data.length > 0) {
-          const drugsData = data.map(item => ({ value: item.idDrug, label: item.name }));
-          this.setState({ drugsData2: [{ value: 'Any', label: 'Any Compound' }, ...drugsData], drug2Placeholder: 'Enter Compound B', allowRedirect: true });
-        } else {
-          this.setState({ drug2Placeholder: 'No drug combos for entered request parameters', allowRedirect: false });
-        }
-      });
+    // Filtering for other option boxes
+    filterSampleData(drugId1, drugId2, value);
+    filterDrugAData(sample, drugId2, value);
+    filterDrugBData(sample, drugId1, value);
   }
 
   render() {
     const {
       drugsData1, drugsData2, sampleData,
       selectedSample, selectedDrug1, selectedDrug2, drug2Placeholder, datasetData,
-      selectedDataset,
+      selectedDataset, filteredSampleData, filteredDrugsData1, filteredDrugsData2, filteredDatasetData,
     } = this.state;
-    let { isDisabled } = this.state;
     const {
       handleSampleSearch, handleDrug1Search, handleDrug2Search, userRedirect,
       handleDatasetSearch, handleEnterPress, checkUserInput,
     } = this;
-
-    // if isDisabled is not set yet, set
-    if (!isDisabled) {
-      isDisabled = !(drugsData2.length > 0);
-    }
 
     const exampleDrugUrl = {
       pathname: '/synergy_score',
@@ -547,10 +584,9 @@ class SearchCombos extends Component {
             <Select
               components={{
                 Option: CustomOption,
-                // MenuList: props => (<MenuList {...props} />),
               }}
               styles={customStyles}
-              options={sampleData}
+              options={filteredSampleData || sampleData}
               placeholder="Enter Cell Line or Tissue"
               onChange={handleSampleSearch}
               value={selectedSample}
@@ -565,21 +601,7 @@ class SearchCombos extends Component {
                 MenuList: props => (<MenuList {...props} />),
               }}
               styles={customStyles}
-              options={drugsData1}
-              placeholder="Enter Compound A"
-              onChange={e => handleDrug1Search('drugId1', e)}
-              value={selectedDrug1}
-              filterOption={customFilterOption}
-            />
-          </div>
-          <div className="select-container">
-            <Select
-              components={{
-                Option: CustomOption,
-                MenuList: props => (<MenuList {...props} />),
-              }}
-              styles={customStyles}
-              options={datasetData}
+              options={filteredDatasetData || datasetData}
               placeholder="Enter Dataset"
               value={selectedDataset}
               onChange={handleDatasetSearch}
@@ -592,44 +614,24 @@ class SearchCombos extends Component {
                 Option: CustomOption,
                 MenuList: props => (<MenuList {...props} />),
               }}
-              styles={{
-                ...customStyles,
-                control: provided => ({
-                  ...provided,
-                  background: 'rgb(0,0,0,0)',
-                  margin: '5px 0px',
-                  border: isDisabled ? `1px solid ${colors.color_accent_1}` : `1px solid ${colors.nav_links}`,
-                  '&:hover': {
-                    border: isDisabled ? `1px solid ${colors.color_accent_1}` : `1px solid ${colors.nav_links}`,
-                  },
-                }),
-                placeholder: provided => ({
-                  ...provided,
-                  color: isDisabled ? colors.color_accent_1 : colors.nav_links,
-                }),
-                dropdownIndicator: provided => ({
-                  ...provided,
-                  color: isDisabled ? colors.color_accent_1 : colors.nav_links,
-                  '&:hover': {
-                    color: isDisabled ? colors.color_accent_1 : colors.nav_links,
-                  },
-                }),
-                indicatorSeparator: provided => ({
-                  ...provided,
-                  background: isDisabled ? colors.color_accent_1 : colors.nav_links,
-                  '&:hover': {
-                    background: isDisabled ? colors.color_accent_1 : colors.nav_links,
-                  },
-                }),
-                singleValue: provided => ({
-                  ...provided,
-                  color: isDisabled ? colors.color_accent_1 : colors.nav_links,
-                }),
+              styles={customStyles}
+              options={filteredDrugsData1 || drugsData1}
+              placeholder="Enter Compound A"
+              onChange={e => handleDrug1Search(e)}
+              value={selectedDrug1}
+              filterOption={customFilterOption}
+            />
+          </div>
+          <div className="select-container">
+            <Select
+              components={{
+                Option: CustomOption,
+                MenuList: props => (<MenuList {...props} />),
               }}
-              options={drugsData2}
-              isDisabled={isDisabled}
+              styles={customStyles}
+              options={filteredDrugsData2 || drugsData2}
               placeholder={drug2Placeholder}
-              value={isDisabled ? '' : selectedDrug2}
+              value={selectedDrug2}
               onChange={handleDrug2Search}
               filterOption={customFilterOption}
             />
@@ -689,3 +691,39 @@ class SearchCombos extends Component {
 }
 
 export default withRouter(SearchCombos);
+
+// Drug B custom styles
+// styles={{
+//   ...customStyles,
+//   control: provided => ({
+//     ...provided,
+//     background: 'rgb(0,0,0,0)',
+//     margin: '5px 0px',
+//     border: isDisabled ? `1px solid ${colors.color_accent_1}` : `1px solid ${colors.nav_links}`,
+//     '&:hover': {
+//       border: isDisabled ? `1px solid ${colors.color_accent_1}` : `1px solid ${colors.nav_links}`,
+//     },
+//   }),
+//   placeholder: provided => ({
+//     ...provided,
+//     color: isDisabled ? colors.color_accent_1 : colors.nav_links,
+//   }),
+//   dropdownIndicator: provided => ({
+//     ...provided,
+//     color: isDisabled ? colors.color_accent_1 : colors.nav_links,
+//     '&:hover': {
+//       color: isDisabled ? colors.color_accent_1 : colors.nav_links,
+//     },
+//   }),
+//   indicatorSeparator: provided => ({
+//     ...provided,
+//     background: isDisabled ? colors.color_accent_1 : colors.nav_links,
+//     '&:hover': {
+//       background: isDisabled ? colors.color_accent_1 : colors.nav_links,
+//     },
+//   }),
+//   singleValue: provided => ({
+//     ...provided,
+//     color: isDisabled ? colors.color_accent_1 : colors.nav_links,
+//   }),
+// }}
