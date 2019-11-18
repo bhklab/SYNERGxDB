@@ -11,7 +11,7 @@ import 'react-table/react-table.css';
 import ReactTable from 'react-table';
 
 import colors from '../styles/colors';
-// import transitions from '../styles/transitions';
+import transitions from '../styles/transitions';
 
 import ExpressionProfile from './Plots/ExpressionProfile';
 import QueryCard from './UtilComponents/QueryCard';
@@ -61,6 +61,66 @@ const StyledExpressionProfile = styled.div`
   }
 `;
 
+const ButtonContainer = styled.div`
+  display: flex;
+
+  button {
+    font-size: 1.5em;
+    background: ${colors.nav_links};
+    border: 1px solid ${colors.nav_links};
+    padding: 10px 20px;
+    margin: 10px 0;
+    color: #ffffff;
+    transition: ${transitions.main_trans};
+    outline-style: none;
+    vertical-align: middle;
+    -webkit-transform: perspective(1px) translateZ(0);
+    transform: perspective(1px) translateZ(0);
+    box-shadow: 0 0 1px rgba(0, 0, 0, 0);
+    position: relative;
+    -webkit-transition-property: color;
+    transition-property: color;
+    -webkit-transition-duration: 0.3s;
+    transition-duration: 0.3s;
+    flex-grow: 1;
+  
+    &:before {
+      content: "";
+      position: absolute;
+      z-index: -1;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: ${colors.button_hover};
+      -webkit-transform: scaleX(0);
+      transform: scaleX(0);
+      -webkit-transform-origin: 0 50%;
+      transform-origin: 0 50%;
+      -webkit-transition-property: transform;
+      transition-property: transform;
+      -webkit-transition-duration: 0.3s;
+      transition-duration: 0.3s;
+      -webkit-transition-timing-function: ease-out;
+      transition-timing-function: ease-out;
+    }
+  
+    &:hover,
+    &:focus,
+    &.active-score {
+      color: white;
+      
+      border: 1px solid ${colors.nav_links};
+      cursor:pointer;
+
+      &:before {
+        -webkit-transform: scaleX(1);
+        transform: scaleX(1);
+      }
+    }
+  }
+`;
+
 const calculateThreshold = (synScoreArray) => {
   if (synScoreArray) {
     const output = synScoreArray.length % 2 !== 0 ? synScoreArray[(synScoreArray.length - 1) / 2]
@@ -91,7 +151,7 @@ class Biomarkers extends Component {
       selectedScore: 'zip',
       lisfOfBiomarkers: [],
     };
-    // this.handleSelect = this.handleSelect.bind(this);
+    this.handleSelectScore = this.handleSelectScore.bind(this);
   }
 
   componentDidMount() {
@@ -251,7 +311,12 @@ class Biomarkers extends Component {
     }
   }
 
+  handleSelectScore(score) {
+    this.setState({ selectedScore: score });
+  }
+
   render() {
+    const { handleSelectScore } = this;
     const {
       loadingTable, biomarkerData, selectedBiomarker, xRange,
       yRange, defaultThreshold, customThreshold, confirmedThreshold,
@@ -273,16 +338,16 @@ class Biomarkers extends Component {
       Header: 'Compound B',
       accessor: 'drugB',
     }, {
-      Header: `C-index (${selectedScore})`,
-      accessor: 'concordanceIndex',
-      filterable: false,
+      Header: 'Dataset',
+      accessor: 'dataset',
     }, {
       Header: `P-value (${selectedScore})`,
       accessor: 'pValue',
       filterable: false,
     }, {
-      Header: 'Dataset',
-      accessor: 'dataset',
+      Header: `C-index (${selectedScore})`,
+      accessor: 'concordanceIndex',
+      filterable: false,
     }];
 
 
@@ -301,6 +366,37 @@ class Biomarkers extends Component {
           sample={sample}
         />
         <StyledBiomarkers>
+          <ButtonContainer>
+
+            <button
+              type="button"
+              onClick={() => handleSelectScore('zip')}
+              className={selectedScore === 'zip' ? 'active-score' : null}
+            >
+                ZIP
+            </button>
+            <button
+              type="button"
+              onClick={() => handleSelectScore('bliss')}
+              className={selectedScore === 'bliss' ? 'active-score' : null}
+            >
+                Bliss
+            </button>
+            <button
+              type="button"
+              onClick={() => handleSelectScore('loewe')}
+              className={selectedScore === 'loewe' ? 'active-score' : null}
+            >
+                Loewe
+            </button>
+            <button
+              type="button"
+              onClick={() => handleSelectScore('hsa')}
+              className={selectedScore === 'hsa' ? 'active-score' : null}
+            >
+                HSA
+            </button>
+          </ButtonContainer>
           <ReactTable
             loading={loadingTable}
             LoadingComponent={LoadingComponent}

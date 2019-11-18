@@ -77,8 +77,6 @@ const ButtonContainer = styled.div`
 `;
 
 class SynergyMatrices extends Component {
-  static contextType = ComboContext
-
   constructor() {
     super();
     this.state = {
@@ -87,6 +85,8 @@ class SynergyMatrices extends Component {
     };
     this.handleClick = this.handleClick.bind(this);
   }
+
+  static contextType = ComboContext
 
   handleClick(selectedType) {
     this.setState({ selectedType });
