@@ -149,19 +149,28 @@ class Biomarkers extends Component {
       customThreshold: null,
       confirmedThreshold: null,
       selectedScore: 'zip',
-      lisfOfBiomarkers: [],
+      zipBiomarkers: null,
+      blissBiomarkers: null,
+      hsaBiomarkers: null,
+      loeweBiomarkers: null,
     };
     this.handleSelectScore = this.handleSelectScore.bind(this);
+    this.getBiomarkerTableData = this.getBiomarkerTableData.bind(this);
   }
 
   componentDidMount() {
+    const { getBiomarkerTableData } = this;
     const { selectedScore } = this.state;
+    getBiomarkerTableData(selectedScore);
+  }
+
+  getBiomarkerTableData(score) {
     const { location } = this.props;
     const requestParams = queryString.parse(location.search);
     const {
       drugId1, drugId2, dataset,
     } = requestParams;
-    let url = `/api/biomarkers/synergy?type=${selectedScore}`;
+    let url = `/api/biomarkers/synergy?type=${score}`;
     if (drugId1) url = url.concat(`&drugId1=${drugId1}`);
     if (drugId2) url = url.concat(`&drugId2=${drugId2}`);
     if (dataset) url = url.concat(`&dataset=${dataset}`);
@@ -177,8 +186,23 @@ class Biomarkers extends Component {
       .then(response => response.json())
       .then((data) => {
         console.log(data);
+        switch (score) {
+          case 'zip':
+            this.setState({ zipBiomarkers: data });
+            break;
+          case 'bliss':
+            this.setState({ blissBiomarkers: data });
+            break;
+          case 'hsa':
+            this.setState({ hsaBiomarkers: data });
+            break;
+          case 'loewe':
+            this.setState({ loeweBiomarkers: data });
+            break;
+          default:
+            break;
+        }
         this.setState({
-          lisfOfBiomarkers: data,
           selectedBiomarker: data[0].gene,
           loadingTable: false,
         });
@@ -312,7 +336,17 @@ class Biomarkers extends Component {
   }
 
   handleSelectScore(score) {
+    const { getBiomarkerTableData } = this;
+    const {
+      zipBiomarkers, blissBiomarkers, loeweBiomarkers, hsaBiomarkers,
+    } = this.state;
     this.setState({ selectedScore: score });
+    if (score === 'zip' && zipBiomarkers) return;
+    if (score === 'bliss' && blissBiomarkers) return;
+    if (score === 'loewe' && loeweBiomarkers) return;
+    if (score === 'hsa' && hsaBiomarkers) return;
+    this.setState({ loadingTable: true });
+    getBiomarkerTableData(score);
   }
 
   render() {
@@ -320,7 +354,8 @@ class Biomarkers extends Component {
     const {
       loadingTable, biomarkerData, selectedBiomarker, xRange,
       yRange, defaultThreshold, customThreshold, confirmedThreshold,
-      synScoreArray, selectedScore, lisfOfBiomarkers, loadingGraph,
+      synScoreArray, selectedScore, zipBiomarkers, blissBiomarkers,
+      hsaBiomarkers, loeweBiomarkers, loadingGraph,
     } = this.state;
     const { location } = this.props;
     const requestParams = queryString.parse(location.search);
@@ -349,6 +384,24 @@ class Biomarkers extends Component {
       accessor: 'concordanceIndex',
       filterable: false,
     }];
+
+    let tableData = [];
+    switch (selectedScore) {
+      case 'zip':
+        tableData = zipBiomarkers;
+        break;
+      case 'bliss':
+        tableData = blissBiomarkers;
+        break;
+      case 'loewe':
+        tableData = loeweBiomarkers;
+        break;
+      case 'hsa':
+        tableData = hsaBiomarkers;
+        break;
+      default:
+        break;
+    }
 
 
     // let marks;
@@ -400,7 +453,7 @@ class Biomarkers extends Component {
           <ReactTable
             loading={loadingTable}
             LoadingComponent={LoadingComponent}
-            data={lisfOfBiomarkers}
+            data={tableData || []}
             columns={columns}
             className="-highlight"
             defaultPageSize={10}
