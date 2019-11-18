@@ -478,7 +478,11 @@ class SearchCombos extends Component {
       if (drugId1 !== 'Any') queryParams = queryParams.concat(`drugId1=${drugId1}`);
       if (sample !== 'Any') queryParams = queryParams.concat(`&sample=${sample}`);
       if (dataset !== 'Any') queryParams = queryParams.concat(`&dataset=${dataset}`);
-      if (drugId2 !== 'Any') queryParams = queryParams.concat(`&drugId2=${drugId2}`);
+      if (drugId2 !== 'Any' && drugId1 !== 'Any') {
+        queryParams = queryParams.concat(`&drugId2=${drugId2}`);
+      } else if (drugId2 !== 'Any' && drugId1 === 'Any') {
+        queryParams = queryParams.concat(`drugId1=${drugId2}`);
+      }
       // Redirects user to synergy scores page
       history.push('/synergy_score?'.concat(queryParams));
     }

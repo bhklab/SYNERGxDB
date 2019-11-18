@@ -103,7 +103,7 @@ class Biomarkers extends Component {
     } = requestParams;
     let url = `/api/biomarkers/synergy?type=${selectedScore}`;
     if (drugId1) url = url.concat(`&drugId1=${drugId1}`);
-    if (drugId2) url = url.concat(`&drugId=${drugId2}`);
+    if (drugId2) url = url.concat(`&drugId2=${drugId2}`);
     if (dataset) url = url.concat(`&dataset=${dataset}`);
 
     fetch(url,

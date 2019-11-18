@@ -104,6 +104,8 @@ router.get('/synergy', (req, res) => {
       default:
         break;
     }
+    // if (drugId1 || drugId2) subquery = subquery
+    if (dataset) subquery = subquery.andWhere({ idSource: dataset });
     return subquery.groupBy('gene').as('t1');
   }
   // if (type === 'zip') {
