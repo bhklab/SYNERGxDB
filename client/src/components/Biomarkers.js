@@ -341,10 +341,22 @@ class Biomarkers extends Component {
       zipBiomarkers, blissBiomarkers, loeweBiomarkers, hsaBiomarkers,
     } = this.state;
     this.setState({ selectedScore: score });
-    if (score === 'zip' && zipBiomarkers) return;
-    if (score === 'bliss' && blissBiomarkers) return;
-    if (score === 'loewe' && loeweBiomarkers) return;
-    if (score === 'hsa' && hsaBiomarkers) return;
+    if (score === 'zip' && zipBiomarkers) {
+      this.setState({ selectedBiomarker: zipBiomarkers[0].gene });
+      return;
+    }
+    if (score === 'bliss' && blissBiomarkers) {
+      this.setState({ selectedBiomarker: blissBiomarkers[0].gene });
+      return;
+    }
+    if (score === 'loewe' && loeweBiomarkers) {
+      this.setState({ selectedBiomarker: loeweBiomarkers[0].gene });
+      return;
+    }
+    if (score === 'hsa' && hsaBiomarkers) {
+      this.setState({ selectedBiomarker: hsaBiomarkers[0].gene });
+      return;
+    }
     this.setState({ loadingTable: true });
     getBiomarkerTableData(score);
   }
