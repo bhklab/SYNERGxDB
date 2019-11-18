@@ -139,6 +139,10 @@ class Biomarkers extends Component {
   constructor() {
     super();
     this.state = {
+      sample: null,
+      drugId1: null,
+      drugId2: null,
+      dataset: null,
       biomarkerData: null,
       selectedBiomarker: null,
       loadingTable: true,
@@ -156,20 +160,27 @@ class Biomarkers extends Component {
     };
     this.handleSelectScore = this.handleSelectScore.bind(this);
     this.getBiomarkerTableData = this.getBiomarkerTableData.bind(this);
+    this.getPlotData = this.getPlotData.bind(this);
   }
 
   componentDidMount() {
+    const { location } = this.props;
+    const requestParams = queryString.parse(location.search);
+    const {
+      sample, drugId1, drugId2, dataset,
+    } = requestParams;
+    this.setState({
+      sample, drugId1, drugId2, dataset,
+    });
     const { getBiomarkerTableData } = this;
     const { selectedScore } = this.state;
     getBiomarkerTableData(selectedScore);
   }
 
   getBiomarkerTableData(score) {
-    const { location } = this.props;
-    const requestParams = queryString.parse(location.search);
     const {
       drugId1, drugId2, dataset,
-    } = requestParams;
+    } = this.state;
     let url = `/api/biomarkers/synergy?type=${score}`;
     if (drugId1) url = url.concat(`&drugId1=${drugId1}`);
     if (drugId2) url = url.concat(`&drugId2=${drugId2}`);
@@ -217,14 +228,11 @@ class Biomarkers extends Component {
 
   async getPlotData(gene) {
     try {
-      const { location } = this.props;
-      const requestParams = queryString.parse(location.search);
       const {
         sample, drugId1, drugId2, dataset,
-      } = requestParams;
+      } = this.state;
       let queryParams = '?';
       let biomarkerParams = `?gene=${gene}`;
-
       if (sample) {
         queryParams = queryParams.concat(`&sample=${sample}`);
         biomarkerParams = biomarkerParams.concat(`&sample=${sample}`);
@@ -283,7 +291,7 @@ class Biomarkers extends Component {
             if (item[1].fpkm === undefined) delete synergyObj[item[0]];
           });
         });
-
+      console.log(synergyObj);
       // ***************************
       // Sets plot range
       // ***************************
@@ -336,25 +344,30 @@ class Biomarkers extends Component {
   }
 
   handleSelectScore(score) {
-    const { getBiomarkerTableData } = this;
+    const { getBiomarkerTableData, getPlotData } = this;
     const {
       zipBiomarkers, blissBiomarkers, loeweBiomarkers, hsaBiomarkers,
     } = this.state;
     this.setState({ selectedScore: score });
     if (score === 'zip' && zipBiomarkers) {
       this.setState({ selectedBiomarker: zipBiomarkers[0].gene });
+      console.log(zipBiomarkers[0].gene);
+      getPlotData(zipBiomarkers[0].gene);
       return;
     }
     if (score === 'bliss' && blissBiomarkers) {
       this.setState({ selectedBiomarker: blissBiomarkers[0].gene });
+      getPlotData(blissBiomarkers[0].gene);
       return;
     }
     if (score === 'loewe' && loeweBiomarkers) {
       this.setState({ selectedBiomarker: loeweBiomarkers[0].gene });
+      getPlotData(loeweBiomarkers[0].gene);
       return;
     }
     if (score === 'hsa' && hsaBiomarkers) {
       this.setState({ selectedBiomarker: hsaBiomarkers[0].gene });
+      getPlotData(hsaBiomarkers[0].gene);
       return;
     }
     this.setState({ loadingTable: true });
