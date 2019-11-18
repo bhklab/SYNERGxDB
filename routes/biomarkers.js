@@ -110,6 +110,15 @@ router.get('/synergy', (req, res) => {
       case 'zip':
         subquery = subquery.from('zip_significant');
         break;
+      case 'bliss':
+        subquery = subquery.from('bliss_significant');
+        break;
+      case 'hsa':
+        subquery = subquery.from('hsa_significant');
+        break;
+      case 'loewe':
+        subquery = subquery.from('loewe_significant');
+        break;
       default:
         break;
     }
@@ -117,26 +126,46 @@ router.get('/synergy', (req, res) => {
     if (dataset) subquery = subquery.andWhere({ idSource: dataset });
     return subquery.groupBy('gene').as('t1');
   }
-  // if (type === 'zip') {
-  //   db.select('zip.*').from;
 
-  // }
   function subqueryBiomarkers() {
+    let query;
     switch (type) {
       case 'zip':
-        this.select('zip_significant.*')
+        query = this.select('zip_significant.*')
           .from(subqueryPValueGene)
           .innerJoin('zip_significant', function () {
             this.on('zip_significant.gene', '=', 't1.gene');
             this.andOn('zip_significant.pValue', '=', 't1.minPValue');
-          })
-          .groupBy('gene')
-
-          .as('biomark');
+          });
+        break;
+      case 'bliss':
+        query = this.select('bliss_significant.*')
+          .from(subqueryPValueGene)
+          .innerJoin('bliss_significant', function () {
+            this.on('bliss_significant.gene', '=', 't1.gene');
+            this.andOn('bliss_significant.pValue', '=', 't1.minPValue');
+          });
+        break;
+      case 'hsa':
+        query = this.select('hsa_significant.*')
+          .from(subqueryPValueGene)
+          .innerJoin('hsa_significant', function () {
+            this.on('hsa_significant.gene', '=', 't1.gene');
+            this.andOn('hsa_significant.pValue', '=', 't1.minPValue');
+          });
+        break;
+      case 'loewe':
+        query = this.select('loewe_significant.*')
+          .from(subqueryPValueGene)
+          .innerJoin('loewe_significant', function () {
+            this.on('loewe_significant.gene', '=', 't1.gene');
+            this.andOn('loewe_significant.pValue', '=', 't1.minPValue');
+          });
         break;
       default:
         break;
     }
+    return query.groupBy('gene').as('biomark');
   }
 
   function subqueryDataset() {
