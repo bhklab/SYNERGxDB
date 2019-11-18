@@ -80,10 +80,20 @@ router.get('/association', (req, res) => {
     });
 });
 
+// Retrieves data for the biomarker table
 router.get('/synergy', (req, res) => {
   const { type } = req.query;
-  console.log('synergy with a type of ', type);
-  // res.json({ message: type });
+  if (!type || !(type === 'zip' || type === 'bliss' || type === 'hsa' || type === 'loewe')) {
+    res.json({ message: 'Synergy type is not specified correctly' });
+    return;
+  }
+
+  let {
+    dataset, drugId1, drugId2,
+  } = req.query;
+  drugId1 = drugId1 && parseInt(drugId1, 10);
+  drugId2 = drugId2 && parseInt(drugId2, 10);
+  dataset = dataset && parseInt(dataset, 10);
 
   function subqueryPValueGene() {
     let subquery = this.select('gene').min('pValue as minPValue');

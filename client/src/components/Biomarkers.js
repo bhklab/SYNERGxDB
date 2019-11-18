@@ -96,7 +96,17 @@ class Biomarkers extends Component {
 
   componentDidMount() {
     const { selectedScore } = this.state;
-    fetch(`/api/biomarkers/synergy?type=${selectedScore}`,
+    const { location } = this.props;
+    const requestParams = queryString.parse(location.search);
+    const {
+      drugId1, drugId2, dataset,
+    } = requestParams;
+    let url = `/api/biomarkers/synergy?type=${selectedScore}`;
+    if (drugId1) url = url.concat(`&drugId1=${drugId1}`);
+    if (drugId2) url = url.concat(`&drugId=${drugId2}`);
+    if (dataset) url = url.concat(`&dataset=${dataset}`);
+
+    fetch(url,
       {
         method: 'GET',
         headers: {
