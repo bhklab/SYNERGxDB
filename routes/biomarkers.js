@@ -125,13 +125,13 @@ router.get('/synergy', (req, res) => {
       .as('DS');
   }
   function subqueryDrugA() {
-    this.select('gene', 'concordanceIndex', 'pValue', 'dataset', 'name as DrugA', 'idDrugB')
+    this.select('gene', 'concordanceIndex', 'pValue', 'dataset', 'name as drugA', 'idDrugB')
       .from(subqueryDataset)
       .innerJoin('drug', 'drug.idDrug', '=', 'DS.idDrugA')
       .as('D1');
   }
 
-  db.select('gene', 'concordanceIndex', 'pValue', 'dataset', 'DrugA', 'name as DrugB')
+  db.select('gene', 'concordanceIndex', 'pValue', 'dataset', 'drugA', 'name as drugB')
     .from(subqueryDrugA)
     .innerJoin('drug', 'drug.idDrug', '=', 'D1.idDrugB')
     .orderBy('pValue')

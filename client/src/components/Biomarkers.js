@@ -16,6 +16,7 @@ import colors from '../styles/colors';
 import ExpressionProfile from './Plots/ExpressionProfile';
 import QueryCard from './UtilComponents/QueryCard';
 import BiomarkerBoxPlot from './Plots/BiomarkerBoxPlot';
+import LoadingComponent from './UtilComponents/Loading';
 
 // used to align plot and slider (in px)
 const dimensions = {
@@ -78,26 +79,23 @@ class Biomarkers extends Component {
   constructor() {
     super();
     this.state = {
-      // biomarkerData: [],
       biomarkerData: null,
       selectedBiomarker: null,
-      loading: true,
+      loadingTable: true,
+      loadingGraph: true,
       xRange: null,
       yRange: null,
       defaultThreshold: null,
       customThreshold: null,
       confirmedThreshold: null,
       selectedScore: 'zip',
+      lisfOfBiomarkers: [],
     };
     // this.handleSelect = this.handleSelect.bind(this);
   }
 
   componentDidMount() {
     const { selectedScore } = this.state;
-    const gene = 'CIB3';
-    // const gene = 'A2M';
-    this.setState({ selectedBiomarker: gene });
-    this.getPlotData(gene);
     fetch(`/api/biomarkers/synergy?type=${selectedScore}`,
       {
         method: 'GET',
@@ -107,7 +105,19 @@ class Biomarkers extends Component {
         },
       })
       .then(response => response.json())
-      .then(data => console.log(data));
+      .then((data) => {
+        console.log(data);
+        this.setState({
+          lisfOfBiomarkers: data,
+          selectedBiomarker: data[0].gene,
+          loadingTable: false,
+        });
+        this.getPlotData(data[0].gene);
+      })
+      .catch((err) => {
+        console.log(err);
+        this.setState({ loadingTable: false });
+      });
   }
 
 
@@ -217,7 +227,7 @@ class Biomarkers extends Component {
 
 
       this.setState({
-        loading: false,
+        loadingGraph: false,
         biomarkerData: synergyObj,
         xRange,
         yRange,
@@ -227,15 +237,15 @@ class Biomarkers extends Component {
     } catch (err) {
       // eslint-disable-next-line no-console
       console.log(err);
-      this.setState({ loading: false });
+      this.setState({ loadingGraph: false });
     }
   }
 
   render() {
     const {
-      loading, biomarkerData, selectedBiomarker, xRange,
+      loadingTable, biomarkerData, selectedBiomarker, xRange,
       yRange, defaultThreshold, customThreshold, confirmedThreshold,
-      synScoreArray,
+      synScoreArray, selectedScore, lisfOfBiomarkers, loadingGraph,
     } = this.state;
     const { location } = this.props;
     const requestParams = queryString.parse(location.search);
@@ -253,29 +263,23 @@ class Biomarkers extends Component {
       Header: 'Compound B',
       accessor: 'drugB',
     }, {
-      Header: 'C-index (ZIP)',
-      accessor: 'zipCIndex',
+      Header: `C-index (${selectedScore})`,
+      accessor: 'concordanceIndex',
+      filterable: false,
     }, {
-      Header: 'P-value (ZIP)',
-      accessor: 'zipPValue',
-    }, {
-      Header: 'C-index (Bliss)',
-      accessor: 'blissCIndex',
-    }, {
-      Header: 'P-value (Bliss)',
-      accessor: 'blissPValue',
+      Header: `P-value (${selectedScore})`,
+      accessor: 'pValue',
+      filterable: false,
     }];
-
-    const results = [];
 
 
     // let marks;
-    // console.log(loading);
-    // if (!loading) {
+    // console.log(loadingTable);
+    // if (!loadingTable) {
     //   marks = Object.values(biomarkerData).map(item => ({ value: item.zip, label: item.zip }));
     //   console.log(Math.round(yRange[0] * 100) / 100);
     // }
-
+    console.log(loadingGraph);
     return (
       <main>
         <QueryCard
@@ -286,13 +290,15 @@ class Biomarkers extends Component {
         />
         <StyledBiomarkers>
           <ReactTable
-            data={results}
+            loading={loadingTable}
+            LoadingComponent={LoadingComponent}
+            data={lisfOfBiomarkers}
             columns={columns}
             className="-highlight"
-            showPagination={false}
             defaultPageSize={10}
+            filterable
           />
-          { !loading ? (
+          { !loadingGraph ? (
             <StyledExpressionProfile>
               <div className="expression-profile">
                 <ExpressionProfile
