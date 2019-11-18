@@ -96,31 +96,54 @@ router.get('/synergy', (req, res) => {
     }
     return subquery.groupBy('gene').as('t1');
   }
-  if (type === 'zip') {
-    // db.select('zip.*').from;
+  // if (type === 'zip') {
+  //   db.select('zip.*').from;
 
+  // }
+  function subqueryBiomarkers() {
+    switch (type) {
+      case 'zip':
+        this.select('zip_significant.*')
+          .from(subqueryPValueGene)
+          .innerJoin('zip_significant', function () {
+            this.on('zip_significant.gene', '=', 't1.gene');
+            this.andOn('zip_significant.pValue', '=', 't1.minPValue');
+          })
+          .groupBy('gene')
+
+          .as('biomark');
+        break;
+      default:
+        break;
+    }
   }
-  switch (type) {
-    case 'zip':
-      console.log('zip');
-      db.select('zip_significant.*')
-        .from(subqueryPValueGene)
-        .innerJoin('zip_significant', function () {
-          this.on('zip_significant.gene', '=', 't1.gene');
-          this.andOn('zip_significant.pValue', '=', 't1.minPValue');
-        })
-        .groupBy('gene')
-        .orderBy('pValue')
-        .orderBy('concordanceIndex')
-        .then((data) => {
-          console.log(data);
-          res.json(data);
-        });
-      break;
-    default:
-      console.log('break');
-      res.json({ error: 'Wrong synergy score type specified' });
+
+  function subqueryDataset() {
+    this.select('gene', 'concordanceIndex', 'pValue', 'name as dataset', 'idDrugA', 'idDrugB')
+      .from(subqueryBiomarkers)
+      .innerJoin('source', 'source.idSource', '=', 'biomark.idSource')
+      .as('DS');
   }
+  function subqueryDrugA() {
+    this.select('gene', 'concordanceIndex', 'pValue', 'dataset', 'name as DrugA', 'idDrugB')
+      .from(subqueryDataset)
+      .innerJoin('drug', 'drug.idDrug', '=', 'DS.idDrugA')
+      .as('D1');
+  }
+
+  db.select('gene', 'concordanceIndex', 'pValue', 'dataset', 'DrugA', 'name as DrugB')
+    .from(subqueryDrugA)
+    .innerJoin('drug', 'drug.idDrug', '=', 'D1.idDrugB')
+    .orderBy('pValue')
+    .orderBy('concordanceIndex')
+    .then((data) => {
+      console.log(data);
+      res.json(data);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.json(err);
+    });
 });
 
 // db.select(
