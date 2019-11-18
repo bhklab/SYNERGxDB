@@ -114,7 +114,7 @@ class ComboResults extends Component {
     if (inputDataset) dataset = parseInt(inputDataset, 10);
     if (inputSample) sample = Number.isNaN(parseInt(inputSample, 10)) ? inputSample : parseInt(inputSample, 10);
 
-    if (dataset === 4 || dataset === 6 || dataset === 8) {
+    if (dataset === 4 || dataset === 6 || dataset === 8 || dataset === 5) {
       this.setState({ disableBiomarker: true });
       return;
     }

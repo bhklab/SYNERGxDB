@@ -280,6 +280,9 @@ class Biomarkers extends Component {
       Header: `P-value (${selectedScore})`,
       accessor: 'pValue',
       filterable: false,
+    }, {
+      Header: 'Dataset',
+      accessor: 'dataset',
     }];
 
 
@@ -289,7 +292,6 @@ class Biomarkers extends Component {
     //   marks = Object.values(biomarkerData).map(item => ({ value: item.zip, label: item.zip }));
     //   console.log(Math.round(yRange[0] * 100) / 100);
     // }
-    console.log(loadingGraph);
     return (
       <main>
         <QueryCard

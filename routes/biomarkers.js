@@ -95,6 +95,15 @@ router.get('/synergy', (req, res) => {
   drugId2 = drugId2 && parseInt(drugId2, 10);
   dataset = dataset && parseInt(dataset, 10);
 
+  function drugFiltering() {
+    if (drugId2) {
+      return this.where({ idDrugA: drugId1, idDrugB: drugId2 })
+        .orWhere({ idDrugB: drugId1, idDrugA: drugId2 });
+    }
+    return this.where({ idDrugA: drugId1 })
+      .orWhere({ idDrugB: drugId1 });
+  }
+
   function subqueryPValueGene() {
     let subquery = this.select('gene').min('pValue as minPValue');
     switch (type) {
@@ -104,7 +113,7 @@ router.get('/synergy', (req, res) => {
       default:
         break;
     }
-    // if (drugId1 || drugId2) subquery = subquery
+    if (drugId1) subquery = subquery.where(drugFiltering);
     if (dataset) subquery = subquery.andWhere({ idSource: dataset });
     return subquery.groupBy('gene').as('t1');
   }
