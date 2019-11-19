@@ -163,6 +163,7 @@ class Biomarkers extends Component {
     this.getBiomarkerTableData = this.getBiomarkerTableData.bind(this);
     this.getPlotData = this.getPlotData.bind(this);
     this.retrieveGeneData = this.retrieveGeneData.bind(this);
+    this.handleSelectBiomarker = this.handleSelectBiomarker.bind(this);
   }
 
   componentDidMount() {
@@ -387,12 +388,18 @@ class Biomarkers extends Component {
       getPlotData(hsaBiomarkers[0].gene);
       return;
     }
-    this.setState({ loadingTable: true });
+    this.setState({ loadingTable: true, loadingGraph: true });
     getBiomarkerTableData(score);
   }
 
+  handleSelectBiomarker(gene) {
+    const { getPlotData } = this;
+    getPlotData(gene);
+    this.setState({ selectedBiomarker: gene, loadingGraph: true });
+  }
+
   render() {
-    const { handleSelectScore } = this;
+    const { handleSelectScore, handleSelectBiomarker } = this;
     const {
       loadingTable, biomarkerData, selectedBiomarker, xRange,
       yRange, defaultThreshold, customThreshold, confirmedThreshold,
@@ -492,6 +499,23 @@ class Biomarkers extends Component {
             className="-highlight"
             defaultPageSize={10}
             filterable
+            getTdProps={(state, rowInfo) => ({
+              onClick: (e, handleOriginal) => {
+                handleSelectBiomarker(rowInfo.original.gene);
+                // IMPORTANT! React-Table uses onClick internally to trigger
+                // events like expanding SubComponents and pivots.
+                // By default a custom 'onClick' handler will override this functionality.
+                // If you want to fire the original onClick handler, call the
+                // 'handleOriginal' function.
+                if (handleOriginal) {
+                  handleOriginal();
+                }
+              },
+              style: {
+                background: rowInfo && rowInfo.original.gene === selectedBiomarker ? colors.button_hover : 'transparent',
+              },
+            })
+          }
           />
           { !loadingGraph ? (
             <StyledExpressionProfile>
