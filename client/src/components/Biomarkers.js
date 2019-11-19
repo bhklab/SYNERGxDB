@@ -399,6 +399,7 @@ class Biomarkers extends Component {
   }
 
   render() {
+    console.log('rerender');
     const { handleSelectScore, handleSelectBiomarker } = this;
     const {
       loadingTable, biomarkerData, selectedBiomarker, xRange,
