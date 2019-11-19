@@ -157,10 +157,12 @@ class Biomarkers extends Component {
       blissBiomarkers: null,
       hsaBiomarkers: null,
       loeweBiomarkers: null,
+      biomarkerGeneStorage: {},
     };
     this.handleSelectScore = this.handleSelectScore.bind(this);
     this.getBiomarkerTableData = this.getBiomarkerTableData.bind(this);
     this.getPlotData = this.getPlotData.bind(this);
+    this.retrieveGeneData = this.retrieveGeneData.bind(this);
   }
 
   componentDidMount() {
@@ -177,6 +179,7 @@ class Biomarkers extends Component {
     getBiomarkerTableData(selectedScore);
   }
 
+  // retrieves list of SIGNIFICANT biomarkers over API and updates biomarker gene
   getBiomarkerTableData(score) {
     const {
       drugId1, drugId2, dataset,
@@ -196,7 +199,6 @@ class Biomarkers extends Component {
       })
       .then(response => response.json())
       .then((data) => {
-        console.log(data);
         switch (score) {
           case 'zip':
             this.setState({ zipBiomarkers: data });
@@ -225,73 +227,12 @@ class Biomarkers extends Component {
       });
   }
 
-
+  // Updates state with data that is needed to render expression profile plot,
+  // box plot and slider for a given gene
   async getPlotData(gene) {
     try {
-      const {
-        sample, drugId1, drugId2, dataset,
-      } = this.state;
-      let queryParams = '?';
-      let biomarkerParams = `?gene=${gene}`;
-      if (sample) {
-        queryParams = queryParams.concat(`&sample=${sample}`);
-        biomarkerParams = biomarkerParams.concat(`&sample=${sample}`);
-      }
-      if (dataset) queryParams = queryParams.concat(`&dataset=${dataset}`);
-      if (drugId1) queryParams = queryParams.concat(`&drugId1=${drugId1}`);
-      if (drugId2) queryParams = queryParams.concat(`&drugId2=${drugId2}`);
-
-      const synergyObj = {};
-
-      // API call to retrieve all relevant synergy scores
-      await fetch('/api/combos'.concat(queryParams), {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
-      })
-        .then(response => response.json())
-        .then((data) => {
-          console.log(data);
-          data.sort((a, b) => a.idSample - b.idSample);
-          // Doesn't take into account significance of the data
-          // Duplicated data should be filtered based on significance, use C-index
-          data.forEach((score) => {
-            if (!synergyObj[score.idSample]) {
-              synergyObj[score.idSample] = {
-                zip: score.zip,
-                bliss: score.bliss,
-              };
-            }
-          });
-        });
-
-      // API call to retrieve all fpkm expression levels
-      await fetch('/api/biomarkers/association'.concat(biomarkerParams), {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
-      }).then(response => response.json())
-        .then((cellLineExpressionData) => {
-          console.log(cellLineExpressionData);
-          // Doesn't take into account significance of the data
-          // Duplicated data should be filtered based on significance, use C-index
-          cellLineExpressionData.forEach((item) => {
-            if (synergyObj[item.idSample]) {
-              synergyObj[item.idSample].fpkm = item.fpkm;
-              synergyObj[item.idSample].cellName = item.name;
-            }
-          });
-          // Loops through synergyObj and deletes incomplete key value pair
-          // if it has incomplete data
-          Object.entries(synergyObj).forEach((item) => {
-            if (item[1].fpkm === undefined) delete synergyObj[item[0]];
-          });
-        });
-      console.log(synergyObj);
+      const { retrieveGeneData } = this;
+      const synergyObj = await retrieveGeneData(gene);
       // ***************************
       // Sets plot range
       // ***************************
@@ -343,6 +284,83 @@ class Biomarkers extends Component {
     }
   }
 
+  // eturn data that is needed for expression profile and box plot
+  async retrieveGeneData(gene) {
+    const {
+      sample, drugId1, drugId2, dataset, biomarkerGeneStorage,
+    } = this.state;
+    // Checks if biomarker gene data has already been retrieved over API
+    if (biomarkerGeneStorage[gene]) {
+      return biomarkerGeneStorage[gene];
+    }
+    try {
+      // Retrieves data from the API and stores it in the state
+      let queryParams = '?';
+      let biomarkerParams = `?gene=${gene}`;
+      if (sample) {
+        queryParams = queryParams.concat(`&sample=${sample}`);
+        biomarkerParams = biomarkerParams.concat(`&sample=${sample}`);
+      }
+      if (dataset) queryParams = queryParams.concat(`&dataset=${dataset}`);
+      if (drugId1) queryParams = queryParams.concat(`&drugId1=${drugId1}`);
+      if (drugId2) queryParams = queryParams.concat(`&drugId2=${drugId2}`);
+
+      const synergyObj = {};
+
+      // API call to retrieve all relevant synergy scores
+      await fetch('/api/combos'.concat(queryParams), {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+      })
+        .then(response => response.json())
+        .then((data) => {
+          data.sort((a, b) => a.idSample - b.idSample);
+          // Doesn't take into account significance of the data
+          // Duplicated data should be filtered based on significance, use C-index
+          data.forEach((score) => {
+            if (!synergyObj[score.idSample]) {
+              synergyObj[score.idSample] = {
+                zip: score.zip,
+                bliss: score.bliss,
+              };
+            }
+          });
+        });
+
+      // API call to retrieve all fpkm expression levels
+      await fetch('/api/biomarkers/association'.concat(biomarkerParams), {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+      }).then(response => response.json())
+        .then((cellLineExpressionData) => {
+          // Doesn't take into account significance of the data
+          // Duplicated data should be filtered based on significance, use C-index
+          cellLineExpressionData.forEach((item) => {
+            if (synergyObj[item.idSample]) {
+              synergyObj[item.idSample].fpkm = item.fpkm;
+              synergyObj[item.idSample].cellName = item.name;
+            }
+          });
+          // Loops through synergyObj and deletes incomplete key value pair
+          // if it has incomplete data
+          Object.entries(synergyObj).forEach((item) => {
+            if (item[1].fpkm === undefined) delete synergyObj[item[0]];
+          });
+        });
+      this.setState({ biomarkerGeneStorage: { ...biomarkerGeneStorage, [gene]: synergyObj } });
+      return synergyObj;
+    } catch (err) {
+      console.log(err);
+      return {};
+    }
+  }
+
   handleSelectScore(score) {
     const { getBiomarkerTableData, getPlotData } = this;
     const {
@@ -351,7 +369,6 @@ class Biomarkers extends Component {
     this.setState({ selectedScore: score });
     if (score === 'zip' && zipBiomarkers) {
       this.setState({ selectedBiomarker: zipBiomarkers[0].gene });
-      console.log(zipBiomarkers[0].gene);
       getPlotData(zipBiomarkers[0].gene);
       return;
     }
@@ -428,13 +445,6 @@ class Biomarkers extends Component {
         break;
     }
 
-
-    // let marks;
-    // console.log(loadingTable);
-    // if (!loadingTable) {
-    //   marks = Object.values(biomarkerData).map(item => ({ value: item.zip, label: item.zip }));
-    //   console.log(Math.round(yRange[0] * 100) / 100);
-    // }
     return (
       <main>
         <QueryCard
@@ -445,7 +455,6 @@ class Biomarkers extends Component {
         />
         <StyledBiomarkers>
           <ButtonContainer>
-
             <button
               type="button"
               onClick={() => handleSelectScore('zip')}
