@@ -113,7 +113,6 @@ const calculateThreshold = (synScoreArray) => {
   return null;
 };
 
-
 class Biomarkers extends Component {
   static propTypes = {
     location: ReactRouterPropTypes.location.isRequired,
@@ -486,6 +485,8 @@ class Biomarkers extends Component {
             className="-highlight"
             defaultPageSize={10}
             filterable
+            defaultFilterMethod={(filter, row) => String(row[filter.id]
+              .toLowerCase()).startsWith(filter.value.toLowerCase())}
             getTdProps={(state, rowInfo) => ({
               onClick: (e, handleOriginal) => {
                 handleSelectBiomarker(rowInfo.original.gene);

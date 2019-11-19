@@ -48,6 +48,15 @@ const ButtonsDiv = styled.div`
   }
 `;
 
+const filterCaseInsensitive = (filter, row) => {
+  const id = filter.pivotId || filter.id;
+  return (
+    row[id] !== undefined
+      ? String(row[id].toLowerCase()).startsWith(filter.value.toLowerCase())
+      : true
+  );
+};
+
 class ComboResults extends Component {
   static propTypes = {
     history: ReactRouterPropTypes.history.isRequired,
@@ -216,14 +225,7 @@ class ComboResults extends Component {
       Header: 'Source',
       accessor: 'sourceName',
     }];
-    const filterCaseInsensitive = (filter, row) => {
-      const id = filter.pivotId || filter.id;
-      return (
-        row[id] !== undefined
-          ? String(row[id].toLowerCase()).startsWith(filter.value.toLowerCase())
-          : true
-      );
-    };
+
     return (
       <main>
         <QueryCard
