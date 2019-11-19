@@ -4,8 +4,17 @@ import Plot from 'react-plotly.js';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import regression from 'regression';
+import Slider from '@material-ui/core/Slider';
+import { withStyles } from '@material-ui/core/styles';
 
 import colors from '../../styles/colors';
+
+const CustomSlider = withStyles({
+  root: {
+    color: colors.color_main_2,
+    height: 8,
+  },
+})(Slider);
 
 
 const PlotlyContainer = styled.div`
@@ -14,13 +23,23 @@ const PlotlyContainer = styled.div`
     display: flex;
     flex-direction: column; 
 `;
+const StyledExpressionProfile = styled.div`
+width: 50%;
+    min-width: 300px;
+    display: flex
+    justify-content: space-between;
+    height: 450px;
+`;
 
 class ExpressionProfile extends React.Component {
   constructor(props) {
     super(props);
+    const { defaultThreshold } = this.props;
     this.state = {
       data: null,
       layout: null,
+      defaultThreshold,
+      customThreshold: null,
     };
   }
 
@@ -30,8 +49,8 @@ class ExpressionProfile extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { selectedBiomarker, threshold } = this.props;
-    if (selectedBiomarker !== prevProps.selectedBiomarker || threshold !== prevProps.threshold) {
+    const { selectedBiomarker } = this.props;
+    if (selectedBiomarker !== prevProps.selectedBiomarker) {
       this.updatePlotData();
     }
   }
@@ -39,10 +58,10 @@ class ExpressionProfile extends React.Component {
 
   updatePlotData() {
     const {
-      biomarkerData, selectedBiomarker, dimensions, xRange, yRange, threshold,
+      biomarkerData, selectedBiomarker, dimensions, xRange, yRange,
     } = this.props;
-
     // calculates coefficients for best fit line
+
     const regressionData = Object.values(biomarkerData).map(item => [item.fpkm, item.zip]);
     const bestFitCoefficients = regression.linear(regressionData);
 
@@ -77,22 +96,6 @@ class ExpressionProfile extends React.Component {
       hoverinfo: 'none',
     };
     data.unshift(bestFitLine);
-
-    const thresholdLine = {
-      x: xRange,
-      y: [
-        threshold,
-        threshold,
-      ],
-      mode: 'lines',
-      type: 'scatter',
-      showlegend: false,
-      marker: {
-        color: 'black',
-      },
-      hoverinfo: 'none',
-    };
-    data.push(thresholdLine);
 
     const layout = {
       height: 450,
@@ -167,20 +170,57 @@ class ExpressionProfile extends React.Component {
 
   render() {
     const {
-      data, layout,
+      data, layout, customThreshold, defaultThreshold,
     } = this.state;
+    const { xRange, yRange, updateThreshold } = this.props;
+
+    const threshold = customThreshold !== null ? customThreshold : defaultThreshold;
+    const thresholdLine = {
+      x: xRange,
+      y: [
+        threshold,
+        threshold,
+      ],
+      mode: 'lines',
+      type: 'scatter',
+      showlegend: false,
+      marker: {
+        color: 'black',
+      },
+      hoverinfo: 'none',
+    };
+    let displayData;
+    if (data) {
+      displayData = [...data, thresholdLine];
+    }
+
     return (
-      <PlotlyContainer>
-        <Plot
-          data={data}
-          layout={layout}
-          graphDiv="graph"
-          config={{
-            responsive: true,
-            displayModeBar: false,
-          }}
-        />
-      </PlotlyContainer>
+      <StyledExpressionProfile>
+        <PlotlyContainer>
+          <Plot
+            data={displayData}
+            layout={layout}
+            graphDiv="graph"
+            config={{
+              responsive: true,
+              displayModeBar: false,
+            }}
+          />
+        </PlotlyContainer>
+        <div className="slider">
+          <CustomSlider
+            orientation="vertical"
+            defaultValue={customThreshold || defaultThreshold}
+            min={Math.round(yRange[0] * 100) / 100}
+            max={Math.round(yRange[1] * 100) / 100}
+            aria-labelledby="vertical-discrete-slider-restrict"
+            step={Math.round(((yRange[1] - yRange[0]) / 100) * 100) / 100}
+            valueLabelDisplay="auto"
+            onChange={(e, value) => this.setState({ customThreshold: value })}
+            onChangeCommitted={(e, value) => updateThreshold(e, value)}
+          />
+        </div>
+      </StyledExpressionProfile>
     );
   }
 }
@@ -191,7 +231,8 @@ ExpressionProfile.propTypes = {
   dimensions: PropTypes.objectOf(PropTypes.number).isRequired,
   xRange: PropTypes.arrayOf(PropTypes.number).isRequired,
   yRange: PropTypes.arrayOf(PropTypes.number).isRequired,
-  threshold: PropTypes.number.isRequired,
+  defaultThreshold: PropTypes.number.isRequired,
+  updateThreshold: PropTypes.func.isRequired,
 };
 
 

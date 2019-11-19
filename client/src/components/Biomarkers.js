@@ -5,8 +5,6 @@ import styled from 'styled-components';
 import ReactRouterPropTypes from 'react-router-prop-types';
 import queryString from 'query-string';
 import ReactLoading from 'react-loading';
-import Slider from '@material-ui/core/Slider';
-import { withStyles } from '@material-ui/core/styles';
 import 'react-table/react-table.css';
 import ReactTable from 'react-table';
 
@@ -33,13 +31,6 @@ const StyledBiomarkers = styled.div`
   margin-bottom:20px;
 `;
 
-const CustomSlider = withStyles({
-  root: {
-    color: colors.color_main_2,
-    height: 8,
-  },
-})(Slider);
-
 const StyledExpressionProfile = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -50,14 +41,6 @@ const StyledExpressionProfile = styled.div`
     padding-bottom: ${dimensions.bottom}px
     padding-right: 8px;
     padding-left: 2px;
-  }
-
-  .expression-profile {
-    width: 50%;
-    min-width: 300px;
-    display: flex
-    justify-content: space-between;
-    height: 450px;
   }
 `;
 
@@ -155,7 +138,6 @@ class Biomarkers extends Component {
       xRange: null,
       yRange: null,
       defaultThreshold: null,
-      customThreshold: null,
       confirmedThreshold: null,
       selectedScore: 'zip',
       zipBiomarkers: null,
@@ -169,6 +151,7 @@ class Biomarkers extends Component {
     this.getPlotData = this.getPlotData.bind(this);
     this.retrieveGeneData = this.retrieveGeneData.bind(this);
     this.handleSelectBiomarker = this.handleSelectBiomarker.bind(this);
+    this.updateThreshold = this.updateThreshold.bind(this);
   }
 
   componentDidMount() {
@@ -402,12 +385,15 @@ class Biomarkers extends Component {
     this.setState({ selectedBiomarker: gene, loadingGraph: true });
   }
 
+  updateThreshold(e, value) {
+    this.setState({ confirmedThreshold: value });
+  }
+
   render() {
-    console.log('rerender');
-    const { handleSelectScore, handleSelectBiomarker } = this;
+    const { handleSelectScore, handleSelectBiomarker, updateThreshold } = this;
     const {
       loadingTable, biomarkerData, selectedBiomarker, xRange,
-      yRange, defaultThreshold, customThreshold, confirmedThreshold,
+      yRange, defaultThreshold, confirmedThreshold,
       synScoreArray, selectedScore, zipBiomarkers, blissBiomarkers,
       hsaBiomarkers, loeweBiomarkers, loadingGraph, sample, drugId1,
       drugId2, dataset,
@@ -520,29 +506,15 @@ class Biomarkers extends Component {
           />
           { !loadingGraph ? (
             <StyledExpressionProfile>
-              <div className="expression-profile">
-                <ExpressionProfile
-                  biomarkerData={biomarkerData}
-                  selectedBiomarker={selectedBiomarker}
-                  dimensions={dimensions}
-                  xRange={xRange}
-                  yRange={yRange}
-                  threshold={customThreshold !== null ? customThreshold : defaultThreshold}
-                />
-                <div className="slider">
-                  <CustomSlider
-                    orientation="vertical"
-                    defaultValue={customThreshold || defaultThreshold}
-                    min={Math.round(yRange[0] * 100) / 100}
-                    max={Math.round(yRange[1] * 100) / 100}
-                    aria-labelledby="vertical-discrete-slider-restrict"
-                    step={Math.round(((yRange[1] - yRange[0]) / 100) * 100) / 100}
-                    valueLabelDisplay="auto"
-                    onChange={(e, value) => this.setState({ customThreshold: value })}
-                    onChangeCommitted={(e, value) => this.setState({ confirmedThreshold: value })}
-                  />
-                </div>
-              </div>
+              <ExpressionProfile
+                biomarkerData={biomarkerData}
+                selectedBiomarker={selectedBiomarker}
+                dimensions={dimensions}
+                xRange={xRange}
+                yRange={yRange}
+                defaultThreshold={defaultThreshold}
+                updateThreshold={updateThreshold}
+              />
               <BiomarkerBoxPlot
                 threshold={confirmedThreshold !== null ? confirmedThreshold : defaultThreshold}
                 data={synScoreArray}
