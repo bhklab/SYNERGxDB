@@ -136,13 +136,18 @@ class Biomarkers extends Component {
     location: ReactRouterPropTypes.location.isRequired,
   }
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
+    const { location } = this.props;
+    const requestParams = queryString.parse(location.search);
+    const {
+      sample, drugId1, drugId2, dataset,
+    } = requestParams;
     this.state = {
-      sample: null,
-      drugId1: null,
-      drugId2: null,
-      dataset: null,
+      sample,
+      drugId1,
+      drugId2,
+      dataset,
       biomarkerData: null,
       selectedBiomarker: null,
       loadingTable: true,
@@ -167,14 +172,6 @@ class Biomarkers extends Component {
   }
 
   componentDidMount() {
-    const { location } = this.props;
-    const requestParams = queryString.parse(location.search);
-    const {
-      sample, drugId1, drugId2, dataset,
-    } = requestParams;
-    this.setState({
-      sample, drugId1, drugId2, dataset,
-    });
     const { getBiomarkerTableData } = this;
     const { selectedScore } = this.state;
     getBiomarkerTableData(selectedScore);
@@ -202,24 +199,36 @@ class Biomarkers extends Component {
       .then((data) => {
         switch (score) {
           case 'zip':
-            this.setState({ zipBiomarkers: data });
+            this.setState({
+              zipBiomarkers: data,
+              selectedBiomarker: data[0].gene,
+              loadingTable: false,
+            });
             break;
           case 'bliss':
-            this.setState({ blissBiomarkers: data });
+            this.setState({
+              blissBiomarkers: data,
+              selectedBiomarker: data[0].gene,
+              loadingTable: false,
+            });
             break;
           case 'hsa':
-            this.setState({ hsaBiomarkers: data });
+            this.setState({
+              hsaBiomarkers: data,
+              selectedBiomarker: data[0].gene,
+              loadingTable: false,
+            });
             break;
           case 'loewe':
-            this.setState({ loeweBiomarkers: data });
+            this.setState({
+              loeweBiomarkers: data,
+              selectedBiomarker: data[0].gene,
+              loadingTable: false,
+            });
             break;
           default:
             break;
         }
-        this.setState({
-          selectedBiomarker: data[0].gene,
-          loadingTable: false,
-        });
         this.getPlotData(data[0].gene);
       })
       .catch((err) => {
@@ -263,13 +272,9 @@ class Biomarkers extends Component {
         lowestSynScore - rangeSynScore * paddingPercent,
         highestSynScore + rangeSynScore * paddingPercent,
       ];
-
-
       const synScoreArray = Object.values(synergyObj).map(item => item.zip);
       synScoreArray.sort((a, b) => a - b);
       const defaultThreshold = calculateThreshold(synScoreArray);
-
-
       this.setState({
         loadingGraph: false,
         biomarkerData: synergyObj,
@@ -367,28 +372,27 @@ class Biomarkers extends Component {
     const {
       zipBiomarkers, blissBiomarkers, loeweBiomarkers, hsaBiomarkers,
     } = this.state;
-    this.setState({ selectedScore: score });
     if (score === 'zip' && zipBiomarkers) {
-      this.setState({ selectedBiomarker: zipBiomarkers[0].gene });
+      this.setState({ selectedBiomarker: zipBiomarkers[0].gene, selectedScore: score });
       getPlotData(zipBiomarkers[0].gene);
       return;
     }
     if (score === 'bliss' && blissBiomarkers) {
-      this.setState({ selectedBiomarker: blissBiomarkers[0].gene });
+      this.setState({ selectedBiomarker: blissBiomarkers[0].gene, selectedScore: score });
       getPlotData(blissBiomarkers[0].gene);
       return;
     }
     if (score === 'loewe' && loeweBiomarkers) {
-      this.setState({ selectedBiomarker: loeweBiomarkers[0].gene });
+      this.setState({ selectedBiomarker: loeweBiomarkers[0].gene, selectedScore: score });
       getPlotData(loeweBiomarkers[0].gene);
       return;
     }
     if (score === 'hsa' && hsaBiomarkers) {
-      this.setState({ selectedBiomarker: hsaBiomarkers[0].gene });
+      this.setState({ selectedBiomarker: hsaBiomarkers[0].gene, selectedScore: score });
       getPlotData(hsaBiomarkers[0].gene);
       return;
     }
-    this.setState({ loadingTable: true, loadingGraph: true });
+    this.setState({ loadingTable: true, loadingGraph: true, selectedScore: score });
     getBiomarkerTableData(score);
   }
 
@@ -405,13 +409,9 @@ class Biomarkers extends Component {
       loadingTable, biomarkerData, selectedBiomarker, xRange,
       yRange, defaultThreshold, customThreshold, confirmedThreshold,
       synScoreArray, selectedScore, zipBiomarkers, blissBiomarkers,
-      hsaBiomarkers, loeweBiomarkers, loadingGraph,
+      hsaBiomarkers, loeweBiomarkers, loadingGraph, sample, drugId1,
+      drugId2, dataset,
     } = this.state;
-    const { location } = this.props;
-    const requestParams = queryString.parse(location.search);
-    const {
-      sample, drugId1, drugId2, dataset,
-    } = requestParams;
 
     const columns = [{
       Header: 'Gene Symbol',
