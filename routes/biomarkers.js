@@ -7,7 +7,6 @@ const router = express.Router();
 // Route to retrieve list of potential biomarkers
 router.get('/', (req, res) => {
   const { drugId1, drugId2 } = req.query;
-  console.log(drugId1, drugId2);
   function subqueryAnova() {
     let baseQuery = this.select('gene', 'p', 'idSource as id')
       .from('anova');
@@ -45,8 +44,6 @@ router.get('/association', (req, res) => {
   function subquerySamples() {
     let subquery = this.select('model_id', 'name', 'model_identifiers.idSample as idSample')
       .from('sample');
-
-    console.log(sample);
     if (typeof (sample) === 'string') {
       subquery = subquery
         .join('model_identifiers', 'model_identifiers.idSample', '=', 'sample.idSample')
@@ -187,7 +184,6 @@ router.get('/synergy', (req, res) => {
     .orderBy('pValue')
     .orderBy('concordanceIndex')
     .then((data) => {
-      console.log(data);
       res.json(data);
     })
     .catch((err) => {

@@ -49,8 +49,9 @@ class ExpressionProfile extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { selectedBiomarker } = this.props;
-    if (selectedBiomarker !== prevProps.selectedBiomarker) {
+    const { selectedBiomarker, selectedScore } = this.props;
+    if (selectedBiomarker !== prevProps.selectedBiomarker
+      || selectedScore !== prevProps.selectedScore) {
       this.updatePlotData();
     }
   }
@@ -58,16 +59,17 @@ class ExpressionProfile extends React.Component {
 
   updatePlotData() {
     const {
-      biomarkerData, selectedBiomarker, dimensions, xRange, yRange,
+      biomarkerData, selectedBiomarker, dimensions, xRange, yRange, selectedScore,
     } = this.props;
     // calculates coefficients for best fit line
 
-    const regressionData = Object.values(biomarkerData).map(item => [item.fpkm, item.zip]);
+    const regressionData = Object.values(biomarkerData)
+      .map(item => [item.fpkm, item[selectedScore]]);
     const bestFitCoefficients = regression.linear(regressionData);
 
     const datapoints = {
       x: Object.values(biomarkerData).map(item => item.fpkm),
-      y: Object.values(biomarkerData).map(item => item.zip),
+      y: Object.values(biomarkerData).map(item => item[selectedScore]),
       name: 'Cell line',
       marker: {
         color: colors.color_main_2,
@@ -101,7 +103,7 @@ class ExpressionProfile extends React.Component {
       height: 450,
       autosize: true,
       title: {
-        text: `ZIP x ${selectedBiomarker}`,
+        text: `${selectedScore.toUpperCase()} x ${selectedBiomarker}`,
         font: {
           family: 'Nunito Sans, sans-serif',
           color: colors.color_main_1,
@@ -165,7 +167,7 @@ class ExpressionProfile extends React.Component {
         },
       },
     };
-    this.setState({ data, layout });
+    this.setState({ data, layout, customThreshold: null });
   }
 
   render() {
@@ -193,7 +195,8 @@ class ExpressionProfile extends React.Component {
     if (data) {
       displayData = [...data, thresholdLine];
     }
-
+    console.log('xRange is ', xRange);
+    console.log('yRange is ', yRange);
     return (
       <StyledExpressionProfile>
         <PlotlyContainer>
@@ -233,6 +236,7 @@ ExpressionProfile.propTypes = {
   yRange: PropTypes.arrayOf(PropTypes.number).isRequired,
   defaultThreshold: PropTypes.number.isRequired,
   updateThreshold: PropTypes.func.isRequired,
+  selectedScore: PropTypes.string.isRequired,
 };
 
 

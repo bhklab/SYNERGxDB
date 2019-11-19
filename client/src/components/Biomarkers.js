@@ -222,6 +222,7 @@ class Biomarkers extends Component {
   // Updates state with data that is needed to render expression profile plot,
   // box plot and slider for a given gene
   async getPlotData(gene) {
+    const { selectedScore } = this.state;
     try {
       const { retrieveGeneData } = this;
       const synergyObj = await retrieveGeneData(gene);
@@ -236,8 +237,8 @@ class Biomarkers extends Component {
       Object.values(synergyObj).forEach((item) => {
         if (item.fpkm < lowestFPKM) lowestFPKM = item.fpkm;
         if (item.fpkm > highestFPKM) highestFPKM = item.fpkm;
-        if (item.zip < lowestSynScore) lowestSynScore = item.zip;
-        if (item.zip > highestSynScore) highestSynScore = item.zip;
+        if (item[selectedScore] < lowestSynScore) lowestSynScore = item[selectedScore];
+        if (item[selectedScore] > highestSynScore) highestSynScore = item[selectedScore];
       });
       const rangeFPKM = highestFPKM - lowestFPKM;
       let xRange;
@@ -254,7 +255,7 @@ class Biomarkers extends Component {
         lowestSynScore - rangeSynScore * paddingPercent,
         highestSynScore + rangeSynScore * paddingPercent,
       ];
-      const synScoreArray = Object.values(synergyObj).map(item => item.zip);
+      const synScoreArray = Object.values(synergyObj).map(item => item[selectedScore]);
       synScoreArray.sort((a, b) => a - b);
       const defaultThreshold = calculateThreshold(synScoreArray);
       this.setState({
@@ -305,6 +306,8 @@ class Biomarkers extends Component {
       })
         .then(response => response.json())
         .then((data) => {
+          console.log('/api/combos'.concat(queryParams));
+          console.log(data);
           data.sort((a, b) => a.idSample - b.idSample);
           // Doesn't take into account significance of the data
           // Duplicated data should be filtered based on significance, use C-index
@@ -313,6 +316,8 @@ class Biomarkers extends Component {
               synergyObj[score.idSample] = {
                 zip: score.zip,
                 bliss: score.bliss,
+                hsa: score.hsa,
+                loewe: score.loewe,
               };
             }
           });
@@ -327,6 +332,8 @@ class Biomarkers extends Component {
         },
       }).then(response => response.json())
         .then((cellLineExpressionData) => {
+          console.log('/api/biomarkers/association'.concat(biomarkerParams));
+          console.log(cellLineExpressionData);
           // Doesn't take into account significance of the data
           // Duplicated data should be filtered based on significance, use C-index
           cellLineExpressionData.forEach((item) => {
@@ -395,7 +402,7 @@ class Biomarkers extends Component {
       yRange, defaultThreshold, confirmedThreshold,
       synScoreArray, selectedScore, zipBiomarkers, blissBiomarkers,
       hsaBiomarkers, loeweBiomarkers, loadingGraph, sample, drugId1,
-      drugId2, dataset,
+      drugId2, dataset, biomarkerGeneStorage,
     } = this.state;
 
     const columns = [{
@@ -437,7 +444,7 @@ class Biomarkers extends Component {
       default:
         break;
     }
-
+    console.log(biomarkerGeneStorage);
     return (
       <main>
         <QueryCard
@@ -515,6 +522,7 @@ class Biomarkers extends Component {
                 yRange={yRange}
                 defaultThreshold={defaultThreshold}
                 updateThreshold={updateThreshold}
+                selectedScore={selectedScore}
               />
               <BiomarkerBoxPlot
                 threshold={confirmedThreshold !== null ? confirmedThreshold : defaultThreshold}
