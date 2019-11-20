@@ -183,35 +183,31 @@ class Biomarkers extends Component {
           case 'zip':
             this.setState({
               zipBiomarkers: data,
-              // selectedBiomarker: data[0].gene,
               loadingTable: false,
             });
             break;
           case 'bliss':
             this.setState({
               blissBiomarkers: data,
-              // selectedBiomarker: data[0].gene,
               loadingTable: false,
             });
             break;
           case 'hsa':
             this.setState({
               hsaBiomarkers: data,
-              // selectedBiomarker: data[0].gene,
               loadingTable: false,
             });
             break;
           case 'loewe':
             this.setState({
               loeweBiomarkers: data,
-              // selectedBiomarker: data[0].gene,
               loadingTable: false,
             });
             break;
           default:
             break;
         }
-        this.getPlotData(data[0].gene);
+        this.getPlotData(data[0].gene, score);
       })
       .catch((err) => {
         console.log(err);
@@ -221,11 +217,12 @@ class Biomarkers extends Component {
 
   // Updates state with data that is needed to render expression profile plot,
   // box plot and slider for a given gene
-  async getPlotData(gene) {
-    const { selectedScore } = this.state;
+  async getPlotData(gene, score) {
+    // const { selectedScore } = this.state;
     try {
       const { retrieveGeneData } = this;
       const synergyObj = await retrieveGeneData(gene);
+      console.log(synergyObj);
       // ***************************
       // Sets plot range
       // ***************************
@@ -237,8 +234,8 @@ class Biomarkers extends Component {
       Object.values(synergyObj).forEach((item) => {
         if (item.fpkm < lowestFPKM) lowestFPKM = item.fpkm;
         if (item.fpkm > highestFPKM) highestFPKM = item.fpkm;
-        if (item[selectedScore] < lowestSynScore) lowestSynScore = item[selectedScore];
-        if (item[selectedScore] > highestSynScore) highestSynScore = item[selectedScore];
+        if (item[score] < lowestSynScore) lowestSynScore = item[score];
+        if (item[score] > highestSynScore) highestSynScore = item[score];
       });
       const rangeFPKM = highestFPKM - lowestFPKM;
       let xRange;
@@ -255,12 +252,12 @@ class Biomarkers extends Component {
         lowestSynScore - rangeSynScore * paddingPercent,
         highestSynScore + rangeSynScore * paddingPercent,
       ];
-      const synScoreArray = Object.values(synergyObj).map(item => item[selectedScore]);
+      const synScoreArray = Object.values(synergyObj).map(item => item[score]);
       synScoreArray.sort((a, b) => a - b);
       const defaultThreshold = calculateThreshold(synScoreArray);
-      console.log(synergyObj);
       this.setState({
         selectedBiomarker: gene,
+        selectedScore: score,
         loadingGraph: false,
         biomarkerData: synergyObj,
         xRange,
@@ -287,6 +284,7 @@ class Biomarkers extends Component {
     }
     try {
       // Retrieves data from the API and stores it in the state
+      this.setState({ loadingGraph: true });
       let queryParams = '?';
       let biomarkerParams = `?gene=${gene}`;
       if (sample) {
@@ -367,22 +365,22 @@ class Biomarkers extends Component {
     } = this.state;
     if (score === 'zip' && zipBiomarkers) {
       // this.setState({ selectedBiomarker: zipBiomarkers[0].gene, selectedScore: score });
-      getPlotData(zipBiomarkers[0].gene);
+      getPlotData(zipBiomarkers[0].gene, score);
       return;
     }
     if (score === 'bliss' && blissBiomarkers) {
       // this.setState({ selectedBiomarker: blissBiomarkers[0].gene, selectedScore: score });
-      getPlotData(blissBiomarkers[0].gene);
+      getPlotData(blissBiomarkers[0].gene, score);
       return;
     }
     if (score === 'loewe' && loeweBiomarkers) {
       // this.setState({ selectedBiomarker: loeweBiomarkers[0].gene, selectedScore: score });
-      getPlotData(loeweBiomarkers[0].gene);
+      getPlotData(loeweBiomarkers[0].gene, score);
       return;
     }
     if (score === 'hsa' && hsaBiomarkers) {
       // this.setState({ selectedBiomarker: hsaBiomarkers[0].gene, selectedScore: score });
-      getPlotData(hsaBiomarkers[0].gene);
+      getPlotData(hsaBiomarkers[0].gene, score);
       return;
     }
     this.setState({ loadingTable: true, loadingGraph: true, selectedScore: score });
@@ -391,8 +389,8 @@ class Biomarkers extends Component {
 
   handleSelectBiomarker(gene) {
     const { getPlotData } = this;
-    getPlotData(gene);
-    this.setState({ selectedBiomarker: gene, loadingGraph: true });
+    const { selectedScore } = this.state;
+    getPlotData(gene, selectedScore);
   }
 
   updateThreshold(e, value) {
@@ -449,7 +447,6 @@ class Biomarkers extends Component {
       default:
         break;
     }
-    console.log(biomarkerGeneStorage);
     return (
       <main>
         <QueryCard
