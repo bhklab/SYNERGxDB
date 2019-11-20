@@ -183,28 +183,28 @@ class Biomarkers extends Component {
           case 'zip':
             this.setState({
               zipBiomarkers: data,
-              selectedBiomarker: data[0].gene,
+              // selectedBiomarker: data[0].gene,
               loadingTable: false,
             });
             break;
           case 'bliss':
             this.setState({
               blissBiomarkers: data,
-              selectedBiomarker: data[0].gene,
+              // selectedBiomarker: data[0].gene,
               loadingTable: false,
             });
             break;
           case 'hsa':
             this.setState({
               hsaBiomarkers: data,
-              selectedBiomarker: data[0].gene,
+              // selectedBiomarker: data[0].gene,
               loadingTable: false,
             });
             break;
           case 'loewe':
             this.setState({
               loeweBiomarkers: data,
-              selectedBiomarker: data[0].gene,
+              // selectedBiomarker: data[0].gene,
               loadingTable: false,
             });
             break;
@@ -258,7 +258,9 @@ class Biomarkers extends Component {
       const synScoreArray = Object.values(synergyObj).map(item => item[selectedScore]);
       synScoreArray.sort((a, b) => a - b);
       const defaultThreshold = calculateThreshold(synScoreArray);
+      console.log(synergyObj);
       this.setState({
+        selectedBiomarker: gene,
         loadingGraph: false,
         biomarkerData: synergyObj,
         xRange,
@@ -277,11 +279,11 @@ class Biomarkers extends Component {
   // eturn data that is needed for expression profile and box plot
   async retrieveGeneData(gene) {
     const {
-      sample, drugId1, drugId2, dataset, biomarkerGeneStorage,
+      sample, drugId1, drugId2, dataset, biomarkerGeneStorage, selectedScore,
     } = this.state;
     // Checks if biomarker gene data has already been retrieved over API
-    if (biomarkerGeneStorage[gene]) {
-      return biomarkerGeneStorage[gene];
+    if (biomarkerGeneStorage[selectedScore] && biomarkerGeneStorage[selectedScore][gene]) {
+      return biomarkerGeneStorage[selectedScore][gene];
     }
     try {
       // Retrieves data from the API and stores it in the state
@@ -345,7 +347,12 @@ class Biomarkers extends Component {
             if (item[1].fpkm === undefined) delete synergyObj[item[0]];
           });
         });
-      this.setState({ biomarkerGeneStorage: { ...biomarkerGeneStorage, [gene]: synergyObj } });
+      this.setState({
+        biomarkerGeneStorage: {
+          ...biomarkerGeneStorage,
+          [selectedScore]: { ...biomarkerGeneStorage[selectedScore], [gene]: synergyObj },
+        },
+      });
       return synergyObj;
     } catch (err) {
       console.log(err);
@@ -359,22 +366,22 @@ class Biomarkers extends Component {
       zipBiomarkers, blissBiomarkers, loeweBiomarkers, hsaBiomarkers,
     } = this.state;
     if (score === 'zip' && zipBiomarkers) {
-      this.setState({ selectedBiomarker: zipBiomarkers[0].gene, selectedScore: score });
+      // this.setState({ selectedBiomarker: zipBiomarkers[0].gene, selectedScore: score });
       getPlotData(zipBiomarkers[0].gene);
       return;
     }
     if (score === 'bliss' && blissBiomarkers) {
-      this.setState({ selectedBiomarker: blissBiomarkers[0].gene, selectedScore: score });
+      // this.setState({ selectedBiomarker: blissBiomarkers[0].gene, selectedScore: score });
       getPlotData(blissBiomarkers[0].gene);
       return;
     }
     if (score === 'loewe' && loeweBiomarkers) {
-      this.setState({ selectedBiomarker: loeweBiomarkers[0].gene, selectedScore: score });
+      // this.setState({ selectedBiomarker: loeweBiomarkers[0].gene, selectedScore: score });
       getPlotData(loeweBiomarkers[0].gene);
       return;
     }
     if (score === 'hsa' && hsaBiomarkers) {
-      this.setState({ selectedBiomarker: hsaBiomarkers[0].gene, selectedScore: score });
+      // this.setState({ selectedBiomarker: hsaBiomarkers[0].gene, selectedScore: score });
       getPlotData(hsaBiomarkers[0].gene);
       return;
     }
@@ -399,8 +406,9 @@ class Biomarkers extends Component {
       yRange, defaultThreshold, confirmedThreshold,
       synScoreArray, selectedScore, zipBiomarkers, blissBiomarkers,
       hsaBiomarkers, loeweBiomarkers, loadingGraph, sample, drugId1,
-      drugId2, dataset,
+      drugId2, dataset, biomarkerGeneStorage,
     } = this.state;
+    console.log('threshold ', defaultThreshold);
 
     const columns = [{
       Header: 'Gene Symbol',
@@ -441,7 +449,7 @@ class Biomarkers extends Component {
       default:
         break;
     }
-    console.log('new yRange ', yRange);
+    console.log(biomarkerGeneStorage);
     return (
       <main>
         <QueryCard

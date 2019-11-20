@@ -195,7 +195,7 @@ class ExpressionProfile extends React.Component {
     if (data) {
       displayData = [...data, thresholdLine];
     }
-    console.log('rendered yRange ', yRange);
+    console.log(customThreshold, defaultThreshold);
     return (
       <StyledExpressionProfile>
         <PlotlyContainer>
@@ -212,7 +212,7 @@ class ExpressionProfile extends React.Component {
         <div className="slider">
           <CustomSlider
             orientation="vertical"
-            value={customThreshold !== null ? customThreshold : defaultThreshold}
+            value={threshold}
             min={Math.round(yRange[0] * 100) / 100}
             max={Math.round(yRange[1] * 100) / 100}
             aria-labelledby="vertical-discrete-slider-restrict"
