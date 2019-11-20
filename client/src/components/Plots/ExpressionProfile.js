@@ -34,11 +34,9 @@ width: 50%;
 class ExpressionProfile extends React.Component {
   constructor(props) {
     super(props);
-    const { defaultThreshold } = this.props;
     this.state = {
       data: null,
       layout: null,
-      defaultThreshold,
       customThreshold: null,
     };
   }
@@ -172,8 +170,9 @@ class ExpressionProfile extends React.Component {
 
   render() {
     const {
-      data, layout, customThreshold, defaultThreshold,
+      data, layout, customThreshold,
     } = this.state;
+    const { defaultThreshold } = this.props;
     const { xRange, yRange, updateThreshold } = this.props;
 
     const threshold = customThreshold !== null ? customThreshold : defaultThreshold;
@@ -195,7 +194,6 @@ class ExpressionProfile extends React.Component {
     if (data) {
       displayData = [...data, thresholdLine];
     }
-    console.log(customThreshold, defaultThreshold);
     return (
       <StyledExpressionProfile>
         <PlotlyContainer>
