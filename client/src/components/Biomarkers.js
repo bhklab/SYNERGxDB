@@ -265,6 +265,7 @@ class Biomarkers extends Component {
         yRange,
         defaultThreshold,
         synScoreArray,
+        confirmedThreshold: null,
       });
     } catch (err) {
       // eslint-disable-next-line no-console
@@ -306,8 +307,6 @@ class Biomarkers extends Component {
       })
         .then(response => response.json())
         .then((data) => {
-          console.log('/api/combos'.concat(queryParams));
-          console.log(data);
           data.sort((a, b) => a.idSample - b.idSample);
           // Doesn't take into account significance of the data
           // Duplicated data should be filtered based on significance, use C-index
@@ -332,8 +331,6 @@ class Biomarkers extends Component {
         },
       }).then(response => response.json())
         .then((cellLineExpressionData) => {
-          console.log('/api/biomarkers/association'.concat(biomarkerParams));
-          console.log(cellLineExpressionData);
           // Doesn't take into account significance of the data
           // Duplicated data should be filtered based on significance, use C-index
           cellLineExpressionData.forEach((item) => {
@@ -402,7 +399,7 @@ class Biomarkers extends Component {
       yRange, defaultThreshold, confirmedThreshold,
       synScoreArray, selectedScore, zipBiomarkers, blissBiomarkers,
       hsaBiomarkers, loeweBiomarkers, loadingGraph, sample, drugId1,
-      drugId2, dataset, biomarkerGeneStorage,
+      drugId2, dataset,
     } = this.state;
 
     const columns = [{
@@ -444,7 +441,7 @@ class Biomarkers extends Component {
       default:
         break;
     }
-    console.log(biomarkerGeneStorage);
+    console.log('new yRange ', yRange);
     return (
       <main>
         <QueryCard
