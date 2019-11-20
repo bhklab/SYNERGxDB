@@ -132,13 +132,13 @@ class Biomarkers extends Component {
       dataset,
       biomarkerData: null,
       selectedBiomarker: null,
+      selectedScore: 'zip',
       loadingTable: true,
       loadingGraph: true,
       xRange: null,
       yRange: null,
       defaultThreshold: null,
       confirmedThreshold: null,
-      selectedScore: 'zip',
       zipBiomarkers: null,
       blissBiomarkers: null,
       hsaBiomarkers: null,
@@ -307,6 +307,7 @@ class Biomarkers extends Component {
       })
         .then(response => response.json())
         .then((data) => {
+          console.log(data);
           data.sort((a, b) => a.idSample - b.idSample);
           // Doesn't take into account significance of the data
           // Duplicated data should be filtered based on significance, use C-index
@@ -331,6 +332,7 @@ class Biomarkers extends Component {
         },
       }).then(response => response.json())
         .then((cellLineExpressionData) => {
+          console.log(cellLineExpressionData);
           // Doesn't take into account significance of the data
           // Duplicated data should be filtered based on significance, use C-index
           cellLineExpressionData.forEach((item) => {
@@ -351,6 +353,16 @@ class Biomarkers extends Component {
           [selectedScore]: { ...biomarkerGeneStorage[selectedScore], [gene]: synergyObj },
         },
       });
+      fetch('/api/biomarkers/association-test'.concat(queryParams).concat(`&gene=${gene}`), {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+      }).then(response => response.json())
+        .then((data) => {
+          console.log(data);
+        });
       return synergyObj;
     } catch (err) {
       console.log(err);
@@ -387,10 +399,10 @@ class Biomarkers extends Component {
     getBiomarkerTableData(score);
   }
 
-  handleSelectBiomarker(gene) {
+  handleSelectBiomarker(data) {
     const { getPlotData } = this;
     const { selectedScore } = this.state;
-    getPlotData(gene, selectedScore);
+    getPlotData(data.gene, selectedScore);
   }
 
   updateThreshold(e, value) {
@@ -404,7 +416,7 @@ class Biomarkers extends Component {
       yRange, defaultThreshold, confirmedThreshold,
       synScoreArray, selectedScore, zipBiomarkers, blissBiomarkers,
       hsaBiomarkers, loeweBiomarkers, loadingGraph, sample, drugId1,
-      drugId2, dataset, biomarkerGeneStorage,
+      drugId2, dataset,
     } = this.state;
     console.log('threshold ', defaultThreshold);
 
@@ -498,7 +510,7 @@ class Biomarkers extends Component {
               .toLowerCase()).startsWith(filter.value.toLowerCase())}
             getTdProps={(state, rowInfo) => ({
               onClick: (e, handleOriginal) => {
-                handleSelectBiomarker(rowInfo.original.gene);
+                handleSelectBiomarker(rowInfo.original);
                 // IMPORTANT! React-Table uses onClick internally to trigger
                 // events like expanding SubComponents and pivots.
                 // By default a custom 'onClick' handler will override this functionality.

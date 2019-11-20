@@ -77,6 +77,69 @@ router.get('/association', (req, res) => {
     });
 });
 
+router.get('/association-test', (req, res) => {
+  const { gene, sample } = req.query;
+  let {
+    drugId1, drugId2, dataset,
+  } = req.query;
+  drugId1 = drugId1 && parseInt(drugId1, 10);
+  drugId2 = drugId2 && parseInt(drugId2, 10);
+  dataset = dataset && parseInt(dataset, 10);
+  function subqueryGeneIdentifier() {
+    this.select('gene_id')
+      .from('gene_identifiers')
+      .where({ hgnc_symbol: gene });
+  }
+  function subquerySamples() {
+    let subquery = this.select('model_id', 'name', 'model_identifiers.idSample as idSample')
+      .from('sample');
+    if (typeof (sample) === 'string') {
+      subquery = subquery
+        .join('model_identifiers', 'model_identifiers.idSample', '=', 'sample.idSample')
+        .where({ tissue: sample });
+    } else {
+      subquery = subquery
+        .join('model_identifiers', 'model_identifiers.idSample', '=', 'sample.idSample');
+    }
+    return subquery.as('S');
+  }
+  function subqueryFPKM() {
+    this.select('model_id', 'fpkm')
+      .from('rnaseq')
+      .where('gene_id', 'in', subqueryGeneIdentifier)
+      .as('FPKM');
+  }
+  function subqueryAssociations() {
+    this.select('idSample', 'fpkm', 'name')
+      .from(subqueryFPKM)
+      .join(subquerySamples, 'FPKM.model_id', '=', 'S.model_id')
+      .as('A');
+  }
+
+  // CHANGE
+  function subqueryDrugs() {
+    if (drugId2) {
+      return this.where({ idDrugA: drugId1, idDrugB: drugId2 })
+        .orWhere({ idDrugB: drugId1, idDrugA: drugId2 });
+    }
+    return this.where({ idDrugA: drugId1 })
+      .orWhere({ idDrugB: drugId1 });
+  }
+  let query = db.select('fpkm', 'name', 'idCombo_Design')
+    .from(subqueryAssociations)
+    .join('Combo_design', 'Combo_design.idSample', '=', 'A.idSample');
+
+  if (drugId1 || drugId2) query = query.where(subqueryDrugs);
+  query
+    .then((data) => {
+      res.json(data);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.json(err);
+    });
+});
+
 // Retrieves data for the biomarker table
 router.get('/synergy', (req, res) => {
   const { type } = req.query;
