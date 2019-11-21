@@ -61,13 +61,12 @@ class ExpressionProfile extends React.Component {
     } = this.props;
     // calculates coefficients for best fit line
 
-    const regressionData = Object.values(biomarkerData)
-      .map(item => [item.fpkm, item[selectedScore]]);
+    const regressionData = biomarkerData.map(item => [item.fpkm, item[selectedScore]]);
     const bestFitCoefficients = regression.linear(regressionData);
 
     const datapoints = {
-      x: Object.values(biomarkerData).map(item => item.fpkm),
-      y: Object.values(biomarkerData).map(item => item[selectedScore]),
+      x: biomarkerData.map(item => item.fpkm),
+      y: biomarkerData.map(item => item[selectedScore]),
       name: 'Cell line',
       marker: {
         color: colors.color_main_2,
@@ -77,7 +76,7 @@ class ExpressionProfile extends React.Component {
       mode: 'markers',
       type: 'scatter',
       hoverinfo: 'text',
-      hovertext: Object.values(biomarkerData).map(item => `${item.fpkm} (${item.cellName})`),
+      hovertext: biomarkerData.map(item => `${item.fpkm} (${item.cellName})`),
     };
     const data = [datapoints];
     // Renders best fit line using previously calculated coefficients
@@ -227,7 +226,7 @@ class ExpressionProfile extends React.Component {
 
 ExpressionProfile.propTypes = {
   selectedBiomarker: PropTypes.string.isRequired,
-  biomarkerData: PropTypes.objectOf(PropTypes.object).isRequired,
+  biomarkerData: PropTypes.arrayOf(PropTypes.object).isRequired,
   dimensions: PropTypes.objectOf(PropTypes.number).isRequired,
   xRange: PropTypes.arrayOf(PropTypes.number).isRequired,
   yRange: PropTypes.arrayOf(PropTypes.number).isRequired,

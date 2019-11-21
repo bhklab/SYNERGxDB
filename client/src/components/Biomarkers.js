@@ -221,8 +221,8 @@ class Biomarkers extends Component {
     // const { selectedScore } = this.state;
     try {
       const { retrieveGeneData } = this;
-      const synergyObj = await retrieveGeneData(gene);
-      console.log(synergyObj);
+      const synergyArray = await retrieveGeneData(gene);
+      console.log(synergyArray);
       // ***************************
       // Sets plot range
       // ***************************
@@ -231,7 +231,7 @@ class Biomarkers extends Component {
       let highestFPKM = 0;
       let lowestSynScore = 0;
       let highestSynScore = 0;
-      Object.values(synergyObj).forEach((item) => {
+      synergyArray.forEach((item) => {
         if (item.fpkm < lowestFPKM) lowestFPKM = item.fpkm;
         if (item.fpkm > highestFPKM) highestFPKM = item.fpkm;
         if (item[score] < lowestSynScore) lowestSynScore = item[score];
@@ -252,14 +252,14 @@ class Biomarkers extends Component {
         lowestSynScore - rangeSynScore * paddingPercent,
         highestSynScore + rangeSynScore * paddingPercent,
       ];
-      const synScoreArray = Object.values(synergyObj).map(item => item[score]);
+      const synScoreArray = synergyArray.map(item => item[score]);
       synScoreArray.sort((a, b) => a - b);
       const defaultThreshold = calculateThreshold(synScoreArray);
       this.setState({
         selectedBiomarker: gene,
         selectedScore: score,
         loadingGraph: false,
-        biomarkerData: synergyObj,
+        biomarkerData: synergyArray,
         xRange,
         yRange,
         defaultThreshold,
@@ -295,78 +295,79 @@ class Biomarkers extends Component {
       if (drugId1) queryParams = queryParams.concat(`&drugId1=${drugId1}`);
       if (drugId2) queryParams = queryParams.concat(`&drugId2=${drugId2}`);
 
-      const synergyObj = {};
+      let synergyArray;
 
       // API call to retrieve all relevant synergy scores
-      await fetch('/api/combos'.concat(queryParams), {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
-      })
-        .then(response => response.json())
-        .then((data) => {
-          console.log(data);
-          data.sort((a, b) => a.idSample - b.idSample);
-          // Doesn't take into account significance of the data
-          // Duplicated data should be filtered based on significance, use C-index
-          data.forEach((score) => {
-            if (!synergyObj[score.idSample]) {
-              synergyObj[score.idSample] = {
-                zip: score.zip,
-                bliss: score.bliss,
-                hsa: score.hsa,
-                loewe: score.loewe,
-              };
-            }
-          });
-        });
+      // await fetch('/api/combos'.concat(queryParams), {
+      //   method: 'GET',
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //     Accept: 'application/json',
+      //   },
+      // })
+      //   .then(response => response.json())
+      //   .then((data) => {
+      //     console.log(data);
+      //     data.sort((a, b) => a.idSample - b.idSample);
+      //     // Doesn't take into account significance of the data
+      //     // Duplicated data should be filtered based on significance, use C-index
+      //     data.forEach((score) => {
+      //       if (!synergyObj[score.idSample]) {
+      //         synergyObj[score.idSample] = {
+      //           zip: score.zip,
+      //           bliss: score.bliss,
+      //           hsa: score.hsa,
+      //           loewe: score.loewe,
+      //         };
+      //       }
+      //     });
+      //   });
 
       // API call to retrieve all fpkm expression levels
-      await fetch('/api/biomarkers/association'.concat(biomarkerParams), {
+      // await fetch('/api/biomarkers/association'.concat(biomarkerParams), {
+      //   method: 'GET',
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //     Accept: 'application/json',
+      //   },
+      // }).then(response => response.json())
+      //   .then((cellLineExpressionData) => {
+      //     console.log(cellLineExpressionData);
+      //     // Doesn't take into account significance of the data
+      //     // Duplicated data should be filtered based on significance, use C-index
+      //     cellLineExpressionData.forEach((item) => {
+      //       if (synergyObj[item.idSample]) {
+      //         synergyObj[item.idSample].fpkm = item.fpkm;
+      //         synergyObj[item.idSample].cellName = item.name;
+      //       }
+      //     });
+      //     // Loops through synergyObj and deletes incomplete key value pair
+      //     // if it has incomplete data
+      //     Object.entries(synergyObj).forEach((item) => {
+      //       if (item[1].fpkm === undefined) delete synergyObj[item[0]];
+      //     });
+      //   });
+
+      await fetch('/api/biomarkers/association-test'.concat(queryParams).concat(`&gene=${gene}`), {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
           Accept: 'application/json',
         },
       }).then(response => response.json())
-        .then((cellLineExpressionData) => {
-          console.log(cellLineExpressionData);
-          // Doesn't take into account significance of the data
-          // Duplicated data should be filtered based on significance, use C-index
-          cellLineExpressionData.forEach((item) => {
-            if (synergyObj[item.idSample]) {
-              synergyObj[item.idSample].fpkm = item.fpkm;
-              synergyObj[item.idSample].cellName = item.name;
-            }
-          });
-          // Loops through synergyObj and deletes incomplete key value pair
-          // if it has incomplete data
-          Object.entries(synergyObj).forEach((item) => {
-            if (item[1].fpkm === undefined) delete synergyObj[item[0]];
-          });
+        .then((data) => {
+          synergyArray = data;
         });
       this.setState({
         biomarkerGeneStorage: {
           ...biomarkerGeneStorage,
-          [selectedScore]: { ...biomarkerGeneStorage[selectedScore], [gene]: synergyObj },
+          [selectedScore]: { ...biomarkerGeneStorage[selectedScore], [gene]: synergyArray },
         },
       });
-      fetch('/api/biomarkers/association-test'.concat(queryParams).concat(`&gene=${gene}`), {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
-      }).then(response => response.json())
-        .then((data) => {
-          console.log(data);
-        });
-      return synergyObj;
+      return synergyArray;
     } catch (err) {
       console.log(err);
-      return {};
+      return [];
     }
   }
 

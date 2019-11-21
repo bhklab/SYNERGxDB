@@ -126,7 +126,7 @@ router.get('/association-test', (req, res) => {
   }
 
   function subqueryComboDesign() {
-    let subquery = this.select('fpkm', 'name', 'idCombo_Design')
+    let subquery = this.select('fpkm', 'name as cellName', 'idCombo_Design')
       .from(subqueryAssociations)
       .join('Combo_design', 'Combo_design.idSample', '=', 'A.idSample');
 
@@ -134,21 +134,21 @@ router.get('/association-test', (req, res) => {
     return subquery.as('CD');
   }
   function subquerySynergyScores() {
-    let subquery = this.select('fpkm', 'name', 'bliss', 'loewe', 'hsa', 'zip')
+    let subquery = this.select('fpkm', 'cellName', 'bliss', 'loewe', 'hsa', 'zip')
       .from(subqueryComboDesign)
       .join('Synergy_score', 'Synergy_score.idCombo_design', '=', 'CD.idCombo_design');
     if (dataset) subquery = subquery.where({ idSource: dataset });
     return subquery
-      .orderBy('name')
+      .orderBy('cellName')
       .as('SS');
   }
-  db.select('fpkm', 'name')
+  db.select('fpkm', 'cellName')
     .avg('bliss as bliss')
     .avg('loewe as loewe')
     .avg('hsa as hsa')
     .avg('zip as zip')
     .from(subquerySynergyScores)
-    .groupBy('fpkm', 'name')
+    .groupBy('fpkm', 'cellName')
     .then((data) => {
       res.json(data);
     })
