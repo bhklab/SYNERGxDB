@@ -33,51 +33,6 @@ router.get('/', (req, res) => {
 });
 
 router.get('/association', (req, res) => {
-  let { sample } = req.query;
-  const { gene } = req.query;
-  sample = Number.isNaN(parseInt(sample, 10)) ? sample : parseInt(sample, 10);
-  function subqueryGeneIdentifier() {
-    this.select('gene_id')
-      .from('gene_identifiers')
-      .where({ hgnc_symbol: gene });
-  }
-  function subquerySamples() {
-    let subquery = this.select('model_id', 'name', 'model_identifiers.idSample as idSample')
-      .from('sample');
-    if (typeof (sample) === 'string') {
-      subquery = subquery
-        .join('model_identifiers', 'model_identifiers.idSample', '=', 'sample.idSample')
-        .where({ tissue: sample });
-    } else if (typeof (sample) === 'number') {
-      subquery = subquery
-        .join('model_identifiers', 'model_identifiers.idSample', '=', 'sample.idSample')
-        .where({ 'sample.idSample': sample });
-    } else {
-      subquery = subquery
-        .join('model_identifiers', 'model_identifiers.idSample', '=', 'sample.idSample');
-    }
-    return subquery.as('S');
-  }
-  function subqueryAssociations() {
-    this.select('model_id', 'fpkm')
-      .from('rnaseq')
-      .where('gene_id', 'in', subqueryGeneIdentifier)
-      .as('A');
-  }
-  db.select('idSample', 'fpkm', 'name')
-    .from(subqueryAssociations)
-    .join(subquerySamples, 'A.model_id', '=', 'S.model_id')
-    .orderBy('idSample', 'asc')
-    .then((data) => {
-      res.json(data);
-    })
-    .catch((err) => {
-      console.log(err);
-      res.json(err);
-    });
-});
-
-router.get('/association-test', (req, res) => {
   const { gene, sample } = req.query;
   let {
     drugId1, drugId2, dataset,

@@ -222,7 +222,6 @@ class Biomarkers extends Component {
     try {
       const { retrieveGeneData } = this;
       const synergyArray = await retrieveGeneData(gene);
-      console.log(synergyArray);
       // ***************************
       // Sets plot range
       // ***************************
@@ -286,69 +285,14 @@ class Biomarkers extends Component {
       // Retrieves data from the API and stores it in the state
       this.setState({ loadingGraph: true });
       let queryParams = '?';
-      let biomarkerParams = `?gene=${gene}`;
-      if (sample) {
-        queryParams = queryParams.concat(`&sample=${sample}`);
-        biomarkerParams = biomarkerParams.concat(`&sample=${sample}`);
-      }
+      if (sample) queryParams = queryParams.concat(`&sample=${sample}`);
       if (dataset) queryParams = queryParams.concat(`&dataset=${dataset}`);
       if (drugId1) queryParams = queryParams.concat(`&drugId1=${drugId1}`);
       if (drugId2) queryParams = queryParams.concat(`&drugId2=${drugId2}`);
 
       let synergyArray;
 
-      // API call to retrieve all relevant synergy scores
-      // await fetch('/api/combos'.concat(queryParams), {
-      //   method: 'GET',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //     Accept: 'application/json',
-      //   },
-      // })
-      //   .then(response => response.json())
-      //   .then((data) => {
-      //     console.log(data);
-      //     data.sort((a, b) => a.idSample - b.idSample);
-      //     // Doesn't take into account significance of the data
-      //     // Duplicated data should be filtered based on significance, use C-index
-      //     data.forEach((score) => {
-      //       if (!synergyObj[score.idSample]) {
-      //         synergyObj[score.idSample] = {
-      //           zip: score.zip,
-      //           bliss: score.bliss,
-      //           hsa: score.hsa,
-      //           loewe: score.loewe,
-      //         };
-      //       }
-      //     });
-      //   });
-
-      // API call to retrieve all fpkm expression levels
-      // await fetch('/api/biomarkers/association'.concat(biomarkerParams), {
-      //   method: 'GET',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //     Accept: 'application/json',
-      //   },
-      // }).then(response => response.json())
-      //   .then((cellLineExpressionData) => {
-      //     console.log(cellLineExpressionData);
-      //     // Doesn't take into account significance of the data
-      //     // Duplicated data should be filtered based on significance, use C-index
-      //     cellLineExpressionData.forEach((item) => {
-      //       if (synergyObj[item.idSample]) {
-      //         synergyObj[item.idSample].fpkm = item.fpkm;
-      //         synergyObj[item.idSample].cellName = item.name;
-      //       }
-      //     });
-      //     // Loops through synergyObj and deletes incomplete key value pair
-      //     // if it has incomplete data
-      //     Object.entries(synergyObj).forEach((item) => {
-      //       if (item[1].fpkm === undefined) delete synergyObj[item[0]];
-      //     });
-      //   });
-
-      await fetch('/api/biomarkers/association-test'.concat(queryParams).concat(`&gene=${gene}`), {
+      await fetch('/api/biomarkers/association'.concat(queryParams).concat(`&gene=${gene}`), {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -377,22 +321,18 @@ class Biomarkers extends Component {
       zipBiomarkers, blissBiomarkers, loeweBiomarkers, hsaBiomarkers,
     } = this.state;
     if (score === 'zip' && zipBiomarkers) {
-      // this.setState({ selectedBiomarker: zipBiomarkers[0].gene, selectedScore: score });
       getPlotData(zipBiomarkers[0].gene, score);
       return;
     }
     if (score === 'bliss' && blissBiomarkers) {
-      // this.setState({ selectedBiomarker: blissBiomarkers[0].gene, selectedScore: score });
       getPlotData(blissBiomarkers[0].gene, score);
       return;
     }
     if (score === 'loewe' && loeweBiomarkers) {
-      // this.setState({ selectedBiomarker: loeweBiomarkers[0].gene, selectedScore: score });
       getPlotData(loeweBiomarkers[0].gene, score);
       return;
     }
     if (score === 'hsa' && hsaBiomarkers) {
-      // this.setState({ selectedBiomarker: hsaBiomarkers[0].gene, selectedScore: score });
       getPlotData(hsaBiomarkers[0].gene, score);
       return;
     }
@@ -419,7 +359,6 @@ class Biomarkers extends Component {
       hsaBiomarkers, loeweBiomarkers, loadingGraph, sample, drugId1,
       drugId2, dataset,
     } = this.state;
-    console.log('threshold ', defaultThreshold);
 
     const columns = [{
       Header: 'Gene Symbol',
