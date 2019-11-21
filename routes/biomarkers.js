@@ -116,7 +116,6 @@ router.get('/association-test', (req, res) => {
       .as('A');
   }
 
-  // CHANGE
   function subqueryDrugs() {
     if (drugId2) {
       return this.where({ idDrugA: drugId1, idDrugB: drugId2 })
@@ -125,12 +124,22 @@ router.get('/association-test', (req, res) => {
     return this.where({ idDrugA: drugId1 })
       .orWhere({ idDrugB: drugId1 });
   }
-  let query = db.select('fpkm', 'name', 'idCombo_Design')
-    .from(subqueryAssociations)
-    .join('Combo_design', 'Combo_design.idSample', '=', 'A.idSample');
 
-  if (drugId1 || drugId2) query = query.where(subqueryDrugs);
+  function subqueryComboDesign() {
+    let subquery = this.select('fpkm', 'name', 'idCombo_Design')
+      .from(subqueryAssociations)
+      .join('Combo_design', 'Combo_design.idSample', '=', 'A.idSample');
+
+    if (drugId1) subquery = subquery.where(subqueryDrugs);
+    return subquery.as('CD');
+  }
+  let query = db.select('fpkm', 'name', 'bliss', 'loewe', 'hsa', 'zip')
+    .from(subqueryComboDesign)
+    .join('Synergy_score', 'Synergy_score.idCombo_design', '=', 'CD.idCombo_design');
+  if (dataset) query = query.where({ idSource: dataset });
+
   query
+    .orderBy('name')
     .then((data) => {
       res.json(data);
     })
