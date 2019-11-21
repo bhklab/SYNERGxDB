@@ -133,13 +133,22 @@ router.get('/association-test', (req, res) => {
     if (drugId1) subquery = subquery.where(subqueryDrugs);
     return subquery.as('CD');
   }
-  let query = db.select('fpkm', 'name', 'bliss', 'loewe', 'hsa', 'zip')
-    .from(subqueryComboDesign)
-    .join('Synergy_score', 'Synergy_score.idCombo_design', '=', 'CD.idCombo_design');
-  if (dataset) query = query.where({ idSource: dataset });
-
-  query
-    .orderBy('name')
+  function subquerySynergyScores() {
+    let subquery = this.select('fpkm', 'name', 'bliss', 'loewe', 'hsa', 'zip')
+      .from(subqueryComboDesign)
+      .join('Synergy_score', 'Synergy_score.idCombo_design', '=', 'CD.idCombo_design');
+    if (dataset) subquery = subquery.where({ idSource: dataset });
+    return subquery
+      .orderBy('name')
+      .as('SS');
+  }
+  db.select('fpkm', 'name')
+    .avg('bliss as bliss')
+    .avg('loewe as loewe')
+    .avg('hsa as hsa')
+    .avg('zip as zip')
+    .from(subquerySynergyScores)
+    .groupBy('fpkm', 'name')
     .then((data) => {
       res.json(data);
     })
