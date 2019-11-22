@@ -1,5 +1,6 @@
 /* eslint-disable no-nested-ternary */
-import React, { Component } from 'react';
+
+import React, { Component, Fragment } from 'react';
 import styled from 'styled-components';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
@@ -8,6 +9,15 @@ import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
 import { withStyles } from '@material-ui/core/styles';
 import List from 'react-virtualized/dist/commonjs/List';
+// import colors from '../styles/colors';
+
+
+import { withRouter, Link } from 'react-router-dom';
+import Select, { components } from 'react-select';
+
+import transitions from '../styles/transitions';
+import Stats from './Stats';
+import MenuList from './MenuList';
 
 import 'react-table/react-table.css';
 import colors from '../styles/colors';
@@ -36,18 +46,97 @@ const CustomRadio = withStyles({
   checked: {},
 })(props => <Radio color="default" {...props} />);
 
+const customStyles = {
+  control: provided => ({
+    ...provided,
+    background: 'rgb(0,0,0,0)',
+    border: `1px solid ${colors.nav_links}`,
+    margin: '5px 0px',
+    '&:hover': {
+      border: `1px solid ${colors.nav_links}`,
+      cursor: 'text',
+    },
+  }),
+  placeholder: provided => ({
+    ...provided,
+    color: `${colors.nav_links}`,
+  }),
+  dropdownIndicator: provided => ({
+    ...provided,
+    color: `${colors.nav_links}`,
+    '&:hover': {
+      color: `${colors.nav_links}`,
+      cursor: 'pointer',
+    },
+  }),
+
+  indicatorSeparator: provided => ({
+    ...provided,
+    background: `${colors.nav_links}`,
+    '&:hover': {
+      background: `${colors.nav_links}`,
+    },
+  }),
+  singleValue: provided => ({
+    ...provided,
+    color: `${colors.nav_links}`,
+  }),
+  option: (provided, state) => ({
+    ...provided,
+    background: 'white',
+    fontWeight: state.isSelected ? '700' : '400',
+    color: state.isSelected ? colors.color_main_2 : state.isDisabled ? 'grey' : colors.nav_links,
+  }),
+};
+
+const customFilterOption = (option, rawInput) => {
+  if (option.data.isDisabled) {
+    return true;
+  }
+  const words = rawInput.split(' ');
+  return words.reduce(
+    (acc, cur) => acc && option.label.toLowerCase().includes(cur.toLowerCase()),
+    true,
+  );
+};
+
+const CustomOption = innerProps => (
+  <components.Option {...innerProps}>
+    <div
+      style={{
+        backgroundColor: innerProps.isFocused ? !innerProps.isDisabled ? colors.trans_color_main_5 : 'inherit' : 'inherit',
+        width: '350px',
+        height: '50px',
+        padding: 'auto',
+        margin: '0',
+        display: 'flex',
+        // justifyContent: innerProps.isDisabled ? 'flex-start' : 'center',
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
+    >
+      <span>{innerProps.label}</span>
+    </div>
+  </components.Option>
+);
+
 class Pharmacogenomics extends Component {
   constructor() {
     super();
     this.state = {
       drugsData: [{ value: 'Any', label: 'Any Compound' }],
       profileValue: 'metabolimic',
-      selectedDrug1: 'Any',
+      selectedDrug1: null,
+      selectedDrug2: null,
+      filteredDrugsData1: null,
+      filteredDrugsData2: null,
+
     };
     this.profileChange = this.profileChange.bind(this);
     this.getData = this.getData.bind(this);
     this.rowRenderer = this.rowRenderer.bind(this);
-    this.drug1Change = this.drug1Change.bind(this);
+    this.handleDrug1Search = this.handleDrug1Search.bind(this);
+    this.handleDrug2Search = this.handleDrug2Search.bind(this);
   }
 
   componentDidMount() {
@@ -68,9 +157,12 @@ class Pharmacogenomics extends Component {
     this.setState({ profileValue: event.target.value });
   }
 
-  drug1Change(event) {
-    console.log(event.target.value);
-    this.setState({ selectedDrug1: event.target.value });
+  handleDrug1Search(event) {
+    console.log(event);
+  }
+
+  handleDrug2Search(event) {
+    console.log(event);
   }
 
   rowRenderer({
@@ -95,8 +187,14 @@ class Pharmacogenomics extends Component {
 
 
   render() {
-    const { profileChange, rowRenderer, drug1Change } = this;
-    const { profileValue, drugsData, selectedDrug1 } = this.state;
+    const {
+      profileChange, rowRenderer, drug1Change,
+      handleDrug1Search, handleDrug2Search,
+    } = this;
+    const {
+      profileValue, drugsData, selectedDrug1,
+      filteredDrugsData1, filteredDrugsData2, selectedDrug2,
+    } = this.state;
     return (
       <main>
         <StyledDiv>
@@ -112,19 +210,47 @@ class Pharmacogenomics extends Component {
               </RadioGroup>
             </FormControl>
           </div>
-          <div className="drug1-container">
-            <FormControl component="fieldset">
-              <FormLabel component="legend">Select compound A</FormLabel>
-              <RadioGroup aria-label="profile" name="profile" value={selectedDrug1} onChange={drug1Change}>
-                <List
-                  width={300}
-                  height={300}
-                  rowCount={drugsData.length}
-                  rowHeight={40}
-                  rowRenderer={rowRenderer}
-                />
-              </RadioGroup>
-            </FormControl>
+          <div className="select-container">
+            {/* <Select
+              components={{
+                Option: CustomOption,
+              }}
+              styles={customStyles}
+              options={filteredSampleData || sampleData}
+              placeholder="Enter Cell Line or Tissue"
+              onChange={handleSampleSearch}
+              value={selectedSample}
+              filterOption={customFilterOption}
+              formatGroupLabel={formatGroupLabel}
+            /> */}
+          </div>
+          <div className="select-container">
+            <Select
+              components={{
+                Option: CustomOption,
+                MenuList: props => (<MenuList {...props} />),
+              }}
+              styles={customStyles}
+              options={filteredDrugsData1 || drugsData}
+              placeholder="Enter Compound A"
+              onChange={e => handleDrug1Search(e)}
+              value={selectedDrug1}
+              filterOption={customFilterOption}
+            />
+          </div>
+          <div className="select-container">
+            <Select
+              components={{
+                Option: CustomOption,
+                MenuList: props => (<MenuList {...props} />),
+              }}
+              styles={customStyles}
+              options={filteredDrugsData2 || drugsData}
+              placeholder="Enter Compound B"
+              value={selectedDrug2}
+              onChange={handleDrug2Search}
+              filterOption={customFilterOption}
+            />
           </div>
         </StyledDiv>
       </main>

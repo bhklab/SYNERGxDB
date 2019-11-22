@@ -634,7 +634,7 @@ class SearchCombos extends Component {
               }}
               styles={customStyles}
               options={filteredDrugsData2 || drugsData2}
-              placeholder={drug2Placeholder}
+              placeholder="Enter Compound B"
               value={selectedDrug2}
               onChange={handleDrug2Search}
               filterOption={customFilterOption}
