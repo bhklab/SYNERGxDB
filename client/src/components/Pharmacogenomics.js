@@ -1,6 +1,6 @@
 /* eslint-disable no-nested-ternary */
 
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import styled from 'styled-components';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
@@ -8,20 +8,18 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
 import { withStyles } from '@material-ui/core/styles';
-import List from 'react-virtualized/dist/commonjs/List';
-// import colors from '../styles/colors';
-
-
-import { withRouter, Link } from 'react-router-dom';
 import Select, { components } from 'react-select';
+import List from 'react-virtualized/dist/commonjs/List';
+import CellMeasurer from 'react-virtualized/dist/commonjs/CellMeasurer';
+import CellMeasurerCache from 'react-virtualized/dist/commonjs/CellMeasurer';
+import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer';
 
-import transitions from '../styles/transitions';
 import Stats from './Stats';
 import MenuList from './MenuList';
 
-import 'react-table/react-table.css';
 import colors from '../styles/colors';
-// import transitions from '../styles/transitions';
+import 'react-table/react-table.css';
+import transitions from '../styles/transitions';
 
 const StyledDiv = styled.div`
   width: 100%;
@@ -29,6 +27,14 @@ const StyledDiv = styled.div`
   background:white;
   padding:20px 30px;
   margin-bottom:20px;
+
+  h3 {
+    color:${colors.color_main_5}
+  }
+  .list-container {
+    height: 450px;
+    min-width: 300px;
+  }
 `;
 
 const CustomRadio = withStyles({
@@ -39,12 +45,36 @@ const CustomRadio = withStyles({
     '&$checked': {
       color: colors.color_main_5,
     },
-    label: {
+    // label: {
+    //   overflow: 'hidden',
+    //   color: colors.color_main_2,
+    //   background: colors.color_main_3,
+    // },
+  },
+  checked: {},
+})(props => (
+  <Radio
+  // color="default"
+    {...props}
+  />
+));
+
+const CustomFormLabel = withStyles({
+  root: {
+    '& .MuiFormControlLabel-label': {
+      color: colors.color_main_2,
       overflow: 'hidden',
+      background: 'white',
     },
   },
   checked: {},
-})(props => <Radio color="default" {...props} />);
+})(props => (
+  <FormControlLabel
+    color="default"
+    {...props}
+  />
+));
+
 
 const customStyles = {
   control: provided => ({
@@ -110,7 +140,6 @@ const CustomOption = innerProps => (
         padding: 'auto',
         margin: '0',
         display: 'flex',
-        // justifyContent: innerProps.isDisabled ? 'flex-start' : 'center',
         justifyContent: 'center',
         alignItems: 'center',
       }}
@@ -120,17 +149,21 @@ const CustomOption = innerProps => (
   </components.Option>
 );
 
+const cache = new CellMeasurerCache({
+  defaultHeight: 50,
+  fixedWidth: true,
+});
+
 class Pharmacogenomics extends Component {
   constructor() {
     super();
     this.state = {
-      drugsData: [{ value: 'Any', label: 'Any Compound' }],
+      drugsData: [],
       profileValue: 'metabolimic',
       selectedDrug1: null,
       selectedDrug2: null,
       filteredDrugsData1: null,
       filteredDrugsData2: null,
-
     };
     this.profileChange = this.profileChange.bind(this);
     this.getData = this.getData.bind(this);
@@ -147,9 +180,8 @@ class Pharmacogenomics extends Component {
     await fetch('/api/drugs')
       .then(response => response.json())
       .then((data) => {
-        const { drugsData } = this.state;
         const processedData = data.map(item => ({ value: item.idDrug, label: item.name }));
-        this.setState({ drugsData: [...drugsData, ...processedData] });
+        this.setState({ drugsData: processedData });
       });
   }
 
@@ -158,12 +190,13 @@ class Pharmacogenomics extends Component {
   }
 
   handleDrug1Search(event) {
-    console.log(event);
+    this.setState({ selectedDrug1: event.target.value });
   }
 
   handleDrug2Search(event) {
-    console.log(event);
+    this.setState({ selectedDrug2: event.target.value });
   }
+
 
   rowRenderer({
     key, // Unique key within array of rows
@@ -175,7 +208,7 @@ class Pharmacogenomics extends Component {
     const { drugsData } = this.state;
     console.log(drugsData[index]);
     return (
-      <FormControlLabel
+      <CustomFormLabel
         style={style}
         key={key}
         value={drugsData[index].value.toString()}
@@ -184,7 +217,6 @@ class Pharmacogenomics extends Component {
       />
     );
   }
-
 
   render() {
     const {
@@ -201,30 +233,41 @@ class Pharmacogenomics extends Component {
           <h2>Biomarker discovery in Pharmacogenomics</h2>
           <div className="profile-container">
             <FormControl component="fieldset">
-              <FormLabel component="legend">Select a profile</FormLabel>
+              <h3>Select a profile</h3>
               <RadioGroup aria-label="profile" name="profile" value={profileValue} onChange={profileChange}>
-                <FormControlLabel value="metabolimic" control={<CustomRadio />} label="metabolomic" />
-                <FormControlLabel value="rnaseq" control={<CustomRadio />} label="molecular: expression, RNA-seq" />
-                <FormControlLabel value="mutation" control={<CustomRadio />} label="molecular: mutation" />
-                <FormControlLabel value="cna" control={<CustomRadio />} label="molecular: copy number" />
+                <CustomFormLabel value="metabolimic" control={<CustomRadio />} label="metabolomic" />
+                <CustomFormLabel value="rnaseq" control={<CustomRadio />} label="molecular: expression, RNA-seq" />
+                <CustomFormLabel value="mutation" control={<CustomRadio />} label="molecular: mutation" />
+                <CustomFormLabel value="cna" control={<CustomRadio />} label="molecular: copy number" />
               </RadioGroup>
             </FormControl>
           </div>
-          <div className="select-container">
-            {/* <Select
-              components={{
-                Option: CustomOption,
-              }}
-              styles={customStyles}
-              options={filteredSampleData || sampleData}
-              placeholder="Enter Cell Line or Tissue"
-              onChange={handleSampleSearch}
-              value={selectedSample}
-              filterOption={customFilterOption}
-              formatGroupLabel={formatGroupLabel}
-            /> */}
-          </div>
-          <div className="select-container">
+          {drugsData.length > 0 ? (
+            <div className="select-container">
+
+              <FormControl component="fieldset">
+                <h3>Select compound A</h3>
+                <RadioGroup aria-label="drugA" name="drugA" value={selectedDrug1} onChange={handleDrug1Search}>
+                  <div className="list-container">
+                    <AutoSizer>
+                      {({ height, width }) => (
+                        <List
+                          width={width}
+                          height={height}
+                          rowCount={drugsData.length}
+                          rowHeight={45}
+                          rowRenderer={rowRenderer}
+                        />
+                      )}
+                    </AutoSizer>
+                  </div>
+                </RadioGroup>
+              </FormControl>
+
+            </div>
+          ) : null}
+
+          {/* <div className="select-container">
             <Select
               components={{
                 Option: CustomOption,
@@ -251,7 +294,7 @@ class Pharmacogenomics extends Component {
               onChange={handleDrug2Search}
               filterOption={customFilterOption}
             />
-          </div>
+          </div> */}
         </StyledDiv>
       </main>
     );
