@@ -6,20 +6,14 @@ import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
-import FormLabel from '@material-ui/core/FormLabel';
 import { withStyles } from '@material-ui/core/styles';
-import Select, { components } from 'react-select';
 import List from 'react-virtualized/dist/commonjs/List';
-import CellMeasurer from 'react-virtualized/dist/commonjs/CellMeasurer';
-import CellMeasurerCache from 'react-virtualized/dist/commonjs/CellMeasurer';
+import { CellMeasurer, CellMeasurerCache } from 'react-virtualized/dist/commonjs/CellMeasurer';
 import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer';
-
-import Stats from './Stats';
-import MenuList from './MenuList';
 
 import colors from '../styles/colors';
 import 'react-table/react-table.css';
-import transitions from '../styles/transitions';
+// import transitions from '../styles/transitions';
 
 const StyledDiv = styled.div`
   width: 100%;
@@ -45,11 +39,6 @@ const CustomRadio = withStyles({
     '&$checked': {
       color: colors.color_main_5,
     },
-    // label: {
-    //   overflow: 'hidden',
-    //   color: colors.color_main_2,
-    //   background: colors.color_main_3,
-    // },
   },
   checked: {},
 })(props => (
@@ -65,6 +54,7 @@ const CustomFormLabel = withStyles({
       color: colors.color_main_2,
       overflow: 'hidden',
       background: 'white',
+      padding: '10px 0',
     },
   },
 })(props => (
@@ -73,80 +63,6 @@ const CustomFormLabel = withStyles({
     {...props}
   />
 ));
-
-
-const customStyles = {
-  control: provided => ({
-    ...provided,
-    background: 'rgb(0,0,0,0)',
-    border: `1px solid ${colors.nav_links}`,
-    margin: '5px 0px',
-    '&:hover': {
-      border: `1px solid ${colors.nav_links}`,
-      cursor: 'text',
-    },
-  }),
-  placeholder: provided => ({
-    ...provided,
-    color: `${colors.nav_links}`,
-  }),
-  dropdownIndicator: provided => ({
-    ...provided,
-    color: `${colors.nav_links}`,
-    '&:hover': {
-      color: `${colors.nav_links}`,
-      cursor: 'pointer',
-    },
-  }),
-
-  indicatorSeparator: provided => ({
-    ...provided,
-    background: `${colors.nav_links}`,
-    '&:hover': {
-      background: `${colors.nav_links}`,
-    },
-  }),
-  singleValue: provided => ({
-    ...provided,
-    color: `${colors.nav_links}`,
-  }),
-  option: (provided, state) => ({
-    ...provided,
-    background: 'white',
-    fontWeight: state.isSelected ? '700' : '400',
-    color: state.isSelected ? colors.color_main_2 : state.isDisabled ? 'grey' : colors.nav_links,
-  }),
-};
-
-const customFilterOption = (option, rawInput) => {
-  if (option.data.isDisabled) {
-    return true;
-  }
-  const words = rawInput.split(' ');
-  return words.reduce(
-    (acc, cur) => acc && option.label.toLowerCase().includes(cur.toLowerCase()),
-    true,
-  );
-};
-
-const CustomOption = innerProps => (
-  <components.Option {...innerProps}>
-    <div
-      style={{
-        backgroundColor: innerProps.isFocused ? !innerProps.isDisabled ? colors.trans_color_main_5 : 'inherit' : 'inherit',
-        width: '350px',
-        height: '50px',
-        padding: 'auto',
-        margin: '0',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}
-    >
-      <span>{innerProps.label}</span>
-    </div>
-  </components.Option>
-);
 
 const cache = new CellMeasurerCache({
   defaultHeight: 50,
@@ -204,7 +120,6 @@ class Pharmacogenomics extends Component {
     style, // Style object to be applied to row (to position it)
   }) {
     const { drugsData } = this.state;
-    console.log(drugsData[index]);
     return (
       <CellMeasurer
         key={key}
@@ -213,7 +128,6 @@ class Pharmacogenomics extends Component {
         columnIndex={0}
         overscanRowCount={10}
         rowIndex={index}
-        ref={(element) => { this.cellMeasurer = element; }}
       >
         <CustomFormLabel
           style={style}
@@ -228,14 +142,13 @@ class Pharmacogenomics extends Component {
 
   render() {
     const {
-      profileChange, rowRenderer, drug1Change,
+      profileChange, rowRenderer,
       handleDrug1Search, handleDrug2Search,
     } = this;
     const {
       profileValue, drugsData, selectedDrug1,
       filteredDrugsData1, filteredDrugsData2, selectedDrug2,
     } = this.state;
-    console.log(cache);
     return (
       <main>
         <StyledDiv>
@@ -263,12 +176,10 @@ class Pharmacogenomics extends Component {
                         <List
                           width={width}
                           height={height}
-                          ref={(element) => { this.list = element; }}
                           rowCount={drugsData.length}
-                          // deferredMeasurementCache={cache}
-                          // rowHeight={cache.rowHeight}
+                          deferredMeasurementCache={cache}
+                          rowHeight={cache.rowHeight}
                           rowRenderer={rowRenderer}
-                          // overscanRowCount={3}
                         />
                       )}
                     </AutoSizer>
@@ -278,35 +189,6 @@ class Pharmacogenomics extends Component {
 
             </div>
           ) : null}
-
-          {/* <div className="select-container">
-            <Select
-              components={{
-                Option: CustomOption,
-                MenuList: props => (<MenuList {...props} />),
-              }}
-              styles={customStyles}
-              options={filteredDrugsData1 || drugsData}
-              placeholder="Enter Compound A"
-              onChange={e => handleDrug1Search(e)}
-              value={selectedDrug1}
-              filterOption={customFilterOption}
-            />
-          </div>
-          <div className="select-container">
-            <Select
-              components={{
-                Option: CustomOption,
-                MenuList: props => (<MenuList {...props} />),
-              }}
-              styles={customStyles}
-              options={filteredDrugsData2 || drugsData}
-              placeholder="Enter Compound B"
-              value={selectedDrug2}
-              onChange={handleDrug2Search}
-              filterOption={customFilterOption}
-            />
-          </div> */}
         </StyledDiv>
       </main>
     );
