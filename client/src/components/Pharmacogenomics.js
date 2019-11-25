@@ -67,7 +67,6 @@ const CustomFormLabel = withStyles({
       background: 'white',
     },
   },
-  checked: {},
 })(props => (
   <FormControlLabel
     color="default"
@@ -153,14 +152,14 @@ const cache = new CellMeasurerCache({
   defaultHeight: 50,
   fixedWidth: true,
 });
-
 class Pharmacogenomics extends Component {
   constructor() {
     super();
     this.state = {
       drugsData: [],
       profileValue: 'metabolimic',
-      selectedDrug1: null,
+      // Material UI wants to have some initial value for the radio group
+      selectedDrug1: 'null',
       selectedDrug2: null,
       filteredDrugsData1: null,
       filteredDrugsData2: null,
@@ -201,20 +200,29 @@ class Pharmacogenomics extends Component {
   rowRenderer({
     key, // Unique key within array of rows
     index, // Index of row within collection
-    isScrolling, // The List is currently being scrolled
-    isVisible, // This row is visible within the List (eg it is not an overscanned row)
+    parent,
     style, // Style object to be applied to row (to position it)
   }) {
     const { drugsData } = this.state;
     console.log(drugsData[index]);
     return (
-      <CustomFormLabel
-        style={style}
+      <CellMeasurer
         key={key}
-        value={drugsData[index].value.toString()}
-        control={<CustomRadio />}
-        label={drugsData[index].label}
-      />
+        cache={cache}
+        parent={parent}
+        columnIndex={0}
+        overscanRowCount={10}
+        rowIndex={index}
+        ref={(element) => { this.cellMeasurer = element; }}
+      >
+        <CustomFormLabel
+          style={style}
+          key={key}
+          value={drugsData[index].value.toString()}
+          control={<CustomRadio />}
+          label={drugsData[index].label}
+        />
+      </CellMeasurer>
     );
   }
 
@@ -227,6 +235,7 @@ class Pharmacogenomics extends Component {
       profileValue, drugsData, selectedDrug1,
       filteredDrugsData1, filteredDrugsData2, selectedDrug2,
     } = this.state;
+    console.log(cache);
     return (
       <main>
         <StyledDiv>
@@ -250,13 +259,16 @@ class Pharmacogenomics extends Component {
                 <RadioGroup aria-label="drugA" name="drugA" value={selectedDrug1} onChange={handleDrug1Search}>
                   <div className="list-container">
                     <AutoSizer>
-                      {({ height, width }) => (
+                      {({ width, height }) => (
                         <List
                           width={width}
                           height={height}
+                          ref={(element) => { this.list = element; }}
                           rowCount={drugsData.length}
-                          rowHeight={45}
+                          // deferredMeasurementCache={cache}
+                          // rowHeight={cache.rowHeight}
                           rowRenderer={rowRenderer}
+                          // overscanRowCount={3}
                         />
                       )}
                     </AutoSizer>
