@@ -29,6 +29,9 @@ const StyledDiv = styled.div`
   .list-container {
     height: 450px;
     min-width: 300px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid ${colors.color_main_3}
+    border-top: 2px solid ${colors.color_main_3}
   }
 `;
 
@@ -82,14 +85,13 @@ class Pharmacogenomics extends Component {
       profileValue: 'metabolimic',
       // Material UI wants to have some initial value for the radio group
       selectedDrug1: 'null',
-      selectedDrug2: null,
+      selectedDrug2: 'null',
       filteredDrugsData1: null,
       filteredDrugsData2: null,
     };
     this.profileChange = this.profileChange.bind(this);
     this.getData = this.getData.bind(this);
-    this.rowRenderer1 = this.rowRenderer1.bind(this);
-    this.rowRenderer2 = this.rowRenderer2.bind(this);
+    this.rowRenderer = this.rowRenderer.bind(this);
     this.handleDrug1Search = this.handleDrug1Search.bind(this);
     this.handleDrug2Search = this.handleDrug2Search.bind(this);
   }
@@ -120,44 +122,18 @@ class Pharmacogenomics extends Component {
   }
 
 
-  rowRenderer1({
+  rowRenderer({
     key, // Unique key within array of rows
     index, // Index of row within collection
     parent,
     style, // Style object to be applied to row (to position it)
+    cache,
   }) {
     const { drugsData } = this.state;
     return (
       <CellMeasurer
         key={key}
-        cache={cache1}
-        parent={parent}
-        columnIndex={0}
-        overscanRowCount={10}
-        rowIndex={index}
-      >
-        <CustomFormLabel
-          style={style}
-          key={key}
-          value={drugsData[index].value.toString()}
-          control={<CustomRadio />}
-          label={drugsData[index].label}
-        />
-      </CellMeasurer>
-    );
-  }
-
-  rowRenderer2({
-    key, // Unique key within array of rows
-    index, // Index of row within collection
-    parent,
-    style, // Style object to be applied to row (to position it)
-  }) {
-    const { drugsData } = this.state;
-    return (
-      <CellMeasurer
-        key={key}
-        cache={cache2}
+        cache={cache}
         parent={parent}
         columnIndex={0}
         overscanRowCount={10}
@@ -176,7 +152,7 @@ class Pharmacogenomics extends Component {
 
   render() {
     const {
-      profileChange, rowRenderer1, rowRenderer2,
+      profileChange, rowRenderer, rowRenderer2,
       handleDrug1Search, handleDrug2Search,
     } = this;
     const {
@@ -219,7 +195,11 @@ class Pharmacogenomics extends Component {
                           rowCount={drugsData.length}
                           deferredMeasurementCache={cache1}
                           rowHeight={cache1.rowHeight}
-                          rowRenderer={rowRenderer1}
+                          rowRenderer={({
+                            key, index, parent, style,
+                          }) => rowRenderer({
+                            key, index, parent, style, cache: cache1,
+                          })}
                         />
                       )}
                     </AutoSizer>
@@ -242,7 +222,11 @@ class Pharmacogenomics extends Component {
                           rowCount={drugsData.length}
                           deferredMeasurementCache={cache2}
                           rowHeight={cache2.rowHeight}
-                          rowRenderer={rowRenderer2}
+                          rowRenderer={({
+                            key, index, parent, style,
+                          }) => rowRenderer({
+                            key, index, parent, style, cache: cache2,
+                          })}
                         />
                       )}
                     </AutoSizer>
