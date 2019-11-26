@@ -191,8 +191,7 @@ class Pharmacogenomics extends Component {
     const {
       profileValue, moleculesData, genesData,
     } = this.state;
-    console.log(profileValue);
-    if (profileValue === 'metabolimic' && moleculesData.length > 0) {
+    if (profileValue === 'metabolomic' && moleculesData.length > 0) {
       return (
         <div className="molecule-container">
           <h3>Select a component</h3>
