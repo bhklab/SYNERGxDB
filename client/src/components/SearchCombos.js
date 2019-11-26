@@ -315,7 +315,6 @@ class SearchCombos extends Component {
       selectedDrug1: null,
       selectedDrug2: null,
       selectedDataset: { value: 'Any', label: 'Any Dataset' },
-      drug2Placeholder: 'Enter Compound B',
       allowRedirect: true,
     };
     this.handleDrug1Search = this.handleDrug1Search.bind(this);
@@ -552,7 +551,7 @@ class SearchCombos extends Component {
   render() {
     const {
       drugsData1, drugsData2, sampleData,
-      selectedSample, selectedDrug1, selectedDrug2, drug2Placeholder, datasetData,
+      selectedSample, selectedDrug1, selectedDrug2, datasetData,
       selectedDataset, filteredSampleData, filteredDrugsData1, filteredDrugsData2, filteredDatasetData,
     } = this.state;
     const {

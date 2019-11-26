@@ -148,9 +148,13 @@ class Drugs extends Component {
           <StyledWrapper className="wrapper">
             <h1>
 Compounds,
+              {' '}
+              <i>
+N =
 {' '}
-<i>N = {drugsData.length.toLocaleString()}</i>
-</h1>
+{drugsData.length.toLocaleString()}
+</i>
+                        </h1>
             {datasetData.length === 0 ? null : (
               <BarChart
                 plotId="drugPlot"
