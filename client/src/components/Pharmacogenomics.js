@@ -22,12 +22,24 @@ const StyledDiv = styled.div`
   background:white;
   padding:20px 30px;
   margin-bottom:20px;
+  
+
+  .flex-container {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap
+
+    .flex-child {
+      width: 50%;
+    }
+  }
 
   h3 {
     color:${colors.color_main_5}
   }
   .list-container {
-    height: 450px;
+    height: 300px;
     min-width: 300px;
     padding-bottom: 10px;
     border-bottom: 2px solid ${colors.color_main_3}
@@ -83,34 +95,45 @@ class Pharmacogenomics extends Component {
     this.state = {
       drugsData: [],
       profileValue: 'metabolimic',
+      scoreValue: 'zip',
       // Material UI wants to have some initial value for the radio group
       selectedDrug1: 'null',
       selectedDrug2: 'null',
+      moleculesData: [],
+      genesData: [],
+      samplesData: [],
       filteredDrugsData1: null,
       filteredDrugsData2: null,
     };
     this.profileChange = this.profileChange.bind(this);
-    this.getData = this.getData.bind(this);
+    this.scoreChange = this.scoreChange.bind(this);
+    this.getInitialData = this.getInitialData.bind(this);
     this.rowRenderer = this.rowRenderer.bind(this);
     this.handleDrug1Search = this.handleDrug1Search.bind(this);
     this.handleDrug2Search = this.handleDrug2Search.bind(this);
+    this.renderBiomarkerList = this.renderBiomarkerList.bind(this);
   }
 
   componentDidMount() {
-    this.getData();
+    this.getInitialData();
   }
 
-  async getData() {
+  async getInitialData() {
+    let drugsData;
     await fetch('/api/drugs')
       .then(response => response.json())
       .then((data) => {
-        const processedData = data.map(item => ({ value: item.idDrug, label: item.name }));
-        this.setState({ drugsData: processedData });
+        drugsData = data.map(item => ({ value: item.idDrug, label: item.name }));
       });
+    this.setState({ drugsData });
   }
 
   profileChange(event) {
     this.setState({ profileValue: event.target.value });
+  }
+
+  scoreChange(event) {
+    this.setState({ scoreValue: event.target.value });
   }
 
   handleDrug1Search(event) {
@@ -120,7 +143,6 @@ class Pharmacogenomics extends Component {
   handleDrug2Search(event) {
     this.setState({ selectedDrug2: event.target.value });
   }
-
 
   rowRenderer({
     key, // Unique key within array of rows
@@ -150,91 +172,137 @@ class Pharmacogenomics extends Component {
     );
   }
 
+  renderBiomarkerList() {
+    const {
+      profileValue, moleculesData, genesData,
+    } = this.state;
+    console.log(profileValue);
+    if (profileValue === 'metabolimic' && moleculesData.length > 0) {
+      return (
+        <div className="molecule-container">
+          <h3>Select a component</h3>
+        </div>
+      );
+    }
+    if (genesData.length > 0) {
+      return (
+        <div className="genes-container">
+          <h3>Select a gene</h3>
+        </div>
+      );
+    }
+    return null;
+  }
+
   render() {
     const {
-      profileChange, rowRenderer, rowRenderer2,
-      handleDrug1Search, handleDrug2Search,
+      profileChange, rowRenderer, scoreChange,
+      handleDrug1Search, handleDrug2Search, renderBiomarkerList,
     } = this;
     const {
-      profileValue, drugsData, selectedDrug1,
+      profileValue, drugsData, selectedDrug1, samplesData,
       filteredDrugsData1, filteredDrugsData2, selectedDrug2,
+      scoreValue,
     } = this.state;
     return (
       <main>
         <StyledDiv>
           <h2>Biomarker discovery in Pharmacogenomics</h2>
-          <div className="profile-container">
-            <FormControl component="fieldset">
-              <h3>Select a profile</h3>
-              <RadioGroup aria-label="profile" name="profile" value={profileValue} onChange={profileChange}>
-                <CustomFormLabel value="metabolimic" control={<CustomRadio />} label="metabolomic" />
-                <CustomFormLabel value="rnaseq" control={<CustomRadio />} label="molecular: expression, RNA-seq" />
-                <CustomFormLabel value="mutation" control={<CustomRadio />} label="molecular: mutation" />
-                <CustomFormLabel value="cna" control={<CustomRadio />} label="molecular: copy number" />
-              </RadioGroup>
-            </FormControl>
+          <div className="flex-container">
+            <div className="flex-child">
+              <div className="profile-container">
+                <FormControl component="fieldset">
+                  <h3>Select a profile</h3>
+                  <RadioGroup aria-label="profile" name="profile" value={profileValue} onChange={profileChange}>
+                    <CustomFormLabel value="metabolimic" control={<CustomRadio />} label="metabolomic" />
+                    <CustomFormLabel value="rnaseq" control={<CustomRadio />} label="molecular: expression, RNA-seq" />
+                    <CustomFormLabel value="mutation" control={<CustomRadio />} label="molecular: mutation" />
+                    <CustomFormLabel value="cna" control={<CustomRadio />} label="molecular: copy number" />
+                  </RadioGroup>
+                </FormControl>
+              </div>
+              {renderBiomarkerList()}
+              {samplesData.length > 0 ? (
+                <div className="samples-container">
+              List of samples
+                </div>
+              ) : null}
+            </div>
+            <div className="flex-child">
+              {drugsData.length > 0 ? (
+                <div className="drug-container">
+                  <FormControl component="fieldset">
+                    <h3>Select compound A</h3>
+                    <RadioGroup aria-label="drugA" name="drugA" value={selectedDrug1} onChange={handleDrug1Search}>
+                      <TextField
+                        id="standard-textarea"
+                        label="Search by drug name"
+                        placeholder="Enter compound A"
+                        multiline
+                        margin="normal"
+                      />
+                      <div className="list-container">
+                        <AutoSizer>
+                          {({ width, height }) => (
+                            <List
+                              width={width}
+                              height={height}
+                              rowCount={drugsData.length}
+                              deferredMeasurementCache={cache1}
+                              rowHeight={cache1.rowHeight}
+                              rowRenderer={({
+                                key, index, parent, style,
+                              }) => rowRenderer({
+                                key, index, parent, style, cache: cache1,
+                              })}
+                            />
+                          )}
+                        </AutoSizer>
+                      </div>
+                    </RadioGroup>
+                  </FormControl>
+                </div>
+              ) : null}
+              {drugsData.length > 0 ? (
+                <div className="drug-container">
+                  <FormControl component="fieldset">
+                    <h3>Select compound B</h3>
+                    <RadioGroup aria-label="drugB" name="drugB" value={selectedDrug2} onChange={handleDrug2Search}>
+                      <div className="list-container">
+                        <AutoSizer>
+                          {({ width, height }) => (
+                            <List
+                              width={width}
+                              height={height}
+                              rowCount={drugsData.length}
+                              deferredMeasurementCache={cache2}
+                              rowHeight={cache2.rowHeight}
+                              rowRenderer={({
+                                key, index, parent, style,
+                              }) => rowRenderer({
+                                key, index, parent, style, cache: cache2,
+                              })}
+                            />
+                          )}
+                        </AutoSizer>
+                      </div>
+                    </RadioGroup>
+                  </FormControl>
+                </div>
+              ) : null}
+              <div className="synscore-container">
+                <FormControl component="fieldset">
+                  <h3>Select a synergy score method</h3>
+                  <RadioGroup aria-label="synscore" name="synscore" value={scoreValue} onChange={scoreChange}>
+                    <CustomFormLabel value="zip" control={<CustomRadio />} label="ZIP" />
+                    <CustomFormLabel value="bliss" control={<CustomRadio />} label="Bliss" />
+                    <CustomFormLabel value="loewe" control={<CustomRadio />} label="Loewe" />
+                    <CustomFormLabel value="hsa" control={<CustomRadio />} label="HSA" />
+                  </RadioGroup>
+                </FormControl>
+              </div>
+            </div>
           </div>
-          {drugsData.length > 0 ? (
-            <div className="select-container">
-              <FormControl component="fieldset">
-                <h3>Select compound A</h3>
-                <RadioGroup aria-label="drugA" name="drugA" value={selectedDrug1} onChange={handleDrug1Search}>
-                  <TextField
-                    id="standard-textarea"
-                    label="Search by drug name"
-                    placeholder="Enter compound A"
-                    multiline
-                    margin="normal"
-                  />
-                  <div className="list-container">
-                    <AutoSizer>
-                      {({ width, height }) => (
-                        <List
-                          width={width}
-                          height={height}
-                          rowCount={drugsData.length}
-                          deferredMeasurementCache={cache1}
-                          rowHeight={cache1.rowHeight}
-                          rowRenderer={({
-                            key, index, parent, style,
-                          }) => rowRenderer({
-                            key, index, parent, style, cache: cache1,
-                          })}
-                        />
-                      )}
-                    </AutoSizer>
-                  </div>
-                </RadioGroup>
-              </FormControl>
-            </div>
-          ) : null}
-          {drugsData.length > 0 ? (
-            <div className="select-container">
-              <FormControl component="fieldset">
-                <h3>Select compound B</h3>
-                <RadioGroup aria-label="drugB" name="drugB" value={selectedDrug2} onChange={handleDrug2Search}>
-                  <div className="list-container">
-                    <AutoSizer>
-                      {({ width, height }) => (
-                        <List
-                          width={width}
-                          height={height}
-                          rowCount={drugsData.length}
-                          deferredMeasurementCache={cache2}
-                          rowHeight={cache2.rowHeight}
-                          rowRenderer={({
-                            key, index, parent, style,
-                          }) => rowRenderer({
-                            key, index, parent, style, cache: cache2,
-                          })}
-                        />
-                      )}
-                    </AutoSizer>
-                  </div>
-                </RadioGroup>
-              </FormControl>
-            </div>
-          ) : null}
         </StyledDiv>
       </main>
     );
