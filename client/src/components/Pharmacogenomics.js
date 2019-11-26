@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable no-nested-ternary */
 
 import React, { Component } from 'react';
@@ -80,15 +81,49 @@ const CustomFormLabel = withStyles({
   />
 ));
 
-const cache1 = new CellMeasurerCache({
+
+// ///////////////////
+// CelMeasurer cache
+// ///////////////////
+const cacheDrug1 = new CellMeasurerCache({
+  defaultHeight: 50,
+  fixedWidth: true,
+});
+const cacheDrug2 = new CellMeasurerCache({
+  defaultHeight: 50,
+  fixedWidth: true,
+});
+const cacheMolecules = new CellMeasurerCache({
   defaultHeight: 50,
   fixedWidth: true,
 });
 
-const cache2 = new CellMeasurerCache({
-  defaultHeight: 50,
-  fixedWidth: true,
-});
+const rowRenderer = ({
+  key, // Unique key within array of rows
+  index, // Index of row within collection
+  parent,
+  style, // Style object to be applied to row (to position it)
+  cache,
+  data,
+}) => (
+  <CellMeasurer
+    key={key}
+    cache={cache}
+    parent={parent}
+    columnIndex={0}
+    overscanRowCount={10}
+    rowIndex={index}
+  >
+    <CustomFormLabel
+      style={style}
+      key={key}
+      value={data[index].value.toString()}
+      control={<CustomRadio />}
+      label={data[index].label}
+    />
+  </CellMeasurer>
+);
+
 class Pharmacogenomics extends Component {
   constructor() {
     super();
@@ -99,6 +134,7 @@ class Pharmacogenomics extends Component {
       // Material UI wants to have some initial value for the radio group
       selectedDrug1: 'null',
       selectedDrug2: 'null',
+      selectedMolecule: 'null',
       moleculesData: [],
       genesData: [],
       samplesData: [],
@@ -107,8 +143,8 @@ class Pharmacogenomics extends Component {
     };
     this.profileChange = this.profileChange.bind(this);
     this.scoreChange = this.scoreChange.bind(this);
+    this.moleculeChange = this.moleculeChange.bind(this);
     this.getInitialData = this.getInitialData.bind(this);
-    this.rowRenderer = this.rowRenderer.bind(this);
     this.handleDrug1Search = this.handleDrug1Search.bind(this);
     this.handleDrug2Search = this.handleDrug2Search.bind(this);
     this.renderBiomarkerList = this.renderBiomarkerList.bind(this);
@@ -138,7 +174,7 @@ class Pharmacogenomics extends Component {
       .then(response => response.json())
       .then((data) => {
         console.log(data);
-        moleculesData = data;
+        moleculesData = data.map(item => ({ value: item, label: item }));
       });
     this.setState({ drugsData, samplesData, moleculesData });
   }
@@ -151,6 +187,10 @@ class Pharmacogenomics extends Component {
     this.setState({ scoreValue: event.target.value });
   }
 
+  moleculeChange(event) {
+    this.setState({ selectedMolecule: event.target.value });
+  }
+
   handleDrug1Search(event) {
     this.setState({ selectedDrug1: event.target.value });
   }
@@ -159,42 +199,46 @@ class Pharmacogenomics extends Component {
     this.setState({ selectedDrug2: event.target.value });
   }
 
-  rowRenderer({
-    key, // Unique key within array of rows
-    index, // Index of row within collection
-    parent,
-    style, // Style object to be applied to row (to position it)
-    cache,
-  }) {
-    const { drugsData } = this.state;
-    return (
-      <CellMeasurer
-        key={key}
-        cache={cache}
-        parent={parent}
-        columnIndex={0}
-        overscanRowCount={10}
-        rowIndex={index}
-      >
-        <CustomFormLabel
-          style={style}
-          key={key}
-          value={drugsData[index].value.toString()}
-          control={<CustomRadio />}
-          label={drugsData[index].label}
-        />
-      </CellMeasurer>
-    );
-  }
-
   renderBiomarkerList() {
     const {
-      profileValue, moleculesData, genesData,
+      profileValue, moleculesData, genesData, selectedMolecule,
     } = this.state;
+    const {
+      moleculeChange,
+    } = this;
     if (profileValue === 'metabolomic' && moleculesData.length > 0) {
       return (
         <div className="molecule-container">
-          <h3>Select a component</h3>
+          <FormControl component="fieldset">
+            <h3>Select a component</h3>
+            <RadioGroup aria-label="molecule" name="molecule" value={selectedMolecule} onChange={moleculeChange}>
+              <TextField
+                id="standard-textarea"
+                label="Search by component name"
+                placeholder="Enter component"
+                multiline
+                margin="normal"
+              />
+              <div className="list-container">
+                <AutoSizer>
+                  {({ width, height }) => (
+                    <List
+                      width={width}
+                      height={height}
+                      rowCount={moleculesData.length}
+                      deferredMeasurementCache={cacheMolecules}
+                      rowHeight={cacheMolecules.rowHeight}
+                      rowRenderer={({
+                        key, index, parent, style,
+                      }) => rowRenderer({
+                        key, index, parent, style, cache: cacheMolecules, data: moleculesData,
+                      })}
+                    />
+                  )}
+                </AutoSizer>
+              </div>
+            </RadioGroup>
+          </FormControl>
         </div>
       );
     }
@@ -210,7 +254,7 @@ class Pharmacogenomics extends Component {
 
   render() {
     const {
-      profileChange, rowRenderer, scoreChange,
+      profileChange, scoreChange,
       handleDrug1Search, handleDrug2Search, renderBiomarkerList,
     } = this;
     const {
@@ -218,7 +262,6 @@ class Pharmacogenomics extends Component {
       filteredDrugsData1, filteredDrugsData2, selectedDrug2,
       scoreValue,
     } = this.state;
-    console.log(samplesData.length);
     return (
       <main>
         <StyledDiv>
@@ -263,12 +306,12 @@ class Pharmacogenomics extends Component {
                               width={width}
                               height={height}
                               rowCount={drugsData.length}
-                              deferredMeasurementCache={cache1}
-                              rowHeight={cache1.rowHeight}
+                              deferredMeasurementCache={cacheDrug1}
+                              rowHeight={cacheDrug1.rowHeight}
                               rowRenderer={({
                                 key, index, parent, style,
                               }) => rowRenderer({
-                                key, index, parent, style, cache: cache1,
+                                key, index, parent, style, cache: cacheDrug1, data: drugsData,
                               })}
                             />
                           )}
@@ -290,12 +333,12 @@ class Pharmacogenomics extends Component {
                               width={width}
                               height={height}
                               rowCount={drugsData.length}
-                              deferredMeasurementCache={cache2}
-                              rowHeight={cache2.rowHeight}
+                              deferredMeasurementCache={cacheDrug2}
+                              rowHeight={cacheDrug2.rowHeight}
                               rowRenderer={({
                                 key, index, parent, style,
                               }) => rowRenderer({
-                                key, index, parent, style, cache: cache2,
+                                key, index, parent, style, cache: cacheDrug2, data: drugsData,
                               })}
                             />
                           )}
