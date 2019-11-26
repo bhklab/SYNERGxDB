@@ -195,12 +195,12 @@ class TopNav extends Component {
             >
               Datasets
             </Link>
-            {/* <Link
+            <Link
               to="/pharmacogenomics/"
               onClick={() => closeMenu()}
             >
               Pharmacogenomics
-            </Link> */}
+            </Link>
           </Menu>
         </div>
       </StyledNav>

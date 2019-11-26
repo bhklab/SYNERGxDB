@@ -7,6 +7,7 @@ import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import { withStyles } from '@material-ui/core/styles';
+import TextField from '@material-ui/core/TextField';
 import List from 'react-virtualized/dist/commonjs/List';
 import { CellMeasurer, CellMeasurerCache } from 'react-virtualized/dist/commonjs/CellMeasurer';
 import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer';
@@ -64,7 +65,12 @@ const CustomFormLabel = withStyles({
   />
 ));
 
-const cache = new CellMeasurerCache({
+const cache1 = new CellMeasurerCache({
+  defaultHeight: 50,
+  fixedWidth: true,
+});
+
+const cache2 = new CellMeasurerCache({
   defaultHeight: 50,
   fixedWidth: true,
 });
@@ -82,7 +88,8 @@ class Pharmacogenomics extends Component {
     };
     this.profileChange = this.profileChange.bind(this);
     this.getData = this.getData.bind(this);
-    this.rowRenderer = this.rowRenderer.bind(this);
+    this.rowRenderer1 = this.rowRenderer1.bind(this);
+    this.rowRenderer2 = this.rowRenderer2.bind(this);
     this.handleDrug1Search = this.handleDrug1Search.bind(this);
     this.handleDrug2Search = this.handleDrug2Search.bind(this);
   }
@@ -113,7 +120,7 @@ class Pharmacogenomics extends Component {
   }
 
 
-  rowRenderer({
+  rowRenderer1({
     key, // Unique key within array of rows
     index, // Index of row within collection
     parent,
@@ -123,7 +130,34 @@ class Pharmacogenomics extends Component {
     return (
       <CellMeasurer
         key={key}
-        cache={cache}
+        cache={cache1}
+        parent={parent}
+        columnIndex={0}
+        overscanRowCount={10}
+        rowIndex={index}
+      >
+        <CustomFormLabel
+          style={style}
+          key={key}
+          value={drugsData[index].value.toString()}
+          control={<CustomRadio />}
+          label={drugsData[index].label}
+        />
+      </CellMeasurer>
+    );
+  }
+
+  rowRenderer2({
+    key, // Unique key within array of rows
+    index, // Index of row within collection
+    parent,
+    style, // Style object to be applied to row (to position it)
+  }) {
+    const { drugsData } = this.state;
+    return (
+      <CellMeasurer
+        key={key}
+        cache={cache2}
         parent={parent}
         columnIndex={0}
         overscanRowCount={10}
@@ -142,7 +176,7 @@ class Pharmacogenomics extends Component {
 
   render() {
     const {
-      profileChange, rowRenderer,
+      profileChange, rowRenderer1, rowRenderer2,
       handleDrug1Search, handleDrug2Search,
     } = this;
     const {
@@ -166,10 +200,16 @@ class Pharmacogenomics extends Component {
           </div>
           {drugsData.length > 0 ? (
             <div className="select-container">
-
               <FormControl component="fieldset">
                 <h3>Select compound A</h3>
                 <RadioGroup aria-label="drugA" name="drugA" value={selectedDrug1} onChange={handleDrug1Search}>
+                  <TextField
+                    id="standard-textarea"
+                    label="Search by drug name"
+                    placeholder="Enter compound A"
+                    multiline
+                    margin="normal"
+                  />
                   <div className="list-container">
                     <AutoSizer>
                       {({ width, height }) => (
@@ -177,16 +217,38 @@ class Pharmacogenomics extends Component {
                           width={width}
                           height={height}
                           rowCount={drugsData.length}
-                          deferredMeasurementCache={cache}
-                          rowHeight={cache.rowHeight}
-                          rowRenderer={rowRenderer}
+                          deferredMeasurementCache={cache1}
+                          rowHeight={cache1.rowHeight}
+                          rowRenderer={rowRenderer1}
                         />
                       )}
                     </AutoSizer>
                   </div>
                 </RadioGroup>
               </FormControl>
-
+            </div>
+          ) : null}
+          {drugsData.length > 0 ? (
+            <div className="select-container">
+              <FormControl component="fieldset">
+                <h3>Select compound B</h3>
+                <RadioGroup aria-label="drugB" name="drugB" value={selectedDrug2} onChange={handleDrug2Search}>
+                  <div className="list-container">
+                    <AutoSizer>
+                      {({ width, height }) => (
+                        <List
+                          width={width}
+                          height={height}
+                          rowCount={drugsData.length}
+                          deferredMeasurementCache={cache2}
+                          rowHeight={cache2.rowHeight}
+                          rowRenderer={rowRenderer2}
+                        />
+                      )}
+                    </AutoSizer>
+                  </div>
+                </RadioGroup>
+              </FormControl>
             </div>
           ) : null}
         </StyledDiv>
