@@ -19,6 +19,7 @@ router.get('/samples', (req, res) => {
   const {
     profile,
   } = req.query;
+  console.log(profile);
   res.json({ message: 'List of samples' });
 });
 

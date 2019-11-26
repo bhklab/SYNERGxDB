@@ -94,7 +94,7 @@ class Pharmacogenomics extends Component {
     super();
     this.state = {
       drugsData: [],
-      profileValue: 'metabolimic',
+      profileValue: 'metabolomic',
       scoreValue: 'zip',
       // Material UI wants to have some initial value for the radio group
       selectedDrug1: 'null',
@@ -119,13 +119,28 @@ class Pharmacogenomics extends Component {
   }
 
   async getInitialData() {
-    let drugsData;
+    const { profileValue } = this.state;
+    let drugsData; let
+      samplesData; let
+      moleculesData;
     await fetch('/api/drugs')
       .then(response => response.json())
       .then((data) => {
         drugsData = data.map(item => ({ value: item.idDrug, label: item.name }));
       });
-    this.setState({ drugsData });
+    await fetch(`/api/pharmacogenomics/samples?profile=${profileValue}`)
+      .then(response => response.json())
+      .then((data) => {
+        console.log(data);
+        samplesData = data;
+      });
+    await fetch('/api/pharmacogenomics/molecules')
+      .then(response => response.json())
+      .then((data) => {
+        console.log(data);
+        moleculesData = data;
+      });
+    this.setState({ drugsData, samplesData, moleculesData });
   }
 
   profileChange(event) {
@@ -204,6 +219,7 @@ class Pharmacogenomics extends Component {
       filteredDrugsData1, filteredDrugsData2, selectedDrug2,
       scoreValue,
     } = this.state;
+    console.log(samplesData.length);
     return (
       <main>
         <StyledDiv>
@@ -214,7 +230,7 @@ class Pharmacogenomics extends Component {
                 <FormControl component="fieldset">
                   <h3>Select a profile</h3>
                   <RadioGroup aria-label="profile" name="profile" value={profileValue} onChange={profileChange}>
-                    <CustomFormLabel value="metabolimic" control={<CustomRadio />} label="metabolomic" />
+                    <CustomFormLabel value="metabolomic" control={<CustomRadio />} label="metabolomic" />
                     <CustomFormLabel value="rnaseq" control={<CustomRadio />} label="molecular: expression, RNA-seq" />
                     <CustomFormLabel value="mutation" control={<CustomRadio />} label="molecular: mutation" />
                     <CustomFormLabel value="cna" control={<CustomRadio />} label="molecular: copy number" />
@@ -224,7 +240,7 @@ class Pharmacogenomics extends Component {
               {renderBiomarkerList()}
               {samplesData.length > 0 ? (
                 <div className="samples-container">
-              List of samples
+                  List of samples
                 </div>
               ) : null}
             </div>
