@@ -145,6 +145,7 @@ class Pharmacogenomics extends Component {
       samplesData: [],
       filteredDrugsData1: null,
       filteredDrugsData2: null,
+      tissueObj: {},
     };
     this.profileChange = this.profileChange.bind(this);
     this.scoreChange = this.scoreChange.bind(this);
@@ -164,12 +165,23 @@ class Pharmacogenomics extends Component {
     const { profileValue } = this.state;
     let drugsData; let
       samplesData; let
-      moleculesData;
+      moleculesData; let
+      tissueObj;
     await fetch(`/api/pharmacogenomics/samples?profile=${profileValue}`)
       .then(response => response.json())
       .then((data) => {
-        console.log(data);
-        samplesData = data.map(item => ({ value: item.idSample, label: item.name }));
+        const cellData = data.map(item => ({ value: item.idSample, label: item.name }));
+        tissueObj = {};
+        data.forEach((item) => {
+          if (!tissueObj[item.tissue]) {
+            tissueObj[item.tissue] = [item.idSample];
+          } else {
+            tissueObj[item.tissue].push(item.idSample);
+          }
+        });
+        const tissueData = Object.entries(tissueObj)
+          .map(item => ({ value: item[0], label: `${item[0].toUpperCase()} (${item[1].length} cell line${item[1].length > 1 ? 's' : null})` }));
+        samplesData = [...tissueData, ...cellData];
       });
     await fetch('/api/drugs')
       .then(response => response.json())
@@ -179,10 +191,11 @@ class Pharmacogenomics extends Component {
     await fetch('/api/pharmacogenomics/molecules')
       .then(response => response.json())
       .then((data) => {
-        console.log(data);
         moleculesData = data.map(item => ({ value: item, label: item }));
       });
-    this.setState({ drugsData, samplesData, moleculesData });
+    this.setState({
+      drugsData, samplesData, moleculesData, tissueObj,
+    });
   }
 
   profileChange(event) {
@@ -191,7 +204,6 @@ class Pharmacogenomics extends Component {
     fetch(`/api/pharmacogenomics/samples?profile=${profileValue}`)
       .then(response => response.json())
       .then((data) => {
-        console.log(data);
         const samplesData = data.map(item => ({ value: item.idSample, label: item.name }));
         this.setState({ samplesData, profileValue });
       })
