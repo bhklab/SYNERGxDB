@@ -29,8 +29,33 @@ router.get('/samples', (req, res) => {
   const {
     profile,
   } = req.query;
-  console.log(profile);
-  res.json({ message: 'List of samples' });
+
+  function subqueryProfile() {
+    switch (profile) {
+      case 'metabolomic':
+        return this.select('idSample').from('metabolomics');
+      case 'rnaseq':
+        return this.select('idSample').from('model_identifiers');
+      case 'mutation':
+        return this.distinct('idSample').from('mutations');
+      case 'cna':
+        return this.distinct('idSample').from('copynumber');
+      default:
+        throw new Error({ code: 400, message: 'Profile is not selected correctly' });
+    }
+  }
+  db.select('idSample', 'name', 'tissue')
+    .from('sample')
+    .whereIn('idSample', subqueryProfile)
+    .orderBy('name')
+    .then((data) => {
+      console.log(data);
+      res.json(data);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.json(err);
+    });
 });
 
 module.exports = router;

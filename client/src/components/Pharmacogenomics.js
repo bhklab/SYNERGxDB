@@ -97,6 +97,10 @@ const cacheMolecules = new CellMeasurerCache({
   defaultHeight: 50,
   fixedWidth: true,
 });
+const cacheSamples = new CellMeasurerCache({
+  defaultHeight: 50,
+  fixedWidth: true,
+});
 
 const rowRenderer = ({
   key, // Unique key within array of rows
@@ -135,6 +139,7 @@ class Pharmacogenomics extends Component {
       selectedDrug1: 'null',
       selectedDrug2: 'null',
       selectedMolecule: 'null',
+      selectedSample: 'null',
       moleculesData: [],
       genesData: [],
       samplesData: [],
@@ -143,6 +148,7 @@ class Pharmacogenomics extends Component {
     };
     this.profileChange = this.profileChange.bind(this);
     this.scoreChange = this.scoreChange.bind(this);
+    this.sampleChange = this.sampleChange.bind(this);
     this.moleculeChange = this.moleculeChange.bind(this);
     this.getInitialData = this.getInitialData.bind(this);
     this.handleDrug1Search = this.handleDrug1Search.bind(this);
@@ -159,16 +165,16 @@ class Pharmacogenomics extends Component {
     let drugsData; let
       samplesData; let
       moleculesData;
-    await fetch('/api/drugs')
-      .then(response => response.json())
-      .then((data) => {
-        drugsData = data.map(item => ({ value: item.idDrug, label: item.name }));
-      });
     await fetch(`/api/pharmacogenomics/samples?profile=${profileValue}`)
       .then(response => response.json())
       .then((data) => {
         console.log(data);
-        samplesData = data;
+        samplesData = data.map(item => ({ value: item.idSample, label: item.name }));
+      });
+    await fetch('/api/drugs')
+      .then(response => response.json())
+      .then((data) => {
+        drugsData = data.map(item => ({ value: item.idDrug, label: item.name }));
       });
     await fetch('/api/pharmacogenomics/molecules')
       .then(response => response.json())
@@ -180,7 +186,19 @@ class Pharmacogenomics extends Component {
   }
 
   profileChange(event) {
-    this.setState({ profileValue: event.target.value });
+    console.log(event.target.value);
+    const profileValue = event.target.value;
+    fetch(`/api/pharmacogenomics/samples?profile=${profileValue}`)
+      .then(response => response.json())
+      .then((data) => {
+        console.log(data);
+        const samplesData = data.map(item => ({ value: item.idSample, label: item.name }));
+        this.setState({ samplesData, profileValue });
+      })
+      .catch((err) => {
+        console.log(err);
+        this.setState({ profileValue });
+      });
   }
 
   scoreChange(event) {
@@ -189,6 +207,10 @@ class Pharmacogenomics extends Component {
 
   moleculeChange(event) {
     this.setState({ selectedMolecule: event.target.value });
+  }
+
+  sampleChange(event) {
+    this.setState({ selectedSample: event.target.value });
   }
 
   handleDrug1Search(event) {
@@ -254,11 +276,11 @@ class Pharmacogenomics extends Component {
 
   render() {
     const {
-      profileChange, scoreChange,
+      profileChange, scoreChange, sampleChange,
       handleDrug1Search, handleDrug2Search, renderBiomarkerList,
     } = this;
     const {
-      profileValue, drugsData, selectedDrug1, samplesData,
+      profileValue, drugsData, selectedDrug1, samplesData, selectedSample,
       filteredDrugsData1, filteredDrugsData2, selectedDrug2,
       scoreValue,
     } = this.state;
@@ -282,7 +304,36 @@ class Pharmacogenomics extends Component {
               {renderBiomarkerList()}
               {samplesData.length > 0 ? (
                 <div className="samples-container">
-                  List of samples
+                  <FormControl component="fieldset">
+                    <h3>Select samples</h3>
+                    <RadioGroup aria-label="sample" name="sample" value={selectedSample} onChange={sampleChange}>
+                      <TextField
+                        id="standard-textarea"
+                        label="Search by cell line/tissue"
+                        placeholder="Enter name"
+                        multiline
+                        margin="normal"
+                      />
+                      <div className="list-container">
+                        <AutoSizer>
+                          {({ width, height }) => (
+                            <List
+                              width={width}
+                              height={height}
+                              rowCount={samplesData.length}
+                              deferredMeasurementCache={cacheSamples}
+                              rowHeight={cacheSamples.rowHeight}
+                              rowRenderer={({
+                                key, index, parent, style,
+                              }) => rowRenderer({
+                                key, index, parent, style, cache: cacheSamples, data: samplesData,
+                              })}
+                            />
+                          )}
+                        </AutoSizer>
+                      </div>
+                    </RadioGroup>
+                  </FormControl>
                 </div>
               ) : null}
             </div>
