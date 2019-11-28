@@ -6,7 +6,27 @@ const router = express.Router();
 
 // retrieves list of genes for the search list
 router.get('/genes', (req, res) => {
-  res.json({ message: 'List of genes' });
+  const {
+    profile,
+  } = req.query;
+  let query;
+  switch (profile) {
+    case 'rnaseq':
+      console.log('rnaseq');
+      query = db.select('hgnc_symbol as gene', 'gene_id').from('gene_identifiers');
+      break;
+    case 'mutation':
+      console.log('mutation');
+      query = db.distinct('Hugo_Symbol as gene').from('mutations');
+      break;
+    case 'cna':
+      console.log('cna');
+      query = db.distinct('gene').from('copynumber');
+      break;
+    default:
+      res.status(404).json({ message: 'Profile is not selected correctly' });
+  }
+  if (query) query.then(data => res.json(data));
 });
 
 // retrieves list of biological molecules for the search list
@@ -49,7 +69,6 @@ router.get('/samples', (req, res) => {
     .whereIn('idSample', subqueryProfile)
     .orderBy('name')
     .then((data) => {
-      console.log(data);
       res.json(data);
     })
     .catch((err) => {

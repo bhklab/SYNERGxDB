@@ -200,6 +200,7 @@ class Pharmacogenomics extends Component {
     this.handleDrug2Search = this.handleDrug2Search.bind(this);
     this.renderBiomarkerList = this.renderBiomarkerList.bind(this);
     this.updateSampleData = this.updateSampleData.bind(this);
+    this.updateGeneData = this.updateGeneData.bind(this);
   }
 
   componentDidMount() {
@@ -270,7 +271,8 @@ class Pharmacogenomics extends Component {
         //     };
         //   } else {
         //     sampleObj[item.tissue].cells.push(item.idSample);
-        //     sampleObj[item.tissue].label = `${item.tissue} (${sampleObj[item.tissue].cells.length} cell lines)`;
+        //     sampleObj[item.tissue]
+        //      .label = `${item.tissue} (${sampleObj[item.tissue].cells.length} cell lines)`;
         //   }
         //   sampleObj[item.idSample] = {
         //     value: item.idSample,
@@ -285,10 +287,21 @@ class Pharmacogenomics extends Component {
       });
   }
 
+  updateGeneData(profileValue) {
+    fetch(`/api/pharmacogenomics/genes?profile=${profileValue}`)
+      .then(response => response.json())
+      .then((data) => {
+        console.log(data);
+      });
+  }
+
   profileChange(event) {
-    const { updateSampleData } = this;
+    const { updateSampleData, updateGeneData } = this;
     const profileValue = event.target.value;
     updateSampleData(profileValue);
+    if (profileValue === 'rnaseq' || profileValue === 'mutation' || profileValue === 'cna') {
+      updateGeneData(profileValue);
+    }
   }
 
   scoreChange(event) {
