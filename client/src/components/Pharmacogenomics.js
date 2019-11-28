@@ -115,6 +115,10 @@ const cacheSamples = new CellMeasurerCache({
   defaultHeight: 50,
   fixedWidth: true,
 });
+const cacheGenes = new CellMeasurerCache({
+  defaultHeight: 50,
+  fixedWidth: true,
+});
 
 const rowRenderer = ({
   key, // Unique key within array of rows
@@ -184,9 +188,10 @@ class Pharmacogenomics extends Component {
       selectedDrug1: 'null',
       selectedDrug2: 'null',
       selectedMolecule: 'null',
-      moleculesData: [],
-      genesData: [],
-      samplesData: [],
+      selectedGene: 'null',
+      moleculeData: [],
+      geneData: [],
+      sampleData: [],
       filteredDrugsData1: null,
       filteredDrugsData2: null,
       tissueObj: {},
@@ -195,6 +200,7 @@ class Pharmacogenomics extends Component {
     this.scoreChange = this.scoreChange.bind(this);
     this.sampleChange = this.sampleChange.bind(this);
     this.moleculeChange = this.moleculeChange.bind(this);
+    this.geneChange = this.geneChange.bind(this);
     this.getInitialData = this.getInitialData.bind(this);
     this.handleDrug1Search = this.handleDrug1Search.bind(this);
     this.handleDrug2Search = this.handleDrug2Search.bind(this);
@@ -211,7 +217,7 @@ class Pharmacogenomics extends Component {
     const { updateSampleData } = this;
     const { profileValue } = this.state;
     let drugsData;
-    let moleculesData;
+    let moleculeData;
 
     updateSampleData(profileValue);
 
@@ -223,10 +229,10 @@ class Pharmacogenomics extends Component {
     await fetch('/api/pharmacogenomics/molecules')
       .then(response => response.json())
       .then((data) => {
-        moleculesData = data.map(item => ({ value: item, label: item }));
+        moleculeData = data.map(item => ({ value: item, label: item }));
       });
     this.setState({
-      drugsData, moleculesData,
+      drugsData, moleculeData,
     });
   }
 
@@ -253,8 +259,8 @@ class Pharmacogenomics extends Component {
             label: `${item[0].toUpperCase()} (${item[1].length} cell line${item[1].length > 1 ? 's' : null})`,
             checked: true,
           }));
-        const samplesData = [...tissueData, ...cellData];
-        this.setState({ samplesData, tissueObj, profileValue });
+        const sampleData = [...tissueData, ...cellData];
+        this.setState({ sampleData, tissueObj, profileValue });
         // const cellData = data.map(item => ({
         //   value: item.idSample,
         //   label: item.name,
@@ -291,7 +297,8 @@ class Pharmacogenomics extends Component {
     fetch(`/api/pharmacogenomics/genes?profile=${profileValue}`)
       .then(response => response.json())
       .then((data) => {
-        console.log(data);
+        const geneData = data.map(item => ({ value: item.gene_id ? item.gene_id : item.gene, label: item.gene }));
+        this.setState({ geneData });
       });
   }
 
@@ -312,14 +319,18 @@ class Pharmacogenomics extends Component {
     this.setState({ selectedMolecule: event.target.value });
   }
 
+  geneChange(event) {
+    this.setState({ selectedGene: event.target.value });
+  }
+
   sampleChange(index) {
-    const { samplesData } = this.state;
+    const { sampleData } = this.state;
     const updatedSamplesData = [
-      ...samplesData.slice(0, index),
-      { ...samplesData[index], checked: false },
-      ...samplesData.slice(index + 1),
+      ...sampleData.slice(0, index),
+      { ...sampleData[index], checked: !sampleData[index].checked },
+      ...sampleData.slice(index + 1),
     ];
-    this.setState({ samplesData: updatedSamplesData });
+    this.setState({ sampleData: updatedSamplesData });
   }
 
   handleDrug1Search(event) {
@@ -332,12 +343,12 @@ class Pharmacogenomics extends Component {
 
   renderBiomarkerList() {
     const {
-      profileValue, moleculesData, genesData, selectedMolecule,
+      profileValue, moleculeData, geneData, selectedMolecule, selectedGene,
     } = this.state;
     const {
-      moleculeChange,
+      moleculeChange, geneChange,
     } = this;
-    if (profileValue === 'metabolomic' && moleculesData.length > 0) {
+    if (profileValue === 'metabolomic' && moleculeData.length > 0) {
       return (
         <div className="molecule-container">
           <FormControl component="fieldset">
@@ -356,13 +367,13 @@ class Pharmacogenomics extends Component {
                     <List
                       width={width}
                       height={height}
-                      rowCount={moleculesData.length}
+                      rowCount={moleculeData.length}
                       deferredMeasurementCache={cacheMolecules}
                       rowHeight={cacheMolecules.rowHeight}
                       rowRenderer={({
                         key, index, parent, style,
                       }) => rowRenderer({
-                        key, index, parent, style, cache: cacheMolecules, data: moleculesData,
+                        key, index, parent, style, cache: cacheMolecules, data: moleculeData,
                       })}
                     />
                   )}
@@ -373,10 +384,39 @@ class Pharmacogenomics extends Component {
         </div>
       );
     }
-    if (genesData.length > 0) {
+    if (profileValue !== 'metabolomic' && geneData.length > 0) {
       return (
         <div className="genes-container">
-          <h3>Select a gene</h3>
+          <FormControl component="fieldset">
+            <h3>Select a gene</h3>
+            <RadioGroup aria-label="gene" name="gene" value={selectedGene} onChange={geneChange}>
+              <TextField
+                id="standard-textarea"
+                label="Search by gene name"
+                placeholder="Enter gene"
+                multiline
+                margin="normal"
+              />
+              <div className="list-container">
+                <AutoSizer>
+                  {({ width, height }) => (
+                    <List
+                      width={width}
+                      height={height}
+                      rowCount={geneData.length}
+                      deferredMeasurementCache={cacheGenes}
+                      rowHeight={cacheGenes.rowHeight}
+                      rowRenderer={({
+                        key, index, parent, style,
+                      }) => rowRenderer({
+                        key, index, parent, style, cache: cacheGenes, data: geneData,
+                      })}
+                    />
+                  )}
+                </AutoSizer>
+              </div>
+            </RadioGroup>
+          </FormControl>
         </div>
       );
     }
@@ -389,7 +429,7 @@ class Pharmacogenomics extends Component {
       handleDrug1Search, handleDrug2Search, renderBiomarkerList,
     } = this;
     const {
-      profileValue, drugsData, selectedDrug1, samplesData,
+      profileValue, drugsData, selectedDrug1, sampleData,
       filteredDrugsData1, filteredDrugsData2, selectedDrug2,
       scoreValue,
     } = this.state;
@@ -411,7 +451,7 @@ class Pharmacogenomics extends Component {
                 </FormControl>
               </div>
               {renderBiomarkerList()}
-              {samplesData.length > 0 ? (
+              {sampleData.length > 0 ? (
                 <div className="samples-container">
                   <FormControl component="fieldset">
                     <h3>Select samples</h3>
@@ -429,7 +469,7 @@ class Pharmacogenomics extends Component {
                             <List
                               width={width}
                               height={height}
-                              rowCount={samplesData.length}
+                              rowCount={sampleData.length}
                               deferredMeasurementCache={cacheSamples}
                               rowHeight={cacheSamples.rowHeight}
                               rowRenderer={({
@@ -439,7 +479,7 @@ class Pharmacogenomics extends Component {
                                 index,
                                 parent,
                                 style,
-                                data: samplesData,
+                                data: sampleData,
                                 cache: cacheSamples,
                                 sampleChange,
                               })}

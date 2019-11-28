@@ -26,7 +26,7 @@ router.get('/genes', (req, res) => {
     default:
       res.status(404).json({ message: 'Profile is not selected correctly' });
   }
-  if (query) query.then(data => res.json(data));
+  if (query) query.orderBy('gene').then(data => res.json(data));
 });
 
 // retrieves list of biological molecules for the search list
