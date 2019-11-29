@@ -78,6 +78,10 @@ const StyledDiv = styled.div`
       padding-right: 50px;
     }
   }
+  
+  textarea {
+    color: ${colors.color_main_5};
+  }
 `;
 
 const CustomRadio = withStyles({
@@ -108,18 +112,6 @@ const CustomFormLabel = withStyles({
   },
 })(props => (
   <FormControlLabel
-    color="default"
-    {...props}
-  />
-));
-
-const CustomSynGroup = withStyles({
-  root: {
-    display: 'flex',
-    width: '100%',
-  },
-})(props => (
-  <RadioGroup
     color="default"
     {...props}
   />
