@@ -33,7 +33,7 @@ const StyledDiv = styled.div`
     height: 300px;
     min-width: 300px;
     padding-bottom: 10px;
-    border-bottom: 2px solid ${colors.color_main_3};
+    // border-bottom: 2px solid ${colors.color_main_3};
     // border-top: 2px solid ${colors.color_main_3};
   }
   
@@ -387,12 +387,12 @@ class Pharmacogenomics extends Component {
       return (
         <div className="molecule-container selector">
           <FormControl component="fieldset">
-            <h3>Select a component</h3>
+            <h3>Select biological molecule</h3>
             <RadioGroup aria-label="molecule" name="molecule" value={selectedMolecule} onChange={moleculeChange}>
               <CustomTextField
                 id="standard-textarea"
-                label="Search by component name"
-                placeholder="Enter component"
+                label="Search by biological molecule name"
+                placeholder="Enter biological molecule"
                 multiline
                 margin="normal"
               />
@@ -423,7 +423,7 @@ class Pharmacogenomics extends Component {
       return (
         <div className="genes-container selector">
           <FormControl component="fieldset">
-            <h3>Select a gene</h3>
+            <h3>Select gene</h3>
             <RadioGroup aria-label="gene" name="gene" value={selectedGene} onChange={geneChange}>
               <CustomTextField
                 id="standard-textarea"
@@ -474,7 +474,7 @@ class Pharmacogenomics extends Component {
           <h2>Biomarker discovery in Pharmacogenomics</h2>
           <div className="datatype-container selector">
             <FormControl component="fieldset">
-              <h3>Select a datatype</h3>
+              <h3>Select datatype</h3>
               <RadioGroup aria-label="datatype" name="datatype" value={dataType} onChange={profileChange}>
                 <CustomFormLabel value="metabolomic" control={<CustomRadio />} label="metabolomic" />
                 <CustomFormLabel value="rnaseq" control={<CustomRadio />} label="molecular: expression, RNA-seq" />
@@ -484,49 +484,119 @@ class Pharmacogenomics extends Component {
             </FormControl>
           </div>
           {renderBiomarkerList()}
-          {sampleData.length > 0 ? (
-            <div className="samples-container selector">
-              <FormControl component="fieldset">
-                <h3>Select samples</h3>
-                <FormGroup>
-                  <CustomTextField
-                    id="standard-textarea"
-                    label="Search by cell line/tissue"
-                    placeholder="Enter name"
-                    multiline
-                    margin="normal"
-                  />
-                  <div className="list-container">
-                    <AutoSizer>
-                      {({ width, height }) => (
-                        <List
-                          width={width}
-                          height={height}
-                          rowCount={sampleData.length}
-                          deferredMeasurementCache={cacheSamples}
-                          rowHeight={cacheSamples.rowHeight}
-                          rowRenderer={({
-                            key, index, parent, style,
-                          }) => rowRendererSamples({
-                            key,
-                            index,
-                            parent,
-                            style,
-                            data: sampleData,
-                            cache: cacheSamples,
-                            sampleChange,
-                          })}
-                        />
-                      )}
-                    </AutoSizer>
-                  </div>
-                </FormGroup>
-              </FormControl>
-            </div>
-          ) : null}
+          <div className="selector">
+            {sampleData.length > 0 ? (
+              <div className="samples-container">
+                <FormControl component="fieldset">
+                  <h3>Select samples</h3>
+                  <FormGroup>
+                    <CustomTextField
+                      id="standard-textarea"
+                      label="Search by cell line/tissue"
+                      placeholder="Enter name"
+                      multiline
+                      margin="normal"
+                    />
+                    <div className="list-container">
+                      <AutoSizer>
+                        {({ width, height }) => (
+                          <List
+                            width={width}
+                            height={height}
+                            rowCount={sampleData.length}
+                            deferredMeasurementCache={cacheSamples}
+                            rowHeight={cacheSamples.rowHeight}
+                            rowRenderer={({
+                              key, index, parent, style,
+                            }) => rowRendererSamples({
+                              key,
+                              index,
+                              parent,
+                              style,
+                              data: sampleData,
+                              cache: cacheSamples,
+                              sampleChange,
+                            })}
+                          />
+                        )}
+                      </AutoSizer>
+                    </div>
+                  </FormGroup>
+                </FormControl>
+              </div>
+            ) : null}
+            {drugsData.length > 0 ? (
+              <div className="drug-container">
+                <FormControl component="fieldset">
+                  <h3>Select compound A</h3>
+                  <RadioGroup aria-label="drugA" name="drugA" value={selectedDrug1} onChange={handleDrug1Search}>
+                    <CustomTextField
+                      id="standard-textarea"
+                      label="Search by compound name"
+                      placeholder="Enter compound A"
+                      multiline
+                      margin="normal"
+                    />
+                    <div className="list-container">
+                      <AutoSizer>
+                        {({ width, height }) => (
+                          <List
+                            width={width}
+                            height={height}
+                            rowCount={drugsData.length}
+                            deferredMeasurementCache={cacheDrug1}
+                            rowHeight={cacheDrug1.rowHeight}
+                            rowRenderer={({
+                              key, index, parent, style,
+                            }) => rowRenderer({
+                              key, index, parent, style, cache: cacheDrug1, data: drugsData,
+                            })}
+                          />
+                        )}
+                      </AutoSizer>
+                    </div>
+                  </RadioGroup>
+                </FormControl>
+              </div>
+            ) : null}
+            {drugsData.length > 0 ? (
+              <div className="drug-container">
+                <FormControl component="fieldset">
+                  <h3>Select compound B</h3>
+                  <RadioGroup aria-label="drugB" name="drugB" value={selectedDrug2} onChange={handleDrug2Search}>
+                    <CustomTextField
+                      id="standard-textarea"
+                      label="Search by compound name"
+                      placeholder="Enter compound B"
+                      multiline
+                      margin="normal"
+                    />
+                    <div className="list-container">
+                      <AutoSizer>
+                        {({ width, height }) => (
+                          <List
+                            width={width}
+                            height={height}
+                            rowCount={drugsData.length}
+                            deferredMeasurementCache={cacheDrug2}
+                            rowHeight={cacheDrug2.rowHeight}
+                            rowRenderer={({
+                              key, index, parent, style,
+                            }) => rowRenderer({
+                              key, index, parent, style, cache: cacheDrug2, data: drugsData,
+                            })}
+                          />
+                        )}
+                      </AutoSizer>
+                    </div>
+                  </RadioGroup>
+                </FormControl>
+              </div>
+            ) : null}
+          </div>
           <div className="synscore-container selector">
             <FormControl component="fieldset">
-              <h3>Select a synergy score method</h3>
+              <h3>Select synergy score method</h3>
               <RadioGroup aria-label="synscore" name="synscore" value={scoreValue} onChange={scoreChange}>
                 <CustomFormLabel value="zip" control={<CustomRadio />} label="ZIP" />
                 <CustomFormLabel value="bliss" control={<CustomRadio />} label="Bliss" />
@@ -535,74 +605,7 @@ class Pharmacogenomics extends Component {
               </RadioGroup>
             </FormControl>
           </div>
-          {drugsData.length > 0 ? (
-            <div className="drug-container selector">
-              <FormControl component="fieldset">
-                <h3>Select compound A</h3>
-                <RadioGroup aria-label="drugA" name="drugA" value={selectedDrug1} onChange={handleDrug1Search}>
-                  <CustomTextField
-                    id="standard-textarea"
-                    label="Search by drug name"
-                    placeholder="Enter compound A"
-                    multiline
-                    margin="normal"
-                  />
-                  <div className="list-container">
-                    <AutoSizer>
-                      {({ width, height }) => (
-                        <List
-                          width={width}
-                          height={height}
-                          rowCount={drugsData.length}
-                          deferredMeasurementCache={cacheDrug1}
-                          rowHeight={cacheDrug1.rowHeight}
-                          rowRenderer={({
-                            key, index, parent, style,
-                          }) => rowRenderer({
-                            key, index, parent, style, cache: cacheDrug1, data: drugsData,
-                          })}
-                        />
-                      )}
-                    </AutoSizer>
-                  </div>
-                </RadioGroup>
-              </FormControl>
-            </div>
-          ) : null}
-          {drugsData.length > 0 ? (
-            <div className="drug-container selector">
-              <FormControl component="fieldset">
-                <h3>Select compound B</h3>
-                <RadioGroup aria-label="drugB" name="drugB" value={selectedDrug2} onChange={handleDrug2Search}>
-                  <CustomTextField
-                    id="standard-textarea"
-                    label="Search by drug name"
-                    placeholder="Enter compound B"
-                    multiline
-                    margin="normal"
-                  />
-                  <div className="list-container">
-                    <AutoSizer>
-                      {({ width, height }) => (
-                        <List
-                          width={width}
-                          height={height}
-                          rowCount={drugsData.length}
-                          deferredMeasurementCache={cacheDrug2}
-                          rowHeight={cacheDrug2.rowHeight}
-                          rowRenderer={({
-                            key, index, parent, style,
-                          }) => rowRenderer({
-                            key, index, parent, style, cache: cacheDrug2, data: drugsData,
-                          })}
-                        />
-                      )}
-                    </AutoSizer>
-                  </div>
-                </RadioGroup>
-              </FormControl>
-            </div>
-          ) : null}
+
         </StyledDiv>
       </main>
     );
