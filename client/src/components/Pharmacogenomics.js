@@ -44,8 +44,38 @@ const StyledDiv = styled.div`
     justify-content: space-between;
     border-top: 2px solid ${colors.color_main_3};
 
+    &.datatype-container {
+      justify-content: space-between;
+    }
+    & > div {
+      min-height: 1px;
+      width: 30%;
+    }
+    &:nth-of-type(1) > div {
+      padding: 20px;
+      width: 50%;
+      &:nth-of-type(1) {
+        border-right: 2px solid ${colors.color_main_3};
+      }
+    }
+
+    &:nth-of-type(2) > div {
+      border-right: 2px solid ${colors.color_main_3};
+      padding-right: 30px;
+      &:nth-of-type(3) {
+        border-right: none;
+      }
+    }
+
     &:nth-of-type(1) {
       border-top: none;
+    }
+  }
+  .syn-score {
+    display: flex;
+    justify-content: space-between;
+    h3 {
+      padding-right: 50px;
     }
   }
 `;
@@ -78,6 +108,18 @@ const CustomFormLabel = withStyles({
   },
 })(props => (
   <FormControlLabel
+    color="default"
+    {...props}
+  />
+));
+
+const CustomSynGroup = withStyles({
+  root: {
+    display: 'flex',
+    width: '100%',
+  },
+})(props => (
+  <RadioGroup
     color="default"
     {...props}
   />
@@ -385,7 +427,7 @@ class Pharmacogenomics extends Component {
     } = this;
     if (dataType === 'metabolomic' && moleculeData.length > 0) {
       return (
-        <div className="molecule-container selector">
+        <div className="molecule-container">
           <FormControl component="fieldset">
             <h3>Select biological molecule</h3>
             <RadioGroup aria-label="molecule" name="molecule" value={selectedMolecule} onChange={moleculeChange}>
@@ -421,7 +463,7 @@ class Pharmacogenomics extends Component {
     }
     if (dataType !== 'metabolomic' && geneData.length > 0) {
       return (
-        <div className="genes-container selector">
+        <div className="genes-container">
           <FormControl component="fieldset">
             <h3>Select gene</h3>
             <RadioGroup aria-label="gene" name="gene" value={selectedGene} onChange={geneChange}>
@@ -473,17 +515,22 @@ class Pharmacogenomics extends Component {
         <StyledDiv>
           <h2>Biomarker discovery in Pharmacogenomics</h2>
           <div className="datatype-container selector">
-            <FormControl component="fieldset">
-              <h3>Select datatype</h3>
-              <RadioGroup aria-label="datatype" name="datatype" value={dataType} onChange={profileChange}>
-                <CustomFormLabel value="metabolomic" control={<CustomRadio />} label="metabolomic" />
-                <CustomFormLabel value="rnaseq" control={<CustomRadio />} label="molecular: expression, RNA-seq" />
-                <CustomFormLabel value="mutation" control={<CustomRadio />} label="molecular: mutation" />
-                <CustomFormLabel value="cna" control={<CustomRadio />} label="molecular: copy number" />
-              </RadioGroup>
-            </FormControl>
+            <div>
+              <FormControl component="fieldset">
+                <h3>Select datatype</h3>
+                <div style={{ marginTop: '37px' }}>
+                  <RadioGroup aria-label="datatype" name="datatype" value={dataType} onChange={profileChange}>
+                    <CustomFormLabel value="metabolomic" control={<CustomRadio />} label="metabolomic" />
+                    <CustomFormLabel value="rnaseq" control={<CustomRadio />} label="molecular: expression, RNA-seq" />
+                    <CustomFormLabel value="mutation" control={<CustomRadio />} label="molecular: mutation" />
+                    <CustomFormLabel value="cna" control={<CustomRadio />} label="molecular: copy number" />
+                  </RadioGroup>
+                </div>
+              </FormControl>
+            </div>
+            {renderBiomarkerList()}
+            {/* <div /> */}
           </div>
-          {renderBiomarkerList()}
           <div className="selector">
             {sampleData.length > 0 ? (
               <div className="samples-container">
@@ -596,12 +643,14 @@ class Pharmacogenomics extends Component {
           </div>
           <div className="synscore-container selector">
             <FormControl component="fieldset">
-              <h3>Select synergy score method</h3>
               <RadioGroup aria-label="synscore" name="synscore" value={scoreValue} onChange={scoreChange}>
-                <CustomFormLabel value="zip" control={<CustomRadio />} label="ZIP" />
-                <CustomFormLabel value="bliss" control={<CustomRadio />} label="Bliss" />
-                <CustomFormLabel value="loewe" control={<CustomRadio />} label="Loewe" />
-                <CustomFormLabel value="hsa" control={<CustomRadio />} label="HSA" />
+                <div className="syn-score">
+                  <h3>Select synergy score method</h3>
+                  <CustomFormLabel value="zip" control={<CustomRadio />} label="ZIP" />
+                  <CustomFormLabel value="bliss" control={<CustomRadio />} label="Bliss" />
+                  <CustomFormLabel value="loewe" control={<CustomRadio />} label="Loewe" />
+                  <CustomFormLabel value="hsa" control={<CustomRadio />} label="HSA" />
+                </div>
               </RadioGroup>
             </FormControl>
           </div>
