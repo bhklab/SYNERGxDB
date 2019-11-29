@@ -1,0 +1,20 @@
+{
+  "files": {
+    "main.js": "/static/js/main.110a881f.chunk.js",
+    "main.js.map": "/static/js/main.110a881f.chunk.js.map",
+    "runtime~main.js": "/static/js/runtime~main.a8a9905a.js",
+    "runtime~main.js.map": "/static/js/runtime~main.a8a9905a.js.map",
+    "static/css/2.11f871ab.chunk.css": "/static/css/2.11f871ab.chunk.css",
+    "static/js/2.2b2b20cc.chunk.js": "/static/js/2.2b2b20cc.chunk.js",
+    "static/js/2.2b2b20cc.chunk.js.map": "/static/js/2.2b2b20cc.chunk.js.map",
+    "index.html": "/index.html",
+    "precache-manifest.8240d5c644103b0a6251cfdc4eb14dd0.js": "/precache-manifest.8240d5c644103b0a6251cfdc4eb14dd0.js",
+    "service-worker.js": "/service-worker.js",
+    "static/css/2.11f871ab.chunk.css.map": "/static/css/2.11f871ab.chunk.css.map",
+    "static/media/bg-3.jpg": "/static/media/bg-3.11ae197d.jpg",
+    "static/media/cellosaurus.jpg": "/static/media/cellosaurus.c658c844.jpg",
+    "static/media/drugbank.png": "/static/media/drugbank.4634d1be.png",
+    "static/media/logo-2.png": "/static/media/logo-2.969ca37d.png",
+    "static/media/pubmed.jpeg": "/static/media/pubmed.e637a81f.jpeg"
+  }
+}
