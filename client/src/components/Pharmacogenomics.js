@@ -25,28 +25,28 @@ const StyledDiv = styled.div`
   background:white;
   padding:20px 30px;
   margin-bottom:20px;
-  
-
-  .flex-container {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap
-
-    .flex-child {
-      width: 50%;
-    }
-  }
 
   h3 {
-    color:${colors.color_main_5}
+    color:${colors.color_main_2}
   }
   .list-container {
     height: 300px;
     min-width: 300px;
     padding-bottom: 10px;
-    border-bottom: 2px solid ${colors.color_main_3}
-    border-top: 2px solid ${colors.color_main_3}
+    border-bottom: 2px solid ${colors.color_main_3};
+    // border-top: 2px solid ${colors.color_main_3};
+  }
+  
+  .selector {
+    width: 100%
+    padding: 20px 0 20px;
+    display: flex;
+    justify-content: space-between;
+    border-top: 2px solid ${colors.color_main_3};
+
+    &:nth-of-type(1) {
+      border-top: none;
+    }
   }
 `;
 
@@ -94,6 +94,41 @@ const CustomCheckbox = withStyles({
   },
   checked: {},
 })(props => <Checkbox color="default" {...props} />);
+
+const CustomTextField = withStyles({
+  root: {
+    marginTop: 0,
+    '& label': {
+      color: colors.color_main_3,
+    },
+    '& label.Mui-focused': {
+      color: colors.trans_color_main_3,
+    },
+    '& textarea::placeholder': {
+      color: 'black',
+    },
+    '& .MuiInput-underline:after': {
+      borderBottom: `2px solid ${colors.color_main_5}`,
+    },
+    '& .MuiInput-underline:before': {
+      borderBottom: `2px solid ${colors.color_main_3}`,
+    },
+    '& .MuiInput-underline:hover:before': {
+      borderBottom: `2px solid ${colors.color_main_2}`,
+    },
+    '& .MuiOutlinedInput-root': {
+      '& fieldset': {
+        borderColor: 'red',
+      },
+      '&:hover fieldset': {
+        borderColor: 'yellow',
+      },
+      '&.Mui-focused fieldset': {
+        borderColor: 'green',
+      },
+    },
+  },
+})(TextField);
 
 
 // ///////////////////
@@ -182,7 +217,7 @@ class Pharmacogenomics extends Component {
     super();
     this.state = {
       drugsData: [],
-      profileValue: 'metabolomic',
+      dataType: 'metabolomic',
       scoreValue: 'zip',
       // Material UI wants to have some initial value for the radio group
       selectedDrug1: 'null',
@@ -215,11 +250,11 @@ class Pharmacogenomics extends Component {
 
   async getInitialData() {
     const { updateSampleData } = this;
-    const { profileValue } = this.state;
+    const { dataType } = this.state;
     let drugsData;
     let moleculeData;
 
-    updateSampleData(profileValue);
+    updateSampleData(dataType);
 
     await fetch('/api/drugs')
       .then(response => response.json())
@@ -236,8 +271,8 @@ class Pharmacogenomics extends Component {
     });
   }
 
-  updateSampleData(profileValue) {
-    fetch(`/api/pharmacogenomics/samples?profile=${profileValue}`)
+  updateSampleData(dataType) {
+    fetch(`/api/pharmacogenomics/samples?datatype=${dataType}`)
       .then(response => response.json())
       .then((data) => {
         const cellData = data.map(item => ({
@@ -260,7 +295,7 @@ class Pharmacogenomics extends Component {
             checked: true,
           }));
         const sampleData = [...tissueData, ...cellData];
-        this.setState({ sampleData, tissueObj, profileValue });
+        this.setState({ sampleData, tissueObj, dataType });
         // const cellData = data.map(item => ({
         //   value: item.idSample,
         //   label: item.name,
@@ -289,12 +324,12 @@ class Pharmacogenomics extends Component {
         // });
       }).catch((err) => {
         console.log(err);
-        this.setState({ profileValue });
+        this.setState({ dataType });
       });
   }
 
-  updateGeneData(profileValue) {
-    fetch(`/api/pharmacogenomics/genes?profile=${profileValue}`)
+  updateGeneData(dataType) {
+    fetch(`/api/pharmacogenomics/genes?datatype=${dataType}`)
       .then(response => response.json())
       .then((data) => {
         const geneData = data.map(item => ({ value: item.gene_id ? item.gene_id : item.gene, label: item.gene }));
@@ -304,10 +339,10 @@ class Pharmacogenomics extends Component {
 
   profileChange(event) {
     const { updateSampleData, updateGeneData } = this;
-    const profileValue = event.target.value;
-    updateSampleData(profileValue);
-    if (profileValue === 'rnaseq' || profileValue === 'mutation' || profileValue === 'cna') {
-      updateGeneData(profileValue);
+    const dataType = event.target.value;
+    updateSampleData(dataType);
+    if (dataType === 'rnaseq' || dataType === 'mutation' || dataType === 'cna') {
+      updateGeneData(dataType);
     }
   }
 
@@ -343,18 +378,18 @@ class Pharmacogenomics extends Component {
 
   renderBiomarkerList() {
     const {
-      profileValue, moleculeData, geneData, selectedMolecule, selectedGene,
+      dataType, moleculeData, geneData, selectedMolecule, selectedGene,
     } = this.state;
     const {
       moleculeChange, geneChange,
     } = this;
-    if (profileValue === 'metabolomic' && moleculeData.length > 0) {
+    if (dataType === 'metabolomic' && moleculeData.length > 0) {
       return (
-        <div className="molecule-container">
+        <div className="molecule-container selector">
           <FormControl component="fieldset">
             <h3>Select a component</h3>
             <RadioGroup aria-label="molecule" name="molecule" value={selectedMolecule} onChange={moleculeChange}>
-              <TextField
+              <CustomTextField
                 id="standard-textarea"
                 label="Search by component name"
                 placeholder="Enter component"
@@ -384,13 +419,13 @@ class Pharmacogenomics extends Component {
         </div>
       );
     }
-    if (profileValue !== 'metabolomic' && geneData.length > 0) {
+    if (dataType !== 'metabolomic' && geneData.length > 0) {
       return (
-        <div className="genes-container">
+        <div className="genes-container selector">
           <FormControl component="fieldset">
             <h3>Select a gene</h3>
             <RadioGroup aria-label="gene" name="gene" value={selectedGene} onChange={geneChange}>
-              <TextField
+              <CustomTextField
                 id="standard-textarea"
                 label="Search by gene name"
                 placeholder="Enter gene"
@@ -429,7 +464,7 @@ class Pharmacogenomics extends Component {
       handleDrug1Search, handleDrug2Search, renderBiomarkerList,
     } = this;
     const {
-      profileValue, drugsData, selectedDrug1, sampleData,
+      dataType, drugsData, selectedDrug1, sampleData,
       filteredDrugsData1, filteredDrugsData2, selectedDrug2,
       scoreValue,
     } = this.state;
@@ -437,144 +472,137 @@ class Pharmacogenomics extends Component {
       <main>
         <StyledDiv>
           <h2>Biomarker discovery in Pharmacogenomics</h2>
-          <div className="flex-container">
-            <div className="flex-child">
-              <div className="profile-container">
-                <FormControl component="fieldset">
-                  <h3>Select a profile</h3>
-                  <RadioGroup aria-label="profile" name="profile" value={profileValue} onChange={profileChange}>
-                    <CustomFormLabel value="metabolomic" control={<CustomRadio />} label="metabolomic" />
-                    <CustomFormLabel value="rnaseq" control={<CustomRadio />} label="molecular: expression, RNA-seq" />
-                    <CustomFormLabel value="mutation" control={<CustomRadio />} label="molecular: mutation" />
-                    <CustomFormLabel value="cna" control={<CustomRadio />} label="molecular: copy number" />
-                  </RadioGroup>
-                </FormControl>
-              </div>
-              {renderBiomarkerList()}
-              {sampleData.length > 0 ? (
-                <div className="samples-container">
-                  <FormControl component="fieldset">
-                    <h3>Select samples</h3>
-                    <FormGroup>
-                      <TextField
-                        id="standard-textarea"
-                        label="Search by cell line/tissue"
-                        placeholder="Enter name"
-                        multiline
-                        margin="normal"
-                      />
-                      <div className="list-container">
-                        <AutoSizer>
-                          {({ width, height }) => (
-                            <List
-                              width={width}
-                              height={height}
-                              rowCount={sampleData.length}
-                              deferredMeasurementCache={cacheSamples}
-                              rowHeight={cacheSamples.rowHeight}
-                              rowRenderer={({
-                                key, index, parent, style,
-                              }) => rowRendererSamples({
-                                key,
-                                index,
-                                parent,
-                                style,
-                                data: sampleData,
-                                cache: cacheSamples,
-                                sampleChange,
-                              })}
-                            />
-                          )}
-                        </AutoSizer>
-                      </div>
-                    </FormGroup>
-                  </FormControl>
-                </div>
-
-              ) : null}
-            </div>
-            <div className="flex-child">
-              <div className="synscore-container">
-                <FormControl component="fieldset">
-                  <h3>Select a synergy score method</h3>
-                  <RadioGroup aria-label="synscore" name="synscore" value={scoreValue} onChange={scoreChange}>
-                    <CustomFormLabel value="zip" control={<CustomRadio />} label="ZIP" />
-                    <CustomFormLabel value="bliss" control={<CustomRadio />} label="Bliss" />
-                    <CustomFormLabel value="loewe" control={<CustomRadio />} label="Loewe" />
-                    <CustomFormLabel value="hsa" control={<CustomRadio />} label="HSA" />
-                  </RadioGroup>
-                </FormControl>
-              </div>
-              {drugsData.length > 0 ? (
-                <div className="drug-container">
-                  <FormControl component="fieldset">
-                    <h3>Select compound A</h3>
-                    <RadioGroup aria-label="drugA" name="drugA" value={selectedDrug1} onChange={handleDrug1Search}>
-                      <TextField
-                        id="standard-textarea"
-                        label="Search by drug name"
-                        placeholder="Enter compound A"
-                        multiline
-                        margin="normal"
-                      />
-                      <div className="list-container">
-                        <AutoSizer>
-                          {({ width, height }) => (
-                            <List
-                              width={width}
-                              height={height}
-                              rowCount={drugsData.length}
-                              deferredMeasurementCache={cacheDrug1}
-                              rowHeight={cacheDrug1.rowHeight}
-                              rowRenderer={({
-                                key, index, parent, style,
-                              }) => rowRenderer({
-                                key, index, parent, style, cache: cacheDrug1, data: drugsData,
-                              })}
-                            />
-                          )}
-                        </AutoSizer>
-                      </div>
-                    </RadioGroup>
-                  </FormControl>
-                </div>
-              ) : null}
-              {drugsData.length > 0 ? (
-                <div className="drug-container">
-                  <FormControl component="fieldset">
-                    <h3>Select compound B</h3>
-                    <RadioGroup aria-label="drugB" name="drugB" value={selectedDrug2} onChange={handleDrug2Search}>
-                      <TextField
-                        id="standard-textarea"
-                        label="Search by drug name"
-                        placeholder="Enter compound B"
-                        multiline
-                        margin="normal"
-                      />
-                      <div className="list-container">
-                        <AutoSizer>
-                          {({ width, height }) => (
-                            <List
-                              width={width}
-                              height={height}
-                              rowCount={drugsData.length}
-                              deferredMeasurementCache={cacheDrug2}
-                              rowHeight={cacheDrug2.rowHeight}
-                              rowRenderer={({
-                                key, index, parent, style,
-                              }) => rowRenderer({
-                                key, index, parent, style, cache: cacheDrug2, data: drugsData,
-                              })}
-                            />
-                          )}
-                        </AutoSizer>
-                      </div>
-                    </RadioGroup>
-                  </FormControl>
-                </div>
-              ) : null}
-            </div>
+          <div className="datatype-container selector">
+            <FormControl component="fieldset">
+              <h3>Select a datatype</h3>
+              <RadioGroup aria-label="datatype" name="datatype" value={dataType} onChange={profileChange}>
+                <CustomFormLabel value="metabolomic" control={<CustomRadio />} label="metabolomic" />
+                <CustomFormLabel value="rnaseq" control={<CustomRadio />} label="molecular: expression, RNA-seq" />
+                <CustomFormLabel value="mutation" control={<CustomRadio />} label="molecular: mutation" />
+                <CustomFormLabel value="cna" control={<CustomRadio />} label="molecular: copy number" />
+              </RadioGroup>
+            </FormControl>
           </div>
+          {renderBiomarkerList()}
+          {sampleData.length > 0 ? (
+            <div className="samples-container selector">
+              <FormControl component="fieldset">
+                <h3>Select samples</h3>
+                <FormGroup>
+                  <CustomTextField
+                    id="standard-textarea"
+                    label="Search by cell line/tissue"
+                    placeholder="Enter name"
+                    multiline
+                    margin="normal"
+                  />
+                  <div className="list-container">
+                    <AutoSizer>
+                      {({ width, height }) => (
+                        <List
+                          width={width}
+                          height={height}
+                          rowCount={sampleData.length}
+                          deferredMeasurementCache={cacheSamples}
+                          rowHeight={cacheSamples.rowHeight}
+                          rowRenderer={({
+                            key, index, parent, style,
+                          }) => rowRendererSamples({
+                            key,
+                            index,
+                            parent,
+                            style,
+                            data: sampleData,
+                            cache: cacheSamples,
+                            sampleChange,
+                          })}
+                        />
+                      )}
+                    </AutoSizer>
+                  </div>
+                </FormGroup>
+              </FormControl>
+            </div>
+          ) : null}
+          <div className="synscore-container selector">
+            <FormControl component="fieldset">
+              <h3>Select a synergy score method</h3>
+              <RadioGroup aria-label="synscore" name="synscore" value={scoreValue} onChange={scoreChange}>
+                <CustomFormLabel value="zip" control={<CustomRadio />} label="ZIP" />
+                <CustomFormLabel value="bliss" control={<CustomRadio />} label="Bliss" />
+                <CustomFormLabel value="loewe" control={<CustomRadio />} label="Loewe" />
+                <CustomFormLabel value="hsa" control={<CustomRadio />} label="HSA" />
+              </RadioGroup>
+            </FormControl>
+          </div>
+          {drugsData.length > 0 ? (
+            <div className="drug-container selector">
+              <FormControl component="fieldset">
+                <h3>Select compound A</h3>
+                <RadioGroup aria-label="drugA" name="drugA" value={selectedDrug1} onChange={handleDrug1Search}>
+                  <CustomTextField
+                    id="standard-textarea"
+                    label="Search by drug name"
+                    placeholder="Enter compound A"
+                    multiline
+                    margin="normal"
+                  />
+                  <div className="list-container">
+                    <AutoSizer>
+                      {({ width, height }) => (
+                        <List
+                          width={width}
+                          height={height}
+                          rowCount={drugsData.length}
+                          deferredMeasurementCache={cacheDrug1}
+                          rowHeight={cacheDrug1.rowHeight}
+                          rowRenderer={({
+                            key, index, parent, style,
+                          }) => rowRenderer({
+                            key, index, parent, style, cache: cacheDrug1, data: drugsData,
+                          })}
+                        />
+                      )}
+                    </AutoSizer>
+                  </div>
+                </RadioGroup>
+              </FormControl>
+            </div>
+          ) : null}
+          {drugsData.length > 0 ? (
+            <div className="drug-container selector">
+              <FormControl component="fieldset">
+                <h3>Select compound B</h3>
+                <RadioGroup aria-label="drugB" name="drugB" value={selectedDrug2} onChange={handleDrug2Search}>
+                  <CustomTextField
+                    id="standard-textarea"
+                    label="Search by drug name"
+                    placeholder="Enter compound B"
+                    multiline
+                    margin="normal"
+                  />
+                  <div className="list-container">
+                    <AutoSizer>
+                      {({ width, height }) => (
+                        <List
+                          width={width}
+                          height={height}
+                          rowCount={drugsData.length}
+                          deferredMeasurementCache={cacheDrug2}
+                          rowHeight={cacheDrug2.rowHeight}
+                          rowRenderer={({
+                            key, index, parent, style,
+                          }) => rowRenderer({
+                            key, index, parent, style, cache: cacheDrug2, data: drugsData,
+                          })}
+                        />
+                      )}
+                    </AutoSizer>
+                  </div>
+                </RadioGroup>
+              </FormControl>
+            </div>
+          ) : null}
         </StyledDiv>
       </main>
     );

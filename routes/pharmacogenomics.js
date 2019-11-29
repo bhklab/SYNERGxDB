@@ -7,10 +7,10 @@ const router = express.Router();
 // retrieves list of genes for the search list
 router.get('/genes', (req, res) => {
   const {
-    profile,
+    datatype,
   } = req.query;
   let query;
-  switch (profile) {
+  switch (datatype) {
     case 'rnaseq':
       console.log('rnaseq');
       query = db.select('hgnc_symbol as gene', 'gene_id').from('gene_identifiers');
@@ -47,11 +47,11 @@ router.get('/molecules', (req, res) => {
 // retrieves list of relevant samples for the search list
 router.get('/samples', (req, res) => {
   const {
-    profile,
+    datatype,
   } = req.query;
 
-  function subqueryProfile() {
-    switch (profile) {
+  function subqueryDatatype() {
+    switch (datatype) {
       case 'metabolomic':
         return this.select('idSample').from('metabolomics');
       case 'rnaseq':
@@ -66,7 +66,7 @@ router.get('/samples', (req, res) => {
   }
   db.select('idSample', 'name', 'tissue')
     .from('sample')
-    .whereIn('idSample', subqueryProfile)
+    .whereIn('idSample', subqueryDatatype)
     .orderBy('name')
     .then((data) => {
       res.json(data);
