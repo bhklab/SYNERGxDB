@@ -14,6 +14,7 @@ import FormGroup from '@material-ui/core/FormGroup';
 import List from 'react-virtualized/dist/commonjs/List';
 import { CellMeasurer, CellMeasurerCache } from 'react-virtualized/dist/commonjs/CellMeasurer';
 import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer';
+import ReactLoading from 'react-loading';
 
 import colors from '../styles/colors';
 import 'react-table/react-table.css';
@@ -48,14 +49,14 @@ const StyledDiv = styled.div`
       justify-content: space-between;
     }
     & > div {
-      min-height: 1px;
+      min-height: 300px;
       width: 30%;
     }
     &:nth-of-type(1) > div {
       padding: 20px;
       width: 50%;
-      &:nth-of-type(1) {
-        border-right: 2px solid ${colors.color_main_3};
+      &:nth-of-type(2) {
+        border-left: 2px solid ${colors.color_main_3};
       }
     }
 
@@ -81,6 +82,12 @@ const StyledDiv = styled.div`
   
   textarea {
     color: ${colors.color_main_5};
+  }
+  .loading-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 `;
 
@@ -250,8 +257,7 @@ class Pharmacogenomics extends Component {
   constructor() {
     super();
     this.state = {
-      drugsData: [],
-      dataType: 'metabolomic',
+      dataType: 'null',
       scoreValue: 'zip',
       // Material UI wants to have some initial value for the radio group
       selectedDrug1: 'null',
@@ -261,9 +267,11 @@ class Pharmacogenomics extends Component {
       moleculeData: [],
       geneData: [],
       sampleData: [],
+      drugsData: [],
       filteredDrugsData1: null,
       filteredDrugsData2: null,
       tissueObj: {},
+      loading1: false,
     };
     this.profileChange = this.profileChange.bind(this);
     this.scoreChange = this.scoreChange.bind(this);
@@ -276,39 +284,31 @@ class Pharmacogenomics extends Component {
     this.renderBiomarkerList = this.renderBiomarkerList.bind(this);
     this.updateSampleData = this.updateSampleData.bind(this);
     this.updateGeneData = this.updateGeneData.bind(this);
+    this.updateMoleculeData = this.updateMoleculeData.bind(this);
   }
 
   componentDidMount() {
     this.getInitialData();
   }
 
-  async getInitialData() {
-    const { updateSampleData } = this;
-    const { dataType } = this.state;
-    let drugsData;
-    let moleculeData;
-
-    updateSampleData(dataType);
-
-    await fetch('/api/drugs')
+  getInitialData() {
+    fetch('/api/drugs')
       .then(response => response.json())
       .then((data) => {
-        drugsData = data.map(item => ({ value: item.idDrug, label: item.name }));
+        console.log(data);
+        const drugsData = data.map(item => ({ value: item.idDrug, label: item.name }));
+        this.setState({
+          drugsData,
+        });
       });
-    await fetch('/api/pharmacogenomics/molecules')
-      .then(response => response.json())
-      .then((data) => {
-        moleculeData = data.map(item => ({ value: item, label: item }));
-      });
-    this.setState({
-      drugsData, moleculeData,
-    });
   }
 
   updateSampleData(dataType) {
+    console.log('here', dataType);
     fetch(`/api/pharmacogenomics/samples?datatype=${dataType}`)
       .then(response => response.json())
       .then((data) => {
+        console.log(data);
         const cellData = data.map(item => ({
           value: item.idSample,
           label: item.name,
@@ -367,16 +367,37 @@ class Pharmacogenomics extends Component {
       .then(response => response.json())
       .then((data) => {
         const geneData = data.map(item => ({ value: item.gene_id ? item.gene_id : item.gene, label: item.gene }));
-        this.setState({ geneData });
+        this.setState({ geneData, loading1: false });
+      });
+  }
+
+  updateMoleculeData() {
+    fetch('/api/pharmacogenomics/molecules')
+      .then(response => response.json())
+      .then((data) => {
+        const moleculeData = data.map(item => ({ value: item, label: item }));
+        this.setState({ moleculeData, loading1: false });
       });
   }
 
   profileChange(event) {
-    const { updateSampleData, updateGeneData } = this;
+    const { updateSampleData, updateGeneData, updateMoleculeData } = this;
     const dataType = event.target.value;
+    this.setState({
+      loading1: true,
+      selectedGene: 'null',
+      selectedMolecule: 'null',
+      sampleData: [],
+      drugsData: [],
+      filteredDrugsData1: null,
+      filteredDrugsData2: null,
+    });
     updateSampleData(dataType);
     if (dataType === 'rnaseq' || dataType === 'mutation' || dataType === 'cna') {
       updateGeneData(dataType);
+    }
+    if (dataType === 'metabolomic') {
+      updateMoleculeData();
     }
   }
 
@@ -412,11 +433,18 @@ class Pharmacogenomics extends Component {
 
   renderBiomarkerList() {
     const {
-      dataType, moleculeData, geneData, selectedMolecule, selectedGene,
+      dataType, moleculeData, geneData, selectedMolecule, selectedGene, loading1,
     } = this.state;
     const {
       moleculeChange, geneChange,
     } = this;
+    if (loading1) {
+      return (
+        <div className="loading-container">
+          <ReactLoading type="bubbles" width={150} height={150} color={colors.color_main_2} />
+        </div>
+      );
+    }
     if (dataType === 'metabolomic' && moleculeData.length > 0) {
       return (
         <div className="molecule-container">
@@ -500,8 +528,10 @@ class Pharmacogenomics extends Component {
     const {
       dataType, drugsData, selectedDrug1, sampleData,
       filteredDrugsData1, filteredDrugsData2, selectedDrug2,
+      selectedGene, selectedMolecule,
       scoreValue,
     } = this.state;
+    console.log(drugsData, sampleData);
     return (
       <main>
         <StyledDiv>
@@ -521,10 +551,9 @@ class Pharmacogenomics extends Component {
               </FormControl>
             </div>
             {renderBiomarkerList()}
-            {/* <div /> */}
           </div>
-          <div className="selector">
-            {sampleData.length > 0 ? (
+          { sampleData.length > 0 && drugsData.length > 0 ? (
+            <div className="selector">
               <div className="samples-container">
                 <FormControl component="fieldset">
                   <h3>Select samples</h3>
@@ -563,8 +592,6 @@ class Pharmacogenomics extends Component {
                   </FormGroup>
                 </FormControl>
               </div>
-            ) : null}
-            {drugsData.length > 0 ? (
               <div className="drug-container">
                 <FormControl component="fieldset">
                   <h3>Select compound A</h3>
@@ -597,8 +624,6 @@ class Pharmacogenomics extends Component {
                   </RadioGroup>
                 </FormControl>
               </div>
-            ) : null}
-            {drugsData.length > 0 ? (
               <div className="drug-container">
                 <FormControl component="fieldset">
                   <h3>Select compound B</h3>
@@ -631,8 +656,8 @@ class Pharmacogenomics extends Component {
                   </RadioGroup>
                 </FormControl>
               </div>
-            ) : null}
-          </div>
+            </div>
+          ) : null}
           <div className="synscore-container selector">
             <FormControl component="fieldset">
               <RadioGroup aria-label="synscore" name="synscore" value={scoreValue} onChange={scoreChange}>
