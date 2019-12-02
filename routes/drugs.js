@@ -102,19 +102,33 @@ router.get('/filter', (req, res) => {
   } = req.query;
   drugId = drugId && parseInt(drugId, 10);
   dataset = dataset && parseInt(dataset, 10);
-  sample = Number.isNaN(parseInt(sample, 10)) ? sample : parseInt(sample, 10);
 
-  console.log(dataset, drugId, sample);
+  console.log(sample);
+  let sampleArray;
+  let tissue;
+  if (sample) {
+    sampleArray = sample.includes(',')
+      ? sample.split(',').map(item => parseInt(item, 10))
+      : [Number.isNaN(parseInt(sample, 10)) ? sample : parseInt(sample, 10)];
+    if (Number.isNaN(parseInt(sampleArray[0], 10))) [tissue] = sampleArray;
+  }
+  console.log('tissue', tissue);
+  console.log('sampleArray', sampleArray);
+
+
+  // sample = Number.isNaN(parseInt(sample, 10)) ? sample : parseInt(sample, 10);
+
+  console.log(dataset, drugId, sampleArray);
   // query to get relevant cell lines
   function subqueryTissue() {
     return this.select('idSample')
       .from('Sample')
-      .where({ tissue: sample }).as('t');
+      .where({ tissue }).as('t');
   }
   // Checks all drug A entries
   function subqueryDrugA() {
     let baseQuery = this.distinct('idDrugA');
-    if (typeof (sample) === 'string') {
+    if (tissue) {
       baseQuery = baseQuery.from(subqueryTissue);
       if (drugId) baseQuery = baseQuery.where({ idDrugB: drugId });
       if (dataset) {
@@ -131,14 +145,14 @@ router.get('/filter', (req, res) => {
         });
       }
       if (drugId) baseQuery = baseQuery.where({ idDrugB: drugId });
-      if (typeof (sample) === 'number') baseQuery = baseQuery.andWhere({ idSample: sample });
+      if (sampleArray && !tissue) baseQuery = baseQuery.whereIn('idSample', sampleArray);
     }
     return baseQuery.as('a1');
   }
   // Checks all drug B entries
   function subqueryDrugB() {
     let baseQuery = this.distinct('idDrugB');
-    if (typeof (sample) === 'string') {
+    if (tissue) {
       baseQuery = baseQuery.from(subqueryTissue);
       if (drugId) baseQuery = baseQuery.where({ idDrugA: drugId });
       if (dataset) {
@@ -155,7 +169,7 @@ router.get('/filter', (req, res) => {
         });
       }
       if (drugId) baseQuery = baseQuery.where({ idDrugA: drugId });
-      if (typeof (sample) === 'number') baseQuery = baseQuery.andWhere({ idSample: sample });
+      if (sampleArray && !tissue) baseQuery = baseQuery.whereIn('idSample', sampleArray);
     }
     return baseQuery.as('b1');
   }
@@ -166,7 +180,7 @@ router.get('/filter', (req, res) => {
   }
   // query optimization for dataset only requests
   let query;
-  if (!drugId && !sample && dataset) {
+  if (!drugId && !sampleArray && dataset) {
     query = db.select('idDrug', 'name').from('Drug').whereIn('idDrug', function () {
       this.select('idDrug').from('drug_source').where({ idSource: dataset });
     });

@@ -289,6 +289,11 @@ class Pharmacogenomics extends Component {
 
   componentDidMount() {
     this.getInitialData();
+    fetch('/api/drugs/filter?sample=1,2,3,4,5,6,7,8,9,10,12,13,14')
+      .then(response => response.json())
+      .then((data) => {
+        console.log(data);
+      });
   }
 
   getInitialData() {
