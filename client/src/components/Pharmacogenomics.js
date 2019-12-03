@@ -294,8 +294,15 @@ class Pharmacogenomics extends Component {
     console.log(keyStore);
     const arraySamples = [];
     data.forEach((item) => {
-      if (item.checked) arraySamples.push(item.value);
+      if (item.checked) {
+        if (typeof item.value === 'string') {
+          arraySamples.push(keyStore[item.value]);
+        } else {
+          arraySamples.push(item.value);
+        }
+      }
     });
+    arraySamples.flat();
     arraySamples.sort((a, b) => a - b);
     const querySamples = arraySamples.toString();
     console.log(querySamples);
@@ -396,7 +403,8 @@ class Pharmacogenomics extends Component {
   }
 
   sampleChange(index) {
-    const { sampleData } = this.state;
+    const { getDrugData } = this;
+    const { sampleData, tissueObj } = this.state;
     let updatedSamplesData;
     if (typeof sampleData[index].value === 'string') {
       const changedSamplesData = sampleData.map((item) => {
@@ -421,6 +429,7 @@ class Pharmacogenomics extends Component {
       ];
     }
     this.setState({ sampleData: updatedSamplesData });
+    getDrugData(updatedSamplesData, tissueObj);
   }
 
   handleDrug1Search(event) {
