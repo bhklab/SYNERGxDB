@@ -253,6 +253,7 @@ const rowRendererSamples = ({
   </CellMeasurer>
 );
 
+
 class Pharmacogenomics extends Component {
   constructor() {
     super();
@@ -273,12 +274,12 @@ class Pharmacogenomics extends Component {
       tissueObj: {},
       loading1: false,
     };
+    this.getDrugData = this.getDrugData.bind(this);
     this.profileChange = this.profileChange.bind(this);
     this.scoreChange = this.scoreChange.bind(this);
     this.sampleChange = this.sampleChange.bind(this);
     this.moleculeChange = this.moleculeChange.bind(this);
     this.geneChange = this.geneChange.bind(this);
-    this.getInitialData = this.getInitialData.bind(this);
     this.handleDrug1Search = this.handleDrug1Search.bind(this);
     this.handleDrug2Search = this.handleDrug2Search.bind(this);
     this.renderBiomarkerList = this.renderBiomarkerList.bind(this);
@@ -287,21 +288,22 @@ class Pharmacogenomics extends Component {
     this.updateMoleculeData = this.updateMoleculeData.bind(this);
   }
 
-  componentDidMount() {
-    this.getInitialData();
-    fetch('/api/drugs/filter?sample=1,2,3,4,5,6,7,8,9,10,12,13,14')
+  // Updates drug data based on samples
+  getDrugData(data, keyStore) {
+    console.log(data);
+    console.log(keyStore);
+    const arraySamples = [];
+    data.forEach((item) => {
+      if (item.checked) arraySamples.push(item.value);
+    });
+    arraySamples.sort((a, b) => a - b);
+    const querySamples = arraySamples.toString();
+    console.log(querySamples);
+    fetch('/api/drugs/filter?sample='.concat(querySamples))
       .then(response => response.json())
-      .then((data) => {
-        console.log(data);
-      });
-  }
-
-  getInitialData() {
-    fetch('/api/drugs')
-      .then(response => response.json())
-      .then((data) => {
-        console.log(data);
-        const drugsData = data.map(item => ({ value: item.idDrug, label: item.name }));
+      .then((res) => {
+        console.log(res);
+        const drugsData = res.map(item => ({ value: item.idDrug, label: item.name }));
         this.setState({
           drugsData,
         });
@@ -309,11 +311,11 @@ class Pharmacogenomics extends Component {
   }
 
   updateSampleData(dataType) {
-    console.log('here', dataType);
+    const { getDrugData } = this;
+    const { drugsData } = this.state;
     fetch(`/api/pharmacogenomics/samples?datatype=${dataType}`)
       .then(response => response.json())
       .then((data) => {
-        console.log(data);
         const cellData = data.map(item => ({
           value: item.idSample,
           label: item.name,
@@ -335,32 +337,7 @@ class Pharmacogenomics extends Component {
           }));
         const sampleData = [...tissueData, ...cellData];
         this.setState({ sampleData, tissueObj, dataType });
-        // const cellData = data.map(item => ({
-        //   value: item.idSample,
-        //   label: item.name,
-        //   checked: true,
-        // }));
-        // const sampleObj = {};
-        // data.forEach((item) => {
-        //   if (!sampleObj[item.tissue]) {
-        //     sampleObj[item.tissue] = {
-        //       value: item.tissue,
-        //       label: `${item.tissue} (1 cell line)`,
-        //       cells: [item.idSample],
-        //       checked: true,
-        //     };
-        //   } else {
-        //     sampleObj[item.tissue].cells.push(item.idSample);
-        //     sampleObj[item.tissue]
-        //      .label = `${item.tissue} (${sampleObj[item.tissue].cells.length} cell lines)`;
-        //   }
-        //   sampleObj[item.idSample] = {
-        //     value: item.idSample,
-        //     label: item.name,
-        //     tissue: item.tissue,
-        //     checked: true,
-        //   };
-        // });
+        getDrugData(cellData, tissueObj);
       }).catch((err) => {
         console.log(err);
         this.setState({ dataType });
@@ -387,6 +364,7 @@ class Pharmacogenomics extends Component {
 
   profileChange(event) {
     const { updateSampleData, updateGeneData, updateMoleculeData } = this;
+
     const dataType = event.target.value;
     this.setState({
       loading1: true,
@@ -397,13 +375,9 @@ class Pharmacogenomics extends Component {
       filteredDrugsData1: null,
       filteredDrugsData2: null,
     });
+    if (dataType === 'rnaseq' || dataType === 'mutation' || dataType === 'cna') updateGeneData(dataType);
+    if (dataType === 'metabolomic') updateMoleculeData();
     updateSampleData(dataType);
-    if (dataType === 'rnaseq' || dataType === 'mutation' || dataType === 'cna') {
-      updateGeneData(dataType);
-    }
-    if (dataType === 'metabolomic') {
-      updateMoleculeData();
-    }
   }
 
   scoreChange(event) {
@@ -536,7 +510,6 @@ class Pharmacogenomics extends Component {
       selectedGene, selectedMolecule,
       scoreValue,
     } = this.state;
-    console.log(drugsData, sampleData);
     return (
       <main>
         <StyledDiv>
