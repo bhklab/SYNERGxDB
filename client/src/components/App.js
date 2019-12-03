@@ -17,7 +17,7 @@ import GlobalStyles from '../styles/GlobalStyles';
 import Sensitivity from './Sensitivity';
 import Enrichment from './Enrichment';
 import Consistency from './Consistency';
-import Pharmacogenomics from './Pharmacogenomics';
+import Pharmacogenomics from './Pharmacogenomics/Main';
 
 const StyledApp = styled.div`
   margin: 0 auto;
