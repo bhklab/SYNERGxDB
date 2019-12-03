@@ -309,6 +309,8 @@ class Pharmacogenomics extends Component {
     fetch('/api/drugs/filter?sample='.concat(querySamples))
       .then(response => response.json())
       .then((res) => {
+        cacheDrug1.clearAll();
+        cacheDrug2.clearAll();
         console.log(res);
         const drugsData = res.map(item => ({ value: item.idDrug, label: item.name }));
         this.setState({
