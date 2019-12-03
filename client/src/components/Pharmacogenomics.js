@@ -303,13 +303,11 @@ class Pharmacogenomics extends Component {
         }
       }
     });
-    arraySamples.flat();
-    arraySamples.sort((a, b) => a - b);
-    const querySamples = arraySamples.toString();
+    const cellLineSet = [...new Set(arraySamples.flat())].sort((a, b) => a - b);
+    const querySamples = cellLineSet.toString();
     let queryString = `/api/drugs/filter?sample=${querySamples}`;
     if (type === 'drugsData1' && drug) queryString = queryString.concat(`&drugId=${drug}`);
     if (type === 'drugsData2' && drug) queryString = queryString.concat(`&drugId=${drug}`);
-    console.log(queryString);
     fetch(queryString)
       .then(response => response.json())
       .then((res) => {
