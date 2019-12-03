@@ -275,6 +275,7 @@ class Pharmacogenomics extends Component {
       loading1: false,
     };
     this.getDrugData = this.getDrugData.bind(this);
+    this.getSampleDrugData = this.getSampleDrugData.bind(this);
     this.profileChange = this.profileChange.bind(this);
     this.scoreChange = this.scoreChange.bind(this);
     this.sampleChange = this.sampleChange.bind(this);
@@ -283,7 +284,6 @@ class Pharmacogenomics extends Component {
     this.handleDrug1Search = this.handleDrug1Search.bind(this);
     this.handleDrug2Search = this.handleDrug2Search.bind(this);
     this.renderBiomarkerList = this.renderBiomarkerList.bind(this);
-    this.updateSampleData = this.updateSampleData.bind(this);
     this.updateGeneData = this.updateGeneData.bind(this);
     this.updateMoleculeData = this.updateMoleculeData.bind(this);
   }
@@ -310,9 +310,8 @@ class Pharmacogenomics extends Component {
       });
   }
 
-  updateSampleData(dataType) {
+  getSampleDrugData(dataType) {
     const { getDrugData } = this;
-    const { drugsData } = this.state;
     fetch(`/api/pharmacogenomics/samples?datatype=${dataType}`)
       .then(response => response.json())
       .then((data) => {
@@ -320,6 +319,7 @@ class Pharmacogenomics extends Component {
           value: item.idSample,
           label: item.name,
           checked: true,
+          tissue: item.tissue,
         }));
         const tissueObj = {};
         data.forEach((item) => {
@@ -339,6 +339,7 @@ class Pharmacogenomics extends Component {
         this.setState({ sampleData, tissueObj, dataType });
         getDrugData(cellData, tissueObj);
       }).catch((err) => {
+        // eslint-disable-next-line no-console
         console.log(err);
         this.setState({ dataType });
       });
@@ -348,7 +349,9 @@ class Pharmacogenomics extends Component {
     fetch(`/api/pharmacogenomics/genes?datatype=${dataType}`)
       .then(response => response.json())
       .then((data) => {
-        const geneData = data.map(item => ({ value: item.gene_id ? item.gene_id : item.gene, label: item.gene }));
+        const geneData = data.map(item => ({
+          value: item.gene_id ? item.gene_id : item.gene, label: item.gene,
+        }));
         this.setState({ geneData, loading1: false });
       });
   }
@@ -363,7 +366,7 @@ class Pharmacogenomics extends Component {
   }
 
   profileChange(event) {
-    const { updateSampleData, updateGeneData, updateMoleculeData } = this;
+    const { getSampleDrugData, updateGeneData, updateMoleculeData } = this;
 
     const dataType = event.target.value;
     this.setState({
@@ -377,7 +380,7 @@ class Pharmacogenomics extends Component {
     });
     if (dataType === 'rnaseq' || dataType === 'mutation' || dataType === 'cna') updateGeneData(dataType);
     if (dataType === 'metabolomic') updateMoleculeData();
-    updateSampleData(dataType);
+    getSampleDrugData(dataType);
   }
 
   scoreChange(event) {
@@ -394,11 +397,29 @@ class Pharmacogenomics extends Component {
 
   sampleChange(index) {
     const { sampleData } = this.state;
-    const updatedSamplesData = [
-      ...sampleData.slice(0, index),
-      { ...sampleData[index], checked: !sampleData[index].checked },
-      ...sampleData.slice(index + 1),
-    ];
+    let updatedSamplesData;
+    if (typeof sampleData[index].value === 'string') {
+      const changedSamplesData = sampleData.map((item) => {
+        if (item.tissue === sampleData[index].value) {
+          return {
+            ...item,
+            checked: !sampleData[index].checked,
+          };
+        }
+        return item;
+      });
+      updatedSamplesData = [
+        ...changedSamplesData.slice(0, index),
+        { ...changedSamplesData[index], checked: !changedSamplesData[index].checked },
+        ...changedSamplesData.slice(index + 1),
+      ];
+    } else {
+      updatedSamplesData = [
+        ...sampleData.slice(0, index),
+        { ...sampleData[index], checked: !sampleData[index].checked },
+        ...sampleData.slice(index + 1),
+      ];
+    }
     this.setState({ sampleData: updatedSamplesData });
   }
 
