@@ -3,11 +3,12 @@ import styled from 'styled-components';
 import ReactRouterPropTypes from 'react-router-prop-types';
 import queryString from 'query-string';
 import QueryCard from './UtilComponents/QueryCard';
+import SensHeatMap from './Plots/SensHeatMap';
 // import colors from '../styles/colors';
 import 'react-table/react-table.css';
 // import transitions from '../styles/transitions';
 
-const SensetivityDiv = styled.div`
+const SensitivityDiv = styled.div`
   width: 100%;
   height: auto;
   background:white;
@@ -16,7 +17,7 @@ const SensetivityDiv = styled.div`
 `;
 
 
-class Sensetivity extends Component {
+class Sensitivity extends Component {
   static propTypes = {
     location: ReactRouterPropTypes.location.isRequired,
   }
@@ -24,34 +25,52 @@ class Sensetivity extends Component {
   constructor() {
     super();
     this.state = {
-      results: [],
+      data: [],
+      drugId1:"",
+      drugId2:"",
+      sample:"",
+      dataset:"",
     };
   }
 
   componentDidMount() {
-
-  }
-
-  render() {
     const { location } = this.props;
     const requestParams = queryString.parse(location.search);
     const {
       sample, drugId1, drugId2, dataset,
     } = requestParams;
+    this.setState({sample: sample, drugId1: drugId1, drugId2: drugId2, dataset: dataset})
+    fetch(`/api/combos/heatmap?drugId1=${drugId1}&drugId2=${drugId2}`)
+      .then(response => response.json())
+      .then((data) => {
+        this.setState({data: data})
+      });
+  }
+
+  render() {
+    const { data, sample, drugId1, drugId2, dataset, } = this.state;
 
     return (
       <main>
-        <QueryCard
-          drugId1={drugId1}
-          drugId2={drugId2}
-          dataset={dataset}
-          sample={sample}
-        />
-        <SensetivityDiv>
-          <h2>Sensetivity Component</h2>
-        </SensetivityDiv>
+        {drugId1 == "" && drugId2 == "" ? null : (
+          <QueryCard
+            drugId1={drugId1}
+            drugId2={drugId2}
+            dataset={dataset}
+            sample={sample}
+          />
+        )}
+        
+        <SensitivityDiv>
+          {data.length == 0 ? null : (
+            <SensHeatMap
+              data={data}
+              plotId="sensHeatMap"
+            />
+          )}
+        </SensitivityDiv>
       </main>
     );
   }
 }
-export default Sensetivity;
+export default Sensitivity;
