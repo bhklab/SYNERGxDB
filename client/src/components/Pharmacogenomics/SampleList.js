@@ -158,7 +158,7 @@ class SampleList extends Component {
             <CustomTextField
               id="standard-textarea"
               label="Search by cell line/tissue"
-              placeholder="Enter name"
+              placeholder="Enter sample name"
               multiline
               margin="normal"
               value={value}

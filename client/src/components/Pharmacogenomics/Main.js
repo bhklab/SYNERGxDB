@@ -324,7 +324,7 @@ class Pharmacogenomics extends Component {
         const cellData = data.map(item => ({
           value: item.idSample,
           label: item.name,
-          checked: true,
+          checked: false,
           tissue: item.tissue,
         }));
         const tissueObj = {};
@@ -339,9 +339,9 @@ class Pharmacogenomics extends Component {
           .map(item => ({
             value: item[0],
             label: `${item[0].toUpperCase()} (${item[1].length} cell line${item[1].length > 1 ? 's' : null})`,
-            checked: true,
+            checked: false,
           }));
-        const sampleData = [...tissueData, ...cellData];
+        const sampleData = [{ value: 'All', label: 'SELECT ALL', checked: false }, ...tissueData, ...cellData];
         this.setState({ sampleData, tissueObj, dataType });
         getDrugData(cellData, tissueObj, 'drugsData1');
         getDrugData(cellData, tissueObj, 'drugsData2');
@@ -406,17 +406,21 @@ class Pharmacogenomics extends Component {
   }
 
   sampleChange(e) {
-    console.log(e.target.value);
     const { value } = e.target;
     const { getDrugData } = this;
     const { sampleData, tissueObj } = this.state;
-    console.log(sampleData);
     let index;
     sampleData.forEach((item, i) => {
       if (item.value === value) index = i;
     });
     let updatedSamplesData;
-    if (typeof sampleData[index].value === 'string') {
+    if (sampleData[index].value === 'All') {
+      updatedSamplesData = sampleData.map(item => ({
+        ...item,
+        checked: !sampleData[index].checked,
+      }));
+      updatedSamplesData.shift();
+    } else if (typeof sampleData[index].value === 'string') {
       const changedSamplesData = sampleData.map((item) => {
         if (item.tissue === sampleData[index].value) {
           return {
@@ -427,19 +431,24 @@ class Pharmacogenomics extends Component {
         return item;
       });
       updatedSamplesData = [
-        ...changedSamplesData.slice(0, index),
+        ...changedSamplesData.slice(1, index),
         { ...changedSamplesData[index], checked: !changedSamplesData[index].checked },
         ...changedSamplesData.slice(index + 1),
       ];
     } else {
       updatedSamplesData = [
-        ...sampleData.slice(0, index),
+        ...sampleData.slice(1, index),
         { ...sampleData[index], checked: !sampleData[index].checked },
         ...sampleData.slice(index + 1),
       ];
     }
+    // checks if all options selected and renders first control option accordingly
+    const control = updatedSamplesData.every(item => item.checked)
+      ? ({ value: 'All', label: 'UNSELECT ALL', checked: true })
+      : ({ value: 'All', label: 'SELECT ALL', checked: false });
+
     this.setState({
-      sampleData: updatedSamplesData,
+      sampleData: [control, ...updatedSamplesData],
       selectedDrug1: 'null',
       selectedDrug2: 'null',
     });
