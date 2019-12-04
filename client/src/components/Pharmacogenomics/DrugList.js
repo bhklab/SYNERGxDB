@@ -136,7 +136,7 @@ class DrugList extends Component {
     if (data !== prevProps.data) {
       if (drugLabel === 'A') cacheDrug1.clearAll();
       if (drugLabel === 'B') cacheDrug2.clearAll();
-      this.setState({ data, filteredData: data, value: '' });
+      this.setState({ data });
     }
     if (selectedDrug !== prevProps.selectedDrug) {
       this.setState({ selectedDrug });
@@ -164,9 +164,16 @@ class DrugList extends Component {
       handleFilter,
     } = this;
     const {
-      value, selectedDrug, filteredData,
+      value, selectedDrug, data,
     } = this.state;
     const { drugChange, drugLabel } = this.props;
+    const searchValue = value.toLowerCase();
+    const filteredData = [];
+    data.forEach((item) => {
+      if (item.label.toLowerCase().includes(searchValue)) {
+        filteredData.push(item);
+      }
+    });
     return (
       <div className="drug-container">
         <FormControl component="fieldset">

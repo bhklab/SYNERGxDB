@@ -325,7 +325,6 @@ class Pharmacogenomics extends Component {
   }
 
   handleDrug1Search(event) {
-    console.log('here1');
     const { getDrugData } = this;
     const { sampleData, tissueObj } = this.state;
     const selectedDrug1 = event.target.value;
@@ -334,7 +333,6 @@ class Pharmacogenomics extends Component {
   }
 
   handleDrug2Search(event) {
-    console.log('here2');
     const { getDrugData } = this;
     const { sampleData, tissueObj } = this.state;
     const selectedDrug2 = event.target.value;
