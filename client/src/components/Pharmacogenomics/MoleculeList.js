@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable react/no-did-update-set-state */
 import React, { Component } from 'react';
 import Radio from '@material-ui/core/Radio';

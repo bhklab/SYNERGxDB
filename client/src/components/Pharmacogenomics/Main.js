@@ -21,6 +21,7 @@ import 'react-table/react-table.css';
 // import transitions from '../styles/transitions';
 import MoleculeList from './MoleculeList';
 import GeneList from './GeneList';
+import SampleList from './SampleList';
 
 
 const StyledDiv = styled.div`
@@ -186,15 +187,7 @@ const cacheDrug2 = new CellMeasurerCache({
   defaultHeight: 50,
   fixedWidth: true,
 });
-const cacheMolecules = new CellMeasurerCache({
-  defaultHeight: 50,
-  fixedWidth: true,
-});
 const cacheSamples = new CellMeasurerCache({
-  defaultHeight: 50,
-  fixedWidth: true,
-});
-const cacheGenes = new CellMeasurerCache({
   defaultHeight: 50,
   fixedWidth: true,
 });
@@ -394,10 +387,6 @@ class Pharmacogenomics extends Component {
       drugsData2: [],
       filteredDrugsData1: null,
       filteredDrugsData2: null,
-      moleculeFilterValue: '',
-      geneFilterValue: '',
-      sampleFilterValue: '',
-      drugFilterValue: '',
     });
     if (dataType === 'rnaseq' || dataType === 'mutation' || dataType === 'cna') updateGeneData(dataType);
     if (dataType === 'metabolomic') updateMoleculeData();
@@ -416,9 +405,16 @@ class Pharmacogenomics extends Component {
     this.setState({ selectedGene: event.target.value });
   }
 
-  sampleChange(index) {
+  sampleChange(e) {
+    console.log(e.target.value);
+    const { value } = e.target;
     const { getDrugData } = this;
     const { sampleData, tissueObj } = this.state;
+    console.log(sampleData);
+    let index;
+    sampleData.forEach((item, i) => {
+      if (item.value === value) index = i;
+    });
     let updatedSamplesData;
     if (typeof sampleData[index].value === 'string') {
       const changedSamplesData = sampleData.map((item) => {
@@ -471,7 +467,6 @@ class Pharmacogenomics extends Component {
   renderBiomarkerList() {
     const {
       dataType, moleculeData, geneData, selectedMolecule, selectedGene, loading1,
-      moleculeFilterValue, geneFilterValue,
     } = this.state;
     const {
       moleculeChange, geneChange,
@@ -499,38 +494,6 @@ class Pharmacogenomics extends Component {
           geneChange={geneChange}
           selectedGene={selectedGene}
         />
-        // <div className="genes-container">
-        //   <FormControl component="fieldset">
-        //     <h3>Select gene</h3>
-        //     <RadioGroup aria-label="gene" name="gene" value={selectedGene} onChange={geneChange}>
-        //       <CustomTextField
-        //         id="standard-textarea"
-        //         label="Search by gene name"
-        //         placeholder="Enter gene"
-        //         multiline
-        //         margin="normal"
-        //       />
-        //       <div className="list-container">
-        //         <AutoSizer>
-        //           {({ width, height }) => (
-        //             <List
-        //               width={width}
-        //               height={height}
-        //               rowCount={geneData.length}
-        //               deferredMeasurementCache={cacheGenes}
-        //               rowHeight={cacheGenes.rowHeight}
-        //               rowRenderer={({
-        //                 key, index, parent, style,
-        //               }) => rowRenderer({
-        //                 key, index, parent, style, cache: cacheGenes, data: geneData,
-        //               })}
-        //             />
-        //           )}
-        //         </AutoSizer>
-        //       </div>
-        //     </RadioGroup>
-        //   </FormControl>
-        // </div>
       );
     }
     return null;
@@ -549,7 +512,11 @@ class Pharmacogenomics extends Component {
     if (selectedMolecule !== 'null' || selectedGene !== 'null') {
       return sampleData.length > 0 && drugsData1.length > 0 ? (
         <div className="selector">
-          <div className="samples-container">
+          <SampleList
+            data={sampleData}
+            sampleChange={sampleChange}
+          />
+          {/* <div className="samples-container">
             <FormControl component="fieldset">
               <h3>Select samples</h3>
               <FormGroup>
@@ -586,7 +553,7 @@ class Pharmacogenomics extends Component {
                 </div>
               </FormGroup>
             </FormControl>
-          </div>
+          </div> */}
           <div className="drug-container">
             <FormControl component="fieldset">
               <h3>Select compound A</h3>

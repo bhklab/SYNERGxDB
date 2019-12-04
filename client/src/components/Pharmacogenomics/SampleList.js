@@ -1,12 +1,12 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/no-did-update-set-state */
 import React, { Component } from 'react';
-import Radio from '@material-ui/core/Radio';
-import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import { withStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
+import FormGroup from '@material-ui/core/FormGroup';
+import Checkbox from '@material-ui/core/Checkbox';
 import List from 'react-virtualized/dist/commonjs/List';
 import { CellMeasurer, CellMeasurerCache } from 'react-virtualized/dist/commonjs/CellMeasurer';
 import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer';
@@ -15,30 +15,14 @@ import colors from '../../styles/colors';
 import 'react-table/react-table.css';
 // import transitions from '../styles/transitions';
 
-const CustomRadio = withStyles({
-  root: {
-    color: colors.color_main_2,
-    height: 40,
-    'margin-left': 10,
-    '&$checked': {
-      color: colors.color_main_5,
-    },
-  },
-  checked: {},
-})(props => (
-  <Radio
-  // color="default"
-    {...props}
-  />
-));
-
-const rowRenderer = ({
-  key, // Unique key within array of rows
+const rowRendererSamples = ({
+  key,
   index, // Index of row within collection
-  parent,
   style, // Style object to be applied to row (to position it)
-  cache,
   data,
+  cache,
+  parent,
+  sampleChange,
 }) => (
   <CellMeasurer
     key={key}
@@ -50,9 +34,13 @@ const rowRenderer = ({
   >
     <CustomFormLabel
       style={style}
-      key={key}
-      control={<CustomRadio />}
-      value={data[index].value.toString()}
+      control={(
+        <CustomCheckbox
+          checked={data[index].checked}
+          onChange={e => sampleChange(e, index)}
+          value={data[index].value.toString()}
+        />
+          )}
       label={data[index].label}
     />
   </CellMeasurer>
@@ -73,6 +61,18 @@ const CustomFormLabel = withStyles({
     {...props}
   />
 ));
+
+const CustomCheckbox = withStyles({
+  root: {
+    color: colors.color_main_2,
+    height: 40,
+    'margin-left': 10,
+    '&$checked': {
+      color: colors.color_main_5,
+    },
+  },
+  checked: {},
+})(props => <Checkbox color="default" {...props} />);
 
 const CustomTextField = withStyles({
   root: {
@@ -109,65 +109,56 @@ const CustomTextField = withStyles({
   },
 })(TextField);
 
-const cacheGenes = new CellMeasurerCache({
+const cacheSamples = new CellMeasurerCache({
   defaultHeight: 50,
   fixedWidth: true,
 });
 
-class MoleculeList extends Component {
+class SampleList extends Component {
   constructor(props) {
     super(props);
-    const { selectedGene, data } = this.props;
+    const { data } = this.props;
     this.state = {
       data,
       value: '',
-      selectedGene,
       filteredData: data,
     };
     this.handleFilter = this.handleFilter.bind(this);
   }
 
   componentDidUpdate(prevProps) {
-    const { selectedGene, data } = this.props;
+    const { data } = this.props;
     if (data !== prevProps.data) {
-      this.setState({ data, filteredData: data, value: '' });
-    }
-    if (selectedGene !== prevProps.selectedGene) {
-      this.setState({ selectedGene });
+      this.setState({ data });
     }
   }
 
   handleFilter(e) {
     const { value } = e.target;
+    this.setState({ value });
+  }
+
+  render() {
+    const { handleFilter } = this;
+    const { value, data } = this.state;
+    const { sampleChange } = this.props;
     const searchValue = value.toLowerCase();
-    const { data } = this.state;
     const filteredData = [];
     data.forEach((item) => {
       if (item.label.toLowerCase().includes(searchValue)) {
         filteredData.push(item);
       }
     });
-    this.setState({ value, filteredData });
-    cacheGenes.clearAll();
-  }
-
-  render() {
-    const {
-      handleFilter,
-    } = this;
-    const {
-      value, selectedGene, filteredData,
-    } = this.state;
-    const { geneChange } = this.props;
+    cacheSamples.clearAll();
     return (
-      <div className="genes-container">
+      <div className="samples-container">
         <FormControl component="fieldset">
-          <h3>Select gene</h3>
-          <RadioGroup aria-label="gene" name="gene" value={selectedGene} onChange={geneChange}>
+          <h3>Select samples</h3>
+          <FormGroup>
             <CustomTextField
               id="standard-textarea"
-              label="Search by gene name"
-              placeholder="Enter gene"
+              label="Search by cell line/tissue"
+              placeholder="Enter name"
               multiline
               margin="normal"
               value={value}
@@ -180,28 +171,33 @@ class MoleculeList extends Component {
                     width={width}
                     height={height}
                     rowCount={filteredData.length}
-                    deferredMeasurementCache={cacheGenes}
-                    rowHeight={cacheGenes.rowHeight}
+                    deferredMeasurementCache={cacheSamples}
+                    rowHeight={cacheSamples.rowHeight}
                     rowRenderer={({
                       key, index, parent, style,
-                    }) => rowRenderer({
-                      key, index, parent, style, cache: cacheGenes, data: filteredData,
+                    }) => rowRendererSamples({
+                      key,
+                      index,
+                      parent,
+                      style,
+                      data: filteredData,
+                      cache: cacheSamples,
+                      sampleChange,
                     })}
                   />
                 )}
               </AutoSizer>
             </div>
-          </RadioGroup>
+          </FormGroup>
         </FormControl>
       </div>
     );
   }
 }
-export default MoleculeList;
+export default SampleList;
 
 
-MoleculeList.propTypes = {
+SampleList.propTypes = {
   data: PropTypes.arrayOf(PropTypes.object).isRequired,
-  geneChange: PropTypes.func.isRequired,
-  selectedGene: PropTypes.string.isRequired,
+  sampleChange: PropTypes.func.isRequired,
 };
