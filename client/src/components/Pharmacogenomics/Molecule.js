@@ -9,6 +9,7 @@ import TextField from '@material-ui/core/TextField';
 import List from 'react-virtualized/dist/commonjs/List';
 import { CellMeasurer, CellMeasurerCache } from 'react-virtualized/dist/commonjs/CellMeasurer';
 import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer';
+import PropTypes from 'prop-types';
 import colors from '../../styles/colors';
 import 'react-table/react-table.css';
 // import transitions from '../styles/transitions';
@@ -193,3 +194,10 @@ class Molecule extends Component {
   }
 }
 export default Molecule;
+
+
+Molecule.propTypes = {
+  data: PropTypes.arrayOf(PropTypes.object).isRequired,
+  moleculeChange: PropTypes.func.isRequired,
+  selectedMolecule: PropTypes.string.isRequired,
+};
