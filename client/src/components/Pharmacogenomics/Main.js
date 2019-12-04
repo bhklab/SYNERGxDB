@@ -19,7 +19,9 @@ import ReactLoading from 'react-loading';
 import colors from '../../styles/colors';
 import 'react-table/react-table.css';
 // import transitions from '../styles/transitions';
-import Molecule from './Molecule';
+import MoleculeList from './MoleculeList';
+import GeneList from './GeneList';
+
 
 const StyledDiv = styled.div`
   width: 100%;
@@ -483,23 +485,30 @@ class Pharmacogenomics extends Component {
     }
     if (dataType === 'metabolomic' && moleculeData.length > 0) {
       return (
-        <Molecule
+        <MoleculeList
           data={moleculeData}
           moleculeChange={moleculeChange}
           selectedMolecule={selectedMolecule}
         />
-        // <div className="molecule-container">
+      );
+    }
+    if (dataType !== 'metabolomic' && geneData.length > 0) {
+      return (
+        <GeneList
+          data={geneData}
+          geneChange={geneChange}
+          selectedGene={selectedGene}
+        />
+        // <div className="genes-container">
         //   <FormControl component="fieldset">
-        //     <h3>Select biological molecule</h3>
-        //     <RadioGroup aria-label="molecule" name="molecule" value={selectedMolecule} onChange={moleculeChange}>
+        //     <h3>Select gene</h3>
+        //     <RadioGroup aria-label="gene" name="gene" value={selectedGene} onChange={geneChange}>
         //       <CustomTextField
         //         id="standard-textarea"
-        //         label="Search by biological molecule name"
-        //         placeholder="Enter biological molecule"
+        //         label="Search by gene name"
+        //         placeholder="Enter gene"
         //         multiline
         //         margin="normal"
-        //         value={moleculeFilterValue}
-        //         onChange={e => this.setState({ moleculeFilterValue: (e.target.value) })}
         //       />
         //       <div className="list-container">
         //         <AutoSizer>
@@ -507,13 +516,13 @@ class Pharmacogenomics extends Component {
         //             <List
         //               width={width}
         //               height={height}
-        //               rowCount={moleculeData.length}
-        //               deferredMeasurementCache={cacheMolecules}
-        //               rowHeight={cacheMolecules.rowHeight}
+        //               rowCount={geneData.length}
+        //               deferredMeasurementCache={cacheGenes}
+        //               rowHeight={cacheGenes.rowHeight}
         //               rowRenderer={({
         //                 key, index, parent, style,
         //               }) => rowRenderer({
-        //                 key, index, parent, style, cache: cacheMolecules, data: moleculeData,
+        //                 key, index, parent, style, cache: cacheGenes, data: geneData,
         //               })}
         //             />
         //           )}
@@ -522,42 +531,6 @@ class Pharmacogenomics extends Component {
         //     </RadioGroup>
         //   </FormControl>
         // </div>
-      );
-    }
-    if (dataType !== 'metabolomic' && geneData.length > 0) {
-      return (
-        <div className="genes-container">
-          <FormControl component="fieldset">
-            <h3>Select gene</h3>
-            <RadioGroup aria-label="gene" name="gene" value={selectedGene} onChange={geneChange}>
-              <CustomTextField
-                id="standard-textarea"
-                label="Search by gene name"
-                placeholder="Enter gene"
-                multiline
-                margin="normal"
-              />
-              <div className="list-container">
-                <AutoSizer>
-                  {({ width, height }) => (
-                    <List
-                      width={width}
-                      height={height}
-                      rowCount={geneData.length}
-                      deferredMeasurementCache={cacheGenes}
-                      rowHeight={cacheGenes.rowHeight}
-                      rowRenderer={({
-                        key, index, parent, style,
-                      }) => rowRenderer({
-                        key, index, parent, style, cache: cacheGenes, data: geneData,
-                      })}
-                    />
-                  )}
-                </AutoSizer>
-              </div>
-            </RadioGroup>
-          </FormControl>
-        </div>
       );
     }
     return null;

@@ -108,28 +108,31 @@ const CustomTextField = withStyles({
   },
 })(TextField);
 
-const cacheMolecules = new CellMeasurerCache({
+const cacheGenes = new CellMeasurerCache({
   defaultHeight: 50,
   fixedWidth: true,
 });
 
-class Molecule extends Component {
+class MoleculeList extends Component {
   constructor(props) {
     super(props);
-    const { selectedMolecule, data } = this.props;
+    const { selectedGene, data } = this.props;
     this.state = {
       data,
       value: '',
-      selectedMolecule,
+      selectedGene,
       filteredData: data,
     };
     this.handleFilter = this.handleFilter.bind(this);
   }
 
   componentDidUpdate(prevProps) {
-    const { selectedMolecule } = this.props;
-    if (selectedMolecule !== prevProps.selectedMolecule) {
-      this.setState({ selectedMolecule });
+    const { selectedGene, data } = this.props;
+    if (data !== prevProps.data) {
+      this.setState({ data, filteredData: data, value: '' });
+    }
+    if (selectedGene !== prevProps.selectedGene) {
+      this.setState({ selectedGene });
     }
   }
 
@@ -144,7 +147,7 @@ class Molecule extends Component {
       }
     });
     this.setState({ value, filteredData });
-    cacheMolecules.clearAll();
+    cacheGenes.clearAll();
   }
 
   render() {
@@ -152,18 +155,18 @@ class Molecule extends Component {
       handleFilter,
     } = this;
     const {
-      value, selectedMolecule, filteredData,
+      value, selectedGene, filteredData,
     } = this.state;
-    const { moleculeChange } = this.props;
+    const { geneChange } = this.props;
     return (
-      <div className="molecule-container">
+      <div className="genes-container">
         <FormControl component="fieldset">
-          <h3>Select biological molecule</h3>
-          <RadioGroup aria-label="molecule" name="molecule" value={selectedMolecule} onChange={moleculeChange}>
+          <h3>Select gene</h3>
+          <RadioGroup aria-label="gene" name="gene" value={selectedGene} onChange={geneChange}>
             <CustomTextField
               id="standard-textarea"
-              label="Search by biological molecule name"
-              placeholder="Enter biological molecule"
+              label="Search by gene name"
+              placeholder="Enter gene"
               multiline
               margin="normal"
               value={value}
@@ -176,12 +179,12 @@ class Molecule extends Component {
                     width={width}
                     height={height}
                     rowCount={filteredData.length}
-                    deferredMeasurementCache={cacheMolecules}
-                    rowHeight={cacheMolecules.rowHeight}
+                    deferredMeasurementCache={cacheGenes}
+                    rowHeight={cacheGenes.rowHeight}
                     rowRenderer={({
                       key, index, parent, style,
                     }) => rowRenderer({
-                      key, index, parent, style, cache: cacheMolecules, data: filteredData,
+                      key, index, parent, style, cache: cacheGenes, data: filteredData,
                     })}
                   />
                 )}
@@ -193,11 +196,11 @@ class Molecule extends Component {
     );
   }
 }
-export default Molecule;
+export default MoleculeList;
 
 
-Molecule.propTypes = {
+MoleculeList.propTypes = {
   data: PropTypes.arrayOf(PropTypes.object).isRequired,
-  moleculeChange: PropTypes.func.isRequired,
-  selectedMolecule: PropTypes.string.isRequired,
+  geneChange: PropTypes.func.isRequired,
+  selectedGene: PropTypes.string.isRequired,
 };
