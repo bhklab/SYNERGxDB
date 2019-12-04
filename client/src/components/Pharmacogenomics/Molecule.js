@@ -120,6 +120,7 @@ class Molecule extends Component {
       data,
       value: '',
       selectedMolecule,
+      filteredData: data,
     };
     this.handleFilter = this.handleFilter.bind(this);
   }
@@ -133,8 +134,16 @@ class Molecule extends Component {
 
   handleFilter(e) {
     const { value } = e.target;
-    console.log(value);
-    this.setState({ value });
+    const searchValue = value.toLowerCase();
+    const { data } = this.state;
+    const filteredData = [];
+    data.forEach((item) => {
+      if (item.label.toLowerCase().includes(searchValue)) {
+        filteredData.push(item);
+      }
+    });
+    this.setState({ value, filteredData });
+    cacheMolecules.clearAll();
   }
 
   render() {
@@ -142,7 +151,7 @@ class Molecule extends Component {
       handleFilter,
     } = this;
     const {
-      data, value, selectedMolecule,
+      value, selectedMolecule, filteredData,
     } = this.state;
     const { moleculeChange } = this.props;
     return (
@@ -165,13 +174,13 @@ class Molecule extends Component {
                   <List
                     width={width}
                     height={height}
-                    rowCount={data.length}
+                    rowCount={filteredData.length}
                     deferredMeasurementCache={cacheMolecules}
                     rowHeight={cacheMolecules.rowHeight}
                     rowRenderer={({
                       key, index, parent, style,
                     }) => rowRenderer({
-                      key, index, parent, style, cache: cacheMolecules, data,
+                      key, index, parent, style, cache: cacheMolecules, data: filteredData,
                     })}
                   />
                 )}
