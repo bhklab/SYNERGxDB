@@ -126,7 +126,6 @@ class DrugList extends Component {
       data,
       value: '',
       selectedDrug,
-      filteredData: data,
     };
     this.handleFilter = this.handleFilter.bind(this);
   }
@@ -154,7 +153,7 @@ class DrugList extends Component {
         filteredData.push(item);
       }
     });
-    this.setState({ value, filteredData });
+    this.setState({ value });
     if (drugLabel === 'A') cacheDrug1.clearAll();
     if (drugLabel === 'B') cacheDrug2.clearAll();
   }

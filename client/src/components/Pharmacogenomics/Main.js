@@ -12,19 +12,25 @@ import ReactLoading from 'react-loading';
 
 import colors from '../../styles/colors';
 import 'react-table/react-table.css';
-// import transitions from '../styles/transitions';
+import transitions from '../../styles/transitions';
 import MoleculeList from './MoleculeList';
 import GeneList from './GeneList';
 import SampleList from './SampleList';
 import DrugList from './DrugList';
+import AdvancedAnalysis from './Plots/AdvancedAnalysis';
 
 
 const StyledDiv = styled.div`
   width: 100%;
   height: auto;
   background:white;
-  padding:20px 30px;
+  padding: 0 30px;
   margin-bottom:20px;
+
+  h2 {
+    margin: 0;
+    padding-top:15px; 
+  }
 
   h3 {
     color:${colors.color_main_2}
@@ -52,7 +58,7 @@ const StyledDiv = styled.div`
       width: 30%;
     }
     &:nth-of-type(1) > div {
-      padding: 20px;
+      padding: 0 20px;
       width: 50%;
       &:nth-of-type(2) {
         border-left: 2px solid ${colors.color_main_3};
@@ -87,6 +93,33 @@ const StyledDiv = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
+  }
+  .plot {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+  }
+`;
+
+const StyledButton = styled.button`
+  background: ${colors.nav_links};
+  border: 1px solid ${colors.nav_links};
+  border-radius:10px;
+  padding: 10px 20px;
+  margin: 0 auto;
+  color: #ffffff;
+  transition: ${transitions.main_trans};
+  outline-style: none;
+  text-align: center;
+
+  &:hover {
+    color: ${colors.nav_links};
+    background: ${colors.nav_bg};
+    border: 1px solid ${colors.nav_links};
+    cursor:pointer;
+  }
+  &[type="button"] {
+    font-size: 2em;
   }
 `;
 
@@ -141,6 +174,8 @@ class Pharmacogenomics extends Component {
       drugsData2: [],
       tissueObj: {},
       loading1: false,
+      showPlot: false,
+      loadingPlot: true,
     };
     this.getDrugData = this.getDrugData.bind(this);
     this.getSampleDrugData = this.getSampleDrugData.bind(this);
@@ -155,6 +190,7 @@ class Pharmacogenomics extends Component {
     this.renderSampleDrugData = this.renderSampleDrugData.bind(this);
     this.updateGeneData = this.updateGeneData.bind(this);
     this.updateMoleculeData = this.updateMoleculeData.bind(this);
+    this.renderPlot = this.renderPlot.bind(this);
   }
 
   // Updates drug data based on samples
@@ -176,8 +212,8 @@ class Pharmacogenomics extends Component {
     if (type === 'drugsData2' && drug) queryString = queryString.concat(`&drugId=${drug}`);
     fetch(queryString)
       .then(response => response.json())
-      .then((res) => {
-        const drugsData = res.map(item => ({ value: item.idDrug, label: item.name }));
+      .then((drugData) => {
+        const drugsData = drugData.map(item => ({ value: item.idDrug, label: item.name }));
         this.setState({
           [type]: drugsData,
         });
@@ -409,14 +445,24 @@ class Pharmacogenomics extends Component {
     return null;
   }
 
+  renderPlot() {
+    console.log('Run analysis');
+    const {
+      dataType, selectedDrug1, selectedDrug2,
+      selectedMolecule, selectedGene, sampleData,
+    } = this.state;
+  }
+
   render() {
     const {
       profileChange, scoreChange, renderBiomarkerList,
-      renderSampleDrugData,
+      renderSampleDrugData, renderPlot,
     } = this;
     const {
       dataType, scoreValue, selectedDrug1, selectedDrug2,
+      showPlot, loadingPlot,
     } = this.state;
+    const showSynScore = selectedDrug1 !== 'null' && selectedDrug2 !== 'null';
     return (
       <main>
         <StyledDiv>
@@ -438,7 +484,7 @@ class Pharmacogenomics extends Component {
             {renderBiomarkerList()}
           </div>
           { renderSampleDrugData()}
-          {selectedDrug1 !== 'null' && selectedDrug2 !== 'null' ? (
+          { showSynScore ? (
             <div className="synscore-container selector">
               <FormControl component="fieldset">
                 <RadioGroup aria-label="synscore" name="synscore" value={scoreValue} onChange={scoreChange}>
@@ -451,6 +497,16 @@ class Pharmacogenomics extends Component {
                   </div>
                 </RadioGroup>
               </FormControl>
+            </div>
+          ) : null}
+          {showSynScore ? (
+            <div>
+              <StyledButton onClick={renderPlot} type="button">Analysis</StyledButton>
+              {showPlot ? (
+                <div className="plot">
+                  <AdvancedAnalysis />
+                </div>
+              ) : <div className="plot">No data for the plot</div>}
             </div>
           ) : null}
         </StyledDiv>

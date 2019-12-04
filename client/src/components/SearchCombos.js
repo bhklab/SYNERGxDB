@@ -193,6 +193,7 @@ const StyledButton = styled.button`
     font-size: 2em;
   }
 `;
+
 const ExampleSpan = styled.span`
   font-size: 1.1rem;
   text-align: left;
@@ -694,39 +695,3 @@ class SearchCombos extends Component {
 }
 
 export default withRouter(SearchCombos);
-
-// Drug B custom styles
-// styles={{
-//   ...customStyles,
-//   control: provided => ({
-//     ...provided,
-//     background: 'rgb(0,0,0,0)',
-//     margin: '5px 0px',
-//     border: isDisabled ? `1px solid ${colors.color_accent_1}` : `1px solid ${colors.nav_links}`,
-//     '&:hover': {
-//       border: isDisabled ? `1px solid ${colors.color_accent_1}` : `1px solid ${colors.nav_links}`,
-//     },
-//   }),
-//   placeholder: provided => ({
-//     ...provided,
-//     color: isDisabled ? colors.color_accent_1 : colors.nav_links,
-//   }),
-//   dropdownIndicator: provided => ({
-//     ...provided,
-//     color: isDisabled ? colors.color_accent_1 : colors.nav_links,
-//     '&:hover': {
-//       color: isDisabled ? colors.color_accent_1 : colors.nav_links,
-//     },
-//   }),
-//   indicatorSeparator: provided => ({
-//     ...provided,
-//     background: isDisabled ? colors.color_accent_1 : colors.nav_links,
-//     '&:hover': {
-//       background: isDisabled ? colors.color_accent_1 : colors.nav_links,
-//     },
-//   }),
-//   singleValue: provided => ({
-//     ...provided,
-//     color: isDisabled ? colors.color_accent_1 : colors.nav_links,
-//   }),
-// }}
