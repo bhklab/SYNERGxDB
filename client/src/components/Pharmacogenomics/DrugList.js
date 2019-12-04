@@ -1,12 +1,12 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/no-did-update-set-state */
 import React, { Component } from 'react';
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import { withStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
-import FormGroup from '@material-ui/core/FormGroup';
-import Checkbox from '@material-ui/core/Checkbox';
 import List from 'react-virtualized/dist/commonjs/List';
 import { CellMeasurer, CellMeasurerCache } from 'react-virtualized/dist/commonjs/CellMeasurer';
 import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer';
@@ -15,14 +15,30 @@ import colors from '../../styles/colors';
 import 'react-table/react-table.css';
 // import transitions from '../styles/transitions';
 
-const rowRendererSamples = ({
-  key,
+const CustomRadio = withStyles({
+  root: {
+    color: colors.color_main_2,
+    height: 40,
+    'margin-left': 10,
+    '&$checked': {
+      color: colors.color_main_5,
+    },
+  },
+  checked: {},
+})(props => (
+  <Radio
+  // color="default"
+    {...props}
+  />
+));
+
+const rowRenderer = ({
+  key, // Unique key within array of rows
   index, // Index of row within collection
-  style, // Style object to be applied to row (to position it)
-  data,
-  cache,
   parent,
-  sampleChange,
+  style, // Style object to be applied to row (to position it)
+  cache,
+  data,
 }) => (
   <CellMeasurer
     key={key}
@@ -34,13 +50,9 @@ const rowRendererSamples = ({
   >
     <CustomFormLabel
       style={style}
-      control={(
-        <CustomCheckbox
-          checked={data[index].checked}
-          onChange={e => sampleChange(e, index)}
-          value={data[index].value.toString()}
-        />
-          )}
+      key={key}
+      control={<CustomRadio />}
+      value={data[index].value.toString()}
       label={data[index].label}
     />
   </CellMeasurer>
@@ -61,18 +73,6 @@ const CustomFormLabel = withStyles({
     {...props}
   />
 ));
-
-const CustomCheckbox = withStyles({
-  root: {
-    color: colors.color_main_2,
-    height: 40,
-    'margin-left': 10,
-    '&$checked': {
-      color: colors.color_main_5,
-    },
-  },
-  checked: {},
-})(props => <Checkbox color="default" {...props} />);
 
 const CustomTextField = withStyles({
   root: {
@@ -109,38 +109,44 @@ const CustomTextField = withStyles({
   },
 })(TextField);
 
-const cacheSamples = new CellMeasurerCache({
+const cacheDrug1 = new CellMeasurerCache({
+  defaultHeight: 50,
+  fixedWidth: true,
+});
+const cacheDrug2 = new CellMeasurerCache({
   defaultHeight: 50,
   fixedWidth: true,
 });
 
-class SampleList extends Component {
+class DrugList extends Component {
   constructor(props) {
     super(props);
-    const { data } = this.props;
+    const { selectedDrug, data } = this.props;
     this.state = {
       data,
       value: '',
+      selectedDrug,
+      filteredData: data,
     };
     this.handleFilter = this.handleFilter.bind(this);
   }
 
   componentDidUpdate(prevProps) {
-    const { data } = this.props;
+    const { selectedDrug, data, drugLabel } = this.props;
     if (data !== prevProps.data) {
-      this.setState({ data });
+      if (drugLabel === 'A') cacheDrug1.clearAll();
+      if (drugLabel === 'B') cacheDrug2.clearAll();
+      this.setState({ data, filteredData: data, value: '' });
+    }
+    if (selectedDrug !== prevProps.selectedDrug) {
+      this.setState({ selectedDrug });
     }
   }
 
   handleFilter(e) {
     const { value } = e.target;
-    this.setState({ value });
-  }
-
-  render() {
-    const { handleFilter } = this;
-    const { value, data } = this.state;
-    const { sampleChange } = this.props;
+    const { data } = this.state;
+    const { drugLabel } = this.props;
     const searchValue = value.toLowerCase();
     const filteredData = [];
     data.forEach((item) => {
@@ -148,16 +154,32 @@ class SampleList extends Component {
         filteredData.push(item);
       }
     });
-    cacheSamples.clearAll();
+    this.setState({ value, filteredData });
+    if (drugLabel === 'A') cacheDrug1.clearAll();
+    if (drugLabel === 'B') cacheDrug2.clearAll();
+  }
+
+  render() {
+    const {
+      handleFilter,
+    } = this;
+    const {
+      value, selectedDrug, filteredData,
+    } = this.state;
+    const { drugChange, drugLabel } = this.props;
     return (
-      <div className="samples-container">
+      <div className="drug-container">
         <FormControl component="fieldset">
-          <h3>Select samples</h3>
-          <FormGroup>
+          <h3>
+            Select compound
+            {' '}
+            {drugLabel}
+          </h3>
+          <RadioGroup aria-label={`drug${drugLabel}`} name={`drug${drugLabel}`} value={selectedDrug} onChange={drugChange}>
             <CustomTextField
               id="standard-textarea"
-              label="Search by cell line/tissue"
-              placeholder="Enter sample name"
+              label="Search by compound name"
+              placeholder={`Enter compound ${drugLabel}`}
               multiline
               margin="normal"
               value={value}
@@ -170,33 +192,29 @@ class SampleList extends Component {
                     width={width}
                     height={height}
                     rowCount={filteredData.length}
-                    deferredMeasurementCache={cacheSamples}
-                    rowHeight={cacheSamples.rowHeight}
+                    deferredMeasurementCache={drugLabel === 'A' ? cacheDrug1 : cacheDrug2}
+                    rowHeight={drugLabel === 'A' ? cacheDrug1.rowHeight : cacheDrug2.rowHeight}
                     rowRenderer={({
                       key, index, parent, style,
-                    }) => rowRendererSamples({
-                      key,
-                      index,
-                      parent,
-                      style,
-                      data: filteredData,
-                      cache: cacheSamples,
-                      sampleChange,
+                    }) => rowRenderer({
+                      key, index, parent, style, cache: drugLabel === 'A' ? cacheDrug1 : cacheDrug2, data: filteredData,
                     })}
                   />
                 )}
               </AutoSizer>
             </div>
-          </FormGroup>
+          </RadioGroup>
         </FormControl>
       </div>
     );
   }
 }
-export default SampleList;
+export default DrugList;
 
 
-SampleList.propTypes = {
+DrugList.propTypes = {
   data: PropTypes.arrayOf(PropTypes.object).isRequired,
-  sampleChange: PropTypes.func.isRequired,
+  drugChange: PropTypes.func.isRequired,
+  selectedDrug: PropTypes.string.isRequired,
+  drugLabel: PropTypes.string.isRequired,
 };

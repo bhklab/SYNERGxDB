@@ -8,12 +8,6 @@ import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import { withStyles } from '@material-ui/core/styles';
-import TextField from '@material-ui/core/TextField';
-import Checkbox from '@material-ui/core/Checkbox';
-import FormGroup from '@material-ui/core/FormGroup';
-import List from 'react-virtualized/dist/commonjs/List';
-import { CellMeasurer, CellMeasurerCache } from 'react-virtualized/dist/commonjs/CellMeasurer';
-import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer';
 import ReactLoading from 'react-loading';
 
 import colors from '../../styles/colors';
@@ -22,6 +16,7 @@ import 'react-table/react-table.css';
 import MoleculeList from './MoleculeList';
 import GeneList from './GeneList';
 import SampleList from './SampleList';
+import DrugList from './DrugList';
 
 
 const StyledDiv = styled.div`
@@ -128,128 +123,6 @@ const CustomFormLabel = withStyles({
   />
 ));
 
-const CustomCheckbox = withStyles({
-  root: {
-    color: colors.color_main_2,
-    height: 40,
-    'margin-left': 10,
-    '&$checked': {
-      color: colors.color_main_5,
-    },
-  },
-  checked: {},
-})(props => <Checkbox color="default" {...props} />);
-
-const CustomTextField = withStyles({
-  root: {
-    marginTop: 0,
-    '& label': {
-      color: colors.color_main_3,
-    },
-    '& label.Mui-focused': {
-      color: colors.trans_color_main_3,
-    },
-    '& textarea::placeholder': {
-      color: 'black',
-    },
-    '& .MuiInput-underline:after': {
-      borderBottom: `2px solid ${colors.color_main_5}`,
-    },
-    '& .MuiInput-underline:before': {
-      borderBottom: `2px solid ${colors.color_main_3}`,
-    },
-    '& .MuiInput-underline:hover:before': {
-      borderBottom: `2px solid ${colors.color_main_2}`,
-    },
-    '& .MuiOutlinedInput-root': {
-      '& fieldset': {
-        borderColor: 'red',
-      },
-      '&:hover fieldset': {
-        borderColor: 'yellow',
-      },
-      '&.Mui-focused fieldset': {
-        borderColor: 'green',
-      },
-    },
-  },
-})(TextField);
-
-
-// ///////////////////
-// CelMeasurer cache
-// ///////////////////
-const cacheDrug1 = new CellMeasurerCache({
-  defaultHeight: 50,
-  fixedWidth: true,
-});
-const cacheDrug2 = new CellMeasurerCache({
-  defaultHeight: 50,
-  fixedWidth: true,
-});
-const cacheSamples = new CellMeasurerCache({
-  defaultHeight: 50,
-  fixedWidth: true,
-});
-
-const rowRenderer = ({
-  key, // Unique key within array of rows
-  index, // Index of row within collection
-  parent,
-  style, // Style object to be applied to row (to position it)
-  cache,
-  data,
-}) => (
-  <CellMeasurer
-    key={key}
-    cache={cache}
-    parent={parent}
-    columnIndex={0}
-    overscanRowCount={10}
-    rowIndex={index}
-  >
-    <CustomFormLabel
-      style={style}
-      key={key}
-      control={<CustomRadio />}
-      value={data[index].value.toString()}
-      label={data[index].label}
-    />
-  </CellMeasurer>
-);
-
-const rowRendererSamples = ({
-  key,
-  index, // Index of row within collection
-  style, // Style object to be applied to row (to position it)
-  data,
-  cache,
-  parent,
-  sampleChange,
-}) => (
-  <CellMeasurer
-    key={key}
-    cache={cache}
-    parent={parent}
-    columnIndex={0}
-    overscanRowCount={10}
-    rowIndex={index}
-  >
-    <CustomFormLabel
-      style={style}
-      control={(
-        <CustomCheckbox
-          checked={data[index].checked}
-          onChange={() => sampleChange(index)}
-          value={data[index].value.toString()}
-        />
-        )}
-      label={data[index].label}
-    />
-  </CellMeasurer>
-);
-
-
 class Pharmacogenomics extends Component {
   constructor() {
     super();
@@ -266,8 +139,6 @@ class Pharmacogenomics extends Component {
       sampleData: [],
       drugsData1: [],
       drugsData2: [],
-      filteredDrugsData1: null,
-      filteredDrugsData2: null,
       tissueObj: {},
       loading1: false,
     };
@@ -306,8 +177,6 @@ class Pharmacogenomics extends Component {
     fetch(queryString)
       .then(response => response.json())
       .then((res) => {
-        if (type === 'drugsData1') cacheDrug1.clearAll();
-        if (type === 'drugsData2') cacheDrug2.clearAll();
         const drugsData = res.map(item => ({ value: item.idDrug, label: item.name }));
         this.setState({
           [type]: drugsData,
@@ -385,8 +254,6 @@ class Pharmacogenomics extends Component {
       sampleData: [],
       drugsData1: [],
       drugsData2: [],
-      filteredDrugsData1: null,
-      filteredDrugsData2: null,
     });
     if (dataType === 'rnaseq' || dataType === 'mutation' || dataType === 'cna') updateGeneData(dataType);
     if (dataType === 'metabolomic') updateMoleculeData();
@@ -458,6 +325,7 @@ class Pharmacogenomics extends Component {
   }
 
   handleDrug1Search(event) {
+    console.log('here1');
     const { getDrugData } = this;
     const { sampleData, tissueObj } = this.state;
     const selectedDrug1 = event.target.value;
@@ -466,6 +334,7 @@ class Pharmacogenomics extends Component {
   }
 
   handleDrug2Search(event) {
+    console.log('here2');
     const { getDrugData } = this;
     const { sampleData, tissueObj } = this.state;
     const selectedDrug2 = event.target.value;
@@ -515,8 +384,7 @@ class Pharmacogenomics extends Component {
     } = this;
     const {
       drugsData1, drugsData2, selectedDrug1, sampleData,
-      filteredDrugsData1, filteredDrugsData2, selectedDrug2,
-      selectedGene, selectedMolecule,
+      selectedDrug2, selectedGene, selectedMolecule,
     } = this.state;
     if (selectedMolecule !== 'null' || selectedGene !== 'null') {
       return sampleData.length > 0 && drugsData1.length > 0 ? (
@@ -525,108 +393,18 @@ class Pharmacogenomics extends Component {
             data={sampleData}
             sampleChange={sampleChange}
           />
-          {/* <div className="samples-container">
-            <FormControl component="fieldset">
-              <h3>Select samples</h3>
-              <FormGroup>
-                <CustomTextField
-                  id="standard-textarea"
-                  label="Search by cell line/tissue"
-                  placeholder="Enter name"
-                  multiline
-                  margin="normal"
-                />
-                <div className="list-container">
-                  <AutoSizer>
-                    {({ width, height }) => (
-                      <List
-                        width={width}
-                        height={height}
-                        rowCount={sampleData.length}
-                        deferredMeasurementCache={cacheSamples}
-                        rowHeight={cacheSamples.rowHeight}
-                        rowRenderer={({
-                          key, index, parent, style,
-                        }) => rowRendererSamples({
-                          key,
-                          index,
-                          parent,
-                          style,
-                          data: sampleData,
-                          cache: cacheSamples,
-                          sampleChange,
-                        })}
-                      />
-                    )}
-                  </AutoSizer>
-                </div>
-              </FormGroup>
-            </FormControl>
-          </div> */}
-          <div className="drug-container">
-            <FormControl component="fieldset">
-              <h3>Select compound A</h3>
-              <RadioGroup aria-label="drugA" name="drugA" value={selectedDrug1} onChange={handleDrug1Search}>
-                <CustomTextField
-                  id="standard-textarea"
-                  label="Search by compound name"
-                  placeholder="Enter compound A"
-                  multiline
-                  margin="normal"
-                />
-                <div className="list-container">
-                  <AutoSizer>
-                    {({ width, height }) => (
-                      <List
-                        width={width}
-                        height={height}
-                        rowCount={drugsData1.length}
-                        deferredMeasurementCache={cacheDrug1}
-                        rowHeight={cacheDrug1.rowHeight}
-                        rowRenderer={({
-                          key, index, parent, style,
-                        }) => rowRenderer({
-                          key, index, parent, style, cache: cacheDrug1, data: drugsData1,
-                        })}
-                      />
-                    )}
-                  </AutoSizer>
-                </div>
-              </RadioGroup>
-            </FormControl>
-          </div>
-          <div className="drug-container">
-            <FormControl component="fieldset">
-              <h3>Select compound B</h3>
-              <RadioGroup aria-label="drugB" name="drugB" value={selectedDrug2} onChange={handleDrug2Search}>
-                <CustomTextField
-                  id="standard-textarea"
-                  label="Search by compound name"
-                  placeholder="Enter compound B"
-                  multiline
-                  margin="normal"
-                />
-                <div className="list-container">
-                  <AutoSizer>
-                    {({ width, height }) => (
-                      <List
-                        width={width}
-                        height={height}
-                        rowCount={drugsData2.length}
-                        deferredMeasurementCache={cacheDrug2}
-                        rowHeight={cacheDrug2.rowHeight}
-                        rowRenderer={({
-                          key, index, parent, style,
-                        }) => rowRenderer({
-                          key, index, parent, style, cache: cacheDrug2, data: drugsData2,
-                        })}
-                      />
-                    )}
-                  </AutoSizer>
-                </div>
-              </RadioGroup>
-            </FormControl>
-          </div>
+          <DrugList
+            data={drugsData1}
+            drugChange={handleDrug1Search}
+            selectedDrug={selectedDrug1}
+            drugLabel="A"
+          />
+          <DrugList
+            data={drugsData2}
+            drugChange={handleDrug2Search}
+            selectedDrug={selectedDrug2}
+            drugLabel="B"
+          />
         </div>
       ) : null;
     }
