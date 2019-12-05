@@ -112,13 +112,7 @@ router.get('/filter', (req, res) => {
       : [Number.isNaN(parseInt(sample, 10)) ? sample : parseInt(sample, 10)];
     if (Number.isNaN(parseInt(sampleArray[0], 10))) [tissue] = sampleArray;
   }
-  console.log('tissue', tissue);
-  console.log('sampleArray', sampleArray);
-
-
-  // sample = Number.isNaN(parseInt(sample, 10)) ? sample : parseInt(sample, 10);
-
-  console.log(dataset, drugId, sampleArray);
+  console.log(dataset, drugId, sample);
   // query to get relevant cell lines
   function subqueryTissue() {
     return this.select('idSample')

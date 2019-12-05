@@ -214,11 +214,9 @@ class Pharmacogenomics extends Component {
     let queryString = `/api/drugs/filter?sample=${querySamples}`;
     if (type === 'drugsData1' && drug) queryString = queryString.concat(`&drugId=${drug}`);
     if (type === 'drugsData2' && drug) queryString = queryString.concat(`&drugId=${drug}`);
-    console.log(queryString);
     fetch(queryString)
       .then(response => response.json())
       .then((drugData) => {
-        console.log(drugData);
         const drugsData = drugData.map(item => ({ value: item.idDrug, label: item.name }));
         this.setState({
           [type]: drugsData,
@@ -456,10 +454,11 @@ class Pharmacogenomics extends Component {
     const {
       dataType, selectedDrug1, selectedDrug2,
       selectedMolecule, selectedGene, sampleData,
+      tissueObj,
     } = this.state;
 
-
-    let queryParams = `?drugId1=${selectedDrug1}&drugId2=${selectedDrug2}`;
+    const sampleString = generateSampleString(sampleData, tissueObj);
+    let queryParams = `?drugId1=${selectedDrug1}&drugId2=${selectedDrug2}&sample=${sampleString}`;
 
 
     if (dataType === 'rnaseq') {

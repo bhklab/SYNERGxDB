@@ -13,7 +13,7 @@ router.get('/genes', (req, res) => {
   switch (datatype) {
     case 'rnaseq':
       console.log('rnaseq');
-      query = db.select('hgnc_symbol as gene', 'gene_id').from('gene_identifiers');
+      query = db.select('hgnc_symbol as gene').from('gene_identifiers');
       break;
     case 'mutation':
       console.log('mutation');

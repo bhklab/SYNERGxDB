@@ -301,6 +301,7 @@ class Biomarkers extends Component {
         },
       }).then(response => response.json())
         .then((data) => {
+          console.log(data);
           synergyArray = data;
         });
       this.setState({

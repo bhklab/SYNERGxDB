@@ -50,7 +50,6 @@ router.get('/association', (req, res) => {
     if (Number.isNaN(parseInt(sampleArray[0], 10))) [tissue] = sampleArray;
   }
   console.log('tissue', tissue);
-  console.log('sampleArray', sampleArray);
 
   function subqueryGeneIdentifier() {
     this.select('gene_id')
@@ -60,10 +59,14 @@ router.get('/association', (req, res) => {
   function subquerySamples() {
     let subquery = this.select('model_id', 'name', 'model_identifiers.idSample as idSample')
       .from('sample');
-    if (typeof (sample) === 'string') {
+    if (tissue) {
       subquery = subquery
         .join('model_identifiers', 'model_identifiers.idSample', '=', 'sample.idSample')
         .where({ tissue: sample });
+    } else if (sampleArray) {
+      subquery = subquery
+        .join('model_identifiers', 'model_identifiers.idSample', '=', 'sample.idSample')
+        .whereIn('sample.idSample', sampleArray);
     } else {
       subquery = subquery
         .join('model_identifiers', 'model_identifiers.idSample', '=', 'sample.idSample');
