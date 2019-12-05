@@ -98,8 +98,9 @@ router.get('/mono', (req, res) => {
 router.get('/filter', (req, res) => {
   console.log('Drug filtering');
   let {
-    dataset, drugId, sample,
+    dataset, drugId,
   } = req.query;
+  const { sample } = req.query;
   drugId = drugId && parseInt(drugId, 10);
   dataset = dataset && parseInt(dataset, 10);
 

@@ -19,6 +19,11 @@ import SampleList from './SampleList';
 import DrugList from './DrugList';
 import AdvancedAnalysis from './Plots/AdvancedAnalysis';
 
+const dimensions = {
+  left: 55,
+  top: 30,
+  bottom: 55,
+};
 
 const StyledDiv = styled.div`
   width: 100%;
@@ -187,10 +192,13 @@ class Pharmacogenomics extends Component {
       sampleData: [],
       drugsData1: [],
       drugsData2: [],
+      biomarkerData: [],
       tissueObj: {},
       loading1: false,
       showPlot: false,
       loadingPlot: true,
+      xRange: null,
+      yRange: null,
     };
     this.getDrugData = this.getDrugData.bind(this);
     this.getSampleDrugData = this.getSampleDrugData.bind(this);
@@ -454,7 +462,7 @@ class Pharmacogenomics extends Component {
     const {
       dataType, selectedDrug1, selectedDrug2,
       selectedMolecule, selectedGene, sampleData,
-      tissueObj,
+      tissueObj, scoreValue,
     } = this.state;
 
     const sampleString = generateSampleString(sampleData, tissueObj);
@@ -470,8 +478,40 @@ class Pharmacogenomics extends Component {
           Accept: 'application/json',
         },
       }).then(response => response.json())
-        .then((data) => {
-          console.log(data);
+        .then((synergyArray) => {
+          console.log(synergyArray);
+          const paddingPercent = 0.05;
+          let lowestFPKM = 0;
+          let highestFPKM = 0;
+          let lowestSynScore = 0;
+          let highestSynScore = 0;
+          synergyArray.forEach((item) => {
+            if (item.fpkm < lowestFPKM) lowestFPKM = item.fpkm;
+            if (item.fpkm > highestFPKM) highestFPKM = item.fpkm;
+            if (item[scoreValue] < lowestSynScore) lowestSynScore = item[scoreValue];
+            if (item[scoreValue] > highestSynScore) highestSynScore = item[scoreValue];
+          });
+          const rangeFPKM = highestFPKM - lowestFPKM;
+          let xRange;
+          if (rangeFPKM) {
+            xRange = [
+              lowestFPKM - rangeFPKM * paddingPercent,
+              highestFPKM + rangeFPKM * paddingPercent,
+            ];
+          } else {
+            xRange = [-1, 1];
+          }
+          const rangeSynScore = highestSynScore - lowestSynScore;
+          const yRange = [
+            lowestSynScore - rangeSynScore * paddingPercent,
+            highestSynScore + rangeSynScore * paddingPercent,
+          ];
+          this.setState({
+            biomarkerData: synergyArray,
+            xRange,
+            yRange,
+            showPlot: true,
+          });
         });
     } else {
       console.log('wrong datatype');
@@ -485,7 +525,8 @@ class Pharmacogenomics extends Component {
     } = this;
     const {
       dataType, scoreValue, selectedDrug1, selectedDrug2,
-      showPlot, loadingPlot,
+      showPlot, loadingPlot, xRange, yRange, biomarkerData,
+      selectedGene,
     } = this.state;
     const showSynScore = selectedDrug1 !== 'null' && selectedDrug2 !== 'null';
     return (
@@ -529,7 +570,14 @@ class Pharmacogenomics extends Component {
               <StyledButton onClick={renderPlot} type="button">Analysis</StyledButton>
               {showPlot ? (
                 <div className="plot">
-                  <AdvancedAnalysis />
+                  <AdvancedAnalysis
+                    biomarkerData={biomarkerData}
+                    selectedBiomarker={selectedGene}
+                    dimensions={dimensions}
+                    xRange={xRange}
+                    yRange={yRange}
+                    selectedScore={scoreValue}
+                  />
                 </div>
               ) : <div className="plot">No data for the plot</div>}
             </div>
