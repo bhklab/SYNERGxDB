@@ -156,6 +156,21 @@ const CustomFormLabel = withStyles({
   />
 ));
 
+const generateSampleString = (data, keyStore) => {
+  const arraySamples = [];
+  data.forEach((item) => {
+    if (item.checked) {
+      if (typeof item.value === 'string') {
+        if (item.value !== 'All') arraySamples.push(keyStore[item.value]);
+      } else {
+        arraySamples.push(item.value);
+      }
+    }
+  });
+  const cellLineSet = [...new Set(arraySamples.flat())].sort((a, b) => a - b);
+  return cellLineSet.toString();
+};
+
 class Pharmacogenomics extends Component {
   constructor() {
     super();
@@ -195,24 +210,15 @@ class Pharmacogenomics extends Component {
 
   // Updates drug data based on samples
   getDrugData(data, keyStore, type, drug) {
-    const arraySamples = [];
-    data.forEach((item) => {
-      if (item.checked) {
-        if (typeof item.value === 'string') {
-          arraySamples.push(keyStore[item.value]);
-        } else {
-          arraySamples.push(item.value);
-        }
-      }
-    });
-    const cellLineSet = [...new Set(arraySamples.flat())].sort((a, b) => a - b);
-    const querySamples = cellLineSet.toString();
+    const querySamples = generateSampleString(data, keyStore);
     let queryString = `/api/drugs/filter?sample=${querySamples}`;
     if (type === 'drugsData1' && drug) queryString = queryString.concat(`&drugId=${drug}`);
     if (type === 'drugsData2' && drug) queryString = queryString.concat(`&drugId=${drug}`);
+    console.log(queryString);
     fetch(queryString)
       .then(response => response.json())
       .then((drugData) => {
+        console.log(drugData);
         const drugsData = drugData.map(item => ({ value: item.idDrug, label: item.name }));
         this.setState({
           [type]: drugsData,
@@ -451,6 +457,26 @@ class Pharmacogenomics extends Component {
       dataType, selectedDrug1, selectedDrug2,
       selectedMolecule, selectedGene, sampleData,
     } = this.state;
+
+
+    let queryParams = `?drugId1=${selectedDrug1}&drugId2=${selectedDrug2}`;
+
+
+    if (dataType === 'rnaseq') {
+      queryParams = queryParams.concat(`&gene=${selectedGene}`);
+      fetch('/api/biomarkers/association'.concat(queryParams).concat(''), {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+      }).then(response => response.json())
+        .then((data) => {
+          console.log(data);
+        });
+    } else {
+      console.log('wrong datatype');
+    }
   }
 
   render() {

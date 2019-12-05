@@ -39,6 +39,19 @@ router.get('/association', (req, res) => {
   drugId1 = drugId1 && parseInt(drugId1, 10);
   drugId2 = drugId2 && parseInt(drugId2, 10);
   dataset = dataset && parseInt(dataset, 10);
+
+  console.log(sample);
+  let sampleArray;
+  let tissue;
+  if (sample) {
+    sampleArray = sample.includes(',')
+      ? sample.split(',').map(item => parseInt(item, 10))
+      : [Number.isNaN(parseInt(sample, 10)) ? sample : parseInt(sample, 10)];
+    if (Number.isNaN(parseInt(sampleArray[0], 10))) [tissue] = sampleArray;
+  }
+  console.log('tissue', tissue);
+  console.log('sampleArray', sampleArray);
+
   function subqueryGeneIdentifier() {
     this.select('gene_id')
       .from('gene_identifiers')
