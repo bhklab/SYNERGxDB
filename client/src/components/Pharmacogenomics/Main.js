@@ -110,6 +110,9 @@ const StyledDiv = styled.div`
     flex-direction: column;
     justify-content: center;
   }
+  .analysis {
+    padding-bottom: 25px;
+  }
 `;
 
 const StyledButton = styled.button`
@@ -184,7 +187,6 @@ const generateSampleString = (data, keyStore) => {
 
 // generates drug labels for the plot
 const generateDrugLabel = (drug, data) => {
-  console.log(drug, data);
   const maxLength = 20;
   const drugId = parseInt(drug, 10);
   let label = drug !== 'null' ? data[data.findIndex(i => i.value === drugId)].label : null;
@@ -212,6 +214,7 @@ class Pharmacogenomics extends Component {
       tissueObj: {},
       loading1: false,
       showPlot: false,
+      loadingBiomarkerData: false,
       xRange: null,
       yRange: null,
     };
@@ -286,12 +289,12 @@ class Pharmacogenomics extends Component {
   }
 
   getPlotData() {
-    console.log('Run analysis');
     const {
       dataType, selectedDrug1, selectedDrug2,
       selectedGene, sampleData,
       tissueObj, scoreValue,
     } = this.state;
+    this.setState({ loadingBiomarkerData: true, showPlot: true });
 
     const sampleString = generateSampleString(sampleData, tissueObj);
     let queryParams = `?drugId1=${selectedDrug1}&drugId2=${selectedDrug2}&sample=${sampleString}`;
@@ -307,7 +310,6 @@ class Pharmacogenomics extends Component {
         },
       }).then(response => response.json())
         .then((synergyArray) => {
-          console.log(synergyArray);
           const paddingPercent = 0.05;
           let lowestFPKM = 0;
           let highestFPKM = 0;
@@ -338,11 +340,14 @@ class Pharmacogenomics extends Component {
             biomarkerData: synergyArray,
             xRange,
             yRange,
-            showPlot: true,
+            loadingBiomarkerData: false,
           });
         });
     } else {
       console.log('wrong datatype');
+      this.setState({
+        loadingBiomarkerData: false,
+      });
     }
   }
 
@@ -537,36 +542,36 @@ class Pharmacogenomics extends Component {
   renderPlot(drugLabel1, drugLabel2) {
     const {
       scoreValue, showPlot, xRange, yRange,
-      biomarkerData, selectedGene,
+      biomarkerData, selectedGene, loadingBiomarkerData,
     } = this.state;
     const checkBiomarkerData = biomarkerData.some(item => item[scoreValue] !== null);
-    console.log(showPlot);
-    return showPlot ? (
-      <div className="plot">
-        {checkBiomarkerData ? (
-          <AdvancedAnalysis
-            biomarkerData={biomarkerData}
-            selectedBiomarker={selectedGene}
-            dimensions={dimensions}
-            xRange={xRange}
-            yRange={yRange}
-            selectedScore={scoreValue}
-            drug1={drugLabel1}
-            drug2={drugLabel2}
-          />
-        ) : (
-          <div>
-            <p>
-            No data found for a given set of parameters, please try to change the query
-            </p>
-          </div>
-        )}
-      </div>
-    ) : (
-      <div className="loading-container">
-        <ReactLoading type="bubbles" width={150} height={150} color={colors.color_main_2} />
-      </div>
-    );
+    if (showPlot) {
+      return !loadingBiomarkerData ? (
+        <div className="plot">
+          {checkBiomarkerData ? (
+            <AdvancedAnalysis
+              biomarkerData={biomarkerData}
+              selectedBiomarker={selectedGene}
+              dimensions={dimensions}
+              xRange={xRange}
+              yRange={yRange}
+              selectedScore={scoreValue}
+              drug1={drugLabel1}
+              drug2={drugLabel2}
+            />
+          ) : (
+            <div>
+              <h4>No data found for a given set of parameters, please modify the query</h4>
+            </div>
+          )}
+        </div>
+      ) : (
+        <div className="loading-container">
+          <ReactLoading type="bubbles" width={150} height={150} color={colors.color_main_2} />
+        </div>
+      );
+    }
+    return null;
   }
 
   render() {
@@ -581,7 +586,6 @@ class Pharmacogenomics extends Component {
     const showSynScore = selectedDrug1 !== 'null' && selectedDrug2 !== 'null';
     const drugLabel1 = generateDrugLabel(selectedDrug1, drugsData1);
     const drugLabel2 = generateDrugLabel(selectedDrug2, drugsData2);
-    console.log(biomarkerData);
 
     return (
       <main>
@@ -622,7 +626,9 @@ class Pharmacogenomics extends Component {
           {showSynScore ? (
             <div className="analysis">
               <StyledButton onClick={getPlotData} type="button">Analysis</StyledButton>
-              {renderPlot(drugLabel1, drugLabel2)}
+              <div>
+                {renderPlot(drugLabel1, drugLabel2)}
+              </div>
             </div>
           ) : null}
         </StyledDiv>
