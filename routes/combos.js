@@ -156,7 +156,7 @@ router.get("/heatmap", (req, res) => {
   drugId2 = drugId2 && parseInt(drugId2, 10);
 
   // getting all data
-  db.select('cd.idSample AS idSample', 'sa.name AS sample', 'so.name AS source', 'idDrugA', 'idDrugB', db.raw('left(??,20) AS ??', ['d.name','drugNameA']), db.raw('left(??,20) AS ??', ['dd.name','drugNameB']),'zip')
+  db.select('cd.idSample AS idSample', 'sa.name AS sample', 'so.name AS source', 'idDrugA', 'idDrugB', db.raw('left(??,12) AS ??', ['d.name','drugNameA']), db.raw('left(??,12) AS ??', ['dd.name','drugNameB']),'zip')
     .from('combo_design AS cd')
     .join('synergy_score AS ss', 'ss.idCombo_Design', 'cd.idCombo_Design')
     .join('drug AS d', 'idDrugA', 'd.idDrug')

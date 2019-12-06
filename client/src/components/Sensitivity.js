@@ -14,6 +14,14 @@ const SensitivityDiv = styled.div`
   background:white;
   padding:20px 30px;
   margin-bottom:20px;
+  
+  #sensHeatMap {
+    overflow-x: scroll;
+    margin-left: 150px;
+  }
+  .wrapper {
+    display:inline;
+  }
 `;
 
 
@@ -49,7 +57,7 @@ class Sensitivity extends Component {
 
   render() {
     const { data, sample, drugId1, drugId2, dataset, } = this.state;
-
+    const query = [drugId1, drugId2];
     return (
       <main>
         {drugId1 == "" && drugId2 == "" ? null : (
@@ -65,6 +73,7 @@ class Sensitivity extends Component {
           {data.length == 0 ? null : (
             <SensHeatMap
               data={data}
+              query={query}
               plotId="sensHeatMap"
             />
           )}
