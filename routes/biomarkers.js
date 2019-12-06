@@ -57,6 +57,13 @@ router.get('/association', (req, res) => {
       .from('gene_identifiers')
       .where({ hgnc_symbol: gene });
   }
+  function subqueryFPKM() {
+    this.select('model_id', 'fpkm')
+      .from('rnaseq')
+      .where('gene_id', 'in', subqueryGeneIdentifier)
+      .as('FPKM');
+  }
+
   function subquerySamples() {
     let subquery = this.select('model_id', 'name', 'model_identifiers.idSample as idSample')
       .from('sample');
@@ -73,12 +80,6 @@ router.get('/association', (req, res) => {
         .join('model_identifiers', 'model_identifiers.idSample', '=', 'sample.idSample');
     }
     return subquery.as('S');
-  }
-  function subqueryFPKM() {
-    this.select('model_id', 'fpkm')
-      .from('rnaseq')
-      .where('gene_id', 'in', subqueryGeneIdentifier)
-      .as('FPKM');
   }
   function subqueryAssociations() {
     this.select('idSample', 'fpkm', 'name')

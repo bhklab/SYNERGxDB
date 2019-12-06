@@ -291,7 +291,7 @@ class Pharmacogenomics extends Component {
   getPlotData() {
     const {
       dataType, selectedDrug1, selectedDrug2,
-      selectedGene, sampleData,
+      selectedGene, sampleData, selectedMolecule,
       tissueObj, scoreValue,
     } = this.state;
     this.setState({ loadingBiomarkerData: true, showPlot: true });
@@ -299,10 +299,22 @@ class Pharmacogenomics extends Component {
     const sampleString = generateSampleString(sampleData, tissueObj);
     let queryParams = `?drugId1=${selectedDrug1}&drugId2=${selectedDrug2}&sample=${sampleString}`;
 
-
+    if (dataType === 'metabolomic') {
+      queryParams = queryParams.concat(`&molecule=${selectedMolecule}`);
+      fetch('/api/pharmacogenomics/metabolomics'.concat(queryParams), {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+      }).then(response => response.json())
+        .then((data) => {
+          console.log(data);
+        });
+    }
     if (dataType === 'rnaseq') {
       queryParams = queryParams.concat(`&gene=${selectedGene}`);
-      fetch('/api/biomarkers/association'.concat(queryParams).concat(''), {
+      fetch('/api/biomarkers/association'.concat(queryParams), {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',

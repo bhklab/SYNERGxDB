@@ -77,4 +77,22 @@ router.get('/samples', (req, res) => {
     });
 });
 
+router.get('/metabolomics', (req, res) => {
+  const { molecule, sample } = req.query;
+  let {
+    drugId1, drugId2,
+  } = req.query;
+  drugId1 = drugId1 && parseInt(drugId1, 10);
+  drugId2 = drugId2 && parseInt(drugId2, 10);
+
+  console.log(sample);
+  let sampleArray;
+  if (sample) {
+    sampleArray = sample.includes(',')
+      ? sample.split(',').map(item => parseInt(item, 10))
+      : [Number.isNaN(parseInt(sample, 10)) ? sample : parseInt(sample, 10)];
+  }
+  res.json({ message: 'Success' });
+});
+
 module.exports = router;
