@@ -15,7 +15,8 @@ const PlotlyContainer = styled.div`
     flex-direction: column; 
 `;
 const StyledExpressionProfile = styled.div`
-width: 50%;
+    max-width: 600px;
+    width: 100%;
     min-width: 300px;
     display: flex
     justify-content: space-between;
@@ -37,9 +38,12 @@ class AdvancedAnalysis extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { selectedBiomarker, selectedScore } = this.props;
+    const { selectedBiomarker, selectedScore, biomarkerData } = this.props;
     if (selectedBiomarker !== prevProps.selectedBiomarker
       || selectedScore !== prevProps.selectedScore) {
+      this.updatePlotData();
+    }
+    if (biomarkerData !== prevProps.biomarkerData) {
       this.updatePlotData();
     }
   }
@@ -48,6 +52,7 @@ class AdvancedAnalysis extends React.Component {
   updatePlotData() {
     const {
       biomarkerData, selectedBiomarker, dimensions, xRange, yRange, selectedScore,
+      drug1, drug2,
     } = this.props;
     // calculates coefficients for best fit line
 
@@ -90,7 +95,7 @@ class AdvancedAnalysis extends React.Component {
       height: 450,
       autosize: true,
       title: {
-        text: `${selectedScore.toUpperCase()} x ${selectedBiomarker}`,
+        text: `Drug ${drug1} + ${drug2} ${selectedScore.toUpperCase()} x ${selectedBiomarker}`,
         font: {
           family: 'Nunito Sans, sans-serif',
           color: colors.color_main_1,
@@ -191,6 +196,8 @@ AdvancedAnalysis.propTypes = {
   xRange: PropTypes.arrayOf(PropTypes.number).isRequired,
   yRange: PropTypes.arrayOf(PropTypes.number).isRequired,
   selectedScore: PropTypes.string.isRequired,
+  drug1: PropTypes.string.isRequired,
+  drug2: PropTypes.string.isRequired,
 };
 
 

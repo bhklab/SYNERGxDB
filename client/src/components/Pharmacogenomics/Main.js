@@ -104,6 +104,12 @@ const StyledDiv = styled.div`
     width: 100%;
     justify-content: center;
   }
+  .analysis {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
 `;
 
 const StyledButton = styled.button`
@@ -111,7 +117,7 @@ const StyledButton = styled.button`
   border: 1px solid ${colors.nav_links};
   border-radius:10px;
   padding: 10px 20px;
-  margin: 0 auto;
+  margin: 10px auto 20px;
   color: #ffffff;
   transition: ${transitions.main_trans};
   outline-style: none;
@@ -176,6 +182,16 @@ const generateSampleString = (data, keyStore) => {
   return cellLineSet.toString();
 };
 
+// generates drug labels for the plot
+const generateDrugLabel = (drug, data) => {
+  console.log(drug, data);
+  const maxLength = 20;
+  const drugId = parseInt(drug, 10);
+  let label = drug !== 'null' ? data[data.findIndex(i => i.value === drugId)].label : null;
+  if (label && label.length > maxLength) label = label.substring(0, maxLength - 3).concat('...');
+  return label;
+};
+
 class Pharmacogenomics extends Component {
   constructor() {
     super();
@@ -196,7 +212,6 @@ class Pharmacogenomics extends Component {
       tissueObj: {},
       loading1: false,
       showPlot: false,
-      loadingPlot: true,
       xRange: null,
       yRange: null,
     };
@@ -211,9 +226,10 @@ class Pharmacogenomics extends Component {
     this.handleDrug2Search = this.handleDrug2Search.bind(this);
     this.renderBiomarkerList = this.renderBiomarkerList.bind(this);
     this.renderSampleDrugData = this.renderSampleDrugData.bind(this);
+    this.renderPlot = this.renderPlot.bind(this);
     this.updateGeneData = this.updateGeneData.bind(this);
     this.updateMoleculeData = this.updateMoleculeData.bind(this);
-    this.renderPlot = this.renderPlot.bind(this);
+    this.getPlotData = this.getPlotData.bind(this);
   }
 
   // Updates drug data based on samples
@@ -269,43 +285,65 @@ class Pharmacogenomics extends Component {
       });
   }
 
-  updateGeneData(dataType) {
-    fetch(`/api/pharmacogenomics/genes?datatype=${dataType}`)
-      .then(response => response.json())
-      .then((data) => {
-        const geneData = data.map(item => ({
-          value: item.gene_id ? item.gene_id : item.gene, label: item.gene,
-        }));
-        this.setState({ geneData, loading1: false });
-      });
-  }
+  getPlotData() {
+    console.log('Run analysis');
+    const {
+      dataType, selectedDrug1, selectedDrug2,
+      selectedGene, sampleData,
+      tissueObj, scoreValue,
+    } = this.state;
 
-  updateMoleculeData() {
-    fetch('/api/pharmacogenomics/molecules')
-      .then(response => response.json())
-      .then((data) => {
-        const moleculeData = data.map(item => ({ value: item, label: item }));
-        this.setState({ moleculeData, loading1: false });
-      });
-  }
+    const sampleString = generateSampleString(sampleData, tissueObj);
+    let queryParams = `?drugId1=${selectedDrug1}&drugId2=${selectedDrug2}&sample=${sampleString}`;
 
-  profileChange(event) {
-    const { getSampleDrugData, updateGeneData, updateMoleculeData } = this;
 
-    const dataType = event.target.value;
-    this.setState({
-      loading1: true,
-      selectedGene: 'null',
-      selectedMolecule: 'null',
-      selectedDrug1: 'null',
-      selectedDrug2: 'null',
-      sampleData: [],
-      drugsData1: [],
-      drugsData2: [],
-    });
-    if (dataType === 'rnaseq' || dataType === 'mutation' || dataType === 'cna') updateGeneData(dataType);
-    if (dataType === 'metabolomic') updateMoleculeData();
-    getSampleDrugData(dataType);
+    if (dataType === 'rnaseq') {
+      queryParams = queryParams.concat(`&gene=${selectedGene}`);
+      fetch('/api/biomarkers/association'.concat(queryParams).concat(''), {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+      }).then(response => response.json())
+        .then((synergyArray) => {
+          console.log(synergyArray);
+          const paddingPercent = 0.05;
+          let lowestFPKM = 0;
+          let highestFPKM = 0;
+          let lowestSynScore = 0;
+          let highestSynScore = 0;
+          synergyArray.forEach((item) => {
+            if (item.fpkm < lowestFPKM) lowestFPKM = item.fpkm;
+            if (item.fpkm > highestFPKM) highestFPKM = item.fpkm;
+            if (item[scoreValue] < lowestSynScore) lowestSynScore = item[scoreValue];
+            if (item[scoreValue] > highestSynScore) highestSynScore = item[scoreValue];
+          });
+          const rangeFPKM = highestFPKM - lowestFPKM;
+          let xRange;
+          if (rangeFPKM) {
+            xRange = [
+              lowestFPKM - rangeFPKM * paddingPercent,
+              highestFPKM + rangeFPKM * paddingPercent,
+            ];
+          } else {
+            xRange = [-1, 1];
+          }
+          const rangeSynScore = highestSynScore - lowestSynScore;
+          const yRange = [
+            lowestSynScore - rangeSynScore * paddingPercent,
+            highestSynScore + rangeSynScore * paddingPercent,
+          ];
+          this.setState({
+            biomarkerData: synergyArray,
+            xRange,
+            yRange,
+            showPlot: true,
+          });
+        });
+    } else {
+      console.log('wrong datatype');
+    }
   }
 
   scoreChange(event) {
@@ -370,6 +408,45 @@ class Pharmacogenomics extends Component {
 
     getDrugData(updatedSamplesData, tissueObj, 'drugsData1');
     getDrugData(updatedSamplesData, tissueObj, 'drugsData2');
+  }
+
+  profileChange(event) {
+    const { getSampleDrugData, updateGeneData, updateMoleculeData } = this;
+
+    const dataType = event.target.value;
+    this.setState({
+      loading1: true,
+      selectedGene: 'null',
+      selectedMolecule: 'null',
+      selectedDrug1: 'null',
+      selectedDrug2: 'null',
+      sampleData: [],
+      drugsData1: [],
+      drugsData2: [],
+    });
+    if (dataType === 'rnaseq' || dataType === 'mutation' || dataType === 'cna') updateGeneData(dataType);
+    if (dataType === 'metabolomic') updateMoleculeData();
+    getSampleDrugData(dataType);
+  }
+
+  updateGeneData(dataType) {
+    fetch(`/api/pharmacogenomics/genes?datatype=${dataType}`)
+      .then(response => response.json())
+      .then((data) => {
+        const geneData = data.map(item => ({
+          value: item.gene_id ? item.gene_id : item.gene, label: item.gene,
+        }));
+        this.setState({ geneData, loading1: false });
+      });
+  }
+
+  updateMoleculeData() {
+    fetch('/api/pharmacogenomics/molecules')
+      .then(response => response.json())
+      .then((data) => {
+        const moleculeData = data.map(item => ({ value: item, label: item }));
+        this.setState({ moleculeData, loading1: false });
+      });
   }
 
   handleDrug1Search(event) {
@@ -457,78 +534,55 @@ class Pharmacogenomics extends Component {
     return null;
   }
 
-  renderPlot() {
-    console.log('Run analysis');
+  renderPlot(drugLabel1, drugLabel2) {
     const {
-      dataType, selectedDrug1, selectedDrug2,
-      selectedMolecule, selectedGene, sampleData,
-      tissueObj, scoreValue,
+      scoreValue, showPlot, xRange, yRange,
+      biomarkerData, selectedGene,
     } = this.state;
-
-    const sampleString = generateSampleString(sampleData, tissueObj);
-    let queryParams = `?drugId1=${selectedDrug1}&drugId2=${selectedDrug2}&sample=${sampleString}`;
-
-
-    if (dataType === 'rnaseq') {
-      queryParams = queryParams.concat(`&gene=${selectedGene}`);
-      fetch('/api/biomarkers/association'.concat(queryParams).concat(''), {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
-      }).then(response => response.json())
-        .then((synergyArray) => {
-          console.log(synergyArray);
-          const paddingPercent = 0.05;
-          let lowestFPKM = 0;
-          let highestFPKM = 0;
-          let lowestSynScore = 0;
-          let highestSynScore = 0;
-          synergyArray.forEach((item) => {
-            if (item.fpkm < lowestFPKM) lowestFPKM = item.fpkm;
-            if (item.fpkm > highestFPKM) highestFPKM = item.fpkm;
-            if (item[scoreValue] < lowestSynScore) lowestSynScore = item[scoreValue];
-            if (item[scoreValue] > highestSynScore) highestSynScore = item[scoreValue];
-          });
-          const rangeFPKM = highestFPKM - lowestFPKM;
-          let xRange;
-          if (rangeFPKM) {
-            xRange = [
-              lowestFPKM - rangeFPKM * paddingPercent,
-              highestFPKM + rangeFPKM * paddingPercent,
-            ];
-          } else {
-            xRange = [-1, 1];
-          }
-          const rangeSynScore = highestSynScore - lowestSynScore;
-          const yRange = [
-            lowestSynScore - rangeSynScore * paddingPercent,
-            highestSynScore + rangeSynScore * paddingPercent,
-          ];
-          this.setState({
-            biomarkerData: synergyArray,
-            xRange,
-            yRange,
-            showPlot: true,
-          });
-        });
-    } else {
-      console.log('wrong datatype');
-    }
+    const checkBiomarkerData = biomarkerData.some(item => item[scoreValue] !== null);
+    console.log(showPlot);
+    return showPlot ? (
+      <div className="plot">
+        {checkBiomarkerData ? (
+          <AdvancedAnalysis
+            biomarkerData={biomarkerData}
+            selectedBiomarker={selectedGene}
+            dimensions={dimensions}
+            xRange={xRange}
+            yRange={yRange}
+            selectedScore={scoreValue}
+            drug1={drugLabel1}
+            drug2={drugLabel2}
+          />
+        ) : (
+          <div>
+            <p>
+            No data found for a given set of parameters, please try to change the query
+            </p>
+          </div>
+        )}
+      </div>
+    ) : (
+      <div className="loading-container">
+        <ReactLoading type="bubbles" width={150} height={150} color={colors.color_main_2} />
+      </div>
+    );
   }
 
   render() {
     const {
       profileChange, scoreChange, renderBiomarkerList,
-      renderSampleDrugData, renderPlot,
+      renderSampleDrugData, getPlotData, renderPlot,
     } = this;
     const {
       dataType, scoreValue, selectedDrug1, selectedDrug2,
-      showPlot, loadingPlot, xRange, yRange, biomarkerData,
-      selectedGene,
+      biomarkerData, drugsData1, drugsData2,
     } = this.state;
     const showSynScore = selectedDrug1 !== 'null' && selectedDrug2 !== 'null';
+    const drugLabel1 = generateDrugLabel(selectedDrug1, drugsData1);
+    const drugLabel2 = generateDrugLabel(selectedDrug2, drugsData2);
+    console.log(biomarkerData);
+
     return (
       <main>
         <StyledDiv>
@@ -566,20 +620,9 @@ class Pharmacogenomics extends Component {
             </div>
           ) : null}
           {showSynScore ? (
-            <div>
-              <StyledButton onClick={renderPlot} type="button">Analysis</StyledButton>
-              {showPlot ? (
-                <div className="plot">
-                  <AdvancedAnalysis
-                    biomarkerData={biomarkerData}
-                    selectedBiomarker={selectedGene}
-                    dimensions={dimensions}
-                    xRange={xRange}
-                    yRange={yRange}
-                    selectedScore={scoreValue}
-                  />
-                </div>
-              ) : <div className="plot">No data for the plot</div>}
+            <div className="analysis">
+              <StyledButton onClick={getPlotData} type="button">Analysis</StyledButton>
+              {renderPlot(drugLabel1, drugLabel2)}
             </div>
           ) : null}
         </StyledDiv>
