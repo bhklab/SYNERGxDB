@@ -124,7 +124,7 @@ router.get('/metabolomics', (req, res) => {
       .as('BD');
   }
 
-  db.select(molecule, 'name', 'bliss', 'hsa', 'zip', 'loewe')
+  db.select(molecule, 'name as cellName', 'bliss', 'hsa', 'zip', 'loewe')
     .from(subqueryBiomarkerData)
     .join('sample', 'sample.idSample', '=', 'BD.idSample')
     .then((data) => {

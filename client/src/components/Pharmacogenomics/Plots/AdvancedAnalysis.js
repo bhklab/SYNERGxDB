@@ -52,15 +52,15 @@ class AdvancedAnalysis extends React.Component {
   updatePlotData() {
     const {
       biomarkerData, selectedBiomarker, dimensions, xRange, yRange, selectedScore,
-      drug1, drug2,
+      drug1, drug2, accessor,
     } = this.props;
     // calculates coefficients for best fit line
 
-    const regressionData = biomarkerData.map(item => [item.fpkm, item[selectedScore]]);
+    const regressionData = biomarkerData.map(item => [item[accessor], item[selectedScore]]);
     const bestFitCoefficients = regression.linear(regressionData);
 
     const datapoints = {
-      x: biomarkerData.map(item => item.fpkm),
+      x: biomarkerData.map(item => item[accessor]),
       y: biomarkerData.map(item => item[selectedScore]),
       name: 'Cell line',
       marker: {
@@ -71,7 +71,7 @@ class AdvancedAnalysis extends React.Component {
       mode: 'markers',
       type: 'scatter',
       hoverinfo: 'text',
-      hovertext: biomarkerData.map(item => `${item.fpkm} (${item.cellName})`),
+      hovertext: biomarkerData.map(item => `${item[accessor]} (${item.cellName})`),
     };
     const data = [datapoints];
     // Renders best fit line using previously calculated coefficients
@@ -116,7 +116,7 @@ class AdvancedAnalysis extends React.Component {
       hovermode: 'closest',
       xaxis: {
         title: {
-          text: 'FPKM',
+          text: accessor.toUpperCase(),
           font: {
             family: 'Nunito Sans, sans-serif',
             color: colors.color_main_1,
@@ -138,7 +138,7 @@ class AdvancedAnalysis extends React.Component {
       },
       yaxis: {
         title: {
-          text: 'Synergy Score',
+          text: selectedScore.toUpperCase(),
           font: {
             family: 'Nunito Sans, sans-serif',
             color: colors.color_main_1,
@@ -198,6 +198,7 @@ AdvancedAnalysis.propTypes = {
   selectedScore: PropTypes.string.isRequired,
   drug1: PropTypes.string.isRequired,
   drug2: PropTypes.string.isRequired,
+  accessor: PropTypes.string.isRequired,
 };
 
 

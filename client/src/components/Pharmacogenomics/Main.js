@@ -341,11 +341,11 @@ class Pharmacogenomics extends Component {
   }
 
   moleculeChange(event) {
-    this.setState({ selectedMolecule: event.target.value });
+    this.setState({ selectedMolecule: event.target.value, showPlot: false });
   }
 
   geneChange(event) {
-    this.setState({ selectedGene: event.target.value });
+    this.setState({ selectedGene: event.target.value, showPlot: false });
   }
 
   sampleChange(e) {
@@ -563,21 +563,28 @@ class Pharmacogenomics extends Component {
     const {
       scoreValue, showPlot, xRange, yRange,
       biomarkerData, selectedGene, loadingBiomarkerData,
+      selectedMolecule, dataType,
     } = this.state;
     const checkBiomarkerData = biomarkerData.some(item => item[scoreValue] !== null);
+    let accessor;
+    const selectedBiomarker = dataType === 'metabolomic' ? selectedMolecule : selectedGene;
+    if (dataType === 'metabolomic') accessor = selectedMolecule;
+    if (dataType === 'rnaseq') accessor = 'fpkm';
+
     if (showPlot) {
       return !loadingBiomarkerData ? (
         <div className="plot">
           {checkBiomarkerData ? (
             <AdvancedAnalysis
               biomarkerData={biomarkerData}
-              selectedBiomarker={selectedGene}
+              selectedBiomarker={selectedBiomarker}
               dimensions={dimensions}
               xRange={xRange}
               yRange={yRange}
               selectedScore={scoreValue}
               drug1={drugLabel1}
               drug2={drugLabel2}
+              accessor={accessor}
             />
           ) : (
             <div>
