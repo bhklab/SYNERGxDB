@@ -93,24 +93,6 @@ router.get('/metabolomics', (req, res) => {
       : [Number.isNaN(parseInt(sample, 10)) ? sample : parseInt(sample, 10)];
   }
 
-  // function subquerySamples() {
-  //   let subquery = this.select('model_id', 'name', 'model_identifiers.idSample as idSample')
-  //     .from('sample');
-  //   if (tissue) {
-  //     subquery = subquery
-  //       .join('model_identifiers', 'model_identifiers.idSample', '=', 'sample.idSample')
-  //       .where({ tissue: sample });
-  //   } else if (sampleArray) {
-  //     subquery = subquery
-  //       .join('model_identifiers', 'model_identifiers.idSample', '=', 'sample.idSample')
-  //       .whereIn('sample.idSample', sampleArray);
-  //   } else {
-  //     subquery = subquery
-  //       .join('model_identifiers', 'model_identifiers.idSample', '=', 'sample.idSample');
-  //   }
-  //   return subquery.as('S');
-  // }
-
   function subqueryComboDesign() {
     this.select('idSample', 'idCombo_Design')
       .from('combo_design')
@@ -122,15 +104,6 @@ router.get('/metabolomics', (req, res) => {
       })
       .as('CD');
   }
-
-  // function subqueryComboDesign() {
-  //   this.select('idSample', 'idCombo_Design')
-  //     .from('combo_design')
-  //     .whereIn('idSample', sampleArray)
-  //     .where({ idDrugA: drugId1, idDrugB: drugId2 })
-  //     .orWhere({ idDrugA: drugId2, idDrugB: drugId1 })
-  //     .as('CD');
-  // }
 
   function subquerySynergyScores() {
     this.select('idSample', 'bliss', 'hsa', 'zip', 'loewe')
@@ -157,7 +130,6 @@ router.get('/metabolomics', (req, res) => {
     .then((data) => {
       res.json(data);
     });
-  // res.json({ message: 'Success' });
 });
 
 module.exports = router;

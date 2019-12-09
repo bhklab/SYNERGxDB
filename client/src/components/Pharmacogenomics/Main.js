@@ -233,6 +233,7 @@ class Pharmacogenomics extends Component {
     this.updateGeneData = this.updateGeneData.bind(this);
     this.updateMoleculeData = this.updateMoleculeData.bind(this);
     this.getPlotData = this.getPlotData.bind(this);
+    this.processSynData = this.processSynData.bind(this);
   }
 
   // Updates drug data based on samples
@@ -294,6 +295,7 @@ class Pharmacogenomics extends Component {
       selectedGene, sampleData, selectedMolecule,
       tissueObj, scoreValue,
     } = this.state;
+    const { processSynData } = this;
     this.setState({ loadingBiomarkerData: true, showPlot: true });
 
     const sampleString = generateSampleString(sampleData, tissueObj);
@@ -309,6 +311,7 @@ class Pharmacogenomics extends Component {
         },
       }).then(response => response.json())
         .then((data) => {
+          processSynData(data, selectedMolecule, scoreValue);
           console.log(data);
         });
     }
@@ -321,40 +324,9 @@ class Pharmacogenomics extends Component {
           Accept: 'application/json',
         },
       }).then(response => response.json())
-        .then((synergyArray) => {
-          console.log(synergyArray);
-          const paddingPercent = 0.05;
-          let lowestFPKM = 0;
-          let highestFPKM = 0;
-          let lowestSynScore = 0;
-          let highestSynScore = 0;
-          synergyArray.forEach((item) => {
-            if (item.fpkm < lowestFPKM) lowestFPKM = item.fpkm;
-            if (item.fpkm > highestFPKM) highestFPKM = item.fpkm;
-            if (item[scoreValue] < lowestSynScore) lowestSynScore = item[scoreValue];
-            if (item[scoreValue] > highestSynScore) highestSynScore = item[scoreValue];
-          });
-          const rangeFPKM = highestFPKM - lowestFPKM;
-          let xRange;
-          if (rangeFPKM) {
-            xRange = [
-              lowestFPKM - rangeFPKM * paddingPercent,
-              highestFPKM + rangeFPKM * paddingPercent,
-            ];
-          } else {
-            xRange = [-1, 1];
-          }
-          const rangeSynScore = highestSynScore - lowestSynScore;
-          const yRange = [
-            lowestSynScore - rangeSynScore * paddingPercent,
-            highestSynScore + rangeSynScore * paddingPercent,
-          ];
-          this.setState({
-            biomarkerData: synergyArray,
-            xRange,
-            yRange,
-            loadingBiomarkerData: false,
-          });
+        .then((data) => {
+          console.log(data);
+          processSynData(data, 'fpkm', scoreValue);
         });
     } else {
       console.log('wrong datatype');
@@ -483,6 +455,41 @@ class Pharmacogenomics extends Component {
     getDrugData(sampleData, tissueObj, 'drugsData1', selectedDrug2);
   }
 
+  processSynData(data, accessor, scoreValue) {
+    const paddingPercent = 0.05;
+    let lowestFPKM = 0;
+    let highestFPKM = 0;
+    let lowestSynScore = 0;
+    let highestSynScore = 0;
+    data.forEach((item) => {
+      if (item[accessor] < lowestFPKM) lowestFPKM = item[accessor];
+      if (item[accessor] > highestFPKM) highestFPKM = item[accessor];
+      if (item[scoreValue] < lowestSynScore) lowestSynScore = item[scoreValue];
+      if (item[scoreValue] > highestSynScore) highestSynScore = item[scoreValue];
+    });
+    const rangeFPKM = highestFPKM - lowestFPKM;
+    let xRange;
+    if (rangeFPKM) {
+      xRange = [
+        lowestFPKM - rangeFPKM * paddingPercent,
+        highestFPKM + rangeFPKM * paddingPercent,
+      ];
+    } else {
+      xRange = [-1, 1];
+    }
+    const rangeSynScore = highestSynScore - lowestSynScore;
+    const yRange = [
+      lowestSynScore - rangeSynScore * paddingPercent,
+      highestSynScore + rangeSynScore * paddingPercent,
+    ];
+    this.setState({
+      biomarkerData: data,
+      xRange,
+      yRange,
+      loadingBiomarkerData: false,
+    });
+  }
+
   renderBiomarkerList() {
     const {
       dataType, moleculeData, geneData, selectedMolecule, selectedGene, loading1,
@@ -587,14 +594,15 @@ class Pharmacogenomics extends Component {
     return null;
   }
 
+
   render() {
     const {
       profileChange, scoreChange, renderBiomarkerList,
       renderSampleDrugData, getPlotData, renderPlot,
     } = this;
     const {
-      dataType, scoreValue, selectedDrug1, selectedDrug2,
-      biomarkerData, drugsData1, drugsData2,
+      dataType, scoreValue, selectedDrug1,
+      selectedDrug2, drugsData1, drugsData2,
     } = this.state;
     const showSynScore = selectedDrug1 !== 'null' && selectedDrug2 !== 'null';
     const drugLabel1 = generateDrugLabel(selectedDrug1, drugsData1);
