@@ -338,7 +338,7 @@ class Pharmacogenomics extends Component {
       }).then(response => response.json())
         .then((data) => {
           console.log(data);
-          // processSynData(data, 'fpkm', scoreValue);
+          processSynData(data, 'cn', scoreValue);
         });
     } else {
       console.log('wrong datatype');
@@ -582,6 +582,7 @@ class Pharmacogenomics extends Component {
     const selectedBiomarker = dataType === 'metabolomic' ? selectedMolecule : selectedGene;
     if (dataType === 'metabolomic') accessor = selectedMolecule;
     if (dataType === 'rnaseq') accessor = 'fpkm';
+    if (dataType === 'cna') accessor = 'cn';
 
     if (showPlot) {
       return !loadingBiomarkerData ? (

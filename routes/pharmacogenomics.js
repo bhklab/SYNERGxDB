@@ -111,6 +111,7 @@ router.get('/metabolomics', (req, res) => {
       .join('synergy_score', 'synergy_score.idCombo_Design', '=', 'CD.idCombo_Design')
       .as('SS');
   }
+
   function subqueryMetabolomics() {
     this.select(molecule, 'idSample')
       .from('metabolomics')
@@ -148,7 +149,46 @@ router.get('/cna', (req, res) => {
       ? sample.split(',').map(item => parseInt(item, 10))
       : [Number.isNaN(parseInt(sample, 10)) ? sample : parseInt(sample, 10)];
   }
-  res.json({ message: 'success' });
+
+  function subqueryComboDesign() {
+    this.select('idSample', 'idCombo_Design')
+      .from('combo_design')
+      .where(function () {
+        this.where({ idDrugA: drugId1, idDrugB: drugId2 }).whereIn('idSample', sampleArray);
+      })
+      .orWhere(function () {
+        this.where({ idDrugA: drugId2, idDrugB: drugId1 }).whereIn('idSample', sampleArray);
+      })
+      .as('CD');
+  }
+
+  function subquerySynergyScores() {
+    this.select('idSample', 'bliss', 'hsa', 'zip', 'loewe')
+      .from(subqueryComboDesign)
+      .join('synergy_score', 'synergy_score.idCombo_Design', '=', 'CD.idCombo_Design')
+      .as('SS');
+  }
+
+  function subqueryCopyNumber() {
+    this.select('cn', 'idSample')
+      .from('copynumber')
+      .where({ gene })
+      .whereIn('idSample', sampleArray)
+      .as('CN');
+  }
+  function subqueryBiomarkerData() {
+    this.select('SS.idSample', 'bliss', 'hsa', 'zip', 'loewe', 'cn')
+      .from(subqueryCopyNumber)
+      .join(subquerySynergyScores, 'CN.idSample', '=', 'SS.idSample')
+      .as('BD');
+  }
+
+  db.select('cn', 'name as cellName', 'bliss', 'hsa', 'zip', 'loewe')
+    .from(subqueryBiomarkerData)
+    .join('sample', 'sample.idSample', '=', 'BD.idSample')
+    .then((data) => {
+      res.json(data);
+    });
 });
 
 module.exports = router;
