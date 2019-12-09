@@ -97,10 +97,12 @@ router.get('/metabolomics', (req, res) => {
     this.select('idSample', 'idCombo_Design')
       .from('combo_design')
       .where(function () {
-        this.where({ idDrugA: drugId1, idDrugB: drugId2 }).whereIn('idSample', sampleArray);
+        const query = this.where({ idDrugA: drugId1, idDrugB: drugId2 });
+        return sample ? query.whereIn('idSample', sampleArray) : query;
       })
       .orWhere(function () {
-        this.where({ idDrugA: drugId2, idDrugB: drugId1 }).whereIn('idSample', sampleArray);
+        const query = this.where({ idDrugA: drugId2, idDrugB: drugId1 });
+        return sample ? query.whereIn('idSample', sampleArray) : query;
       })
       .as('CD');
   }
@@ -113,10 +115,9 @@ router.get('/metabolomics', (req, res) => {
   }
 
   function subqueryMetabolomics() {
-    this.select(molecule, 'idSample')
-      .from('metabolomics')
-      .whereIn('idSample', sampleArray)
-      .as('M');
+    const query = this.select(molecule, 'idSample')
+      .from('metabolomics');
+    return sample ? query.whereIn('idSample', sampleArray).as('M') : query.as('M');
   }
   function subqueryBiomarkerData() {
     this.select('SS.idSample', 'bliss', 'hsa', 'zip', 'loewe', molecule)
@@ -154,10 +155,12 @@ router.get('/cna', (req, res) => {
     this.select('idSample', 'idCombo_Design')
       .from('combo_design')
       .where(function () {
-        this.where({ idDrugA: drugId1, idDrugB: drugId2 }).whereIn('idSample', sampleArray);
+        const query = this.where({ idDrugA: drugId1, idDrugB: drugId2 });
+        return sample ? query.whereIn('idSample', sampleArray) : query;
       })
       .orWhere(function () {
-        this.where({ idDrugA: drugId2, idDrugB: drugId1 }).whereIn('idSample', sampleArray);
+        const query = this.where({ idDrugA: drugId2, idDrugB: drugId1 });
+        return sample ? query.whereIn('idSample', sampleArray) : query;
       })
       .as('CD');
   }
@@ -170,11 +173,10 @@ router.get('/cna', (req, res) => {
   }
 
   function subqueryCopyNumber() {
-    this.select('cn', 'idSample')
+    const query = this.select('cn', 'idSample')
       .from('copynumber')
-      .where({ gene })
-      .whereIn('idSample', sampleArray)
-      .as('CN');
+      .where({ gene });
+    return sample ? query.whereIn('idSample', sampleArray).as('CN') : query.as('CN');
   }
   function subqueryBiomarkerData() {
     this.select('SS.idSample', 'bliss', 'hsa', 'zip', 'loewe', 'cn')
