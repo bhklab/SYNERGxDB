@@ -212,9 +212,11 @@ class Pharmacogenomics extends Component {
       drugsData2: [],
       biomarkerData: [],
       tissueObj: {},
-      loading1: false,
       showPlot: false,
+      loadingBiomarkerList: false,
       loadingBiomarkerData: false,
+      loadingDrug1: true,
+      loadingDrug2: true,
       xRange: null,
       yRange: null,
       accessor: null,
@@ -247,9 +249,8 @@ class Pharmacogenomics extends Component {
       .then(response => response.json())
       .then((drugData) => {
         const drugsData = drugData.map(item => ({ value: item.idDrug, label: item.name }));
-        this.setState({
-          [type]: drugsData,
-        });
+        if (type === 'drugsData1') this.setState({ [type]: drugsData, loadingDrug1: false });
+        if (type === 'drugsData2') this.setState({ [type]: drugsData, loadingDrug2: false });
       // eslint-disable-next-line no-console
       }).catch(err => console.log(err));
   }
@@ -412,6 +413,8 @@ class Pharmacogenomics extends Component {
       selectedDrug2: 'null',
       showPlot: false,
       biomarkerData: [],
+      loadingDrug1: true,
+      loadingDrug2: true,
     });
 
     getDrugData(updatedSamplesData, tissueObj, 'drugsData1');
@@ -423,7 +426,7 @@ class Pharmacogenomics extends Component {
 
     const dataType = event.target.value;
     this.setState({
-      loading1: true,
+      loadingBiomarkerList: true,
       selectedGene: 'null',
       selectedMolecule: 'null',
       selectedDrug1: 'null',
@@ -450,7 +453,7 @@ class Pharmacogenomics extends Component {
             value: item.gene_id ? item.gene_id : item.gene, label,
           });
         });
-        this.setState({ geneData, loading1: false });
+        this.setState({ geneData, loadingBiomarkerList: false });
       });
   }
 
@@ -459,7 +462,7 @@ class Pharmacogenomics extends Component {
       .then(response => response.json())
       .then((data) => {
         const moleculeData = data.map(item => ({ value: item, label: item }));
-        this.setState({ moleculeData, loading1: false });
+        this.setState({ moleculeData, loadingBiomarkerList: false });
       });
   }
 
@@ -467,7 +470,7 @@ class Pharmacogenomics extends Component {
     const { getDrugData } = this;
     const { sampleData, tissueObj } = this.state;
     const selectedDrug1 = event.target.value;
-    this.setState({ selectedDrug1 });
+    this.setState({ selectedDrug1, loadingDrug2: true });
     getDrugData(sampleData, tissueObj, 'drugsData2', selectedDrug1);
   }
 
@@ -475,7 +478,7 @@ class Pharmacogenomics extends Component {
     const { getDrugData } = this;
     const { sampleData, tissueObj } = this.state;
     const selectedDrug2 = event.target.value;
-    this.setState({ selectedDrug2 });
+    this.setState({ selectedDrug2, loadingDrug1: true });
     getDrugData(sampleData, tissueObj, 'drugsData1', selectedDrug2);
   }
 
@@ -518,12 +521,12 @@ class Pharmacogenomics extends Component {
 
   renderBiomarkerList() {
     const {
-      dataType, moleculeData, geneData, selectedMolecule, selectedGene, loading1,
+      dataType, moleculeData, geneData, selectedMolecule, selectedGene, loadingBiomarkerList,
     } = this.state;
     const {
       moleculeChange, geneChange,
     } = this;
-    if (loading1) {
+    if (loadingBiomarkerList) {
       return (
         <div className="loading-container">
           <ReactLoading type="bubbles" width={150} height={150} color={colors.color_main_2} />
