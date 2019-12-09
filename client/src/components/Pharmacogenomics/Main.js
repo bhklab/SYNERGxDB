@@ -217,6 +217,7 @@ class Pharmacogenomics extends Component {
       loadingBiomarkerData: false,
       xRange: null,
       yRange: null,
+      accessor: null,
     };
     this.getDrugData = this.getDrugData.bind(this);
     this.getSampleDrugData = this.getSampleDrugData.bind(this);
@@ -346,15 +347,21 @@ class Pharmacogenomics extends Component {
   }
 
   scoreChange(event) {
-    this.setState({ scoreValue: event.target.value });
+    const scoreValue = event.target.value;
+    const { processSynData } = this;
+    const { biomarkerData, accessor } = this.state;
+    // eslint-disable-next-line no-unused-expressions
+    biomarkerData.length > 0
+      ? processSynData(biomarkerData, accessor, scoreValue)
+      : this.setState({ scoreValue });
   }
 
   moleculeChange(event) {
-    this.setState({ selectedMolecule: event.target.value, showPlot: false });
+    this.setState({ selectedMolecule: event.target.value, showPlot: false, biomarkerData: [] });
   }
 
   geneChange(event) {
-    this.setState({ selectedGene: event.target.value, showPlot: false });
+    this.setState({ selectedGene: event.target.value, showPlot: false, biomarkerData: [] });
   }
 
   sampleChange(e) {
@@ -403,6 +410,8 @@ class Pharmacogenomics extends Component {
       sampleData: [control, ...updatedSamplesData],
       selectedDrug1: 'null',
       selectedDrug2: 'null',
+      showPlot: false,
+      biomarkerData: [],
     });
 
     getDrugData(updatedSamplesData, tissueObj, 'drugsData1');
@@ -422,6 +431,8 @@ class Pharmacogenomics extends Component {
       sampleData: [],
       drugsData1: [],
       drugsData2: [],
+      biomarkerData: [],
+      showPlot: false,
     });
     if (dataType === 'rnaseq' || dataType === 'mutation' || dataType === 'cna') updateGeneData(dataType);
     if (dataType === 'metabolomic') updateMoleculeData();
@@ -500,6 +511,8 @@ class Pharmacogenomics extends Component {
       xRange,
       yRange,
       loadingBiomarkerData: false,
+      scoreValue,
+      accessor,
     });
   }
 
