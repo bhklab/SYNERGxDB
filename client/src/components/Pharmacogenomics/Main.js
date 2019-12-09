@@ -314,8 +314,7 @@ class Pharmacogenomics extends Component {
           processSynData(data, selectedMolecule, scoreValue);
           console.log(data);
         });
-    }
-    if (dataType === 'rnaseq') {
+    } else if (dataType === 'rnaseq') {
       queryParams = queryParams.concat(`&gene=${selectedGene}`);
       fetch('/api/biomarkers/association'.concat(queryParams), {
         method: 'GET',
@@ -327,6 +326,19 @@ class Pharmacogenomics extends Component {
         .then((data) => {
           console.log(data);
           processSynData(data, 'fpkm', scoreValue);
+        });
+    } else if (dataType === 'cna') {
+      queryParams = queryParams.concat(`&gene=${selectedGene}`);
+      fetch('/api/pharmacogenomics/cna'.concat(queryParams), {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+      }).then(response => response.json())
+        .then((data) => {
+          console.log(data);
+          // processSynData(data, 'fpkm', scoreValue);
         });
     } else {
       console.log('wrong datatype');
@@ -627,7 +639,7 @@ class Pharmacogenomics extends Component {
                   <RadioGroup aria-label="datatype" name="datatype" value={dataType} onChange={profileChange}>
                     <CustomFormLabel value="metabolomic" control={<CustomRadio />} label="metabolomic" />
                     <CustomFormLabel value="rnaseq" control={<CustomRadio />} label="molecular: expression, RNA-seq" />
-                    <CustomFormLabel value="mutation" control={<CustomRadio />} label="molecular: mutation" />
+                    {/* <CustomFormLabel value="mutation" control={<CustomRadio />} label="molecular: mutation" /> */}
                     <CustomFormLabel value="cna" control={<CustomRadio />} label="molecular: copy number" />
                   </RadioGroup>
                 </div>
