@@ -75,7 +75,7 @@ class SensHeatMap extends React.Component {
         
         // sort by median increasing, and output an array of combos to call them as the key
         medZips.sort((a,b) => {
-            return a.median - b.median;
+            return b.median - a.median;
         });
         const combos = medZips.map((x) => x.combo);
 
@@ -113,6 +113,7 @@ class SensHeatMap extends React.Component {
         newCombos = newCombos.filter(function (x) {
             return x != null;
         });
+
         // same for samples = remove samples with zip null
         let newSamples = samples.map((s) => {
             let samplesZip = Object.values(newData).map((x) => x.samples[s]);
@@ -201,7 +202,7 @@ class SensHeatMap extends React.Component {
             .attr('id', 'heatmap')
             .append('g')
             .attr('transform',
-                `translate(${margin.left + 20},${margin.top})`);
+                `translate(${margin.left + 10},${margin.top})`);
 
         // adding chart group - it scrolls
         let chart = svg.append('g')
@@ -216,7 +217,7 @@ class SensHeatMap extends React.Component {
         // Call by key to get the corresponding zip
         combos.forEach((c, i) => {
             samples.forEach((s, j) => {
-                chart.append("rect")
+                chart.append('rect')
                     .attr("x", j * ((width)/samples.length))
                     .attr("y", i * 18)
                     .attr("width", (width)/samples.length )
@@ -248,7 +249,7 @@ class SensHeatMap extends React.Component {
 
         // Add the X Axis
         svg.append('g')
-            .attr('class', 'y axis')
+            .attr('class', 'x axis')
             .attr('transform', `translate(0,${height-xAxisHeight})`)
             .attr('fill', 'none')
             .attr('stroke', 'none')
@@ -268,6 +269,7 @@ class SensHeatMap extends React.Component {
             <Fragment>
                 <div id="leftAxis"></div>
                 <div id={this.props.plotId} className="plot" />
+                
             </Fragment>
         );
     }
