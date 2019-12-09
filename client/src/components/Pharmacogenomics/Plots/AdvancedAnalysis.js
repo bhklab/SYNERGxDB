@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-properties */
 /* eslint-disable no-nested-ternary */
 import React from 'react';
 import Plot from 'react-plotly.js';
@@ -21,7 +22,82 @@ const StyledExpressionProfile = styled.div`
     display: flex
     justify-content: space-between;
     height: 450px;
+
+    .stats {
+      margin: auto 10px;
+      p {
+        color: ${colors.color_main_2}
+      }
+    }
 `;
+async function findCIndex(x, y) {
+  if (x.length < 2 || y.length < 2) {
+    return null;
+  }
+  try {
+    const response = await fetch('http://52.138.39.182/ocpu/library/wCI/R/paired.concordance.index/json', {
+      method: 'post',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        prediction: x,
+        observation: y,
+        CPP: false,
+      }),
+    });
+    const data = await response.json();
+    return data.cindex[0].toFixed(3);
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.log(err);
+    return null;
+  }
+}
+
+const findPearson = (xCoor, yCoor) => {
+  const { min, pow, sqrt } = Math;
+  const add = (a, b) => a + b;
+  const n = min(xCoor.length, yCoor.length);
+  if (n === 0) {
+    return 0;
+  }
+  const [x, y] = [xCoor.slice(0, n), yCoor.slice(0, n)];
+  const [sum1, sum2] = [x, y].map(l => l.reduce(add));
+  const [pow1, pow2] = [x, y].map(l => l.reduce((a, b) => a + pow(b, 2), 0));
+  const mulSum = x.map((number, i) => number * y[i]).reduce(add);
+  const dense = sqrt((pow1 - pow(sum1, 2) / n) * (pow2 - pow(sum2, 2) / n));
+  if (dense === 0) {
+    return 0;
+  }
+  console.log((mulSum - (sum1 * sum2 / n)) / dense);
+  return ((mulSum - (sum1 * sum2 / n)) / dense).toFixed(3);
+};
+
+const findSpearman = (multiList, p1, p2) => {
+  const N = multiList[p1].length;
+  const order = [];
+  let sum = 0;
+
+  for (let i = 0; i < N; i += 1) {
+    order.push([multiList[p1][i], multiList[p2][i]]);
+  }
+  order.sort((a, b) => a[0] - b[0]);
+
+  for (let i = 0; i < N; i += 1) {
+    order[i].push(i + 1);
+  }
+  order.sort((a, b) => a[1] - b[1]);
+
+  for (let i = 0; i < N; i += 1) {
+    order[i].push(i + 1);
+  }
+  for (let i = 0; i < N; i += 1) {
+    sum += Math.pow((order[i][2]) - (order[i][3]), 2);
+  }
+
+  const r = 1 - (6 * sum / (N * (N * N - 1)));
+  if (!r) return 0;
+  return r.toFixed(3);
+};
 
 class AdvancedAnalysis extends React.Component {
   constructor(props) {
@@ -29,6 +105,9 @@ class AdvancedAnalysis extends React.Component {
     this.state = {
       data: null,
       layout: null,
+      cIndex: null,
+      pearsonR: null,
+      spearmanRho: null,
     };
   }
 
@@ -48,8 +127,7 @@ class AdvancedAnalysis extends React.Component {
     }
   }
 
-
-  updatePlotData() {
+  async updatePlotData() {
     const {
       biomarkerData, selectedBiomarker, dimensions, xRange, yRange, selectedScore,
       drug1, drug2, accessor,
@@ -58,10 +136,12 @@ class AdvancedAnalysis extends React.Component {
 
     const regressionData = biomarkerData.map(item => [item[accessor], item[selectedScore]]);
     const bestFitCoefficients = regression.linear(regressionData);
+    const xCoordinates = biomarkerData.map(item => item[accessor]);
+    const yCoordinates = biomarkerData.map(item => item[selectedScore]);
 
     const datapoints = {
-      x: biomarkerData.map(item => item[accessor]),
-      y: biomarkerData.map(item => item[selectedScore]),
+      x: xCoordinates,
+      y: yCoordinates,
       name: 'Cell line',
       marker: {
         color: colors.color_main_2,
@@ -159,12 +239,21 @@ class AdvancedAnalysis extends React.Component {
         },
       },
     };
-    this.setState({ data, layout });
+    const cIndex = await findCIndex(xCoordinates, yCoordinates);
+    const pearsonR = findPearson(xCoordinates, yCoordinates);
+    const spearmanRho = findSpearman([xCoordinates, yCoordinates], 0, 1);
+    this.setState({
+      data,
+      layout,
+      cIndex,
+      pearsonR,
+      spearmanRho,
+    });
   }
 
   render() {
     const {
-      data, layout,
+      data, layout, cIndex, pearsonR, spearmanRho,
     } = this.state;
 
     let displayData;
@@ -184,6 +273,26 @@ class AdvancedAnalysis extends React.Component {
             }}
           />
         </PlotlyContainer>
+        {cIndex ? (
+          <div className="stats">
+            <p>
+            C-Index =
+              {' '}
+              {cIndex}
+            </p>
+            <p>
+            Pearson r =
+              {' '}
+              {pearsonR}
+            </p>
+            <p>
+            Spearman rho =
+              {' '}
+              {spearmanRho}
+            </p>
+          </div>
+        ) : null
+        }
       </StyledExpressionProfile>
     );
   }

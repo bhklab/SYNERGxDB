@@ -48,13 +48,6 @@ class Consistency extends Component {
     constructor() {
       super();
       this.state = {
-        // drugId1: null,
-        // drugId2: null,
-        // dataset: null,
-        // datasetName: 'Any',
-        // drugName1: 'Any',
-        // drugName2: 'Any',
-        // cellLineName: 'Any',
         results: [],
       };
     }
@@ -67,12 +60,6 @@ class Consistency extends Component {
       } = requestParams;
 
       let queryParams = `?drugId1=${drugId1}`;
-
-      // this.setState({
-      //   drugId1: parseInt(drugId1, 10),
-      //   drugId2: parseInt(drugId2, 10),
-      //   dataset: parseInt(dataset, 10),
-      // });
       if (sample) queryParams = queryParams.concat(`&sample=${sample}`);
       if (dataset) queryParams = queryParams.concat(`&dataset=${dataset}`);
       if (drugId2) queryParams = queryParams.concat(`&drugId2=${drugId2}`);
@@ -88,7 +75,6 @@ class Consistency extends Component {
         .then((data) => {
           this.setState({
             results: data,
-            //  loading: false
           });
         });
     }

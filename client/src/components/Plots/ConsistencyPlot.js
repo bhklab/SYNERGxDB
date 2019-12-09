@@ -1,5 +1,5 @@
 import * as d3 from 'd3';
-import React, { Component, Fragment } from 'react';
+import React, { Fragment } from 'react';
 import regression from 'regression';
 import colors from '../../styles/colors';
 
@@ -71,6 +71,7 @@ export default class ConsistencyPlot extends React.Component {
         if (d == yvalue) {
           return d;
         }
+        return null;
       })
       .attr('value', d => d)
       .text(d => d);
@@ -324,11 +325,11 @@ export default class ConsistencyPlot extends React.Component {
   }
 
   render() {
-    const { data } = this.props;
+    const { data, plotId } = this.props;
     return (
       <Fragment>
         {/* <h2>Consistency in Synergy Scores, <i>N</i> = {data.length}</h2> */}
-        <div id={this.props.plotId} className="plot" />
+        <div id={plotId} className="plot" />
       </Fragment>
     );
   }
