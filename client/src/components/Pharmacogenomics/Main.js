@@ -322,6 +322,7 @@ class Pharmacogenomics extends Component {
         },
       }).then(response => response.json())
         .then((synergyArray) => {
+          console.log(synergyArray);
           const paddingPercent = 0.05;
           let lowestFPKM = 0;
           let highestFPKM = 0;
