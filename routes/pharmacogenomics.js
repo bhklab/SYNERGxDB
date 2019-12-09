@@ -13,7 +13,7 @@ router.get('/genes', (req, res) => {
   switch (datatype) {
     case 'rnaseq':
       console.log('rnaseq');
-      query = db.select('hgnc_symbol as gene', 'gene_id').from('gene_identifiers');
+      query = db.select('hgnc_symbol as gene').from('gene_identifiers');
       break;
     case 'mutation':
       console.log('mutation');
@@ -74,6 +74,122 @@ router.get('/samples', (req, res) => {
     .catch((err) => {
       console.log(err);
       res.json(err);
+    });
+});
+
+router.get('/metabolomics', (req, res) => {
+  const { molecule, sample } = req.query;
+  let {
+    drugId1, drugId2,
+  } = req.query;
+  drugId1 = drugId1 && parseInt(drugId1, 10);
+  drugId2 = drugId2 && parseInt(drugId2, 10);
+
+  console.log(sample);
+  let sampleArray;
+  if (sample) {
+    sampleArray = sample.includes(',')
+      ? sample.split(',').map(item => parseInt(item, 10))
+      : [Number.isNaN(parseInt(sample, 10)) ? sample : parseInt(sample, 10)];
+  }
+
+  function subqueryComboDesign() {
+    this.select('idSample', 'idCombo_Design')
+      .from('combo_design')
+      .where(function () {
+        const query = this.where({ idDrugA: drugId1, idDrugB: drugId2 });
+        return sample ? query.whereIn('idSample', sampleArray) : query;
+      })
+      .orWhere(function () {
+        const query = this.where({ idDrugA: drugId2, idDrugB: drugId1 });
+        return sample ? query.whereIn('idSample', sampleArray) : query;
+      })
+      .as('CD');
+  }
+
+  function subquerySynergyScores() {
+    this.select('idSample', 'bliss', 'hsa', 'zip', 'loewe')
+      .from(subqueryComboDesign)
+      .join('synergy_score', 'synergy_score.idCombo_Design', '=', 'CD.idCombo_Design')
+      .as('SS');
+  }
+
+  function subqueryMetabolomics() {
+    const query = this.select(molecule, 'idSample')
+      .from('metabolomics');
+    return sample ? query.whereIn('idSample', sampleArray).as('M') : query.as('M');
+  }
+  function subqueryBiomarkerData() {
+    this.select('SS.idSample', 'bliss', 'hsa', 'zip', 'loewe', molecule)
+      .from(subqueryMetabolomics)
+      .join(subquerySynergyScores, 'M.idSample', '=', 'SS.idSample')
+      .as('BD');
+  }
+
+  db.select(molecule, 'name as cellName', 'bliss', 'hsa', 'zip', 'loewe')
+    .from(subqueryBiomarkerData)
+    .join('sample', 'sample.idSample', '=', 'BD.idSample')
+    .then((data) => {
+      res.json(data);
+    });
+});
+
+
+router.get('/cna', (req, res) => {
+  const { gene, sample } = req.query;
+  let {
+    drugId1, drugId2,
+  } = req.query;
+  drugId1 = drugId1 && parseInt(drugId1, 10);
+  drugId2 = drugId2 && parseInt(drugId2, 10);
+
+  console.log(sample);
+  let sampleArray;
+  if (sample) {
+    sampleArray = sample.includes(',')
+      ? sample.split(',').map(item => parseInt(item, 10))
+      : [Number.isNaN(parseInt(sample, 10)) ? sample : parseInt(sample, 10)];
+  }
+
+  function subqueryComboDesign() {
+    this.select('idSample', 'idCombo_Design')
+      .from('combo_design')
+      .where(function () {
+        const query = this.where({ idDrugA: drugId1, idDrugB: drugId2 });
+        return sample ? query.whereIn('idSample', sampleArray) : query;
+      })
+      .orWhere(function () {
+        const query = this.where({ idDrugA: drugId2, idDrugB: drugId1 });
+        return sample ? query.whereIn('idSample', sampleArray) : query;
+      })
+      .as('CD');
+  }
+
+  function subquerySynergyScores() {
+    this.select('idSample', 'bliss', 'hsa', 'zip', 'loewe')
+      .from(subqueryComboDesign)
+      .join('synergy_score', 'synergy_score.idCombo_Design', '=', 'CD.idCombo_Design')
+      .as('SS');
+  }
+
+  function subqueryCopyNumber() {
+    const query = this.select('cn', 'idSample')
+      .from('copynumber')
+      .where({ gene });
+    return sample ? query.whereIn('idSample', sampleArray).as('CN') : query.as('CN');
+  }
+  function subqueryBiomarkerData() {
+    this.select('SS.idSample', 'bliss', 'hsa', 'zip', 'loewe', 'cn')
+      .from(subqueryCopyNumber)
+      .join(subquerySynergyScores, 'CN.idSample', '=', 'SS.idSample')
+      .as('BD');
+  }
+
+  db.select('cn', 'name as cellName', 'bliss', 'hsa', 'zip', 'loewe')
+    .from(subqueryBiomarkerData)
+    .join('sample', 'sample.idSample', '=', 'BD.idSample')
+    .then((data) => {
+      res.json(data);
     });
 });
 

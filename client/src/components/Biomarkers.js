@@ -161,6 +161,7 @@ class Biomarkers extends Component {
 
   // retrieves list of SIGNIFICANT biomarkers over API and updates biomarker gene
   getBiomarkerTableData(score) {
+    const { getPlotData } = this;
     const {
       drugId1, drugId2, dataset,
     } = this.state;
@@ -207,7 +208,7 @@ class Biomarkers extends Component {
           default:
             break;
         }
-        this.getPlotData(data[0].gene, score);
+        getPlotData(data[0].gene, score);
       })
       .catch((err) => {
         console.log(err);
@@ -300,6 +301,7 @@ class Biomarkers extends Component {
         },
       }).then(response => response.json())
         .then((data) => {
+          console.log(data);
           synergyArray = data;
         });
       this.setState({
