@@ -312,7 +312,6 @@ class Pharmacogenomics extends Component {
       }).then(response => response.json())
         .then((data) => {
           processSynData(data, selectedMolecule, scoreValue);
-          console.log(data);
         });
     } else if (dataType === 'rnaseq') {
       queryParams = queryParams.concat(`&gene=${selectedGene}`);
@@ -324,7 +323,6 @@ class Pharmacogenomics extends Component {
         },
       }).then(response => response.json())
         .then((data) => {
-          console.log(data);
           processSynData(data, 'fpkm', scoreValue);
         });
     } else if (dataType === 'cna') {
@@ -337,7 +335,6 @@ class Pharmacogenomics extends Component {
         },
       }).then(response => response.json())
         .then((data) => {
-          console.log(data);
           processSynData(data, 'cn', scoreValue);
         });
     } else {
@@ -435,9 +432,13 @@ class Pharmacogenomics extends Component {
     fetch(`/api/pharmacogenomics/genes?datatype=${dataType}`)
       .then(response => response.json())
       .then((data) => {
-        const geneData = data.map(item => ({
-          value: item.gene_id ? item.gene_id : item.gene, label: item.gene,
-        }));
+        const geneData = data.map((item) => {
+          let label = item.gene;
+          if (dataType === 'cna') [label] = item.gene.split(' ');
+          return ({
+            value: item.gene_id ? item.gene_id : item.gene, label,
+          });
+        });
         this.setState({ geneData, loading1: false });
       });
   }
