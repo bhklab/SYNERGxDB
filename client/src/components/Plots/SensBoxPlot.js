@@ -1,10 +1,14 @@
 import * as d3 from 'd3';
 import React, {Fragment} from 'react';
+import CellSensLegends from './CellSensLegends';
 // import colors from '../../styles/colors';
 
 class SensBoxPlot extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            legendColors: {},
+        };
     }
 
     componentDidMount() {
@@ -12,7 +16,8 @@ class SensBoxPlot extends React.Component {
             data, query, plotId
         } = this.props;
         const result = this.formatData(data, query);
-        this.plotSensBoxPlot(result[0], result[1], result[2], plotId);
+        const legendColors = this.plotSensBoxPlot(result[0], result[1], result[2], plotId);
+        this.setState({legendColors: legendColors});
     }
 
     formatData(data, query) {
@@ -26,14 +31,12 @@ class SensBoxPlot extends React.Component {
         //     }, ...
         // }
         let newData = {};
-        let queryCombo = '';
+        let datasets = [];
 
         // putting all the zips in there first
         data.forEach((x) => {
-            const combo = `${x.drugNameA} + ${x.drugNameB}`;
-            if (x.idDrugA == query[0] && x.idDrugB == query[1]) {
-                queryCombo = combo;
-            }
+            const combo = `${x.drugNameA} + ${x.drugNameB} / ${x.source}`;
+            datasets.push(x.source)
             if (newData[combo] === undefined) {
                 newData[combo] = {
                     zip: [x.zip == null ? 0 : x.zip],
@@ -46,7 +49,7 @@ class SensBoxPlot extends React.Component {
                 newData[combo].zip.push(x.zip == null ? 0 : x.zip);                
             }
         })
-
+        
         // calculate all the boxplot stuff
         // and create array of median objs for sorting
         let medZips = []
@@ -75,8 +78,11 @@ class SensBoxPlot extends React.Component {
         
         // sort by median increasing, and output an array of combos to call them as the key
         medZips.sort((a,b) => {
-            return b.median - a.median;
+            return a.median - b.median;
         });
+
+        // unique array of all datasets
+        datasets = [...new Set(datasets)];
 
         const combos = medZips.map((x) => x.combo);
         
@@ -93,11 +99,11 @@ class SensBoxPlot extends React.Component {
             return x != null;
         });
 
-        // return [data, combos, samples]
-        return [newData, newCombos, queryCombo];
+        // return [data, combos]
+        return [newData, newCombos, datasets];
     }
 
-    plotSensBoxPlot(data, combos, queryCombo, plotId) {
+    plotSensBoxPlot(data, combos, datasets, plotId) {
         // positions and dimensions
         const margin = {
             top: 20,
@@ -129,7 +135,7 @@ class SensBoxPlot extends React.Component {
 
         let yrange = d3.scaleBand()
             .domain(combos)
-            .range([combos.length * boxHeight, 0])
+            .range([0, combos.length * boxHeight])
 
         // set axes for graph
         const xAxis = d3.axisBottom()
@@ -168,9 +174,14 @@ class SensBoxPlot extends React.Component {
             .attr('id', 'chart')
 
         // color scale
-        let color = d3.scaleLinear()
-            .domain([-1,1])
-            .range(['#5fcfff', '#fca03e'])
+        let color = {};
+        let arrColor = ['#5fcfff','#fca03e','#77c379', '#de5757', '#9a95de', '#f3c833'];
+        datasets.forEach((x,i) => {
+            color[x] = arrColor[i];
+        });
+
+        // keep track of datasets that were actually plotted
+        let boxDatasets = [];
 
         // to make the boxplot, for each combo
         // Call by key to get the corresponding zip
@@ -191,7 +202,7 @@ class SensBoxPlot extends React.Component {
                 .attr('y', yrange(c))
                 .attr('width', xrange(data[c].quant.q3)-xrange(data[c].quant.q1))
                 .attr('height', boxHeight)
-                .attr('fill', '#5fcfff')
+                .attr('fill', color[data[c].dataset])
                 .attr('stroke', 'none')
             
             chart.selectAll(`rect${i}`)
@@ -203,14 +214,36 @@ class SensBoxPlot extends React.Component {
                     .attr('y1', yrange(c))
                     .attr('y2', yrange(c) + (boxHeight))
                     .attr('stroke', 'black')
+                    
+            boxDatasets.push(data[c].dataset);
         })
+        // unique the datasets
+        boxDatasets = [...new Set(boxDatasets)]
 
-        
+        // find all the datasets that aren't in boxDatasets, 
+        // and remove them from the color JSON
+
+        datasets.forEach((x) => {
+            if (!boxDatasets.includes(x)) {
+                delete color[x];
+            }
+        })
+        return color;
     }
 
     render() {
+        const {legendColors} = this.state;
         return (
-            <div id={this.props.plotId} className="plot" />
+            <Fragment>
+                <div id={this.props.plotId} className="plot" />
+                {Object.keys(legendColors).length == 0 ? null : (
+                    <CellSensLegends 
+                        legendColors={legendColors}
+                        plotId='legend'
+                    />
+                )}
+                
+            </Fragment>
         );
     }
 }

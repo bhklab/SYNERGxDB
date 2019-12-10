@@ -12,7 +12,7 @@ class SensHeatMap extends React.Component {
             data, query, plotId
         } = this.props;
         const result = this.formatData(data, query);
-        this.plotSensHeatMap(result[0], result[1], result[2], result[3], plotId);
+        this.plotSensHeatMap(result[0], result[1], result[2], result[3], result[4], plotId);
     }
 
     formatData(data, query) {
@@ -31,13 +31,15 @@ class SensHeatMap extends React.Component {
         // }
         let newData = {};
         let allSamples = [];
-        let queryCombo = '';
+        let queryCombo = [];
+        let datasets = [];
         data.forEach((x) => {
-            const combo = `${x.drugNameA} + ${x.drugNameB}`;
+            const combo = `${x.drugNameA} + ${x.drugNameB}/${x.source}`;
             if (x.idDrugA == query[0] && x.idDrugB == query[1]) {
-                queryCombo = combo;
+                queryCombo = [x.drugNameA, x.drugNameB];
             }
-            if (newData[combo] === undefined) {
+            datasets.push(x.source)
+            if (newData[combo] === undefined) { // TODO: fix drug A + B, B + A
                 newData[combo] = {
                     zip: [x.zip == null ? 0 : x.zip],
                     median: 0,
@@ -53,6 +55,9 @@ class SensHeatMap extends React.Component {
 
         // unique array of all samples
         allSamples = [...new Set(allSamples)];
+
+        // unique array of all datasets
+        datasets = [...new Set(datasets)];
         
         // median function
         const median = arr => {
@@ -75,7 +80,7 @@ class SensHeatMap extends React.Component {
         
         // sort by median increasing, and output an array of combos to call them as the key
         medZips.sort((a,b) => {
-            return b.median - a.median;
+            return a.median - b.median;
         });
         const combos = medZips.map((x) => x.combo);
 
@@ -127,20 +132,20 @@ class SensHeatMap extends React.Component {
             return x != null;
         });
 
-        // return [data, combos, samples]
-        return [newData, newCombos, newSamples, queryCombo]
+        // return [data, combos, samples, datasets]
+        return [newData, newCombos, newSamples, datasets, queryCombo]
 
         // to make the heatmap, for each combo, nested for each sample. 
         // Call by key to get the corresponding zip
     }
 
-    plotSensHeatMap(data, combos, samples, queryCombo, plotId) {
+    plotSensHeatMap(data, combos, samples, datasets, queryCombo, plotId) {
         // positions and dimensions
         const margin = {
             top: 20,
             right: 50,
             bottom: 0,
-            left: 20,
+            left: 0,
         };
 
         const yAxisWidth = 180, xAxisHeight = 100;
@@ -160,12 +165,15 @@ class SensHeatMap extends React.Component {
         // Build X scales and axis:
         let yrange = d3.scaleBand()
             .domain(combos)
-            .range([ combos.length * 18, 0 ])
-            .padding(0.01);
+            .range([ 0, combos.length * 18]);
 
         const yAxis = d3.axisLeft()
             .scale(yrange)
-            .tickPadding(2);
+            .tickPadding(2)
+            .tickFormat((d) => {
+                const ind = d.indexOf('/')
+                return d.substring(0, ind);
+            });
 
         // Add the Y Axis
         leftAxis.append('g')
@@ -177,7 +185,7 @@ class SensHeatMap extends React.Component {
             .call(yAxis)
             .selectAll('text')
             .attr('fill', (d) => {
-                if (d === queryCombo) {
+                if (d.includes(queryCombo[0]) && d.includes(queryCombo[1])) {
                     return 'orange';
                 } else {
                     return 'black';
@@ -185,13 +193,13 @@ class SensHeatMap extends React.Component {
             })
             .style('font-size', 11)
             .style('font-weight', (d) => {
-                if (d === queryCombo) {
+                if (d.includes(queryCombo[0]) && d.includes(queryCombo[1])) {
                     return 'bold';
                 } else {
                     return 'none';
                 }
             })
-            .attr('stroke', 'none');
+            .attr('stroke', 'none')
 
         // Add the svg canvas
         const svg = d3.select(`#${plotId}`)
@@ -209,9 +217,21 @@ class SensHeatMap extends React.Component {
             .attr('id', 'chart')
 
         // color scale
+        // let color = {}; 
+        // array of colours to use
+        // const arrColorStart = ['#5fcfff', '#77c379', '#9a95de'], 
+        // arrColorEnd = ['#fca03e', '#de5757', '#f3c833'];
+
+        // datasets.forEach((x,i) => {
+        //     color[x] = d3.scaleLinear()
+        //                 .domain([-1,1])
+        //                 .range([arrColorStart[i],arrColorEnd[i]])
+            
+        // })
+
         let color = d3.scaleLinear()
-            .domain([-1,1])
-            .range(['#5fcfff', '#fca03e'])
+                        .domain([-1,1])
+                        .range(['#5fcfff','#fca03e'])
 
         // to make the heatmap, forEach combos, nested forEach samples. 
         // Call by key to get the corresponding zip
@@ -258,10 +278,12 @@ class SensHeatMap extends React.Component {
             .selectAll('text')
             .attr('fill', 'black')
             .style('font-size', 11)
-            .attr('x',-5)
+            .attr('x',-10)
+            .attr('y',-1)
             .attr('text-anchor', 'end')
-            .attr('transform', 'rotate(-45)')
+            .attr('transform', 'rotate(-70)')
             .attr('stroke', 'none');
+        
     }
 
     render() {

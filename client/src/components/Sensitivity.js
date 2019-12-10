@@ -19,18 +19,25 @@ const SensitivityDiv = styled.div`
   
   #sensHeatMap {
     overflow-x: scroll;
-    width:600px;
+    width:500px;
     position:absolute;
-    margin-left:150px;
+    margin-left:185px;
     float:left;
   }
 
   #sensBoxPlot {
-    width:300px;
+    width:250px;
     position:absolute;
-    margin-left:720px;
+    margin-left:660px;
   }
 
+  #legend {
+    position:absolute;
+    float:right;
+    width:100px;
+    margin-left:950px;
+    margin-top: 200px;
+  }
 
   #leftAxis {
     float:left;
