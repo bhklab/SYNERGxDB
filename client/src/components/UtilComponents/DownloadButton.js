@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-// import { CSVLink } from 'react-csv';
-// import CsvDownload from 'react-json-to-csv';
 import CsvDownloader from 'react-csv-downloader';
+import PropTypes from 'prop-types';
+
 import colors from '../../styles/colors';
 import downloadIcon from '../../images/icons/download.svg';
 import transitions from '../../styles/transitions';
@@ -53,3 +53,9 @@ const DownloadButton = (props) => {
 };
 
 export default DownloadButton;
+
+DownloadButton.propTypes = {
+  data: PropTypes.arrayOf(PropTypes.object).isRequired,
+  headers: PropTypes.arrayOf(PropTypes.object).isRequired,
+  filename: PropTypes.string.isRequired,
+};
