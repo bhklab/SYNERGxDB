@@ -9,6 +9,7 @@ import BarChart from './Plots/BarChart';
 // import transitions from '../styles/transitions';
 
 import LoadingComponent from './UtilComponents/Loading';
+import DownloadButton from './UtilComponents/DownloadButton';
 
 
 const StyledWrapper = styled.div`
@@ -133,28 +134,27 @@ class Drugs extends Component {
       accessor: 'idDrugBank',
       Cell: props => <a className="hover" target="_blank" rel="noopener noreferrer" href={`https://www.drugbank.ca/drugs/${props.value}`}>{props.value}</a>,
     }];
-    // const filterCaseInsensitive = (filter, row) => {
-    //   const id = filter.pivotId || filter.id;
-    //   return (
-    //     row[id] !== undefined
-    //       ? String(row[id].toLowerCase()).startsWith(filter.value.toLowerCase())
-    //       : true
-    //   );
-    // };
+    const headers = [
+      { displayName: 'Name', id: 'name' },
+      { displayName: 'ATC Code', id: 'atcCode' },
+      { displayName: 'PubChem CID', id: 'idPubChem' },
+      { displayName: 'DrugBank ID', id: 'idDrugBank' },
+    ];
+
     return (
       <Fragment>
         {/* <style>{'#root { background: #e7f3f8  !important; }'}</style> */}
         <main className="summary">
           <StyledWrapper className="wrapper">
             <h1>
-Compounds,
+              Compounds,
               {' '}
               <i>
-N =
-{' '}
-{drugsData.length.toLocaleString()}
-</i>
-                        </h1>
+                N =
+                {' '}
+                {drugsData.length.toLocaleString()}
+              </i>
+            </h1>
             {datasetData.length === 0 ? null : (
               <BarChart
                 plotId="drugPlot"
@@ -176,6 +176,11 @@ N =
               className="-highlight"
               loading={loading}
               LoadingComponent={LoadingComponent}
+            />
+            <DownloadButton
+              data={drugsData}
+              filename="drugs"
+              headers={headers}
             />
           </StyledWrapper>
         </main>
