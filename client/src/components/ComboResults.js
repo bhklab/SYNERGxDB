@@ -13,6 +13,7 @@ import 'react-table/react-table.css';
 
 import LoadingComponent from './UtilComponents/Loading';
 import QueryCard from './UtilComponents/QueryCard';
+import DownloadButton from './UtilComponents/DownloadButton';
 
 const SynergyDiv = styled.div`
   width: 100%;
@@ -225,6 +226,17 @@ class ComboResults extends Component {
       Header: 'Source',
       accessor: 'sourceName',
     }];
+    const headers = [
+      { label: 'Tissue', key: 'tissue' },
+      { label: 'Cell Line', key: 'sampleName' },
+      { label: 'Compound A', key: 'drugNameA' },
+      { label: 'Compound B', key: 'drugNameB' },
+      { label: 'ZIP', key: 'zip' },
+      { label: 'Bliss', key: 'bliss' },
+      { label: 'Loewe', key: 'loewe' },
+      { label: 'HSA', key: 'hsa' },
+      { label: 'Source', key: 'sourceName' },
+    ];
 
     return (
       <main>
@@ -280,7 +292,7 @@ class ComboResults extends Component {
             {' '}
             <i>N</i>
             {' '}
-=
+            =
             {' '}
             {totalSynergyScores}
           </h2>
@@ -309,6 +321,7 @@ class ComboResults extends Component {
             })
             }
           />
+          <DownloadButton data={results} headers={headers} />
         </SynergyDiv>
       </main>
     );

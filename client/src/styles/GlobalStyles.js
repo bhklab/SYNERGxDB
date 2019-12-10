@@ -240,8 +240,12 @@ const GlobalStyles = createGlobalStyle`
     .main-wrapper {
       overflow-x:hidden;
     }
-
   }
+  // .ReactTable .-btn {
+  //   background: ${colors.color_main_2} !important;
+  //   color: white !important;
+  // }
+}
 `;
 
 export default GlobalStyles;
