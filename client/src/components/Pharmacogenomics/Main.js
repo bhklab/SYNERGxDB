@@ -59,7 +59,7 @@ const StyledDiv = styled.div`
       justify-content: space-between;
     }
     & > div {
-      min-height: 300px;
+      min-height: 450px;
       width: 30%;
     }
     &:nth-of-type(1) > div {
@@ -98,6 +98,7 @@ const StyledDiv = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
+    margin: 0
   }
   .plot {
     display: flex;
@@ -562,6 +563,7 @@ class Pharmacogenomics extends Component {
     const {
       drugsData1, drugsData2, selectedDrug1, sampleData,
       selectedDrug2, selectedGene, selectedMolecule,
+      loadingDrug1, loadingDrug2,
     } = this.state;
     if (selectedMolecule !== 'null' || selectedGene !== 'null') {
       return sampleData.length > 0 && drugsData1.length > 0 ? (
@@ -570,18 +572,32 @@ class Pharmacogenomics extends Component {
             data={sampleData}
             sampleChange={sampleChange}
           />
-          <DrugList
-            data={drugsData1}
-            drugChange={handleDrug1Search}
-            selectedDrug={selectedDrug1}
-            drugLabel="A"
-          />
-          <DrugList
-            data={drugsData2}
-            drugChange={handleDrug2Search}
-            selectedDrug={selectedDrug2}
-            drugLabel="B"
-          />
+          {!loadingDrug1
+            ? (
+              <DrugList
+                data={drugsData1}
+                drugChange={handleDrug1Search}
+                selectedDrug={selectedDrug1}
+                drugLabel="A"
+              />
+            ) : (
+              <div className="loading-container">
+                <ReactLoading type="bubbles" width={150} height={150} color={colors.color_main_2} />
+              </div>
+            )
+          }
+          {!loadingDrug2 ? (
+            <DrugList
+              data={drugsData2}
+              drugChange={handleDrug2Search}
+              selectedDrug={selectedDrug2}
+              drugLabel="B"
+            />
+          ) : (
+            <div className="loading-container">
+              <ReactLoading type="bubbles" width={150} height={150} color={colors.color_main_2} />
+            </div>
+          )}
         </div>
       ) : null;
     }

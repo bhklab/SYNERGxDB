@@ -8,7 +8,7 @@ import colors from '../../styles/colors';
 const QueryDiv = styled.div`
   width: 100%;
   background:white;
-  padding:20px 30px;
+  padding: 10px 30px;
   margin-bottom:30px;
   font-size:18px;
   color: ${colors.blue_main};

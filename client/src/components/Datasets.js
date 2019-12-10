@@ -5,10 +5,11 @@ import ReactTable from 'react-table';
 import 'react-table/react-table.css';
 import ReactLoading from 'react-loading';
 
+import DownloadButton from './UtilComponents/DownloadButton';
 import DonutPlot from './Plots/DonutPlot';
 import DatasetLegend from './Plots/DatasetLegend';
 import colors from '../styles/colors';
-import dataset_stats from '../dataset_stats.json';
+import datasetStats from '../dataset_stats.json';
 
 // import transitions from '../styles/transitions';
 
@@ -61,7 +62,7 @@ class Datasets extends Component {
     //   .then((datasetData) => {
     //     this.setState({ datasetData: datasetData, loading: false });
     //   });
-    this.setState({ datasetData: dataset_stats, loading: false });
+    this.setState({ datasetData: datasetStats, loading: false });
   }
 
   formatData(data, keyName) {
@@ -117,6 +118,13 @@ class Datasets extends Component {
       accessor: 'combo',
       sortable: false,
     }];
+    const headers = [
+      { displayName: 'Name', id: 'name' },
+      { displayName: 'Source', id: 'author' },
+      { displayName: '# of cell lines', id: 'no_samples' },
+      { displayName: '# of compounds', id: 'no_drugs' },
+      { displayName: 'Design', id: 'combo' },
+    ];
 
     const miniDims = {
       width: 220,
@@ -141,49 +149,49 @@ class Datasets extends Component {
 
                 <Fragment>
                   <h1>
-Datasets,
+                    Datasets,
                     {' '}
                     <i>N</i>
                     {' '}
-=
+                    =
                     {' '}
                     {datasetData.length.toLocaleString()}
                   </h1>
                   {datasetData.length === 0 ? null : (
                     <Fragment>
                       <DonutPlot
-                      keyName="Combinations"
-                      plotId="dsetMiniPlot"
-                      dimensions={miniDims}
-                      formatData={this.formatData}
-                      donutData={datasetData}
-                      legendCallBack={this.legendCallBack}
-                    />
-
-                      <DonutPlot
-                      keyName="Experiments"
-                      plotId="dsetMiniPlot"
-                      dimensions={miniDims}
-                      formatData={this.formatData}
-                      donutData={datasetData}
-                      legendCallBack={this.legendCallBack}
-                    />
-
-                      <DonutPlot
-                      keyName="Datapoints"
-                      plotId="dsetMiniPlot"
-                      dimensions={miniDims}
-                      formatData={this.formatData}
-                      donutData={datasetData}
-                      legendCallBack={this.legendCallBack}
-                    />
-                      {colorMap.length === 0 ? null : (
-                      <DatasetLegend
-                        data={colorMap}
-                        datasetData={datasetData}
-                        plotId="dsetLegend"
+                        keyName="Combinations"
+                        plotId="dsetMiniPlot"
+                        dimensions={miniDims}
+                        formatData={this.formatData}
+                        donutData={datasetData}
+                        legendCallBack={this.legendCallBack}
                       />
-                    )}
+
+                      <DonutPlot
+                        keyName="Experiments"
+                        plotId="dsetMiniPlot"
+                        dimensions={miniDims}
+                        formatData={this.formatData}
+                        donutData={datasetData}
+                        legendCallBack={this.legendCallBack}
+                      />
+
+                      <DonutPlot
+                        keyName="Datapoints"
+                        plotId="dsetMiniPlot"
+                        dimensions={miniDims}
+                        formatData={this.formatData}
+                        donutData={datasetData}
+                        legendCallBack={this.legendCallBack}
+                      />
+                      {colorMap.length === 0 ? null : (
+                        <DatasetLegend
+                          data={colorMap}
+                          datasetData={datasetData}
+                          plotId="dsetLegend"
+                        />
+                      )}
                     </Fragment>
                   )}
                 </Fragment>
@@ -200,6 +208,11 @@ Datasets,
               showPagination={false}
               defaultPageSize={7}
               loading={loading}
+            />
+            <DownloadButton
+              data={databaseData}
+              filename="datasets"
+              headers={headers}
             />
           </StyledWrapper>
         </main>

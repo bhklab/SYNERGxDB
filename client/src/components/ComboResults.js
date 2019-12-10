@@ -13,6 +13,7 @@ import 'react-table/react-table.css';
 
 import LoadingComponent from './UtilComponents/Loading';
 import QueryCard from './UtilComponents/QueryCard';
+import DownloadButton from './UtilComponents/DownloadButton';
 
 const SynergyDiv = styled.div`
   width: 100%;
@@ -225,6 +226,22 @@ class ComboResults extends Component {
       Header: 'Source',
       accessor: 'sourceName',
     }];
+    const headers = [
+      { displayName: 'Tissue', id: 'tissue' },
+      { displayName: 'Cell Line', id: 'sampleName' },
+      { displayName: 'Compound A', id: 'drugNameA' },
+      { displayName: 'Compound B', id: 'drugNameB' },
+      { displayName: 'ZIP', id: 'zip' },
+      { displayName: 'Bliss', id: 'bliss' },
+      { displayName: 'Loewe', id: 'loewe' },
+      { displayName: 'HSA', id: 'hsa' },
+      { displayName: 'Source', id: 'sourceName' },
+    ];
+    let filename = 'drug_combos';
+    if (sample) filename = filename.concat(`_${sample}`);
+    if (dataset) filename = filename.concat(`_${dataset}`);
+    if (drugId1) filename = filename.concat(`_${drugId1}`);
+    if (drugId2) filename = filename.concat(`_${drugId2}`);
 
     return (
       <main>
@@ -272,15 +289,13 @@ class ComboResults extends Component {
           </div>
 
         </ButtonsDiv>
-
-        {/* {showBiomarker} */}
         <SynergyDiv>
           <h2>
             Synergy Scores,
             {' '}
             <i>N</i>
             {' '}
-=
+            =
             {' '}
             {totalSynergyScores}
           </h2>
@@ -308,6 +323,11 @@ class ComboResults extends Component {
               },
             })
             }
+          />
+          <DownloadButton
+            data={results}
+            headers={headers}
+            filename={filename}
           />
         </SynergyDiv>
       </main>

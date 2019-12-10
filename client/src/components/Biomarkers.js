@@ -15,6 +15,7 @@ import ExpressionProfile from './Plots/ExpressionProfile';
 import QueryCard from './UtilComponents/QueryCard';
 import BiomarkerBoxPlot from './Plots/BiomarkerBoxPlot';
 import LoadingComponent from './UtilComponents/Loading';
+import DownloadButton from './UtilComponents/DownloadButton';
 
 // used to align plot and slider (in px)
 const dimensions = {
@@ -401,6 +402,19 @@ class Biomarkers extends Component {
       default:
         break;
     }
+    const headers = [
+      { displayName: 'Gene Symbol', id: 'gene' },
+      { displayName: 'Compound A', id: 'drugA' },
+      { displayName: 'Compound B', id: 'drugB' },
+      { displayName: 'Dataset', id: 'dataset' },
+      { displayName: `P-value (${selectedScore})`, id: 'pValue' },
+      { displayName: `C-index (${selectedScore})`, id: 'concordanceIndex' },
+    ];
+    let filename = 'biomarker_analysis';
+    if (sample) filename = filename.concat(`_${sample}`);
+    if (dataset) filename = filename.concat(`_${dataset}`);
+    if (drugId1) filename = filename.concat(`_${drugId1}`);
+    if (drugId2) filename = filename.concat(`_${drugId2}`);
     return (
       <main>
         <QueryCard
@@ -468,6 +482,13 @@ class Biomarkers extends Component {
             })
           }
           />
+          {!loadingTable ? (
+            <DownloadButton
+              data={tableData || []}
+              headers={headers}
+              filename={filename}
+            />
+          ) : null}
           { !loadingGraph ? (
             <StyledExpressionProfile>
               <ExpressionProfile

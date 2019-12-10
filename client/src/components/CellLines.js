@@ -6,6 +6,7 @@ import 'react-table/react-table.css';
 // import transitions from '../styles/transitions';
 
 import LoadingComponent from './UtilComponents/Loading';
+import DownloadButton from './UtilComponents/DownloadButton';
 import DonutPlot from './Plots/DonutPlot';
 
 const StyledWrapper = styled.div`
@@ -154,8 +155,6 @@ class Databases extends Component {
     };
   }
 
-  legendCallBack = colorMap => null
-
   componentDidMount() {
     fetch('/api/cell_lines/')
       .then(response => response.json())
@@ -172,6 +171,8 @@ class Databases extends Component {
         this.setState({ cellLineData, loading: false, donutData: data });
       });
   }
+
+  legendCallBack = () => null
 
   render() {
     const { cellLineData, loading, donutData } = this.state;
@@ -220,6 +221,13 @@ class Databases extends Component {
       maxWidth: 125,
       sortable: false,
     }];
+    const headers = [
+      { displayName: 'Tissue', id: 'tissue' },
+      { displayName: 'Name', id: 'name' },
+      { displayName: 'Sex', id: 'sex' },
+      { displayName: 'Age', id: 'age' },
+      { displayName: 'Cellosaurus', id: 'idCellosaurus' },
+    ];
 
     const miniDims = {
       width: 300,
@@ -305,6 +313,11 @@ class Databases extends Component {
               className="-highlight"
               loading={loading}
               LoadingComponent={LoadingComponent}
+            />
+            <DownloadButton
+              data={cellLineData}
+              filename="samples"
+              headers={headers}
             />
           </StyledWrapper>
         </main>
