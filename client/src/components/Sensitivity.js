@@ -1,9 +1,10 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import styled from 'styled-components';
 import ReactRouterPropTypes from 'react-router-prop-types';
 import queryString from 'query-string';
 import QueryCard from './UtilComponents/QueryCard';
 import SensHeatMap from './Plots/SensHeatMap';
+import SensBoxPlot from './Plots/SensBoxPlot';
 // import colors from '../styles/colors';
 import 'react-table/react-table.css';
 // import transitions from '../styles/transitions';
@@ -14,6 +15,26 @@ const SensitivityDiv = styled.div`
   background:white;
   padding:20px 30px;
   margin-bottom:20px;
+  display: inline-block;
+  
+  #sensHeatMap {
+    overflow-x: scroll;
+    width:600px;
+    position:absolute;
+    margin-left:150px;
+    float:left;
+  }
+
+  #sensBoxPlot {
+    width:300px;
+    position:absolute;
+    margin-left:720px;
+  }
+
+
+  #leftAxis {
+    float:left;
+  }
 `;
 
 
@@ -49,7 +70,7 @@ class Sensitivity extends Component {
 
   render() {
     const { data, sample, drugId1, drugId2, dataset, } = this.state;
-
+    const query = [drugId1, drugId2];
     return (
       <main>
         {drugId1 == "" && drugId2 == "" ? null : (
@@ -63,10 +84,18 @@ class Sensitivity extends Component {
         
         <SensitivityDiv>
           {data.length == 0 ? null : (
-            <SensHeatMap
-              data={data}
-              plotId="sensHeatMap"
-            />
+            <Fragment>
+                <SensHeatMap
+                  data={data}
+                  query={query}
+                  plotId="sensHeatMap"
+                />
+                <SensBoxPlot
+                  data={data}
+                  query={query}
+                  plotId="sensBoxPlot"
+                />
+            </Fragment>
           )}
         </SensitivityDiv>
       </main>
