@@ -1,6 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import { CSVLink } from 'react-csv';
+// import { CSVLink } from 'react-csv';
+// import CsvDownload from 'react-json-to-csv';
+import CsvDownloader from 'react-csv-downloader';
 import colors from '../../styles/colors';
 import downloadIcon from '../../images/icons/download.svg';
 import transitions from '../../styles/transitions';
@@ -32,16 +34,20 @@ const StyledButton = styled.div`
 
 
 const DownloadButton = (props) => {
-  const { data, headers } = props;
+  const { data, headers, filename } = props;
   return (
     <StyledButton>
-      <CSVLink data={data} headers={headers}>
+      <CsvDownloader
+        datas={data}
+        columns={headers}
+        filename={filename}
+      >
         <button type="button">
            Download Data
           {'   '}
           <img src={downloadIcon} alt="download icon" />
         </button>
-      </CSVLink>
+      </CsvDownloader>
     </StyledButton>
   );
 };

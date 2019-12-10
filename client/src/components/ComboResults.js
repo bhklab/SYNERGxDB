@@ -227,16 +227,21 @@ class ComboResults extends Component {
       accessor: 'sourceName',
     }];
     const headers = [
-      { label: 'Tissue', key: 'tissue' },
-      { label: 'Cell Line', key: 'sampleName' },
-      { label: 'Compound A', key: 'drugNameA' },
-      { label: 'Compound B', key: 'drugNameB' },
-      { label: 'ZIP', key: 'zip' },
-      { label: 'Bliss', key: 'bliss' },
-      { label: 'Loewe', key: 'loewe' },
-      { label: 'HSA', key: 'hsa' },
-      { label: 'Source', key: 'sourceName' },
+      { displayName: 'Tissue', id: 'tissue' },
+      { displayName: 'Cell Line', id: 'sampleName' },
+      { displayName: 'Compound A', id: 'drugNameA' },
+      { displayName: 'Compound B', id: 'drugNameB' },
+      { displayName: 'ZIP', id: 'zip' },
+      { displayName: 'Bliss', id: 'bliss' },
+      { displayName: 'Loewe', id: 'loewe' },
+      { displayName: 'HSA', id: 'hsa' },
+      { displayName: 'Source', id: 'sourceName' },
     ];
+    let filename = 'drug_combos';
+    if (sample) filename = filename.concat(`_${sample}`);
+    if (dataset) filename = filename.concat(`_${dataset}`);
+    if (drugId1) filename = filename.concat(`_${drugId1}`);
+    if (drugId2) filename = filename.concat(`_${drugId2}`);
 
     return (
       <main>
@@ -284,8 +289,6 @@ class ComboResults extends Component {
           </div>
 
         </ButtonsDiv>
-
-        {/* {showBiomarker} */}
         <SynergyDiv>
           <h2>
             Synergy Scores,
@@ -321,7 +324,11 @@ class ComboResults extends Component {
             })
             }
           />
-          <DownloadButton data={results} headers={headers} />
+          <DownloadButton
+            data={results}
+            headers={headers}
+            filename={filename}
+          />
         </SynergyDiv>
       </main>
     );
