@@ -5,13 +5,14 @@ import queryString from 'query-string';
 import QueryCard from './UtilComponents/QueryCard';
 import SensHeatMap from './Plots/SensHeatMap';
 import SensBoxPlot from './Plots/SensBoxPlot';
+import CellSensLegends from './Plots/CellSensLegends';
 // import colors from '../styles/colors';
 import 'react-table/react-table.css';
 // import transitions from '../styles/transitions';
 
 const SensitivityDiv = styled.div`
   width: 100%;
-  height: auto;
+  height: 800px;
   background:white;
   padding:20px 30px;
   margin-bottom:20px;
@@ -20,27 +21,37 @@ const SensitivityDiv = styled.div`
   #sensHeatMap {
     overflow-x: scroll;
     width:500px;
-    position:absolute;
-    margin-left:185px;
+    // position:absolute;
+    position:relative;
+    // margin-left:185px;
     float:left;
   }
 
   #sensBoxPlot {
     width:250px;
-    position:absolute;
     margin-left:660px;
+    position:absolute;
+    float:left;
   }
 
   #legend {
     position:absolute;
     float:right;
     width:100px;
-    margin-left:950px;
+    margin-left:1000px;
     margin-top: 200px;
   }
 
   #leftAxis {
     float:left;
+  }
+
+  .plotWrapper {
+    overflow-y: scroll;
+    height:760px;
+    position:absolute;
+    float:left;
+    width:1030px;
   }
 `;
 
@@ -58,6 +69,7 @@ class Sensitivity extends Component {
       drugId2:"",
       sample:"",
       dataset:"",
+      legendColors:{},
     };
   }
 
@@ -75,8 +87,12 @@ class Sensitivity extends Component {
       });
   }
 
+  callBackLegendColor = (data) => {
+    this.setState({legendColors: data})
+  }
+
   render() {
-    const { data, sample, drugId1, drugId2, dataset, } = this.state;
+    const { data, sample, drugId1, drugId2, dataset, legendColors} = this.state;
     const query = [drugId1, drugId2];
     return (
       <main>
@@ -92,6 +108,7 @@ class Sensitivity extends Component {
         <SensitivityDiv>
           {data.length == 0 ? null : (
             <Fragment>
+              <div className="plotWrapper">
                 <SensHeatMap
                   data={data}
                   query={query}
@@ -100,9 +117,17 @@ class Sensitivity extends Component {
                 <SensBoxPlot
                   data={data}
                   query={query}
+                  callBack={this.callBackLegendColor}
                   plotId="sensBoxPlot"
                 />
+              </div>
             </Fragment>
+          )}
+          {Object.keys(legendColors).length == 0 ? null : (
+              <CellSensLegends 
+                  legendColors={legendColors}
+                  plotId='legend'
+              />
           )}
         </SensitivityDiv>
       </main>

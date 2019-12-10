@@ -173,7 +173,8 @@ class SensHeatMap extends React.Component {
             .tickFormat((d) => {
                 const ind = d.indexOf('/')
                 return d.substring(0, ind);
-            });
+            })
+            .tickSizeOuter(0);
 
         // Add the Y Axis
         leftAxis.append('g')
@@ -289,8 +290,11 @@ class SensHeatMap extends React.Component {
     render() {
         return (
             <Fragment>
+                {/* <div className="plotWrapper"> */}
                 <div id="leftAxis"></div>
                 <div id={this.props.plotId} className="plot" />
+                {/* </div> */}
+                
                 
             </Fragment>
         );

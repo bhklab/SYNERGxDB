@@ -1,6 +1,6 @@
 import * as d3 from 'd3';
 import React, {Fragment} from 'react';
-import CellSensLegends from './CellSensLegends';
+// import CellSensLegends from './CellSensLegends';
 // import colors from '../../styles/colors';
 
 class SensBoxPlot extends React.Component {
@@ -16,8 +16,8 @@ class SensBoxPlot extends React.Component {
             data, query, plotId
         } = this.props;
         const result = this.formatData(data, query);
-        const legendColors = this.plotSensBoxPlot(result[0], result[1], result[2], plotId);
-        this.setState({legendColors: legendColors});
+        this.plotSensBoxPlot(result[0], result[1], result[2], plotId);
+        // this.setState({legendColors: legendColors});
     }
 
     formatData(data, query) {
@@ -228,7 +228,7 @@ class SensBoxPlot extends React.Component {
                 delete color[x];
             }
         })
-        return color;
+        this.props.callBack(color)
     }
 
     render() {
@@ -236,12 +236,6 @@ class SensBoxPlot extends React.Component {
         return (
             <Fragment>
                 <div id={this.props.plotId} className="plot" />
-                {Object.keys(legendColors).length == 0 ? null : (
-                    <CellSensLegends 
-                        legendColors={legendColors}
-                        plotId='legend'
-                    />
-                )}
                 
             </Fragment>
         );
