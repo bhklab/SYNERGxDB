@@ -69,18 +69,31 @@ router.get('/enrichment', (req, res) => {
     query = modifyQuery(query);
     return query;
   }
-  function subqueryZip() {
+  function subqueryLoewe() {
+    let query = this.select(db.raw('idSource, idDrugA, idDrugB, tissue, loewe_auc as auc, \'loewe\' as score'))
+      .from('tissue_enrichment');
+    query = modifyQuery(query);
+    return query;
+  }
+  function subqueryHSA() {
+    let query = this.select(db.raw('idSource, idDrugA, idDrugB, tissue, hsa_auc as auc, \'hsa\' as score'))
+      .from('tissue_enrichment');
+    query = modifyQuery(query);
+    return query;
+  }
+  function subqueryAll() {
     let query = this.select(db.raw('idSource, idDrugA, idDrugB, tissue, zip_auc as auc, \'zip\' as score'))
       .from('tissue_enrichment');
-
     query = modifyQuery(query);
     return query
       .union(subqueryBliss)
+      .union(subqueryLoewe)
+      .union(subqueryHSA)
       .as('Comb');
   }
   db.select('idSource', 'idDrugA', 'idDrugB', 'tissue', 'auc', 'score')
-    .from(subqueryZip)
-    .as('T')
+    .from(subqueryAll)
+    .orderBy('auc', 'desc')
     .then((data) => {
       res.json(data);
     })
