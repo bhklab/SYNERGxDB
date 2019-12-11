@@ -34,7 +34,7 @@ class Enrichment extends Component {
     } = requestParams;
     this.state = {
       data: [],
-      loading: false,
+      loading: true,
       sample,
       drugId1,
       drugId2,
@@ -54,7 +54,7 @@ class Enrichment extends Component {
     fetch(url)
       .then(response => response.json())
       .then((data) => {
-        console.log(data);
+        this.setState({ data, loading: false });
       });
   }
 
@@ -68,6 +68,8 @@ class Enrichment extends Component {
 
     const headers = [
       { displayName: 'Dataset', id: 'dataset' },
+      { displayName: 'Compound A', id: 'drugA' },
+      { displayName: 'Compound B', id: 'drugB' },
       { displayName: 'Tissue', id: 'tissue' },
       { displayName: 'Methods', id: 'score' },
       { displayName: 'AUC', id: 'auc' },
@@ -82,8 +84,15 @@ class Enrichment extends Component {
       Header: 'Dataset',
       accessor: 'dataset',
     }, {
+      Header: 'Compound A',
+      accessor: 'drugA',
+    }, {
+      Header: 'Compound B',
+      accessor: 'drugB',
+    }, {
       Header: 'Tissue',
       accessor: 'tissue',
+      Cell: props => <span>{props.value.toUpperCase()}</span>,
     }, {
       Header: 'Methods',
       accessor: 'score',

@@ -63,25 +63,25 @@ router.get('/enrichment', (req, res) => {
     return modQuery;
   }
   function subqueryBliss() {
-    let query = this.select(db.raw('idSource, idDrugA, idDrugB, tissue, bliss_auc as auc, \'bliss\' as score'))
+    let query = this.select(db.raw('idSource, idDrugA, idDrugB, tissue, bliss_auc as auc, \'Bliss\' as score'))
       .from('tissue_enrichment');
     query = modifyQuery(query);
     return query;
   }
   function subqueryLoewe() {
-    let query = this.select(db.raw('idSource, idDrugA, idDrugB, tissue, loewe_auc as auc, \'loewe\' as score'))
+    let query = this.select(db.raw('idSource, idDrugA, idDrugB, tissue, loewe_auc as auc, \'Loewe\' as score'))
       .from('tissue_enrichment');
     query = modifyQuery(query);
     return query;
   }
   function subqueryHSA() {
-    let query = this.select(db.raw('idSource, idDrugA, idDrugB, tissue, hsa_auc as auc, \'hsa\' as score'))
+    let query = this.select(db.raw('idSource, idDrugA, idDrugB, tissue, hsa_auc as auc, \'HSA\' as score'))
       .from('tissue_enrichment');
     query = modifyQuery(query);
     return query;
   }
   function subqueryAll() {
-    let query = this.select(db.raw('idSource, idDrugA, idDrugB, tissue, zip_auc as auc, \'zip\' as score'))
+    let query = this.select(db.raw('idSource, idDrugA, idDrugB, tissue, zip_auc as auc, \'ZIP\' as score'))
       .from('tissue_enrichment');
     query = modifyQuery(query);
     return query
