@@ -11,16 +11,15 @@ import colors from '../../../styles/colors';
 
 const PlotlyContainer = styled.div`
     width: 100%;
+    max-width: 800px;
     display: flex;
     flex-direction: column; 
 `;
 const StyledExpressionProfile = styled.div`
-    max-width: 800px;
     width: 100%;
     min-width: 300px;
     display: flex
-    justify-content: space-between;
-    height: 600px;
+    justify-content: center;
     flex-wrap: wrap;
 
     .stats {
@@ -68,7 +67,6 @@ const findPearson = (xCoor, yCoor) => {
   if (dense === 0) {
     return 0;
   }
-  console.log((mulSum - (sum1 * sum2 / n)) / dense);
   return ((mulSum - (sum1 * sum2 / n)) / dense).toFixed(3);
 };
 
