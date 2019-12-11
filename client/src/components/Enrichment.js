@@ -25,16 +25,39 @@ class Enrichment extends Component {
     location: ReactRouterPropTypes.location.isRequired,
   }
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
+    const { location } = this.props;
+    const requestParams = queryString.parse(location.search);
+    const {
+      sample, drugId1, drugId2, dataset,
+    } = requestParams;
     this.state = {
       data: [],
       loading: false,
+      sample,
+      drugId1,
+      drugId2,
+      dataset,
     };
   }
 
   componentDidMount() {
-    console.log('Fetch request');
+    const {
+      sample, drugId1, drugId2, dataset,
+    } = this.state;
+    let url = '/api/cell_lines/enrichment?';
+    if (sample) url = url.concat(`sample=${sample}`);
+    if (drugId1) url = url.concat(`&drugId1=${drugId1}`);
+    if (drugId2) url = url.concat(`&drugId2=${drugId2}`);
+    if (dataset) url = url.concat(`&dataset=${dataset}`);
+
+    console.log(url);
+    fetch(url)
+      .then(response => response.json())
+      .then((data) => {
+        console.log(data);
+      });
   }
 
   render() {

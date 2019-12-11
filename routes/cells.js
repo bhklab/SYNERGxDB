@@ -29,6 +29,39 @@ router.get('/info', (req, res) => {
     });
 });
 
+router.get('/enrichment', (req, res) => {
+  const { sample } = req.query;
+  let {
+    drugId1, drugId2, dataset,
+  } = req.query;
+  drugId1 = drugId1 && parseInt(drugId1, 10);
+  drugId2 = drugId2 && parseInt(drugId2, 10);
+  dataset = dataset && parseInt(dataset, 10);
+  console.log(sample, drugId1, drugId2, dataset);
+  function subqueryBliss() {
+    this.select(db.raw('idSource, idDrugA, idDrugB, tissue, bliss_auc as auc, \'bliss\' as score'))
+      .from('tissue_enrichment')
+      .where({ idDrugA: drugId1 });
+  }
+  function subqueryZip() {
+    this.select(db.raw('idSource, idDrugA, idDrugB, tissue, zip_auc as auc, \'zip\' as score'))
+      .from('tissue_enrichment')
+      .where({ idDrugA: drugId1 })
+      .union(subqueryBliss)
+      .as('Comb');
+  }
+  db.select('idSource', 'idDrugA', 'idDrugB', 'tissue', 'auc', 'score')
+    .from(subqueryZip)
+    .as('T')
+    .then((data) => {
+      res.json(data);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.json(err);
+    });
+});
+
 router.get('/filter', (req, res) => {
   let {
     dataset, drugId1, drugId2,
