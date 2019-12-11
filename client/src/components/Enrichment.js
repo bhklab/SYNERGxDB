@@ -51,8 +51,6 @@ class Enrichment extends Component {
     if (drugId1) url = url.concat(`&drugId1=${drugId1}`);
     if (drugId2) url = url.concat(`&drugId2=${drugId2}`);
     if (dataset) url = url.concat(`&dataset=${dataset}`);
-
-    console.log(url);
     fetch(url)
       .then(response => response.json())
       .then((data) => {

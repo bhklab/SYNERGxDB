@@ -37,7 +37,6 @@ router.get('/enrichment', (req, res) => {
   drugId1 = drugId1 && parseInt(drugId1, 10);
   drugId2 = drugId2 && parseInt(drugId2, 10);
   dataset = dataset && parseInt(dataset, 10);
-  console.log(sample, drugId1, drugId2, dataset);
   function modifyQuery(query) {
     if (!drugId1 && !drugId2 && !dataset && !sample) return query;
     let modQuery = query;
@@ -91,9 +90,23 @@ router.get('/enrichment', (req, res) => {
       .union(subqueryHSA)
       .as('Comb');
   }
-  db.select('idSource', 'idDrugA', 'idDrugB', 'tissue', 'auc', 'score')
-    .from(subqueryAll)
+  function subqueryDataset() {
+    this.select('name as dataset', 'idDrugA', 'idDrugB', 'tissue', 'auc', 'score')
+      .from(subqueryAll)
+      .join('source', 'source.idSource', '=', 'Comb.idSource')
+      .as('CombD');
+  }
+  function subqueryDrugA() {
+    this.select('dataset', 'name as drugA', 'idDrugB', 'tissue', 'auc', 'score')
+      .from(subqueryDataset)
+      .join('drug', 'drug.idDrug', '=', 'CombD.idDrugA')
+      .as('CombDD');
+  }
+  db.select('dataset', 'drugA', 'name as drugB', 'tissue', 'auc', 'score')
+    .from(subqueryDrugA)
+    .join('drug', 'drug.idDrug', '=', 'CombDD.idDrugB')
     .orderBy('auc', 'desc')
+    .as('T')
     .then((data) => {
       res.json(data);
     })
