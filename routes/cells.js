@@ -80,6 +80,7 @@ router.get('/enrichment', (req, res) => {
     query = modifyQuery(query);
     return query;
   }
+  // Restructures the data with unions for further sorting by AUC values
   function subqueryAll() {
     let query = this.select(db.raw('idSource, idDrugA, idDrugB, tissue, zip_auc as auc, \'ZIP\' as score'))
       .from('tissue_enrichment');

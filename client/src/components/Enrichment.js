@@ -4,6 +4,7 @@ import ReactRouterPropTypes from 'react-router-prop-types';
 import queryString from 'query-string';
 import ReactTable from 'react-table';
 import 'react-table/react-table.css';
+import { filterCaseInsensitive } from '../utils/filtering';
 
 // import colors from '../styles/colors';
 // import transitions from '../styles/transitions';
@@ -71,7 +72,7 @@ class Enrichment extends Component {
       { displayName: 'Compound A', id: 'drugA' },
       { displayName: 'Compound B', id: 'drugB' },
       { displayName: 'Tissue', id: 'tissue' },
-      { displayName: 'Methods', id: 'score' },
+      { displayName: 'Method', id: 'score' },
       { displayName: 'AUC', id: 'auc' },
     ];
     let filename = 'tissue_enrichment';
@@ -94,11 +95,12 @@ class Enrichment extends Component {
       accessor: 'tissue',
       Cell: props => <span>{props.value.toUpperCase()}</span>,
     }, {
-      Header: 'Methods',
+      Header: 'Method',
       accessor: 'score',
     }, {
       Header: 'AUC',
       accessor: 'auc',
+      filterable: false,
     }];
 
     return (
@@ -124,6 +126,7 @@ class Enrichment extends Component {
             className="-highlight"
             loading={loading}
             LoadingComponent={LoadingComponent}
+            defaultFilterMethod={filterCaseInsensitive}
           />
         </EnrichmentDiv>
       </main>
