@@ -130,6 +130,12 @@ class DrugList extends Component {
     this.handleFilter = this.handleFilter.bind(this);
   }
 
+  componentDidMount() {
+    const { drugLabel } = this.props;
+    if (drugLabel === 'A') cacheDrug1.clearAll();
+    if (drugLabel === 'B') cacheDrug2.clearAll();
+  }
+
   componentDidUpdate(prevProps) {
     const { selectedDrug, data, drugLabel } = this.props;
     if (data !== prevProps.data) {

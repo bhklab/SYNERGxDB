@@ -470,17 +470,14 @@ class Pharmacogenomics extends Component {
   handleDrug1Search(event) {
     const { getDrugData } = this;
     const { sampleData, tissueObj } = this.state;
-    const selectedDrug1 = event.target.value;
-    this.setState({ selectedDrug1, loadingDrug2: true });
-    getDrugData(sampleData, tissueObj, 'drugsData2', selectedDrug1);
+    const newDrug1 = event.target.value;
+    this.setState({ selectedDrug1: newDrug1, loadingDrug2: true, selectedDrug2: 'null' });
+    getDrugData(sampleData, tissueObj, 'drugsData2', newDrug1);
   }
 
   handleDrug2Search(event) {
-    const { getDrugData } = this;
-    const { sampleData, tissueObj } = this.state;
     const selectedDrug2 = event.target.value;
-    this.setState({ selectedDrug2, loadingDrug1: true });
-    getDrugData(sampleData, tissueObj, 'drugsData1', selectedDrug2);
+    this.setState({ selectedDrug2 });
   }
 
   processSynData(data, accessor, scoreValue) {
