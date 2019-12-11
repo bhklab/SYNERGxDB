@@ -10,18 +10,18 @@ import colors from '../../../styles/colors';
 
 
 const PlotlyContainer = styled.div`
-    height: 450px;
     width: 100%;
     display: flex;
     flex-direction: column; 
 `;
 const StyledExpressionProfile = styled.div`
-    max-width: 600px;
+    max-width: 800px;
     width: 100%;
     min-width: 300px;
     display: flex
     justify-content: space-between;
-    height: 450px;
+    height: 600px;
+    flex-wrap: wrap;
 
     .stats {
       margin: auto 10px;
@@ -172,7 +172,7 @@ class AdvancedAnalysis extends React.Component {
     data.unshift(bestFitLine);
 
     const layout = {
-      height: 450,
+      height: 600,
       autosize: true,
       title: {
         text: `Drug ${drug1} + ${drug2} ${selectedScore.toUpperCase()} x ${selectedBiomarker}`,
