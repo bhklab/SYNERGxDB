@@ -38,15 +38,43 @@ router.get('/enrichment', (req, res) => {
   drugId2 = drugId2 && parseInt(drugId2, 10);
   dataset = dataset && parseInt(dataset, 10);
   console.log(sample, drugId1, drugId2, dataset);
+  function modifyQuery(query) {
+    if (!drugId1 && !drugId2 && !dataset && !sample) return query;
+    let modQuery = query;
+    const whereObj1 = {};
+    const whereObj2 = {};
+    if (dataset) {
+      whereObj1.idSource = dataset;
+      whereObj2.idSource = dataset;
+    }
+    if (sample) {
+      whereObj1.tissue = sample;
+      whereObj2.tissue = sample;
+    }
+    if (drugId1) {
+      whereObj1.idDrugA = drugId1;
+      whereObj2.idDrugB = drugId1;
+    }
+    if (drugId2) {
+      whereObj1.idDrugB = drugId2;
+      whereObj2.idDrugA = drugId2;
+    }
+    modQuery = modQuery.where(whereObj1);
+    if (drugId1 || drugId2) modQuery = modQuery.orWhere(whereObj2);
+    return modQuery;
+  }
   function subqueryBliss() {
-    this.select(db.raw('idSource, idDrugA, idDrugB, tissue, bliss_auc as auc, \'bliss\' as score'))
-      .from('tissue_enrichment')
-      .where({ idDrugA: drugId1 });
+    let query = this.select(db.raw('idSource, idDrugA, idDrugB, tissue, bliss_auc as auc, \'bliss\' as score'))
+      .from('tissue_enrichment');
+    query = modifyQuery(query);
+    return query;
   }
   function subqueryZip() {
-    this.select(db.raw('idSource, idDrugA, idDrugB, tissue, zip_auc as auc, \'zip\' as score'))
-      .from('tissue_enrichment')
-      .where({ idDrugA: drugId1 })
+    let query = this.select(db.raw('idSource, idDrugA, idDrugB, tissue, zip_auc as auc, \'zip\' as score'))
+      .from('tissue_enrichment');
+
+    query = modifyQuery(query);
+    return query
       .union(subqueryBliss)
       .as('Comb');
   }
