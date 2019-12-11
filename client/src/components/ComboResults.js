@@ -299,6 +299,11 @@ class ComboResults extends Component {
             {' '}
             {totalSynergyScores}
           </h2>
+          <DownloadButton
+            data={results}
+            headers={headers}
+            filename={filename}
+          />
           <ReactTable
             loading={loading}
             LoadingComponent={LoadingComponent}
@@ -323,11 +328,6 @@ class ComboResults extends Component {
               },
             })
             }
-          />
-          <DownloadButton
-            data={results}
-            headers={headers}
-            filename={filename}
           />
         </SynergyDiv>
       </main>

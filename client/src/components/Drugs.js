@@ -166,6 +166,11 @@ class Drugs extends Component {
           </StyledWrapper>
           <StyledWrapper className="wrapper">
             <h1>List of Compounds</h1>
+            <DownloadButton
+              data={drugsData}
+              filename="drugs"
+              headers={headers}
+            />
             <ReactTable
               data={drugsData}
               columns={columns}
@@ -176,11 +181,6 @@ class Drugs extends Component {
               className="-highlight"
               loading={loading}
               LoadingComponent={LoadingComponent}
-            />
-            <DownloadButton
-              data={drugsData}
-              filename="drugs"
-              headers={headers}
             />
           </StyledWrapper>
         </main>

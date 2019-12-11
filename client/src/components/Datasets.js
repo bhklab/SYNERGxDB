@@ -201,6 +201,11 @@ class Datasets extends Component {
 
           <StyledWrapper className="wrapper">
             <h1>List of Datasets</h1>
+            <DownloadButton
+              data={databaseData}
+              filename="datasets"
+              headers={headers}
+            />
             <ReactTable
               data={databaseData}
               columns={columns}
@@ -208,11 +213,6 @@ class Datasets extends Component {
               showPagination={false}
               defaultPageSize={7}
               loading={loading}
-            />
-            <DownloadButton
-              data={databaseData}
-              filename="datasets"
-              headers={headers}
             />
           </StyledWrapper>
         </main>

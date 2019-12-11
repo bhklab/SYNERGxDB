@@ -48,6 +48,7 @@ const SensitivityDiv = styled.div`
 
   .plotWrapper {
     overflow-y: scroll;
+    overflow-x: hidden;
     height:760px;
     position:absolute;
     float:left;

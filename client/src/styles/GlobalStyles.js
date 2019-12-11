@@ -38,7 +38,7 @@ const GlobalStyles = createGlobalStyle`
     display: block;
   }
   h1 {
-    margin: 3rem 0; 
+    margin: 3rem 0 2rem 0; 
     font-size: 2em;
   }
 

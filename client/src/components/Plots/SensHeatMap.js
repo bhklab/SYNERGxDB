@@ -230,9 +230,13 @@ class SensHeatMap extends React.Component {
             
         // })
 
+        // let color = d3.scaleLinear()
+        //                 .domain([-1,1])
+        //                 .range(['#5fcfff','#fca03e'])
+
         let color = d3.scaleLinear()
                         .domain([-1,1])
-                        .range(['#5fcfff','#fca03e'])
+                        .range(['#de5757','#77c379']);
 
         // to make the heatmap, forEach combos, nested forEach samples. 
         // Call by key to get the corresponding zip

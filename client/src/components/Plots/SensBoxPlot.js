@@ -159,6 +159,13 @@ class SensBoxPlot extends React.Component {
             .tickPadding(2)
             .tickValues([]);
 
+        // x axis label
+        svg.append('text')
+            .attr('x', width/2)
+            .attr('y', height-50)
+            .attr('fill', 'black')
+            .text('ZIP')
+
         // Add the Y Axis
         svg.append('g')
             .attr('class', 'y axis')
@@ -175,7 +182,7 @@ class SensBoxPlot extends React.Component {
 
         // color scale
         let color = {};
-        let arrColor = ['#5fcfff','#fca03e','#77c379', '#de5757', '#9a95de', '#f3c833'];
+        let arrColor = ['#5fcfff','#fca03e','#54c9b7', '#f788c1','#9a95de', '#f3c833'];
         datasets.forEach((x,i) => {
             color[x] = arrColor[i];
         });

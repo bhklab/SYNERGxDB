@@ -454,6 +454,14 @@ class Biomarkers extends Component {
                 HSA
             </button>
           </ButtonContainer>
+          {!loadingTable ? (
+             <DownloadButton
+              data={tableData || []}
+              headers={headers}
+              filename={filename}
+            />
+            ) : null}
+         
           <ReactTable
             loading={loadingTable}
             LoadingComponent={LoadingComponent}
@@ -482,13 +490,7 @@ class Biomarkers extends Component {
             })
           }
           />
-          {!loadingTable ? (
-            <DownloadButton
-              data={tableData || []}
-              headers={headers}
-              filename={filename}
-            />
-          ) : null}
+          
           { !loadingGraph ? (
             <StyledExpressionProfile>
               <ExpressionProfile

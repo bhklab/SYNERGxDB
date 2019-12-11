@@ -80,6 +80,11 @@ class Enrichment extends Component {
           sample={sample}
         />
         <EnrichmentDiv>
+          <DownloadButton
+            data={data}
+            headers={headers}
+            filename={filename}
+          />
           <ReactTable
             data={data}
             columns={columns}
@@ -89,11 +94,6 @@ class Enrichment extends Component {
             className="-highlight"
             loading={loading}
             LoadingComponent={LoadingComponent}
-          />
-          <DownloadButton
-            data={data}
-            headers={headers}
-            filename={filename}
           />
         </EnrichmentDiv>
       </main>

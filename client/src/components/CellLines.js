@@ -304,6 +304,11 @@ class Databases extends Component {
           </StyledWrapper>
           <StyledWrapper className="wrapper">
             <h1>List of Cell Lines</h1>
+            <DownloadButton
+              data={cellLineData}
+              filename="samples"
+              headers={headers}
+            />
             <ReactTable
               data={cellLineData}
               columns={columns}
@@ -314,11 +319,7 @@ class Databases extends Component {
               loading={loading}
               LoadingComponent={LoadingComponent}
             />
-            <DownloadButton
-              data={cellLineData}
-              filename="samples"
-              headers={headers}
-            />
+           
           </StyledWrapper>
         </main>
         <footer>

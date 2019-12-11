@@ -10,19 +10,21 @@ import transitions from '../../styles/transitions';
 const StyledButton = styled.div`
   width: 100%;
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
+  float:right;
+  // position:absolute;
 
   button {
     color: #fff !important;
     background: ${colors.pagination};
-    padding: 15px;
+    
+    padding: 8px;
     border: 0;
-    font-size: 15px;
-    margin: 10px;
+    font-size: 13px;
     transition: ${transitions.main_trans}
     img {
         display: inline-block;
-        height: 15px;
+        height: 13px;
         width: auto;
         margin-left: 5px;
     }
