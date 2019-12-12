@@ -8,13 +8,18 @@ import regression from 'regression';
 
 import colors from '../../../styles/colors';
 
+const plotDimensions = {
+  top: 30,
+  bottom: 55,
+};
+
 
 const PlotlyContainer = styled.div`
   width: 100%;
   max-width: 800px;
   display: flex;
   flex-direction: column;
-  padding: 20px 0; 
+  // padding: 20px 0; 
 `;
 const StyledExpressionProfile = styled.div`
   width: 100%;
@@ -22,12 +27,19 @@ const StyledExpressionProfile = styled.div`
   display: flex
   justify-content: center;
   flex-wrap: wrap;
+`;
 
-  .stats {
-    margin: auto 10px;
-    p {
-      color: ${colors.color_main_2}
-    }
+const StyledInfo = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  justify-self: left;
+  padding-top: calc(${plotDimensions.top}px - 3px);
+  padding-bottom: calc(${plotDimensions.bottom}px - 3px);
+  margin-left: 15px;
+  div {
+    padding: 5px;
+    border: 3px solid ${colors.color_main_1};
   }
 `;
 async function findCIndex(x, y) {
@@ -128,8 +140,7 @@ class AdvancedAnalysis extends React.Component {
 
   async updatePlotData() {
     const {
-      biomarkerData, selectedBiomarker, dimensions, xRange, yRange, selectedScore,
-      drug1, drug2, accessor,
+      biomarkerData, dimensions, xRange, yRange, selectedScore, accessor,
     } = this.props;
     // calculates coefficients for best fit line
 
@@ -173,14 +184,6 @@ class AdvancedAnalysis extends React.Component {
     const layout = {
       height: 600,
       autosize: true,
-      title: {
-        text: `Drug ${drug1} + ${drug2} ${selectedScore.toUpperCase()} x ${selectedBiomarker}`,
-        font: {
-          family: 'Nunito Sans, sans-serif',
-          color: colors.color_main_1,
-          size: 18,
-        },
-      },
       font: {
         size: 16,
         color: colors.nav_links,
@@ -254,6 +257,9 @@ class AdvancedAnalysis extends React.Component {
     const {
       data, layout, cIndex, pearsonR, spearmanRho,
     } = this.state;
+    const {
+      drug1, drug2, selectedBiomarker, selectedScore, biomarkerData,
+    } = this.props;
 
     let displayData;
     if (data) {
@@ -272,26 +278,56 @@ class AdvancedAnalysis extends React.Component {
             }}
           />
         </PlotlyContainer>
-        {cIndex ? (
-          <div className="stats">
-            <p>
-            C-Index =
+        <StyledInfo>
+          <div>
+            <h4>
+            Compound A:
               {' '}
-              {cIndex}
-            </p>
-            <p>
-            Pearson r =
+              {drug1}
+            </h4>
+            <h4>
+            Compound B:
               {' '}
-              {pearsonR}
-            </p>
-            <p>
-            Spearman rho =
+              {drug2}
+            </h4>
+            <h4>
+            Synergy Score:
               {' '}
-              {spearmanRho}
-            </p>
+              {selectedScore.toUpperCase()}
+              {' '}
+            x
+              {' '}
+              {selectedBiomarker}
+            </h4>
+            <h4>
+            Tested in
+              {' '}
+              {biomarkerData ? biomarkerData.length : '0'}
+              {' '}
+            cell lines
+            </h4>
           </div>
-        ) : null
+          {cIndex ? (
+            <div className="stats">
+              <h4>
+            C-Index =
+                {' '}
+                {cIndex}
+              </h4>
+              <h4>
+            Pearson r =
+                {' '}
+                {pearsonR}
+              </h4>
+              <h4>
+            Spearman rho =
+                {' '}
+                {spearmanRho}
+              </h4>
+            </div>
+          ) : null
         }
+        </StyledInfo>
       </StyledExpressionProfile>
     );
   }
