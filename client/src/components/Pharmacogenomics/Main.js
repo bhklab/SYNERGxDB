@@ -1,3 +1,4 @@
+/* eslint-disable react/no-string-refs */
 /* eslint-disable react/prop-types */
 /* eslint-disable no-nested-ternary */
 
@@ -29,6 +30,14 @@ const StyledDiv = styled.div`
   width: 100%;
   height: auto;
   background:white;
+  padding: 15px 30px;
+  margin-bottom:20px;
+`;
+
+const StyledContainer = styled.div`
+  width: 100%;
+  height: auto;
+  background:white;
   padding: 0 30px;
   margin-bottom:20px;
 
@@ -47,7 +56,7 @@ const StyledDiv = styled.div`
     // border-bottom: 2px solid ${colors.color_main_3};
     // border-top: 2px solid ${colors.color_main_3};
   }
-  
+
   .selector {
     width: 100%
     padding: 20px 0 20px;
@@ -89,7 +98,7 @@ const StyledDiv = styled.div`
       padding-right: 50px;
     }
   }
-  
+
   textarea {
     color: ${colors.color_main_5};
   }
@@ -221,6 +230,7 @@ class Pharmacogenomics extends Component {
       xRange: null,
       yRange: null,
       accessor: null,
+      focus: false,
     };
     this.getDrugData = this.getDrugData.bind(this);
     this.getSampleDrugData = this.getSampleDrugData.bind(this);
@@ -238,6 +248,15 @@ class Pharmacogenomics extends Component {
     this.updateMoleculeData = this.updateMoleculeData.bind(this);
     this.getPlotData = this.getPlotData.bind(this);
     this.processSynData = this.processSynData.bind(this);
+    this.focusNode = null;
+  }
+
+  componentDidUpdate() {
+    const { focus } = this.state;
+    const { focusNode } = this;
+    if (focus) {
+      focusNode.scrollIntoView({ block: 'start' });
+    }
   }
 
   // Updates drug data based on samples
@@ -250,8 +269,8 @@ class Pharmacogenomics extends Component {
       .then(response => response.json())
       .then((drugData) => {
         const drugsData = drugData.map(item => ({ value: item.idDrug, label: item.name }));
-        if (type === 'drugsData1') this.setState({ [type]: drugsData, loadingDrug1: false });
-        if (type === 'drugsData2') this.setState({ [type]: drugsData, loadingDrug2: false });
+        if (type === 'drugsData1') this.setState({ [type]: drugsData, loadingDrug1: false, focus: false });
+        if (type === 'drugsData2') this.setState({ [type]: drugsData, loadingDrug2: false, focus: false });
       // eslint-disable-next-line no-console
       }).catch(err => console.log(err));
   }
@@ -282,7 +301,9 @@ class Pharmacogenomics extends Component {
             checked: false,
           }));
         const sampleData = [{ value: 'All', label: 'SELECT ALL', checked: false }, ...tissueData, ...cellData];
-        this.setState({ sampleData, tissueObj, dataType });
+        this.setState({
+          sampleData, tissueObj, dataType, focus: false,
+        });
         getDrugData(cellData, tissueObj, 'drugsData1');
         getDrugData(cellData, tissueObj, 'drugsData2');
       }).catch((err) => {
@@ -299,7 +320,7 @@ class Pharmacogenomics extends Component {
       tissueObj, scoreValue,
     } = this.state;
     const { processSynData } = this;
-    this.setState({ loadingBiomarkerData: true, showPlot: true });
+    this.setState({ loadingBiomarkerData: true, showPlot: true, focus: false });
 
     const sampleString = generateSampleString(sampleData, tissueObj);
     let queryParams = `?drugId1=${selectedDrug1}&drugId2=${selectedDrug2}&sample=${sampleString}`;
@@ -355,15 +376,19 @@ class Pharmacogenomics extends Component {
     // eslint-disable-next-line no-unused-expressions
     biomarkerData.length > 0
       ? processSynData(biomarkerData, accessor, scoreValue)
-      : this.setState({ scoreValue });
+      : this.setState({ scoreValue, focus: false });
   }
 
   moleculeChange(event) {
-    this.setState({ selectedMolecule: event.target.value, showPlot: false, biomarkerData: [] });
+    this.setState({
+      selectedMolecule: event.target.value, showPlot: false, biomarkerData: [], focus: false,
+    });
   }
 
   geneChange(event) {
-    this.setState({ selectedGene: event.target.value, showPlot: false, biomarkerData: [] });
+    this.setState({
+      selectedGene: event.target.value, showPlot: false, biomarkerData: [], focus: false,
+    });
   }
 
   sampleChange(e) {
@@ -416,6 +441,7 @@ class Pharmacogenomics extends Component {
       biomarkerData: [],
       loadingDrug1: true,
       loadingDrug2: true,
+      focus: false,
     });
 
     getDrugData(updatedSamplesData, tissueObj, 'drugsData1');
@@ -437,6 +463,7 @@ class Pharmacogenomics extends Component {
       drugsData2: [],
       biomarkerData: [],
       showPlot: false,
+      focus: false,
     });
     if (dataType === 'rnaseq' || dataType === 'mutation' || dataType === 'cna') updateGeneData(dataType);
     if (dataType === 'metabolomic') updateMoleculeData();
@@ -454,7 +481,7 @@ class Pharmacogenomics extends Component {
             value: item.gene_id ? item.gene_id : item.gene, label,
           });
         });
-        this.setState({ geneData, loadingBiomarkerList: false });
+        this.setState({ geneData, loadingBiomarkerList: false, focus: false });
       });
   }
 
@@ -463,7 +490,7 @@ class Pharmacogenomics extends Component {
       .then(response => response.json())
       .then((data) => {
         const moleculeData = data.map(item => ({ value: item, label: item }));
-        this.setState({ moleculeData, loadingBiomarkerList: false });
+        this.setState({ moleculeData, loadingBiomarkerList: false, focus: false });
       });
   }
 
@@ -477,7 +504,7 @@ class Pharmacogenomics extends Component {
 
   handleDrug2Search(event) {
     const selectedDrug2 = event.target.value;
-    this.setState({ selectedDrug2 });
+    this.setState({ selectedDrug2, focus: false });
   }
 
   processSynData(data, accessor, scoreValue) {
@@ -514,6 +541,7 @@ class Pharmacogenomics extends Component {
       loadingBiomarkerData: false,
       scoreValue,
       accessor,
+      focus: true,
     });
   }
 
@@ -630,8 +658,15 @@ class Pharmacogenomics extends Component {
               accessor={accessor}
             />
           ) : (
-            <div>
-              <h4>No data found for a given set of parameters, please modify the query</h4>
+            <div style={{
+              paddingBottom: '20px', paddingTop: '20px',
+            }}
+            >
+              <h4
+                style={{ color: colors.red_color_accent, fontWeight: 'bold' }}
+              >
+                No data found for a given set of parameters, please modify the query
+              </h4>
             </div>
           )}
         </div>
@@ -659,49 +694,54 @@ class Pharmacogenomics extends Component {
     const drugLabel2 = generateDrugLabel(selectedDrug2, drugsData2);
 
     return (
-      <main>
+      <main ref={node => this.focusNode = node}>
         <StyledDiv>
           <h2>Biomarker discovery in Pharmacogenomics</h2>
-          <div className="datatype-container selector">
-            <div>
-              <FormControl component="fieldset">
-                <h3>Select datatype</h3>
-                <div style={{ marginTop: '37px' }}>
-                  <RadioGroup aria-label="datatype" name="datatype" value={dataType} onChange={profileChange}>
-                    <CustomFormLabel value="metabolomic" control={<CustomRadio />} label="metabolomic" />
-                    <CustomFormLabel value="rnaseq" control={<CustomRadio />} label="molecular: expression, RNA-seq" />
-                    {/* <CustomFormLabel value="mutation" control={<CustomRadio />} label="molecular: mutation" /> */}
-                    <CustomFormLabel value="cna" control={<CustomRadio />} label="molecular: copy number" />
-                  </RadioGroup>
-                </div>
-              </FormControl>
-            </div>
-            {renderBiomarkerList()}
+          <div>
+            {renderPlot(drugLabel1, drugLabel2)}
           </div>
-          { renderSampleDrugData()}
-          { showSynScore ? (
-            <div className="synscore-container selector">
-              <FormControl component="fieldset">
-                <RadioGroup aria-label="synscore" name="synscore" value={scoreValue} onChange={scoreChange}>
-                  <div className="syn-score">
-                    <h3>Select synergy score method</h3>
-                    <CustomFormLabel value="zip" control={<CustomRadio />} label="ZIP" />
-                    <CustomFormLabel value="bliss" control={<CustomRadio />} label="Bliss" />
-                    <CustomFormLabel value="loewe" control={<CustomRadio />} label="Loewe" />
-                    <CustomFormLabel value="hsa" control={<CustomRadio />} label="HSA" />
-                  </div>
-                </RadioGroup>
-              </FormControl>
-            </div>
-          ) : null}
-          {showSynScore ? (
-            <div className="analysis">
-              <StyledButton onClick={getPlotData} type="button">Analysis</StyledButton>
+          <StyledContainer>
+            <div className="datatype-container selector">
               <div>
-                {renderPlot(drugLabel1, drugLabel2)}
+                <FormControl component="fieldset">
+                  <h3>Select datatype</h3>
+                  <div style={{ marginTop: '37px' }}>
+                    <RadioGroup aria-label="datatype" name="datatype" value={dataType} onChange={profileChange}>
+                      <CustomFormLabel value="metabolomic" control={<CustomRadio />} label="metabolomic" />
+                      <CustomFormLabel value="rnaseq" control={<CustomRadio />} label="molecular: expression, RNA-seq" />
+                      {/* <CustomFormLabel value="mutation" control={<CustomRadio />} label="molecular: mutation" /> */}
+                      <CustomFormLabel value="cna" control={<CustomRadio />} label="molecular: copy number" />
+                    </RadioGroup>
+                  </div>
+                </FormControl>
               </div>
+              {renderBiomarkerList()}
             </div>
-          ) : null}
+            { renderSampleDrugData()}
+            { showSynScore ? (
+              <div className="synscore-container selector">
+                <FormControl component="fieldset">
+                  <RadioGroup aria-label="synscore" name="synscore" value={scoreValue} onChange={scoreChange}>
+                    <div className="syn-score">
+                      <h3>Select synergy score method</h3>
+                      <CustomFormLabel value="zip" control={<CustomRadio />} label="ZIP" />
+                      <CustomFormLabel value="bliss" control={<CustomRadio />} label="Bliss" />
+                      <CustomFormLabel value="loewe" control={<CustomRadio />} label="Loewe" />
+                      <CustomFormLabel value="hsa" control={<CustomRadio />} label="HSA" />
+                    </div>
+                  </RadioGroup>
+                </FormControl>
+              </div>
+            ) : null}
+            {showSynScore ? (
+              <div className="analysis">
+                <StyledButton onClick={getPlotData} type="button">Analysis</StyledButton>
+                {/* <div>
+                {renderPlot(drugLabel1, drugLabel2)}
+              </div> */}
+              </div>
+            ) : null}
+          </StyledContainer>
         </StyledDiv>
       </main>
     );

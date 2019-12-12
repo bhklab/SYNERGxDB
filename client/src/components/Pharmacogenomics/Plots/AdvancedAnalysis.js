@@ -10,24 +10,25 @@ import colors from '../../../styles/colors';
 
 
 const PlotlyContainer = styled.div`
-    width: 100%;
-    max-width: 800px;
-    display: flex;
-    flex-direction: column; 
+  width: 100%;
+  max-width: 800px;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 0; 
 `;
 const StyledExpressionProfile = styled.div`
-    width: 100%;
-    min-width: 300px;
-    display: flex
-    justify-content: center;
-    flex-wrap: wrap;
+  width: 100%;
+  min-width: 300px;
+  display: flex
+  justify-content: center;
+  flex-wrap: wrap;
 
-    .stats {
-      margin: auto 10px;
-      p {
-        color: ${colors.color_main_2}
-      }
+  .stats {
+    margin: auto 10px;
+    p {
+      color: ${colors.color_main_2}
     }
+  }
 `;
 async function findCIndex(x, y) {
   if (x.length < 2 || y.length < 2) {
