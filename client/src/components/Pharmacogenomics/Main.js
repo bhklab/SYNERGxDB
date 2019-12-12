@@ -1,3 +1,4 @@
+/* eslint-disable no-return-assign */
 /* eslint-disable react/no-string-refs */
 /* eslint-disable react/prop-types */
 /* eslint-disable no-nested-ternary */
@@ -10,6 +11,8 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import { withStyles } from '@material-ui/core/styles';
 import ReactLoading from 'react-loading';
+import ReactRouterPropTypes from 'react-router-prop-types';
+import queryString from 'query-string';
 
 import colors from '../../styles/colors';
 import 'react-table/react-table.css';
@@ -205,6 +208,11 @@ const generateDrugLabel = (drug, data) => {
 };
 
 class Pharmacogenomics extends Component {
+  static propTypes = {
+    location: ReactRouterPropTypes.location.isRequired,
+  }
+
+
   constructor() {
     super();
     this.state = {
@@ -251,6 +259,15 @@ class Pharmacogenomics extends Component {
     this.focusNode = null;
   }
 
+  componentDidMount() {
+    const { location } = this.props;
+    const requestParams = queryString.parse(location.search);
+    const {
+      example,
+    } = requestParams;
+    if (example) console.log('Example Query');
+  }
+
   componentDidUpdate() {
     const { focus } = this.state;
     const { focusNode } = this;
@@ -262,10 +279,10 @@ class Pharmacogenomics extends Component {
   // Updates drug data based on samples
   getDrugData(data, keyStore, type, drug) {
     const querySamples = generateSampleString(data, keyStore);
-    let queryString = `/api/drugs/filter?sample=${querySamples}`;
-    if (type === 'drugsData1' && drug) queryString = queryString.concat(`&drugId=${drug}`);
-    if (type === 'drugsData2' && drug) queryString = queryString.concat(`&drugId=${drug}`);
-    fetch(queryString)
+    let urlString = `/api/drugs/filter?sample=${querySamples}`;
+    if (type === 'drugsData1' && drug) urlString = urlString.concat(`&drugId=${drug}`);
+    if (type === 'drugsData2' && drug) urlString = urlString.concat(`&drugId=${drug}`);
+    fetch(urlString)
       .then(response => response.json())
       .then((drugData) => {
         const drugsData = drugData.map(item => ({ value: item.idDrug, label: item.name }));
@@ -362,6 +379,7 @@ class Pharmacogenomics extends Component {
           processSynData(data, 'cn', scoreValue);
         });
     } else {
+      // eslint-disable-next-line no-console
       console.log('wrong datatype');
       this.setState({
         loadingBiomarkerData: false,
