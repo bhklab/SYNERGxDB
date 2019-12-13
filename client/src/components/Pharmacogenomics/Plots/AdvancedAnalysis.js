@@ -40,6 +40,7 @@ const StyledInfo = styled.div`
   div {
     padding: 5px;
     border: 3px solid ${colors.color_main_1};
+    max-width: 200px;
   }
 `;
 async function findCIndex(x, y) {

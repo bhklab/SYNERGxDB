@@ -74,13 +74,6 @@ const StyledDiv = styled.div`
   }
 `;
 
-const selectedDocStyles = {
-  borderLeft: `2px solid ${colors.color_main_2}`,
-};
-const disabledDocStyles = {
-  borderLeft: `2px solid ${colors.color_main_2}`,
-};
-
 class MainDocument extends React.Component {
   constructor(props) {
     super(props);
