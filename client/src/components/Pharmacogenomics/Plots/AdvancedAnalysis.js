@@ -175,7 +175,7 @@ class AdvancedAnalysis extends React.Component {
       type: 'scatter',
       showlegend: false,
       marker: {
-        color: colors.color_main_5,
+        color: colors.color_accent_1,
       },
       hoverinfo: 'none',
     };

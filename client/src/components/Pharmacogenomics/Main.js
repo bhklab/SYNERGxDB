@@ -305,9 +305,9 @@ class Pharmacogenomics extends Component {
       }).catch(err => console.log(err));
   }
 
-  async getSampleDrugData(dataType) {
+  getSampleDrugData(dataType) {
     const { getDrugData } = this;
-    await fetch(`/api/pharmacogenomics/samples?datatype=${dataType}`)
+    fetch(`/api/pharmacogenomics/samples?datatype=${dataType}`)
       .then(response => response.json())
       .then((data) => {
         const cellData = data.map(item => ({

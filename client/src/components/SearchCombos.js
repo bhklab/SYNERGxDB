@@ -564,14 +564,18 @@ class SearchCombos extends Component {
       pathname: '/synergy_score',
       search: '?drugId1=11&drugId2=97',
     };
-    const exampleDatasetUrl = {
-      pathname: '/synergy_score',
-      search: '?&dataset=5',
+    const examplePharmUrl = {
+      pathname: '/pharmacogenomics',
+      search: '?example=true',
     };
-    const exampleSampleUrl = {
-      pathname: '/synergy_score',
-      search: '?&sample=pancreas',
-    };
+    // const exampleDatasetUrl = {
+    //   pathname: '/synergy_score',
+    //   search: '?&dataset=5',
+    // };
+    // const exampleSampleUrl = {
+    //   pathname: '/synergy_score',
+    //   search: '?&sample=pancreas',
+    // };
 
     const searchForm = (
       <Fragment>
@@ -642,13 +646,19 @@ class SearchCombos extends Component {
           </div>
           <ButtonContainer>
             <ExampleSpan>
-            Examples:
+            Examples (Bortezomib
               {' '}
-              <Link className="hover" to={exampleSampleUrl}>PANCREAS</Link>
+              {'&'}
+              {' '}
+              Topotecan):
+              {' '}
+              {/* <Link className="hover" to={exampleSampleUrl}>PANCREAS</Link>
                 &nbsp;&nbsp;|&nbsp;&nbsp;
               <Link className="hover" to={exampleDatasetUrl}>YALE-TNBC</Link>
-                &nbsp;&nbsp;|&nbsp;&nbsp;
-              <Link className="hover" to={exampleDrugUrl}>Bortezomib + Topotecan</Link>
+                &nbsp;&nbsp;|&nbsp;&nbsp; */}
+              <Link className="hover" to={examplePharmUrl}>Pharmacogenomics</Link>
+              &nbsp;&nbsp;|&nbsp;&nbsp;
+              <Link className="hover" to={exampleDrugUrl}>Combo Search</Link>
             </ExampleSpan>
             { checkUserInput() ? (
               <StyledButton onClick={userRedirect} type="button">Search</StyledButton>

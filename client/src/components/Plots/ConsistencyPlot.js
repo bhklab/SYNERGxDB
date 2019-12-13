@@ -45,7 +45,7 @@ export default class ConsistencyPlot extends React.Component {
       .enter()
       .append('option')
       .property('selected', (d) => { // roundabout way to make a default value but ok
-        if (d == xvalue) {
+        if (d === xvalue) {
           return d;
         }
       })
@@ -68,7 +68,7 @@ export default class ConsistencyPlot extends React.Component {
       .enter()
       .append('option')
       .property('selected', (d) => { // roundabout way to make a default value but ok
-        if (d == yvalue) {
+        if (d === yvalue) {
           return d;
         }
         return null;
@@ -218,17 +218,17 @@ export default class ConsistencyPlot extends React.Component {
       .style('font-size', 14)
       .attr('stroke', 'none');
 
-    const dropdownYLabel = svg.append('text')
-      .attr('fill', 'black')
-      .attr('dy', height / 2 - 10)
-      .attr('dx', -110)
-      .text('Y Axis:');
+    // const dropdownYLabel = svg.append('text')
+    //   .attr('fill', 'black')
+    //   .attr('dy', height / 2 - 10)
+    //   .attr('dx', -110)
+    //   .text('Y Axis:');
 
-    const dropdownXLabel = svg.append('text')
-      .attr('fill', 'black')
-      .attr('dy', height + 68)
-      .attr('dx', width / 2 - 80)
-      .text('X Axis:');
+    // const dropdownXLabel = svg.append('text')
+    //   .attr('fill', 'black')
+    //   .attr('dy', height + 68)
+    //   .attr('dx', width / 2 - 80)
+    //   .text('X Axis:');
 
     // make group for dots
     const dots = svg.selectAll('dot')
@@ -288,7 +288,7 @@ export default class ConsistencyPlot extends React.Component {
       .attr('y1', yrange(y1))
       .attr('y2', yrange(y2))
       .attr('stroke-width', 2)
-      .attr('stroke', '#eea228');
+      .attr('stroke', colors.color_accent_1);
 
 
     // calculating C-Index - map json to arrays and call, pearson, spearman
