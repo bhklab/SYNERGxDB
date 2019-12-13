@@ -145,6 +145,7 @@ class Biomarkers extends Component {
       hsaBiomarkers: null,
       loeweBiomarkers: null,
       biomarkerGeneStorage: {},
+      boxPlotData: [],
     };
     this.handleSelectScore = this.handleSelectScore.bind(this);
     this.getBiomarkerTableData = this.getBiomarkerTableData.bind(this);
@@ -254,7 +255,10 @@ class Biomarkers extends Component {
         highestSynScore + rangeSynScore * paddingPercent,
       ];
       const synScoreArray = synergyArray.map(item => item[score]);
+      const boxPlotData = synergyArray.map(item => ({ score: item[score], fpkm: item.fpkm }));
       synScoreArray.sort((a, b) => a - b);
+      boxPlotData.sort((a, b) => a.score - b.score);
+      console.log(boxPlotData);
       const defaultThreshold = calculateThreshold(synScoreArray);
       this.setState({
         selectedBiomarker: gene,
@@ -266,6 +270,7 @@ class Biomarkers extends Component {
         defaultThreshold,
         synScoreArray,
         confirmedThreshold: null,
+        boxPlotData,
       });
     } catch (err) {
       // eslint-disable-next-line no-console
@@ -360,7 +365,7 @@ class Biomarkers extends Component {
       yRange, defaultThreshold, confirmedThreshold,
       synScoreArray, selectedScore, zipBiomarkers, blissBiomarkers,
       hsaBiomarkers, loeweBiomarkers, loadingGraph, sample, drugId1,
-      drugId2, dataset,
+      drugId2, dataset, boxPlotData,
     } = this.state;
 
     const columns = [{
@@ -415,6 +420,7 @@ class Biomarkers extends Component {
     if (dataset) filename = filename.concat(`_${dataset}`);
     if (drugId1) filename = filename.concat(`_${drugId1}`);
     if (drugId2) filename = filename.concat(`_${drugId2}`);
+    console.log(synScoreArray);
     return (
       <main>
         <QueryCard
@@ -455,13 +461,13 @@ class Biomarkers extends Component {
             </button>
           </ButtonContainer>
           {!loadingTable ? (
-             <DownloadButton
+            <DownloadButton
               data={tableData || []}
               headers={headers}
               filename={filename}
             />
-            ) : null}
-         
+          ) : null}
+
           <ReactTable
             loading={loadingTable}
             LoadingComponent={LoadingComponent}
@@ -490,7 +496,7 @@ class Biomarkers extends Component {
             })
           }
           />
-          
+
           { !loadingGraph ? (
             <StyledExpressionProfile>
               <ExpressionProfile
@@ -505,7 +511,7 @@ class Biomarkers extends Component {
               />
               <BiomarkerBoxPlot
                 threshold={confirmedThreshold !== null ? confirmedThreshold : defaultThreshold}
-                data={synScoreArray}
+                data={boxPlotData}
                 dimensions={dimensions}
               />
             </StyledExpressionProfile>

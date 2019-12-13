@@ -54,7 +54,7 @@ class BiomarkerBoxPlot extends React.Component {
     const { dimensions } = this.props;
     const boxData = [];
     for (let i = 0; i < sortArr.length; i += 1) {
-      if (sortArr[i] >= threshold) {
+      if (sortArr[i].score >= threshold) {
         boxData.push(sortArr.slice(0, i));
         boxData.push(sortArr.slice(i, sortArr.length));
         break;
@@ -118,13 +118,13 @@ class BiomarkerBoxPlot extends React.Component {
         },
       },
       boxHigh: {
-        y: boxData[1],
+        y: boxData[1].map(item => item.fpkm),
         type: 'box',
         name: 'High, N='.concat(boxData[1].length),
         marker: { color: colors.color_main_2 },
       },
       boxLow: {
-        y: boxData[0],
+        y: boxData[0].map(item => item.fpkm),
         type: 'box',
         name: 'Low, N='.concat(boxData[0].length),
         marker: { color: colors.color_main_5 },
