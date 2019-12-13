@@ -185,6 +185,7 @@ const CustomFormLabel = withStyles({
 
 const generateSampleString = (data, keyStore) => {
   const arraySamples = [];
+
   data.forEach((item) => {
     if (item.checked) {
       if (typeof item.value === 'string') {
@@ -259,13 +260,25 @@ class Pharmacogenomics extends Component {
     this.focusNode = null;
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     const { location } = this.props;
     const requestParams = queryString.parse(location.search);
     const {
       example,
     } = requestParams;
-    if (example) console.log('Example Query');
+    if (example) {
+      // Sketchy code for NAR submission
+      await this.setState({
+        accessor: 'fpkm',
+        dataType: 'rnaseq',
+        selectedDrug1: '11',
+        selectedDrug2: '97',
+        selectedGene: 'FANK1',
+        drugsData1: [{ value: 11, label: 'Bortezomib' }],
+        drugsData2: [{ value: 97, label: 'Topotecan' }],
+      });
+      await this.getPlotData();
+    }
   }
 
   componentDidUpdate() {
@@ -292,9 +305,9 @@ class Pharmacogenomics extends Component {
       }).catch(err => console.log(err));
   }
 
-  getSampleDrugData(dataType) {
+  async getSampleDrugData(dataType) {
     const { getDrugData } = this;
-    fetch(`/api/pharmacogenomics/samples?datatype=${dataType}`)
+    await fetch(`/api/pharmacogenomics/samples?datatype=${dataType}`)
       .then(response => response.json())
       .then((data) => {
         const cellData = data.map(item => ({
@@ -705,12 +718,11 @@ class Pharmacogenomics extends Component {
     } = this;
     const {
       dataType, scoreValue, selectedDrug1,
-      selectedDrug2, drugsData1, drugsData2,
+      selectedDrug2, drugsData1, drugsData2, sampleData,
     } = this.state;
-    const showSynScore = selectedDrug1 !== 'null' && selectedDrug2 !== 'null';
+    const showSynScore = selectedDrug1 !== 'null' && selectedDrug2 !== 'null' && sampleData.length !== 0;
     const drugLabel1 = generateDrugLabel(selectedDrug1, drugsData1);
     const drugLabel2 = generateDrugLabel(selectedDrug2, drugsData2);
-
     return (
       <main ref={node => this.focusNode = node}>
         <StyledDiv>
