@@ -8,7 +8,7 @@ import SearchCombos from './SearchCombos';
 import CellLines from './CellLines';
 import Datasets from './Datasets';
 import Drugs from './Drugs';
-import Documentation from './Documentation';
+import Documentation from './Documentation/MainDocument';
 import ComboDetails from './ComboDetails';
 import ComboResults from './ComboResults';
 import Biomarkers from './Biomarkers';

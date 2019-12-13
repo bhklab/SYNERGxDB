@@ -157,7 +157,7 @@ class BiomarkerBoxPlot extends React.Component {
 export default BiomarkerBoxPlot;
 
 BiomarkerBoxPlot.propTypes = {
-  data: PropTypes.arrayOf(PropTypes.number).isRequired,
+  data: PropTypes.arrayOf(PropTypes.object).isRequired,
   threshold: PropTypes.number.isRequired,
   dimensions: PropTypes.objectOf(PropTypes.number).isRequired,
 };
