@@ -12,6 +12,7 @@ class SensHeatMap extends React.Component {
             data, query, plotId
         } = this.props;
         const result = this.formatData(data, query);
+        // return [data, combos, samples, datasets, query]
         this.plotSensHeatMap(result[0], result[1], result[2], result[3], result[4], plotId);
     }
 
@@ -78,9 +79,9 @@ class SensHeatMap extends React.Component {
             })
         })
         
-        // sort by median increasing, and output an array of combos to call them as the key
+        // sort by median decreasing, and output an array of combos to call them as the key
         medZips.sort((a,b) => {
-            return a.median - b.median;
+            return b.median - a.median;
         });
         const combos = medZips.map((x) => x.combo);
 
@@ -132,7 +133,6 @@ class SensHeatMap extends React.Component {
             return x != null;
         });
 
-        // return [data, combos, samples, datasets]
         return [newData, newCombos, newSamples, datasets, queryCombo]
 
         // to make the heatmap, for each combo, nested for each sample. 
@@ -152,6 +152,17 @@ class SensHeatMap extends React.Component {
 
         let width = 1500;
         let height = combos.length * 18 + 100;
+
+        // Add the svg canvas
+        const svg = d3.select(`#${plotId}`)
+            .append('svg')
+            .attr('fill', 'white')
+            .attr('width', width + margin.left + margin.right)
+            .attr('height', height + margin.top + margin.bottom)
+            .attr('id', 'heatmap')
+            .append('g')
+            .attr('transform',
+                `translate(${margin.left + 10},${margin.top})`);
 
         const leftAxis = d3.select(`#leftAxis`)
             .append('svg')
@@ -187,8 +198,15 @@ class SensHeatMap extends React.Component {
             .selectAll('text')
             .attr('fill', (d) => {
                 if (d.includes(queryCombo[0]) && d.includes(queryCombo[1])) {
-                    return 'orange';
-                } else {
+                    return '#b63333';
+                } 
+                else if (d.includes(queryCombo[0])) {
+                    return '#d49d3d';
+                }
+                else if (d.includes(queryCombo[1])) {
+                    return '#5dadca';
+                }
+                else {
                     return 'black';
                 }
             })
@@ -202,20 +220,11 @@ class SensHeatMap extends React.Component {
             })
             .attr('stroke', 'none')
 
-        // Add the svg canvas
-        const svg = d3.select(`#${plotId}`)
-            .append('svg')
-            .attr('fill', 'white')
-            .attr('width', width + margin.left + margin.right)
-            .attr('height', height + margin.top + margin.bottom)
-            .attr('id', 'heatmap')
-            .append('g')
-            .attr('transform',
-                `translate(${margin.left + 10},${margin.top})`);
 
         // adding chart group - it scrolls
         let chart = svg.append('g')
             .attr('id', 'chart')
+            .attr('transform', 'translate(0,0)')
 
         // color scale
         // let color = {}; 
@@ -294,10 +303,8 @@ class SensHeatMap extends React.Component {
     render() {
         return (
             <Fragment>
-                {/* <div className="plotWrapper"> */}
                 <div id="leftAxis"></div>
                 <div id={this.props.plotId} className="plot" />
-                {/* </div> */}
                 
                 
             </Fragment>

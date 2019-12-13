@@ -41,7 +41,7 @@ class CellSensLegends extends React.Component {
 
         let zip = svg.append('g')
         
-            let zipColors = ['#de5757','#77c379']; 
+            let zipColors = ['#77c379','#de5757']; 
             let gradient = zip.append('defs')
                 .append('linearGradient')
                 .attr('id', 'grad')
@@ -77,7 +77,7 @@ class CellSensLegends extends React.Component {
             
 
             zip.selectAll('zipLeg')
-                .data([-1,0,1])
+                .data([1,0,-1])
                 .enter()
                 .append('text')
                     .attr('dx', 45)

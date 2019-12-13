@@ -76,9 +76,9 @@ class SensBoxPlot extends React.Component {
             })
         })
         
-        // sort by median increasing, and output an array of combos to call them as the key
+        // sort by median decreasing, and output an array of combos to call them as the key
         medZips.sort((a,b) => {
-            return a.median - b.median;
+            return b.median - a.median;
         });
 
         // unique array of all datasets
