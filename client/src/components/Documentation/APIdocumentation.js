@@ -4,6 +4,7 @@ import React, { Fragment } from 'react';
 import styled from 'styled-components';
 import colors from '../../styles/colors';
 import SampleDoc from './APIDocs/SampleDoc';
+import DrugDoc from './APIDocs/DrugDoc';
 
 const StyledAPIDocs = styled.div`
   p {
@@ -43,6 +44,7 @@ const APIDocumentation = (props) => {
       <h2>API Documentation</h2>
       <p>SYNERGxDB supports RESTful API which allows users to directly query the database without having to use web app interfaces</p>
       {display === 'api-cells' ? <SampleDoc /> : null}
+      {display === 'api-drugs' ? <DrugDoc /> : null}
     </StyledAPIDocs>
   );
 };
