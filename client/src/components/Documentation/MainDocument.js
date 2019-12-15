@@ -91,6 +91,8 @@ const StyledDiv = styled.div`
   }
 `;
 
+// TODO: must update some of these
+// They're not done on the google doc
 const overviewText = '<span><b>SYNERGxDB </b>is a comprehensive database to explore synergistic drug combinations for biomarker discovery.</span><ol><li><b>Overview</b><ol><li>Many studies have highlighted the use of drug combination approaches in the treatment of tumors, which have been shown to provide aid in <b>overcoming cancer treatment failures.</b> However, the impact of genetics on variability in combo responses for discovering predictiveand prognostic biomarkers is currently unknown. To help solve this issue, we created <b>SYNERGxDB</b>, a web-application that possesses the largest database of seven collections of pharmacological and molecular profiles of corresponding cell lines (124 cell lines in 11 tissue types and1,962 drugs/compounds - 15,268 combinations). This application allows researchers and clinicians to identifynovel synergistic drug combinations, in order to discover potential prognostic and predictive biomarkers that can help improvepatient prognosis and selection.</li></ol></li></ol>';
 const overviewPath = '';
 const searchText = '<ol><li><b>Search</b><ol><li>The SYNERGxDB search engine allows users to identify potential biomarkers and novel drug combinations according to the predicted synergy scores, by querying for a subset of cell lines or one cell line, the first compound in combination, the second compound in combination, and/or dataset of choice to explore. http://SYNERGxDB.ca/</li></ol>';
@@ -133,17 +135,17 @@ class MainDocument extends React.Component {
     this.setState({ display });
     if (display === 'overview') this.setState({ funcText: overviewText, imgPath: overviewPath });
     else if (display === 'search') this.setState({ funcText: searchText, imgPath: searchPath });
-    else if (display === 'syn') this.setState({funcText: synText, imgPath: synPath});
-    else if (display === 'samples') this.setState({funcText: samplesText, imgPath: samplesPath});
-    else if (display === 'compounds') this.setState({funcText: compoundsText, imgPath: compoundsPath});
-    else if (display === 'datasets') this.setState({funcText: datasetsText, imgPath: datasetsPath});
-    else if (display === 'pharmaco') this.setState({funcText: pharmacoText, imgPath: pharmacoPath});
-    else if (display === 'biomarker') this.setState({funcText: biomarkerText, imgPath: biomarkerPath});
-    else if (display === 'sensitivity') this.setState({funcText: sensitivityText, imgPath: sensitivityPath});
-    else if (display === 'enrichment') this.setState({funcText: enrichmentText, imgPath: enrichmentPath});
-    else if (display === 'consistency') this.setState({funcText: consistencyText, imgPath: consistencyPath});
-    else if (display === 'detailed') this.setState({funcText: detailedText, imgPath: detailedPath});
-    else if (display === 'use') this.setState({funcText: useText, imgPath: usePath});
+    else if (display === 'syn') this.setState({funcText: synText, imgPath: synPath });
+    else if (display === 'samples') this.setState({funcText: samplesText, imgPath: samplesPath });
+    else if (display === 'compounds') this.setState({funcText: compoundsText, imgPath: compoundsPath });
+    else if (display === 'datasets') this.setState({funcText: datasetsText, imgPath: datasetsPath });
+    else if (display === 'pharmaco') this.setState({funcText: pharmacoText, imgPath: pharmacoPath });
+    else if (display === 'biomarker') this.setState({funcText: biomarkerText, imgPath: biomarkerPath });
+    else if (display === 'sensitivity') this.setState({funcText: sensitivityText, imgPath: sensitivityPath });
+    else if (display === 'enrichment') this.setState({funcText: enrichmentText, imgPath: enrichmentPath });
+    else if (display === 'consistency') this.setState({funcText: consistencyText, imgPath: consistencyPath });
+    else if (display === 'detailed') this.setState({funcText: detailedText, imgPath: detailedPath });
+    else if (display === 'use') this.setState({funcText: useText, imgPath: usePath });
   }
 
   render() {

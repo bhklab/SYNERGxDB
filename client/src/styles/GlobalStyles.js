@@ -92,6 +92,7 @@ const GlobalStyles = createGlobalStyle`
     display:flex;
     align-items: center;
     justify-content: center;
+    margin-top: 0px;
   }
 
   main.summary {
