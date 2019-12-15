@@ -8,6 +8,7 @@ import transitions from '../../styles/transitions';
 // import GeneralDoc from './Functionality/Overview';
 import GeneralFunc from './Functionality/GeneralFunc';
 import APIDoc from './APIdocumentation';
+import apiText from './APIText';
 
 const StyledDiv = styled.div`
   padding: 10px;
@@ -200,7 +201,7 @@ class MainDocument extends React.Component {
         });
         break;
       case 'api':
-        this.setState({ display, type: 'api' });
+        this.setState({ display, type: 'api', funcText: apiText.general });
         break;
       case 'api-cells':
         this.setState({ display, type: 'api' });
@@ -221,7 +222,6 @@ class MainDocument extends React.Component {
         this.setState({ display, type: 'api' });
         break;
       default:
-        console.log('Error with ', display);
         break;
     }
   }
@@ -351,7 +351,7 @@ class MainDocument extends React.Component {
             {type === 'general' ? (
               <GeneralFunc text={funcText} imgPath={imgPath} />
             ) : (
-              <APIDoc />
+              <APIDoc text={funcText} />
             )}
             {/* {display === 'func' ? <GeneralDoc /> : <APIDoc />} */}
           </div>

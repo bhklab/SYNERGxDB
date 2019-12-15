@@ -4,10 +4,17 @@ import React, { Fragment } from 'react';
 import styled from 'styled-components';
 import colors from '../../styles/colors';
 
-const APIDocumentation = () => (
-  <Fragment>
-    <h2>API Documentation</h2>
-  </Fragment>
-);
+class APIDocumentation extends React.Component {
+  render() {
+    const { text, imgPath } = this.props;
+    return (
+      <Fragment>
+        <h2>API Documentation</h2>
+        <p>{text}</p>
+      </Fragment>
+    );
+  }
+}
+
 
 export default APIDocumentation;
