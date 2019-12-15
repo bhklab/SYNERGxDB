@@ -20,7 +20,7 @@ const StyledDiv = styled.div`
     font-size: 20px;
     min-height: 80vh;
     &.documentation {
-        width: 100%;
+      width: 100%;
       background:white;
       font-family: Nunito Sans, sans-serif;
       color:${colors.nav_links};
@@ -127,30 +127,110 @@ class MainDocument extends React.Component {
       display: 'overview',
       funcText: overviewText,
       imgPath: '',
+      type: 'general',
     };
     this.handleDocChange = this.handleDocChange.bind(this);
   }
 
   handleDocChange(display) {
-    this.setState({ display });
-    if (display === 'overview') this.setState({ funcText: overviewText, imgPath: overviewPath });
-    else if (display === 'search') this.setState({ funcText: searchText, imgPath: searchPath });
-    else if (display === 'syn') this.setState({funcText: synText, imgPath: synPath });
-    else if (display === 'samples') this.setState({funcText: samplesText, imgPath: samplesPath });
-    else if (display === 'compounds') this.setState({funcText: compoundsText, imgPath: compoundsPath });
-    else if (display === 'datasets') this.setState({funcText: datasetsText, imgPath: datasetsPath });
-    else if (display === 'pharmaco') this.setState({funcText: pharmacoText, imgPath: pharmacoPath });
-    else if (display === 'biomarker') this.setState({funcText: biomarkerText, imgPath: biomarkerPath });
-    else if (display === 'sensitivity') this.setState({funcText: sensitivityText, imgPath: sensitivityPath });
-    else if (display === 'enrichment') this.setState({funcText: enrichmentText, imgPath: enrichmentPath });
-    else if (display === 'consistency') this.setState({funcText: consistencyText, imgPath: consistencyPath });
-    else if (display === 'detailed') this.setState({funcText: detailedText, imgPath: detailedPath });
-    else if (display === 'use') this.setState({funcText: useText, imgPath: usePath });
+    switch (display) {
+      case 'overview':
+        this.setState({
+          funcText: overviewText, imgPath: overviewPath, display, type: 'general',
+        });
+        break;
+      case 'search':
+        this.setState({
+          funcText: searchText, imgPath: searchPath, display, type: 'general',
+        });
+        break;
+      case 'syn':
+        this.setState({
+          funcText: synText, imgPath: synPath, display, type: 'general',
+        });
+        break;
+      case 'samples':
+        this.setState({
+          funcText: samplesText, imgPath: samplesPath, display, type: 'general',
+        });
+        break;
+      case 'compounds':
+        this.setState({
+          funcText: compoundsText, imgPath: compoundsPath, display, type: 'general',
+        });
+        break;
+      case 'datasets':
+        this.setState({
+          funcText: datasetsText, imgPath: datasetsPath, display, type: 'general',
+        });
+        break;
+      case 'pharmaco':
+        this.setState({
+          funcText: pharmacoText, imgPath: pharmacoPath, display, type: 'general',
+        });
+        break;
+      case 'biomarker':
+        this.setState({
+          funcText: biomarkerText, imgPath: biomarkerPath, display, type: 'general',
+        });
+        break;
+      case 'sensitivity':
+        this.setState({
+          funcText: sensitivityText, imgPath: sensitivityPath, display, type: 'general',
+        });
+        break;
+      case 'enrichment':
+        this.setState({
+          funcText: enrichmentText, imgPath: enrichmentPath, display, type: 'general',
+        });
+        break;
+      case 'consistency':
+        this.setState({
+          funcText: consistencyText, imgPath: consistencyPath, display, type: 'general',
+        });
+        break;
+      case 'detailed':
+        this.setState({
+          funcText: detailedText, imgPath: detailedPath, display, type: 'general',
+        });
+        break;
+      case 'use':
+        this.setState({
+          funcText: useText, imgPath: usePath, display, type: 'general',
+        });
+        break;
+      case 'api':
+        this.setState({ display, type: 'api' });
+        break;
+      case 'api-cells':
+        this.setState({ display, type: 'api' });
+        break;
+      case 'api-drugs':
+        this.setState({ display, type: 'api' });
+        break;
+      case 'api-datasets':
+        this.setState({ display, type: 'api' });
+        break;
+      case 'api-combos':
+        this.setState({ display, type: 'api' });
+        break;
+      case 'api-biomarkers':
+        this.setState({ display, type: 'api' });
+        break;
+      case 'api-pharma':
+        this.setState({ display, type: 'api' });
+        break;
+      default:
+        console.log('Error with ', display);
+        break;
+    }
   }
 
   render() {
     const { handleDocChange } = this;
-    const { display, funcText, imgPath } = this.state;
+    const {
+      display, funcText, imgPath, type,
+    } = this.state;
     return (
 
       <StyledDiv>
@@ -178,7 +258,7 @@ class MainDocument extends React.Component {
               <li
                 className={display === 'samples' ? 'selected sub-func' : 'sub-func'}
               >
-                <button type="button" onClick={() => handleDocChange('samples')}>Samples</button>      
+                <button type="button" onClick={() => handleDocChange('samples')}>Samples</button>
               </li>
               <li
                 className={display === 'compounds' ? 'selected sub-func' : 'sub-func'}
@@ -235,11 +315,45 @@ class MainDocument extends React.Component {
               >
                 <button type="button" onClick={() => handleDocChange('api')}>API</button>
               </li>
+              <li
+                className={display === 'api-cells' ? 'selected sub-func' : 'sub-func'}
+              >
+                <button type="button" onClick={() => handleDocChange('api-cells')}>Samples</button>
+              </li>
+              <li
+                className={display === 'api-drugs' ? 'selected sub-func' : 'sub-func'}
+              >
+                <button type="button" onClick={() => handleDocChange('api-drugs')}>Compounds</button>
+              </li>
+              <li
+                className={display === 'api-datasets' ? 'selected sub-func' : 'sub-func'}
+              >
+                <button type="button" onClick={() => handleDocChange('api-datasets')}>Datasets</button>
+              </li>
+              <li
+                className={display === 'api-combos' ? 'selected sub-func' : 'sub-func'}
+              >
+                <button type="button" onClick={() => handleDocChange('api-combos')}>Drug Combinations</button>
+              </li>
+              <li
+                className={display === 'api-biomarkers' ? 'selected sub-func' : 'sub-func'}
+              >
+                <button type="button" onClick={() => handleDocChange('api-biomarkers')}>Biomarkers</button>
+              </li>
+              <li
+                className={display === 'api-pharma' ? 'selected sub-func' : 'sub-func'}
+              >
+                <button type="button" onClick={() => handleDocChange('api-pharma')}>Pharmacogenomics</button>
+              </li>
             </ul>
           </nav>
           <div className="doc">
+            {type === 'general' ? (
+              <GeneralFunc text={funcText} imgPath={imgPath} />
+            ) : (
+              <APIDoc />
+            )}
             {/* {display === 'func' ? <GeneralDoc /> : <APIDoc />} */}
-            <GeneralFunc text={funcText} imgPath={imgPath} />
           </div>
         </main>
         <footer>
