@@ -41,7 +41,7 @@ const ComboDoc = () => (
     <h2>Combo API</h2>
     <div className="api-section">
       <h3>Get combo information</h3>
-      <p>Retrieves drug combination data for a given set of parameters. The API request can take 4 optional request paramaters: dataset (dataset id, integer), sample (tissue name, string, or cell line id, integer), drugId1 (integer), drugId2 (integer)</p>
+      <p>Retrieves synergy score data for drug combinations. The API request can take 4 optional request paramaters: dataset (dataset id, integer), sample (tissue name, string, or cell line id, integer), drugId1 (integer), drugId2 (integer)</p>
       <p className="code">
         <span>
           curl

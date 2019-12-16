@@ -7,6 +7,7 @@ import SampleDoc from './APIDocs/SampleDoc';
 import DrugDoc from './APIDocs/DrugDoc';
 import DatasetDoc from './APIDocs/DatasetDoc';
 import ComboDoc from './APIDocs/ComboDoc';
+import BiomarkerDoc from './APIDocs/BiomarkerDoc';
 
 const StyledAPIDocs = styled.div`
   p {
@@ -49,6 +50,7 @@ const APIDocumentation = (props) => {
       {display === 'api-drugs' ? <DrugDoc /> : null}
       {display === 'api-datasets' ? <DatasetDoc /> : null}
       {display === 'api-combos' ? <ComboDoc /> : null}
+      {display === 'api-biomarkers' ? <BiomarkerDoc /> : null}
     </StyledAPIDocs>
   );
 };
