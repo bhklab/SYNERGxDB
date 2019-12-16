@@ -18,6 +18,7 @@ import detailedPath from '../../images/docs/figure12.png';
 // import GeneralDoc from './Functionality/Overview';
 import GeneralFunc from './Functionality/GeneralFunc';
 import APIDoc from './APIdocumentation';
+import FunctionalDoc from './FunctionalDoc';
 
 const StyledDiv = styled.div`
   padding: 10px;
@@ -130,7 +131,7 @@ const StyledDiv = styled.div`
 // const useText = '<ol><li><b>A Use-Case Scenario</b><ol><li></li></ol>';
 // const usePath = '';
 
-const overviewText = '<span><b>SYNERGxDB </b>is a comprehensive database to explore synergistic drug combinations for biomarker discovery.</span><ol><li><b>Overview</b><ol><li>Many studies have highlighted the use of drug combination approaches in the treatment of tumors, which have been shown to provide aid in <b>overcoming cancer treatment failures.</b> However, the impact of genetics on variability in combo responses for discovering predictiveand prognostic biomarkers is currently unknown. To help solve this issue, we created <b>SYNERGxDB</b>, a web-application that possesses the largest database of seven collections of pharmacological and molecular profiles of corresponding cell lines (124 cell lines in 11 tissue types and1,962 drugs/compounds - 15,268 combinations). This application allows researchers and clinicians to identifynovel synergistic drug combinations, in order to discover potential prognostic and predictive biomarkers that can help improvepatient prognosis and selection.</li></ol></li></ol>';
+const overviewText = '';
 const overviewPath = '';
 const searchText = '<ol><li><b>Search</b><ol><li>The SYNERGxDB search engine allows users to identify potential biomarkers and novel drug combinations according to the predicted synergy scores, by querying for a subset of cell lines or one cell line, the first compound in combination, the second compound in combination, and/or dataset of choice to explore. http://SYNERGxDB.ca/</li></ol>';
 const synText = '<ol><li><b>Synergy Scores</b><ol><li>Synergy scores are calculated for each drug combination experiment in SYNERGxDB (N = 477,595), which includes: tissue, cell line, the first/second compounds, ZIP, Bliss, Loewe, and HSA. Users can provide ‘Bortezomib’ and ‘Topotecan’ to pull out all synergy scores tested in any cell lines/datasets. http://SYNERGxDB.ca/synergy_score?drugId1=11&drugId2=97</li></ol>';
@@ -162,12 +163,12 @@ class MainDocument extends React.Component {
     switch (display) {
       case 'overview':
         this.setState({
-          funcText: overviewText, imgPath: overviewPath, display, type: 'general',
+          display, type: 'general',
         });
         break;
       case 'search':
         this.setState({
-          funcText: searchText, imgPath: searchPath, display, type: 'general',
+          display, type: 'general',
         });
         break;
       case 'syn':
@@ -354,7 +355,7 @@ class MainDocument extends React.Component {
           </nav>
           <div className="doc">
             {type === 'general' ? (
-              <GeneralFunc text={funcText} imgPath={imgPath} />
+              <FunctionalDoc display={display} />
             ) : (
               <APIDoc display={display} />
             )}
