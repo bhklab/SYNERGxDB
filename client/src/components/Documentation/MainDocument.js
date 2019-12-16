@@ -225,28 +225,8 @@ class MainDocument extends React.Component {
           funcText: useText, imgPath: usePath, display, type: 'general',
         });
         break;
-      case 'api':
-        this.setState({ display, type: 'api' });
-        break;
-      case 'api-cells':
-        this.setState({ display, type: 'api' });
-        break;
-      case 'api-drugs':
-        this.setState({ display, type: 'api' });
-        break;
-      case 'api-datasets':
-        this.setState({ display, type: 'api' });
-        break;
-      case 'api-combos':
-        this.setState({ display, type: 'api' });
-        break;
-      case 'api-biomarkers':
-        this.setState({ display, type: 'api' });
-        break;
-      case 'api-pharma':
-        this.setState({ display, type: 'api' });
-        break;
       default:
+        this.setState({ display, type: 'api' });
         break;
     }
   }
