@@ -147,34 +147,35 @@ router.get('/stats', (req, res) => {
     });
 });
 
-router.get("/heatmap", (req, res) => {
+router.get('/heatmap', (req, res) => {
   let {
-    drugId1, drugId2
+    drugId1, drugId2,
   } = req.query;
 
   drugId1 = drugId1 && parseInt(drugId1, 10);
   drugId2 = drugId2 && parseInt(drugId2, 10);
 
   // getting all data
-  db.select('cd.idSample AS idSample', 'sa.name AS sample', 'so.name AS source', 'idDrugA', 'idDrugB', db.raw('left(??,12) AS ??', ['d.name','drugNameA']), db.raw('left(??,12) AS ??', ['dd.name','drugNameB']),'zip')
+  db.select('cd.idSample AS idSample', 'sa.name AS sample', 'so.name AS source', 'idDrugA', 'idDrugB', db.raw('left(??,12) AS ??', ['d.name', 'drugNameA']), db.raw('left(??,12) AS ??', ['dd.name', 'drugNameB']), 'zip')
     .from('combo_design AS cd')
     .join('synergy_score AS ss', 'ss.idCombo_Design', 'cd.idCombo_Design')
     .join('drug AS d', 'idDrugA', 'd.idDrug')
     .join('drug AS dd', 'idDrugB', 'dd.idDrug')
     .join('sample AS sa', 'cd.idSample', 'sa.idSample')
     .join('source AS so', 'ss.idSource', 'so.idSource')
-    .where({'idDrugA': drugId1}).orWhere({'idDrugA': drugId2}).orWhere({'idDrugB': drugId1}).orWhere({'idDrugB': drugId2})
+    .where({ idDrugA: drugId1 })
+    .orWhere({ idDrugA: drugId2 })
+    .orWhere({ idDrugB: drugId1 })
+    .orWhere({ idDrugB: drugId2 })
     .orderBy('idDrugA', 'idDrugB')
     .then((data) => {
-      res.json(data)
+      res.json(data);
     })
     .catch((err) => {
       console.log(err);
       res.json(err);
     });
-})
-
-
+});
 
 
 //   db.select('idSample', 'idSource', 'idDrugA', 'idDrugB', 'zip')

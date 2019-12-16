@@ -1,10 +1,12 @@
 /* eslint-disable linebreak-style */
 /* eslint-disable max-len */
-import React, { Fragment } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import colors from '../../styles/colors';
 import SampleDoc from './APIDocs/SampleDoc';
 import DrugDoc from './APIDocs/DrugDoc';
+import DatasetDoc from './APIDocs/DatasetDoc';
+import ComboDoc from './APIDocs/ComboDoc';
 
 const StyledAPIDocs = styled.div`
   p {
@@ -42,9 +44,11 @@ const APIDocumentation = (props) => {
   return (
     <StyledAPIDocs>
       <h2>API Documentation</h2>
-      <p>SYNERGxDB supports RESTful API which allows users to directly query the database without having to use web app interfaces</p>
+      <p>SYNERGxDB supports RESTful API which allows users to directly query the database without having to use web app interface</p>
       {display === 'api-cells' ? <SampleDoc /> : null}
       {display === 'api-drugs' ? <DrugDoc /> : null}
+      {display === 'api-datasets' ? <DatasetDoc /> : null}
+      {display === 'api-combos' ? <ComboDoc /> : null}
     </StyledAPIDocs>
   );
 };
