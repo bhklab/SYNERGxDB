@@ -8,6 +8,7 @@ import DrugDoc from './APIDocs/DrugDoc';
 import DatasetDoc from './APIDocs/DatasetDoc';
 import ComboDoc from './APIDocs/ComboDoc';
 import BiomarkerDoc from './APIDocs/BiomarkerDoc';
+import PharmaDoc from './APIDocs/PharmaDoc';
 
 const StyledAPIDocs = styled.div`
   p {
@@ -31,9 +32,9 @@ const StyledAPIDocs = styled.div`
   .api-section {
     width: 100%;
     margin: 10px;
-    border-bottom: 2px solid ${colors.trans_color_main_2}
+    border-bottom: 2px solid ${colors.trans_color_main_2};
 
-    &.nth-last-of-type {
+    &:nth-last-of-type(1) {
       border-bottom: none;
     }
   }
@@ -51,6 +52,7 @@ const APIDocumentation = (props) => {
       {display === 'api-datasets' ? <DatasetDoc /> : null}
       {display === 'api-combos' ? <ComboDoc /> : null}
       {display === 'api-biomarkers' ? <BiomarkerDoc /> : null}
+      {display === 'api-pharma' ? <PharmaDoc /> : null}
     </StyledAPIDocs>
   );
 };
