@@ -67,13 +67,13 @@ class Sensitivity extends Component {
     super();
     this.state = {
       data: [],
-      drugId1:"",
-      drugId2:"",
-      drugName1:"",
-      drugName2:"",
-      sample:"",
-      dataset:"",
-      legendColors:{},
+      drugId1: null,
+      drugId2: null,
+      drugName1: '',
+      drugName2: '',
+      sample: '',
+      dataset: '',
+      legendColors: {},
     };
   }
 
@@ -83,36 +83,44 @@ class Sensitivity extends Component {
     const {
       sample, drugId1, drugId2, drugName1, drugName2, dataset,
     } = requestParams;
-    this.setState({sample: sample, drugId1: drugId1, drugId2: drugId2, dataset: dataset})
+    this.setState({
+      sample, drugId1, drugId2, dataset,
+    });
     fetch(`/api/combos/heatmap?drugId1=${drugId1}&drugId2=${drugId2}`)
       .then(response => response.json())
       .then((data) => {
-        this.setState({data: data})
+        this.setState({ data });
       });
 
     fetch(`api/drugs/${drugId1}`)
       .then(response => response.json())
       .then((data) => {
-        this.setState({drugName1: data.name})
+        console.log(data);
+        this.setState({ drugName1: data[0].name });
       });
 
     fetch(`api/drugs/${drugId2}`)
       .then(response => response.json())
       .then((data) => {
-        this.setState({drugName2: data.name})
+        console.log(data);
+        this.setState({ drugName2: data[0].name });
       });
   }
 
   callBackLegendColor = (data) => {
-    this.setState({legendColors: data})
+    this.setState({ legendColors: data });
   }
 
   render() {
-    const { data, sample, drugId1, drugId2, drugName1, drugName2, dataset, legendColors} = this.state;
+    const {
+      data, sample, drugId1, drugId2, drugName1, drugName2, dataset, legendColors,
+    } = this.state;
     const query = [drugId1, drugId2];
+    console.log(drugId1, drugId2);
+    console.log(drugName1, drugName2);
     return (
       <main>
-        {drugId1 == "" && drugId2 == "" ? null : (
+        {!drugId1 && !drugId2 ? null : (
           <QueryCard
             drugId1={drugId1}
             drugId2={drugId2}
@@ -120,17 +128,17 @@ class Sensitivity extends Component {
             sample={sample}
           />
         )}
-        
+
         <SensitivityDiv>
-          {data.length == 0 ? null : (
+          {data.length === 0 ? null : (
             <Fragment>
-              {drugName1 == "" && drugName2 == "" ? null : (
+              {drugName1 == '' && drugName2 == '' ? null : (
                 <SensAxisLegend
                   query={[drugName1, drugName2]}
                   plotId="leftAxisLegend"
                 />
               )}
-              
+
               <div className="plotWrapper">
                 <SensHeatMap
                   data={data}
@@ -147,10 +155,10 @@ class Sensitivity extends Component {
             </Fragment>
           )}
           {Object.keys(legendColors).length == 0 ? null : (
-              <CellSensLegends 
-                  legendColors={legendColors}
-                  plotId='legend'
-              />
+            <CellSensLegends
+              legendColors={legendColors}
+              plotId="legend"
+            />
           )}
         </SensitivityDiv>
       </main>
