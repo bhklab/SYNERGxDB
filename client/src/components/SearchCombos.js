@@ -656,14 +656,10 @@ class SearchCombos extends Component {
               {' '}
               Topotecan):
               {' '}
-              {/* <Link className="hover" to={exampleSampleUrl}>PANCREAS</Link>
-                &nbsp;&nbsp;|&nbsp;&nbsp;
-              <Link className="hover" to={exampleDatasetUrl}>YALE-TNBC</Link>
-                &nbsp;&nbsp;|&nbsp;&nbsp; */}
               <p>
-                <Link className="hover" to={exampleDrugUrl}>Synergy Score</Link>
+                <Link className="hover" to={exampleDrugUrl}>Synergy Scores</Link>
               &nbsp;&nbsp;|&nbsp;&nbsp;
-                <Link className="hover" to={exampleConsistency}>Compare acrossdatasets</Link>
+                <Link className="hover" to={exampleConsistency}>Compare across datasets</Link>
               &nbsp;&nbsp;|&nbsp;&nbsp;
                 <Link className="hover" to={examplePharmUrl}>Biomarker Discovery</Link>
               </p>

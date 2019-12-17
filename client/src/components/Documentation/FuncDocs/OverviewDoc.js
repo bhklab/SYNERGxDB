@@ -1,8 +1,6 @@
 /* eslint-disable linebreak-style */
 /* eslint-disable max-len */
 import React, { Fragment } from 'react';
-import styled from 'styled-components';
-import colors from '../../../styles/colors';
 
 const OverviewDoc = () => (
   <Fragment>
@@ -26,9 +24,7 @@ const OverviewDoc = () => (
                 and prognostic biomarkers is currently unknown. To help solve this issue, we created
             {' '}
             <b>SYNERGxDB</b>
-                , a web-application that possesses the
-                largest database of seven collections of pharmacological and molecular profiles of corresponding cell lines (124 cell lines in 11 tissue types and
-                1,962 drugs/compounds - 15,268 combinations). This application allows researchers and clinicians to identify
+                , a web-application that possesses the largest database of seven collections of pharmacological and molecular profiles of corresponding cell lines (124 cell lines in 11 tissue types and 1,962 drugs/compounds - 15,268 combinations). This application allows researchers and clinicians to identify
                 novel synergistic drug combinations, in order to discover potential prognostic and predictive biomarkers that can help improve
                 patient prognosis and selection.
           </li>

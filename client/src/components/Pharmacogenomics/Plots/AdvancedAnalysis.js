@@ -42,6 +42,9 @@ const StyledInfo = styled.div`
     border: 3px solid ${colors.color_main_1};
     max-width: 200px;
   }
+  .info-field {
+    font-weight: 400;
+  }
 `;
 async function findCIndex(x, y) {
   if (x.length < 2 || y.length < 2) {
@@ -281,18 +284,19 @@ class AdvancedAnalysis extends React.Component {
         </PlotlyContainer>
         <StyledInfo>
           <div>
+            <h4>Query Information</h4>
             <h4>
-            Compound A:
+              <span className="info-field">Compound A:</span>
               {' '}
               {drug1}
             </h4>
             <h4>
-            Compound B:
+              <span className="info-field">Compound B:</span>
               {' '}
               {drug2}
             </h4>
             <h4>
-            Synergy Score:
+              <span className="info-field">Synergy Score:</span>
               {' '}
               {selectedScore.toUpperCase()}
               {' '}
@@ -301,29 +305,30 @@ class AdvancedAnalysis extends React.Component {
               {selectedBiomarker}
             </h4>
             <h4>
-            Tested in
+              <span className="info-field">Tested in</span>
               {' '}
               {biomarkerData ? biomarkerData.length : '0'}
               {' '}
-            cell lines
+              <span className="info-field">cell lines</span>
             </h4>
           </div>
           {cIndex ? (
             <div className="stats">
+              <h4>Association Testing</h4>
               <h4>
-            C-Index =
+                <span className="info-field">Concordance Index =</span>
                 {' '}
                 {cIndex}
               </h4>
               <h4>
-            Pearson r =
-                {' '}
-                {pearsonR}
-              </h4>
-              <h4>
-            Spearman rho =
+                <span className="info-field">Spearman rho =</span>
                 {' '}
                 {spearmanRho}
+              </h4>
+              <h4>
+                <span className="info-field">Pearson r =</span>
+                {' '}
+                {pearsonR}
               </h4>
             </div>
           ) : null
