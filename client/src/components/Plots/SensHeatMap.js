@@ -1,4 +1,3 @@
-/* eslint-disable class-methods-use-this */
 import * as d3 from 'd3';
 import React, { Fragment } from 'react';
 // import colors from '../../styles/colors';
@@ -35,7 +34,6 @@ class SensHeatMap extends React.Component {
     let allSamples = [];
     let queryCombo = [];
     let datasets = [];
-    console.log(data);
     data.forEach((x) => {
       const combo = `${x.drugNameA} + ${x.drugNameB}/${x.source}`;
       if (x.idDrugA == query[0] && x.idDrugB == query[1]) {
@@ -113,7 +111,7 @@ class SensHeatMap extends React.Component {
       }
       return c;
     });
-    newCombos = newCombos.filter(x => x != null);
+    newCombos = newCombos.filter((x) => x != null);
 
     // same for samples = remove samples with zip null
     let newSamples = samples.map((s) => {
@@ -123,7 +121,7 @@ class SensHeatMap extends React.Component {
       }
       return s;
     });
-    newSamples = newSamples.filter(x => x != null);
+    newSamples = newSamples.filter((x) => x != null);
 
     return [newData, newCombos, newSamples, datasets, queryCombo];
 
@@ -190,18 +188,19 @@ class SensHeatMap extends React.Component {
       .call(yAxis)
       .selectAll('text')
       .attr('fill', (d) => {
-        if (d.includes(queryCombo[0]) && d.includes(queryCombo[1])) {
-          return '#b63333';
-        }
-        if (d.includes(queryCombo[0])) {
-          return '#d49d3d';
-        }
-        if (d.includes(queryCombo[1])) {
-          return '#5dadca';
-        }
-
-        return 'black';
-      })
+                if (d.includes(queryCombo[0]) && d.includes(queryCombo[1])) {
+                    return '#b63333';
+                } 
+                if (d.includes(queryCombo[0])) {
+                    return '#d49d3d';
+                }
+                if (d.includes(queryCombo[1])) {
+                    return '#5dadca';
+                }
+                else {
+                    return 'black';
+                }
+            })
       .style('font-size', 11)
       .style('font-weight', (d) => {
         if (d.includes(queryCombo[0]) && d.includes(queryCombo[1])) {
@@ -249,14 +248,15 @@ class SensHeatMap extends React.Component {
           .attr('height', 18)
           .attr('class', 'cell')
           .style('fill', () => {
-            const temp = data[c].samples[s];
-            if (temp == undefined) {
-              return '#fff';
-            } if (!temp) {
-              return '#fff';
-            }
-            return color(temp);
-          });
+                        const temp = data[c].samples[s];
+                        if (temp == undefined) {
+                            return "#fff";
+                        } if (!temp) {
+                            return "#fff"
+                        } 
+                            return color(temp);
+                        
+                    });
       });
     });
 
@@ -292,11 +292,11 @@ class SensHeatMap extends React.Component {
   render() {
     return (
       <Fragment>
-        <div id="leftAxis" />
-        <div id={this.props.plotId} className="plot" />
+            <div id="leftAxis" />
+            <div id={this.props.plotId} className="plot" />
 
 
-      </Fragment>
+          </Fragment>
     );
   }
 }

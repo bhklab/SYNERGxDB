@@ -67,10 +67,10 @@ class Sensitivity extends Component {
     super();
     this.state = {
       data: [],
-      drugId1: null,
-      drugId2: null,
-      drugName1: '',
-      drugName2: '',
+      drugId1: '',
+      drugId2: '',
+      drugName1: null,
+      drugName2: null,
       sample: '',
       dataset: '',
       legendColors: {},
@@ -81,7 +81,7 @@ class Sensitivity extends Component {
     const { location } = this.props;
     const requestParams = queryString.parse(location.search);
     const {
-      sample, drugId1, drugId2, drugName1, drugName2, dataset,
+      sample, drugId1, drugId2, dataset,
     } = requestParams;
     this.setState({
       sample, drugId1, drugId2, dataset,
@@ -93,23 +93,31 @@ class Sensitivity extends Component {
     fetch(url)
       .then(response => response.json())
       .then((data) => {
-        console.log(data);
         this.setState({ data });
-      }).catch(err => console.log(err));
+      }).catch((err) => {
+        // eslint-disable-next-line no-console
+        console.log(err);
+      });
 
     fetch(`api/drugs/${drugId1}`)
       .then(response => response.json())
       .then((data) => {
-        console.log(data);
         this.setState({ drugName1: data[0].name });
-      }).catch(err => console.log(err));
+      }).catch((err) => {
+        // eslint-disable-next-line no-console
+        console.log(err);
+      });
 
-    fetch(`api/drugs/${drugId2}`)
-      .then(response => response.json())
-      .then((data) => {
-        console.log(data);
-        this.setState({ drugName2: data[0].name });
-      }).catch(err => console.log(err));
+    if (drugId2) {
+      fetch(`api/drugs/${drugId2}`)
+        .then(response => response.json())
+        .then((data) => {
+          this.setState({ drugName2: data[0].name });
+        }).catch((err) => {
+          // eslint-disable-next-line no-console
+          console.log(err);
+        });
+    }
   }
 
   callBackLegendColor = (data) => {
@@ -121,8 +129,6 @@ class Sensitivity extends Component {
       data, sample, drugId1, drugId2, drugName1, drugName2, dataset, legendColors,
     } = this.state;
     const query = [drugId1, drugId2];
-    console.log(drugId1, drugId2);
-    console.log(drugName1, drugName2);
     return (
       <main>
         {!drugId1 && !drugId2 ? null : (
@@ -137,7 +143,7 @@ class Sensitivity extends Component {
         <SensitivityDiv>
           {data.length === 0 ? null : (
             <Fragment>
-              {drugName1 == '' && drugName2 == '' ? null : (
+              {!drugName2 ? null : (
                 <SensAxisLegend
                   query={[drugName1, drugName2]}
                   plotId="leftAxisLegend"
@@ -159,7 +165,7 @@ class Sensitivity extends Component {
               </div>
             </Fragment>
           )}
-          {Object.keys(legendColors).length == 0 ? null : (
+          {Object.keys(legendColors).length === 0 ? null : (
             <CellSensLegends
               legendColors={legendColors}
               plotId="legend"

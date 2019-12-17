@@ -1,7 +1,7 @@
 /* eslint-disable react/no-unused-state */
 /* eslint-disable max-len */
 /* eslint-disable react/no-array-index-key */
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import ReactRouterPropTypes from 'react-router-prop-types';
 import queryString from 'query-string';
 import styled from 'styled-components';
@@ -276,12 +276,16 @@ class ComboResults extends Component {
                 {' '}
                   Discovery
               </a>
-              <a href={`/sensitivity${queryParams}`}>
-              Cell Line
-                {' '}
-                <br />
-              Sensitivity Analysis
-              </a>
+              {drugId1 ? (
+                <Fragment>
+                  <a href={`/sensitivity${queryParams}`}>
+                Cell Line
+                    {' '}
+                    <br />
+                Sensitivity Analysis
+                  </a>
+                </Fragment>
+              ) : null }
               <a href={`/enrichment${queryParams}`}>
               Tissue-Specific
                 {' '}
