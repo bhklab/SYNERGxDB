@@ -71,16 +71,17 @@ class Drugs extends Component {
       drugsData: [],
       loading: true,
       datasetData: [],
+      csvData: [],
     };
   }
 
   componentDidMount() {
     fetch('/api/drugs/')
       .then(response => response.json())
-      .then((drugsData) => {
+      .then((data) => {
         // Sorts by presence of ATC code, then by presence of DrugBank id,
         // then by presence of PubChem id and lastly it sorts drug names alphabetically
-        drugsData.sort((a, b) => {
+        data.sort((a, b) => {
           if (a.atcCode && !b.atcCode) {
             return -1;
           } if (!a.atcCode && b.atcCode) {
@@ -100,24 +101,29 @@ class Drugs extends Component {
           if (a.name < b.name) return -1;
           return 0;
         });
-        drugsData.forEach((drug) => {
+        const csvData = data;
+        const drugsData = data.map((drug) => {
+          let atc;
           if (drug.atcCode) {
-            const atc = drug.atcCode.split(';');
-            drug.atcCode = atc.length > 1 ? atc[0].concat(', ...') : atc[0];
+            atc = drug.atcCode.split(';');
+            return { ...drug, atcCode: atc.length > 1 ? atc[0].concat(', ...') : atc[0] };
           }
+          return drug;
         });
         fetch('/api/datasets')
           .then(response => response.json())
           .then((datasetData) => {
             this.setState({
-              drugsData, loading: false, datasetData,
+              drugsData, loading: false, datasetData, csvData,
             });
           });
       });
   }
 
   render() {
-    const { drugsData, loading, datasetData } = this.state;
+    const {
+      drugsData, loading, datasetData, csvData,
+    } = this.state;
     const columns = [{
       Header: 'Name',
       accessor: 'name', // String-based value accessors!
@@ -167,7 +173,7 @@ class Drugs extends Component {
           <StyledWrapper className="wrapper">
             <h1>List of Compounds</h1>
             <DownloadButton
-              data={drugsData}
+              data={csvData}
               filename="drugs"
               headers={headers}
             />
