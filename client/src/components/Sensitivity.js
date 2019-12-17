@@ -86,25 +86,30 @@ class Sensitivity extends Component {
     this.setState({
       sample, drugId1, drugId2, dataset,
     });
-    fetch(`/api/combos/heatmap?drugId1=${drugId1}&drugId2=${drugId2}`)
+    let url = '/api/combos/heatmap';
+    if (drugId1) url = url.concat(`?drugId1=${drugId1}`);
+    if (drugId2) url = url.concat(`&drugId2=${drugId2}`);
+
+    fetch(url)
       .then(response => response.json())
       .then((data) => {
+        console.log(data);
         this.setState({ data });
-      });
+      }).catch(err => console.log(err));
 
     fetch(`api/drugs/${drugId1}`)
       .then(response => response.json())
       .then((data) => {
         console.log(data);
         this.setState({ drugName1: data[0].name });
-      });
+      }).catch(err => console.log(err));
 
     fetch(`api/drugs/${drugId2}`)
       .then(response => response.json())
       .then((data) => {
         console.log(data);
         this.setState({ drugName2: data[0].name });
-      });
+      }).catch(err => console.log(err));
   }
 
   callBackLegendColor = (data) => {

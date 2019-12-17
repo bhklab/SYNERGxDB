@@ -155,70 +155,35 @@ router.get('/heatmap', (req, res) => {
   drugId1 = drugId1 && parseInt(drugId1, 10);
   drugId2 = drugId2 && parseInt(drugId2, 10);
 
+
   // getting all data
-  db.select('cd.idSample AS idSample', 'sa.name AS sample', 'so.name AS source', 'idDrugA', 'idDrugB', db.raw('left(??,12) AS ??', ['d.name', 'drugNameA']), db.raw('left(??,12) AS ??', ['dd.name', 'drugNameB']), 'zip')
+  let query = db.select('cd.idSample AS idSample', 'sa.name AS sample', 'so.name AS source', 'idDrugA', 'idDrugB', db.raw('left(??,12) AS ??', ['d.name', 'drugNameA']), db.raw('left(??,12) AS ??', ['dd.name', 'drugNameB']), 'zip')
     .from('combo_design AS cd')
     .join('synergy_score AS ss', 'ss.idCombo_Design', 'cd.idCombo_Design')
     .join('drug AS d', 'idDrugA', 'd.idDrug')
     .join('drug AS dd', 'idDrugB', 'dd.idDrug')
     .join('sample AS sa', 'cd.idSample', 'sa.idSample')
-    .join('source AS so', 'ss.idSource', 'so.idSource')
-    .where({ idDrugA: drugId1 })
-    .orWhere({ idDrugA: drugId2 })
-    .orWhere({ idDrugB: drugId1 })
-    .orWhere({ idDrugB: drugId2 })
+    .join('source AS so', 'ss.idSource', 'so.idSource');
+
+  // query builder for different number of drugs
+  if (drugId1) {
+    query = query.where({ idDrugA: drugId1 })
+      .orWhere({ idDrugB: drugId1 });
+  }
+  if (drugId2) {
+    query = query.orWhere({ idDrugA: drugId2 })
+      .orWhere({ idDrugB: drugId2 });
+  }
+
+  query
     .orderBy('idDrugA', 'idDrugB')
     .then((data) => {
       res.json(data);
     })
     .catch((err) => {
       console.log(err);
-      res.json(err);
+      res.status(400).json(err);
     });
 });
-
-
-//   db.select('idSample', 'idSource', 'idDrugA', 'idDrugB', 'zip')
-//     .from('combo_design AS cd')
-//     .join('synergy_score AS ss', 'ss.idCombo_Design', 'cd.idCombo_Design')
-//     .where({'idDrugA': drugId1}).orWhere({'idDrugA': drugId2}).orWhere({'idDrugB': drugId1}).orWhere({'idDrugB': drugId2})
-//     .then((data) => {
-//       // getting width ( number of unique drug combos )
-//        db.countDistinct({numCombos: ['idDrugA', 'idDrugB']})
-//         .from('combo_design AS cd')
-//         .join('synergy_score AS ss', 'ss.idCombo_Design', 'cd.idCombo_Design')
-//         .where({'idDrugA': drugId1}).orWhere({'idDrugA': drugId2}).orWhere({'idDrugB': drugId1}).orWhere({'idDrugB': drugId2})
-//         .then((combos) => {
-//           db.countDistinct('idSample as numSamples')
-//           .from('combo_design AS cd')
-//           .join('synergy_score AS ss', 'ss.idCombo_Design', 'cd.idCombo_Design')
-//           .where({'idDrugA': drugId1}).orWhere({'idDrugA': drugId2}).orWhere({'idDrugB': drugId1}).orWhere({'idDrugB': drugId2})
-//             .then((samples) => {
-//               const result = samples.concat(combos).concat(data)
-//               res.json(result);
-//             })
-//             .catch((err) => {
-//               console.log(err);
-//               res.json(err);
-//             });
-//         })
-//         .catch((err) => {
-//           console.log(err);
-//           res.json(err);
-//         });
-//     })
-//     .catch((err) => {
-//       console.log(err);
-//       res.json(err);
-//     });
-// })
-
-// db.count('* as numSamples')
-//   .from('combo_design AS cd')
-//   .join('synergy_score AS ss', 'ss.idCombo_Design', 'cd.idCombo_Design')
-//   .where({'idDrugA': drugId1}).orWhere({'idDrugA': drugId2}).orWhere({'idDrugB': drugId1}).orWhere({'idDrugB': drugId2})
-//   .groupBy('idSample')
-//   .orderBy('numSamples', 'desc')
-//   .limit(1)
 
 module.exports = router;
