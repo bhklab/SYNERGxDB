@@ -568,6 +568,10 @@ class SearchCombos extends Component {
       pathname: '/pharmacogenomics',
       search: '?example=true',
     };
+    const exampleConsistency = {
+      pathname: '/sensitivity',
+      search: '?drugId1=11&drugId2=97',
+    };
     // const exampleDatasetUrl = {
     //   pathname: '/synergy_score',
     //   search: '?&dataset=5',
@@ -656,9 +660,13 @@ class SearchCombos extends Component {
                 &nbsp;&nbsp;|&nbsp;&nbsp;
               <Link className="hover" to={exampleDatasetUrl}>YALE-TNBC</Link>
                 &nbsp;&nbsp;|&nbsp;&nbsp; */}
-              <Link className="hover" to={examplePharmUrl}>Pharmacogenomics</Link>
+              <p>
+                <Link className="hover" to={exampleDrugUrl}>Synergy Score</Link>
               &nbsp;&nbsp;|&nbsp;&nbsp;
-              <Link className="hover" to={exampleDrugUrl}>Combo Search</Link>
+                <Link className="hover" to={exampleConsistency}>Compare acrossdatasets</Link>
+              &nbsp;&nbsp;|&nbsp;&nbsp;
+                <Link className="hover" to={examplePharmUrl}>Biomarker Discovery</Link>
+              </p>
             </ExampleSpan>
             { checkUserInput() ? (
               <StyledButton onClick={userRedirect} type="button">Search</StyledButton>
