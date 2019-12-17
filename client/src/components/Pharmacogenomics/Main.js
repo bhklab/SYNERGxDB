@@ -240,6 +240,7 @@ class Pharmacogenomics extends Component {
       yRange: null,
       accessor: null,
       focus: false,
+      example: false,
     };
     this.getDrugData = this.getDrugData.bind(this);
     this.getSampleDrugData = this.getSampleDrugData.bind(this);
@@ -270,12 +271,13 @@ class Pharmacogenomics extends Component {
       // Sketchy code for NAR submission
       await this.setState({
         accessor: 'fpkm',
-        dataType: 'rnaseq',
+        dataType: 'null',
         selectedDrug1: '11',
         selectedDrug2: '97',
         selectedGene: 'FANK1',
         drugsData1: [{ value: 11, label: 'Bortezomib' }],
         drugsData2: [{ value: 97, label: 'Topotecan' }],
+        example: true,
       });
       await this.getPlotData();
     }
@@ -345,10 +347,12 @@ class Pharmacogenomics extends Component {
 
   getPlotData() {
     const {
-      dataType, selectedDrug1, selectedDrug2,
+      selectedDrug1, selectedDrug2,
       selectedGene, sampleData, selectedMolecule,
-      tissueObj, scoreValue,
+      tissueObj, scoreValue, example,
     } = this.state;
+    let { dataType } = this.state;
+    if (example) dataType = 'rnaseq';
     const { processSynData } = this;
     this.setState({ loadingBiomarkerData: true, showPlot: true, focus: false });
 
@@ -578,7 +582,8 @@ class Pharmacogenomics extends Component {
 
   renderBiomarkerList() {
     const {
-      dataType, moleculeData, geneData, selectedMolecule, selectedGene, loadingBiomarkerList,
+      dataType, moleculeData, geneData, selectedMolecule,
+      selectedGene, loadingBiomarkerList,
     } = this.state;
     const {
       moleculeChange, geneChange,
@@ -664,7 +669,7 @@ class Pharmacogenomics extends Component {
     const {
       scoreValue, showPlot, xRange, yRange,
       biomarkerData, selectedGene, loadingBiomarkerData,
-      selectedMolecule, dataType,
+      selectedMolecule, dataType, example,
     } = this.state;
     const checkBiomarkerData = biomarkerData.some(item => item[scoreValue] !== null);
     let accessor;
@@ -672,6 +677,7 @@ class Pharmacogenomics extends Component {
     if (dataType === 'metabolomic') accessor = selectedMolecule;
     if (dataType === 'rnaseq') accessor = 'fpkm';
     if (dataType === 'cna') accessor = 'cn';
+    if (example) accessor = 'fpkm';
 
     if (showPlot) {
       return !loadingBiomarkerData ? (
