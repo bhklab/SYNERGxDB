@@ -1,7 +1,7 @@
 /* eslint-disable react/no-unused-state */
 /* eslint-disable max-len */
 /* eslint-disable react/no-array-index-key */
-import React, { Fragment, Component } from 'react';
+import React, { Component } from 'react';
 import ReactRouterPropTypes from 'react-router-prop-types';
 import queryString from 'query-string';
 import styled from 'styled-components';
@@ -77,10 +77,10 @@ class ComboResults extends Component {
       drugName2: 'Any',
       cellLineName: 'Any',
       queryParams: '',
-      disableBiomarker: false,
+      displayOptions: false,
     };
     this.handleCombo = this.handleCombo.bind(this);
-    this.checkBiomarker = this.checkBiomarker.bind(this);
+    this.checkData = this.checkData.bind(this);
   }
 
   componentDidMount() {
@@ -91,7 +91,8 @@ class ComboResults extends Component {
     } = requestParams;
     let queryParams = '?';
 
-    this.checkBiomarker(dataset, sample);
+    this.checkData(drugId1, drugId2, dataset, sample);
+
 
     this.setState({
       drugId1: parseInt(drugId1, 10),
@@ -118,19 +119,32 @@ class ComboResults extends Component {
       });
   }
 
-  checkBiomarker(inputDataset, inputSample) {
-    let dataset; let
-      sample;
-    if (inputDataset) dataset = parseInt(inputDataset, 10);
-    if (inputSample) sample = Number.isNaN(parseInt(inputSample, 10)) ? inputSample : parseInt(inputSample, 10);
-
-    if (dataset === 4 || dataset === 6 || dataset === 8 || dataset === 5) {
-      this.setState({ disableBiomarker: true });
+  checkData(drugA, drugB, dataset, sampleInput) {
+    let sample;
+    if (sampleInput) sample = Number.isNaN(parseInt(sampleInput, 10)) ? sampleInput : parseInt(sampleInput, 10);
+    if (typeof sample === 'number') {
       return;
     }
-    if (typeof sample === 'number') {
-      this.setState({ disableBiomarker: true });
-    }
+    let url = '/api/cell_lines/filter?';
+    if (dataset && dataset !== 'Any') url = url.concat(`&dataset=${dataset}`);
+    if (drugA && drugA !== 'Any') url = url.concat(`&drugId1=${drugA}`);
+    if (drugB && drugB !== 'Any') url = url.concat(`&drugId2=${drugB}`);
+    fetch(url)
+      .then(response => response.json())
+      .then((data) => {
+        let cellLines;
+        if (sample) {
+          cellLines = data.filter(item => item.tissue === sample);
+        } else {
+          cellLines = data;
+        }
+        if (cellLines.length >= 10) {
+          this.setState({ displayOptions: true });
+        }
+      }).catch(
+        // eslint-disable-next-line no-console
+        err => console.log(err),
+      );
   }
 
   handleCombo(index) {
@@ -150,7 +164,7 @@ class ComboResults extends Component {
   render() {
     const {
       results, loading,
-      queryParams, disableBiomarker,
+      queryParams, displayOptions,
     } = this.state;
     const { location } = this.props;
     const requestParams = queryString.parse(location.search);
@@ -251,44 +265,39 @@ class ComboResults extends Component {
           dataset={dataset}
           sample={sample}
         />
-        <ButtonsDiv>
-          <h2>Analysis </h2>
-          <div className="buttonsContainer">
-            {disableBiomarker ? null
-              : (
-                <Fragment>
-                  <a href={`/biomarker${queryParams}`}>
+        {displayOptions ? (
+          <ButtonsDiv>
+            <h2>Analysis </h2>
+            <div className="buttonsContainer">
+              <a href={`/biomarker${queryParams}`}>
                   Biomarker
-                    {' '}
-                    <br />
-                    {' '}
+                {' '}
+                <br />
+                {' '}
                   Discovery
-                  </a>
-                </Fragment>
-              )
-            }
-
-            <a href={`/sensitivity${queryParams}`}>
+              </a>
+              <a href={`/sensitivity${queryParams}`}>
               Cell Line
-              {' '}
-              <br />
+                {' '}
+                <br />
               Sensitivity Analysis
-            </a>
-            <a href={`/enrichment${queryParams}`}>
+              </a>
+              <a href={`/enrichment${queryParams}`}>
               Tissue-Specific
-              {' '}
-              <br />
+                {' '}
+                <br />
               Enrichment Analysis
-            </a>
-            <a href={`/consistency${queryParams}`}>
+              </a>
+              <a href={`/consistency${queryParams}`}>
               Consistency in
-              {' '}
-              <br />
+                {' '}
+                <br />
               Synergy Scores
-            </a>
-          </div>
+              </a>
+            </div>
 
-        </ButtonsDiv>
+          </ButtonsDiv>
+        ) : null }
         <SynergyDiv>
           <h2>
             Synergy Scores,
