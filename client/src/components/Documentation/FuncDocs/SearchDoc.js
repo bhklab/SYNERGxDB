@@ -2,6 +2,8 @@
 /* eslint-disable max-len */
 import React, { Fragment } from 'react';
 import { Link } from 'react-router-dom';
+import img1 from '../../../images/docs/figure03.png';
+import img2 from '../../../images/docs/figure13.png';
 
 const SearchDoc = () => (
   <Fragment>
@@ -17,6 +19,12 @@ const SearchDoc = () => (
         <Link to="/">http://SYNERGxDB.ca/</Link>
       </li>
     </ol>
+    <Link class="doc-img" to="/">
+      <img src={img1} alt="" />
+    </Link>
+    <Link to="/">
+      <img className="doc-img" src={img2} alt="" />
+    </Link>
   </Fragment>
 );
 

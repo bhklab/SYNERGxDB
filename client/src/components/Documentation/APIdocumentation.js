@@ -2,6 +2,7 @@
 /* eslint-disable max-len */
 import React from 'react';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 import colors from '../../styles/colors';
 import SampleDoc from './APIDocs/SampleDoc';
 import DrugDoc from './APIDocs/DrugDoc';
@@ -57,5 +58,9 @@ const APIDocumentation = (props) => {
   );
 };
 
+
+APIDocumentation.propTypes = {
+  display: PropTypes.string.isRequired,
+};
 
 export default APIDocumentation;
