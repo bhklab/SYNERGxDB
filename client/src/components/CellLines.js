@@ -145,13 +145,14 @@ const filterCaseInsensitive = (filter, row) => {
 };
 
 
-class Databases extends Component {
+class CellLines extends Component {
   constructor() {
     super();
     this.state = {
       cellLineData: [],
       loading: true,
       donutData: [],
+      csvData: [],
     };
   }
 
@@ -160,22 +161,33 @@ class Databases extends Component {
       .then(response => response.json())
       .then((data) => {
         // Restructures data for react table
-        const cellLineData = data.map((cell) => {
+        console.log(data);
+        const csvData = [];
+        const cellLineData = [];
+
+        data.forEach((cell) => {
           const {
             tissue, name, sex, origin, age, disease, idCellosaurus,
           } = cell;
-          return {
+          cellLineData.push({
             tissue, name, sex, age, idCellosaurus, disease: { name: disease, origin },
-          };
+          });
+          csvData.push({
+            tissue, name, sex, age, idCellosaurus, disease: disease.split(',')[0], origin,
+          });
         });
-        this.setState({ cellLineData, loading: false, donutData: data });
+        this.setState({
+          cellLineData, csvData, loading: false, donutData: data,
+        });
       });
   }
 
   legendCallBack = () => null
 
   render() {
-    const { cellLineData, loading, donutData } = this.state;
+    const {
+      cellLineData, csvData, loading, donutData,
+    } = this.state;
     const columns = [{
       Header: 'Tissue',
       accessor: 'tissue', // String-based value accessors!
@@ -226,6 +238,8 @@ class Databases extends Component {
       { displayName: 'Name', id: 'name' },
       { displayName: 'Sex', id: 'sex' },
       { displayName: 'Age', id: 'age' },
+      { displayName: 'Disease', id: 'disease' },
+      { displayName: 'Origin', id: 'origin' },
       { displayName: 'Cellosaurus', id: 'idCellosaurus' },
     ];
 
@@ -305,7 +319,7 @@ class Databases extends Component {
           <StyledWrapper className="wrapper">
             <h1>List of Cell Lines</h1>
             <DownloadButton
-              data={cellLineData}
+              data={csvData}
               filename="samples"
               headers={headers}
             />
@@ -319,7 +333,7 @@ class Databases extends Component {
               loading={loading}
               LoadingComponent={LoadingComponent}
             />
-           
+
           </StyledWrapper>
         </main>
         <footer>
@@ -333,4 +347,4 @@ class Databases extends Component {
 }
 
 
-export default Databases;
+export default CellLines;
