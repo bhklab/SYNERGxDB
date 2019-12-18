@@ -19,7 +19,7 @@ const SearchDoc = () => (
         <Link to="/">http://SYNERGxDB.ca/</Link>
       </li>
     </ol>
-    <Link class="doc-img" to="/">
+    <Link className="doc-img" to="/">
       <img src={img1} alt="" />
     </Link>
     <Link to="/">

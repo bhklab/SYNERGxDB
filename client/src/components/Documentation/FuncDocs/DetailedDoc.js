@@ -18,7 +18,7 @@ const DetailedDoc = () => (
         <Link to="/drug_combo?idSource=2&idDrugA=11&idDrugB=97&idSample=15&comboId=43943">http://SYNERGxDB.ca/drug_combo?idSource=2&idDrugA=11&idDrugB=97&idSample=15&comboId=43943</Link>
       </li>
     </ol>
-    <Link class="doc-img" to="/drug_combo?idSource=2&idDrugA=11&idDrugB=97&idSample=15&comboId=43943">
+    <Link className="doc-img" to="/drug_combo?idSource=2&idDrugA=11&idDrugB=97&idSample=15&comboId=43943">
       <img src={img} alt="" />
     </Link>
   </Fragment>

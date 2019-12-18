@@ -18,7 +18,7 @@ const DatasetDoc = () => (
         <Link to="/datasets/">http://SYNERGxDB.ca/datasets/</Link>
       </li>
     </ol>
-    <Link class="doc-img" to="/datasets/">
+    <Link className="doc-img" to="/datasets/">
       <img src={img} alt="" />
     </Link>
   </Fragment>

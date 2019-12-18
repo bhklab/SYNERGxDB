@@ -18,7 +18,7 @@ const SampleDoc = () => (
         <Link to="/cell-lines/">http://SYNERGxDB.ca/cell-lines/</Link>
       </li>
     </ol>
-    <Link class="doc-img" to="/cell-lines/">
+    <Link className="doc-img" to="/cell-lines/">
       <img src={img} alt="" />
     </Link>
   </Fragment>

@@ -18,7 +18,7 @@ const PharmacoDoc = () => (
         <Link to="/pharmacogenomics?example=true">http://SYNERGxDB.ca/pharmacogenomics?example=true</Link>
       </li>
     </ol>
-    <Link class="doc-img" to="/pharmacogenomics?example=true">
+    <Link className="doc-img" to="/pharmacogenomics?example=true">
       <img src={img} alt="" />
     </Link>
   </Fragment>

@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 /* eslint-disable react/no-array-index-key */
 import React, { Component } from 'react';
 import styled from 'styled-components';
@@ -213,6 +212,7 @@ class Biomarkers extends Component {
         getPlotData(data[0].gene, score);
       })
       .catch((err) => {
+        // eslint-disable-next-line no-console
         console.log(err);
         this.setState({ loadingTable: false });
       });
@@ -258,7 +258,6 @@ class Biomarkers extends Component {
       const boxPlotData = synergyArray.map(item => ({ score: item[score], fpkm: item.fpkm }));
       synScoreArray.sort((a, b) => a - b);
       boxPlotData.sort((a, b) => a.score - b.score);
-      console.log(boxPlotData);
       const defaultThreshold = calculateThreshold(synScoreArray);
       this.setState({
         selectedBiomarker: gene,
@@ -268,7 +267,6 @@ class Biomarkers extends Component {
         xRange,
         yRange,
         defaultThreshold,
-        synScoreArray,
         confirmedThreshold: null,
         boxPlotData,
       });
@@ -307,7 +305,6 @@ class Biomarkers extends Component {
         },
       }).then(response => response.json())
         .then((data) => {
-          console.log(data);
           synergyArray = data;
         });
       this.setState({
@@ -318,6 +315,7 @@ class Biomarkers extends Component {
       });
       return synergyArray;
     } catch (err) {
+      // eslint-disable-next-line no-console
       console.log(err);
       return [];
     }
@@ -363,7 +361,7 @@ class Biomarkers extends Component {
     const {
       loadingTable, biomarkerData, selectedBiomarker, xRange,
       yRange, defaultThreshold, confirmedThreshold,
-      synScoreArray, selectedScore, zipBiomarkers, blissBiomarkers,
+      selectedScore, zipBiomarkers, blissBiomarkers,
       hsaBiomarkers, loeweBiomarkers, loadingGraph, sample, drugId1,
       drugId2, dataset, boxPlotData,
     } = this.state;
@@ -420,7 +418,6 @@ class Biomarkers extends Component {
     if (dataset) filename = filename.concat(`_${dataset}`);
     if (drugId1) filename = filename.concat(`_${drugId1}`);
     if (drugId2) filename = filename.concat(`_${drugId2}`);
-    console.log(synScoreArray);
     return (
       <main>
         <QueryCard

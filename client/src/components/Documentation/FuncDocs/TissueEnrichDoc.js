@@ -18,7 +18,7 @@ const TissueEnrichDoc = () => (
         <Link to="/enrichment?&drugId1=11&drugId2=97">http://SYNERGxDB.ca/enrichment?&drugId1=11&drugId2=97</Link>
       </li>
     </ol>
-    <Link class="doc-img" to="/enrichment?&drugId1=11&drugId2=97">
+    <Link className="doc-img" to="/enrichment?&drugId1=11&drugId2=97">
       <img src={img} alt="" />
     </Link>
   </Fragment>

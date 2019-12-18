@@ -18,7 +18,7 @@ const DrugDoc = () => (
         <Link to="/drugs">http://SYNERGxDB.ca/drugs</Link>
       </li>
     </ol>
-    <Link class="doc-img" to="/drugs">
+    <Link className="doc-img" to="/drugs">
       <img src={img} alt="" />
     </Link>
   </Fragment>
