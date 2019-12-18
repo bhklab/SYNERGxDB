@@ -19,9 +19,6 @@ const SearchDoc = () => (
         <Link to="/">http://SYNERGxDB.ca/</Link>
       </li>
     </ol>
-    <Link className="doc-img" to="/">
-      <img src={img1} alt="" />
-    </Link>
     <Link to="/">
       <img className="doc-img" src={img2} alt="" />
     </Link>
