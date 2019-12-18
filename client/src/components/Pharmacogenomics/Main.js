@@ -283,11 +283,27 @@ class Pharmacogenomics extends Component {
     }
   }
 
-  componentDidUpdate() {
-    const { focus } = this.state;
+  componentDidUpdate(prevProps) {
     const { focusNode } = this;
+    const { focus } = this.state;
+    const { location } = this.props;
+    const requestParams = queryString.parse(location.search);
+    const prevRequestParams = queryString.parse(prevProps.location.search);
     if (focus) {
       focusNode.scrollIntoView({ block: 'start' });
+    }
+    if (location !== prevProps.location) {
+      this.setState({
+        accessor: null,
+        dataType: 'null',
+        selectedDrug1: 'null',
+        selectedDrug2: 'null',
+        selectedGene: 'null',
+        drugsData1: [],
+        drugsData2: [],
+        example: false,
+        showPlot: false,
+      });
     }
   }
 

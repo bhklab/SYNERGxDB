@@ -161,7 +161,6 @@ class CellLines extends Component {
       .then(response => response.json())
       .then((data) => {
         // Restructures data for react table
-        console.log(data);
         const csvData = [];
         const cellLineData = [];
 
