@@ -2,7 +2,7 @@
 /* eslint-disable max-len */
 import React, { Fragment } from 'react';
 import { Link } from 'react-router-dom';
-import img1 from '../../../images/docs/figure03.png';
+// import img1 from '../../../images/docs/figure03.png';
 import img2 from '../../../images/docs/figure13.png';
 
 const SearchDoc = () => (

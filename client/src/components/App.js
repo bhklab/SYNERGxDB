@@ -1,23 +1,10 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, lazy, Suspense } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import styled from 'styled-components';
 import { Normalize } from 'styled-normalize';
 import TopNav from './TopNav';
-
-import SearchCombos from './SearchCombos';
-import CellLines from './CellLines';
-import Datasets from './Datasets';
-import Drugs from './Drugs';
-import Documentation from './Documentation/MainDocument';
-import ComboDetails from './ComboDetails';
-import ComboResults from './ComboResults';
-import Biomarkers from './Biomarkers';
 import GlobalStyles from '../styles/GlobalStyles';
-
-import Sensitivity from './Sensitivity';
-import Enrichment from './Enrichment';
-import Consistency from './Consistency';
-import Pharmacogenomics from './Pharmacogenomics/Main';
+import SearchCombos from './SearchCombos';
 
 const StyledApp = styled.div`
   margin: 0 auto;
@@ -35,6 +22,17 @@ const StyledApp = styled.div`
   z-index:1;
 `;
 
+const CellLines = lazy(() => import('./CellLines'));
+const Drugs = lazy(() => import('./Drugs'));
+const Datasets = lazy(() => import('./Datasets'));
+const Documentation = lazy(() => import('./Documentation/MainDocument'));
+const Pharmacogenomics = lazy(() => import('./Pharmacogenomics/Main'));
+const ComboResults = lazy(() => import('./ComboResults'));
+const ComboDetails = lazy(() => import('./ComboDetails'));
+const Biomarkers = lazy(() => import('./Biomarkers'));
+const Sensitivity = lazy(() => import('./Sensitivity'));
+const Enrichment = lazy(() => import('./Enrichment'));
+const Consistency = lazy(() => import('./Consistency'));
 
 const App = () => (
   <Fragment>
@@ -43,18 +41,20 @@ const App = () => (
     <div className="main-wrapper">
       <StyledApp className="app">
         <Switch>
-          <Route exact path="/" component={SearchCombos} />
-          <Route exact path="/cell-lines/" component={CellLines} />
-          <Route exact path="/drugs/" component={Drugs} />
-          <Route exact path="/datasets/" component={Datasets} />
-          <Route exact path="/documentation/" component={Documentation} />
-          <Route exact path="/pharmacogenomics/" component={Pharmacogenomics} />
-          <Route path="/drug_combo" component={ComboDetails} />
-          <Route path="/synergy_score" component={ComboResults} />
-          <Route path="/biomarker" component={Biomarkers} />
-          <Route path="/sensitivity" component={Sensitivity} />
-          <Route path="/enrichment" component={Enrichment} />
-          <Route path="/consistency" component={Consistency} />
+          <Suspense fallback={<div />}>
+            <Route exact path="/" component={SearchCombos} />
+            <Route exact path="/cell-lines/" component={CellLines} />
+            <Route exact path="/drugs/" component={Drugs} />
+            <Route exact path="/datasets/" component={Datasets} />
+            <Route exact path="/documentation/" component={Documentation} />
+            <Route exact path="/pharmacogenomics/" component={Pharmacogenomics} />
+            <Route path="/synergy_score" component={ComboResults} />
+            <Route path="/drug_combo" component={ComboDetails} />
+            <Route path="/biomarker" component={Biomarkers} />
+            <Route path="/sensitivity" component={Sensitivity} />
+            <Route path="/enrichment" component={Enrichment} />
+            <Route path="/consistency" component={Consistency} />
+          </Suspense>
         </Switch>
       </StyledApp>
     </div>
