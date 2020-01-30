@@ -286,7 +286,6 @@ const CustomOption = innerProps => (
         padding: 'auto',
         margin: '0',
         display: 'flex',
-        // justifyContent: innerProps.isDisabled ? 'flex-start' : 'center',
         justifyContent: 'center',
         alignItems: 'center',
       }}
@@ -481,7 +480,7 @@ class SearchCombos extends Component {
       if (drugId2 !== 'Any' && drugId1 !== 'Any') {
         queryParams = queryParams.concat(`&drugId2=${drugId2}`);
       } else if (drugId2 !== 'Any' && drugId1 === 'Any') {
-        queryParams = queryParams.concat(`drugId1=${drugId2}`);
+        queryParams = queryParams.concat(`&drugId1=${drugId2}`);
       }
       // Redirects user to synergy scores page
       history.push('/synergy_score?'.concat(queryParams));
