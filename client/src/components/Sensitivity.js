@@ -1,13 +1,15 @@
+/* eslint-disable no-console */
 import React, { Component, Fragment } from 'react';
 import styled from 'styled-components';
 import ReactRouterPropTypes from 'react-router-prop-types';
 import queryString from 'query-string';
+import ReactLoading from 'react-loading';
 import QueryCard from './UtilComponents/QueryCard';
 import SensHeatMap from './Plots/SensHeatMap';
 import SensBoxPlot from './Plots/SensBoxPlot';
 import CellSensLegends from './Plots/CellSensLegends';
 import SensAxisLegend from './Plots/SensAxisLegend';
-// import colors from '../styles/colors';
+import colors from '../styles/colors';
 import 'react-table/react-table.css';
 // import transitions from '../styles/transitions';
 
@@ -55,6 +57,12 @@ const SensitivityDiv = styled.div`
     float:left;
     width:1030px;
   }
+
+  .loading-container {
+    display: flex;
+    align-items: center;
+    height: 100%;
+  }
 `;
 
 
@@ -74,6 +82,7 @@ class Sensitivity extends Component {
       sample: '',
       dataset: '',
       legendColors: {},
+      loading: true,
     };
   }
 
@@ -93,9 +102,8 @@ class Sensitivity extends Component {
     fetch(url)
       .then(response => response.json())
       .then((data) => {
-        this.setState({ data });
+        this.setState({ data, loading: false });
       }).catch((err) => {
-        // eslint-disable-next-line no-console
         console.log(err);
       });
 
@@ -104,7 +112,6 @@ class Sensitivity extends Component {
       .then((data) => {
         this.setState({ drugName1: data[0].name });
       }).catch((err) => {
-        // eslint-disable-next-line no-console
         console.log(err);
       });
 
@@ -114,7 +121,6 @@ class Sensitivity extends Component {
         .then((data) => {
           this.setState({ drugName2: data[0].name });
         }).catch((err) => {
-          // eslint-disable-next-line no-console
           console.log(err);
         });
     }
@@ -126,7 +132,8 @@ class Sensitivity extends Component {
 
   render() {
     const {
-      data, sample, drugId1, drugId2, drugName1, drugName2, dataset, legendColors,
+      data, sample, drugId1, drugId2, drugName1,
+      drugName2, dataset, legendColors, loading,
     } = this.state;
     const query = [drugId1, drugId2];
     return (
@@ -141,7 +148,11 @@ class Sensitivity extends Component {
         )}
 
         <SensitivityDiv>
-          {data.length === 0 ? null : (
+          {loading ? (
+            <div className="loading-container">
+              <ReactLoading type="bubbles" width={150} height={150} color={colors.color_main_2} />
+            </div>
+          ) : (
             <Fragment>
               {!drugName2 ? null : (
                 <SensAxisLegend

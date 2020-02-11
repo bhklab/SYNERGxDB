@@ -204,7 +204,7 @@ const GlobalStyles = createGlobalStyle`
   .loading-container {
     align-item: center;
     margin: auto;
-    width: 100px;
+    width: 150px;
   }
 
   .app {
