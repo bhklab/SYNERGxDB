@@ -33,6 +33,7 @@ const Biomarkers = lazy(() => import('./Biomarkers'));
 const Sensitivity = lazy(() => import('./Sensitivity'));
 const Enrichment = lazy(() => import('./Enrichment'));
 const Consistency = lazy(() => import('./Consistency'));
+const Contact = lazy(() => import('./Contact'));
 
 const App = () => (
   <Fragment>
@@ -48,6 +49,7 @@ const App = () => (
             <Route exact path="/datasets/" component={Datasets} />
             <Route exact path="/documentation/" component={Documentation} />
             <Route exact path="/pharmacogenomics/" component={Pharmacogenomics} />
+            <Route exact path="/contact/" component={Contact} />
             <Route path="/synergy_score" component={ComboResults} />
             <Route path="/drug_combo" component={ComboDetails} />
             <Route path="/biomarker" component={Biomarkers} />

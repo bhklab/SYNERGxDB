@@ -156,6 +156,7 @@ class TopNav extends Component {
             <Link to="/drugs/">Compounds</Link>
             <Link to="/datasets/">Datasets</Link>
             <Link to="/pharmacogenomics/">Pharmacogenomics</Link>
+            <Link to="/contact/">Contact Us</Link>
           </nav>
         </div>
         <div className="burger-nav">
@@ -200,6 +201,12 @@ class TopNav extends Component {
               onClick={() => closeMenu()}
             >
               Pharmacogenomics
+            </Link>
+            <Link
+              to="/contact/"
+              onClick={() => closeMenu()}
+            >
+              Contact Us
             </Link>
           </Menu>
         </div>
