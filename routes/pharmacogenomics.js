@@ -40,7 +40,7 @@ router.get('/molecules', (req, res) => {
     })
     .catch((err) => {
       console.log(err);
-      res.json(err);
+      res.status(400).json({ message: 'Bad Request' });
     });
 });
 
@@ -73,7 +73,7 @@ router.get('/samples', (req, res) => {
     })
     .catch((err) => {
       console.log(err);
-      res.json(err);
+      res.status(400).json({ message: 'Bad Request' });
     });
 });
 

@@ -41,6 +41,10 @@ app.use('/api/biomarkers/', biomarkerRouter);
 app.use('/api/datasets/', datasetRouter);
 app.use('/api/pharmacogenomics/', pharmacogenomicsRouter);
 
+app.get('/api/*', (req, res) => {
+  res.status(400).json({ message: 'Incorrectly specified endpoint' });
+});
+
 app.get('/*', (req, res) => {
   res.sendFile('index.html', { root: './client/build' });
 });

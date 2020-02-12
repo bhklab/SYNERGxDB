@@ -17,7 +17,7 @@ router.get('/', (req, res) => {
     })
     .catch((err) => {
       console.log(err);
-      res.json(err);
+      res.status(400).json({ message: 'Bad Request' });
     });
 });
 
@@ -35,7 +35,7 @@ router.get('/info', (req, res) => {
     })
     .catch((err) => {
       console.log(err);
-      res.json(err);
+      res.status(400).json({ message: 'Bad Request' });
     });
 });
 
@@ -90,7 +90,7 @@ router.get('/mono', (req, res) => {
         })
         .catch((err) => {
           console.log(err);
-          res.json(err);
+          res.status(400).json({ message: 'Bad Request' });
         });
     });
 });
@@ -191,7 +191,7 @@ router.get('/filter', (req, res) => {
     })
     .catch((err) => {
       console.log(err);
-      res.json(err);
+      res.status(400).json({ message: 'Bad Request' });
     });
 });
 
@@ -204,7 +204,7 @@ router.get('/:drugId', (req, res) => {
     })
     .catch((err) => {
       console.log(err);
-      res.json(err);
+      res.status(400).json({ message: 'Bad Request' });
     });
 });
 

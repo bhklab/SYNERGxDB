@@ -25,7 +25,7 @@ router.get('/info', (req, res) => {
     })
     .catch((err) => {
       console.log(err);
-      res.json(err);
+      res.status(400).json({ message: 'Bad Request' });
     });
 });
 
@@ -113,7 +113,7 @@ router.get('/enrichment', (req, res) => {
     })
     .catch((err) => {
       console.log(err);
-      res.json(err);
+      res.status(400).json({ message: 'Bad Request' });
     });
 });
 
@@ -192,7 +192,7 @@ router.get('/filter', (req, res) => {
     })
     .catch((err) => {
       console.log(err);
-      res.json(err);
+      res.status(400).json({ message: 'Bad Request' });
     });
 });
 
@@ -205,7 +205,7 @@ router.get('/:cellId', (req, res) => {
     })
     .catch((err) => {
       console.log(err);
-      res.json(err);
+      res.status(400).json({ message: 'Bad Request' });
     });
 });
 

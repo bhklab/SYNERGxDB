@@ -91,7 +91,7 @@ router.get('/', (req, res) => {
     })
     .catch((err) => {
       console.log(err);
-      res.json(err);
+      res.status(400).json({ message: 'Bad Request' });
     });
 });
 
@@ -107,7 +107,7 @@ router.get('/matrix', (req, res) => {
     })
     .catch((err) => {
       console.log(err);
-      res.json(err);
+      res.status(400).json({ message: 'Bad Request' });
     });
 });
 
@@ -143,7 +143,7 @@ router.get('/stats', (req, res) => {
     })
     .catch((err) => {
       console.log(err);
-      res.json(err);
+      res.status(400).json({ message: 'Bad Request' });
     });
 });
 
@@ -182,7 +182,7 @@ router.get('/heatmap', (req, res) => {
     })
     .catch((err) => {
       console.log(err);
-      res.status(400).json(err);
+      res.status(400).json({ message: 'Bad Request' });
     });
 });
 

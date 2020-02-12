@@ -58,7 +58,10 @@ router.get('/stats', (req, res) => {
       console.log(responseObject);
       res.json(responseObject);
     })
-    .catch(err => console.log(err));
+    .catch((err) => {
+      console.log(err);
+      res.status(400).json({ message: 'Bad Request' });
+    });
 });
 
 module.exports = router;

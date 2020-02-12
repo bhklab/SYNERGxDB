@@ -20,7 +20,7 @@ router.get('/', (req, res) => {
       })
       .catch((err) => {
         console.log(err);
-        res.json(err);
+        res.status(400).json({ message: 'Bad Request' });
       });
   } else {
     baseQuery
@@ -35,7 +35,7 @@ router.get('/', (req, res) => {
       })
       .catch((err) => {
         console.log(err);
-        res.json(err);
+        res.status(400).json({ message: 'Bad Request' });
       });
   }
 });
@@ -130,7 +130,10 @@ router.get('/filter', (req, res) => {
   mainQuery.then((data) => {
     res.json(data);
   })
-    .catch(err => res.json(err));
+    .catch((err) => {
+      console.log(err);
+      res.status(400).json({ message: 'Bad Request' });
+    });
 });
 
 router.get('/:datasetId', (req, res) => {
@@ -141,7 +144,8 @@ router.get('/:datasetId', (req, res) => {
       res.json(data);
     })
     .catch((err) => {
-      res.json(err);
+      console.log(err);
+      res.status(400).json({ message: 'Bad Request' });
     });
 });
 
