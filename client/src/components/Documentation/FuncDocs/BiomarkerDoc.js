@@ -13,7 +13,11 @@ const BiomarkerDoc = () => (
     </ol>
     <ol>
       <li>
-      We tested an association between gene expression and synergy score in each dataset and provide concordance indices in order to identify potential predictive biomarkers in combination therapies. Users can select a threshold to define two groups – synergy score high and low – to carry out statistical testing between the two groups in terms of gene expression.
+      We tested an association between gene expression and synergy score in each dataset 
+      and provide concordance indices in order to identify potential predictive biomarkers 
+      in combination therapies. Users can select a threshold to define two groups – synergy 
+      score high and low – to carry out statistical testing between the two groups in terms 
+      of gene expression.
         {' '}
         <Link to="/biomarker?&drugId1=11&drugId2=97">http://SYNERGxDB.ca/biomarker?&drugId1=11&drugId2=97</Link>
       </li>

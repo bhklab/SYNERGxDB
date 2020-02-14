@@ -13,7 +13,9 @@ const DatasetDoc = () => (
     </ol>
     <ol>
       <li>
-      Each study (dataset) is summarized through the following characteristics: dataset name, source of study, number of cell lines, number of drug compounds, and concentration design - e.g. 3-by-3 concentrations.
+      Each study (dataset) is summarized through the following characteristics: 
+      dataset name, source of study, number of cell lines, number of drug compounds, 
+      and concentration design - e.g. 3-by-3 concentrations.
         {' '}
         <Link to="/datasets/">http://SYNERGxDB.ca/datasets/</Link>
       </li>

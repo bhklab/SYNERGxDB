@@ -24,7 +24,8 @@ const OverviewDoc = () => (
                 and prognostic biomarkers is currently unknown. To help solve this issue, we created
             {' '}
             <b>SYNERGxDB</b>
-                , a web-application that possesses the largest database of seven collections of pharmacological and molecular profiles of corresponding cell lines (124 cell lines in 11 tissue types and 1,962 drugs/compounds - 15,268 combinations). This application allows researchers and clinicians to identify
+                , a web-application that possesses the largest database of seven collections of pharmacological and molecular profiles of corresponding cell lines 
+                (151 cell lines in 16 tissue types and 1,973 drugs/compounds - 14,536 combinations). This application allows researchers and clinicians to identify
                 novel synergistic drug combinations, in order to discover potential prognostic and predictive biomarkers that can help improve
                 patient prognosis and selection.
           </li>

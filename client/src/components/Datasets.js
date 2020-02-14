@@ -34,7 +34,6 @@ const StyledWrapper = styled.div`
       line-height:5px;
       font-size:85%;
     }
-    
   }
  
 `;
@@ -199,22 +198,27 @@ class Datasets extends Component {
           </StyledWrapper>
 
 
-          <StyledWrapper className="wrapper">
-            <h1>List of Datasets</h1>
-            <DownloadButton
-              data={databaseData}
-              filename="datasets"
-              headers={headers}
-            />
-            <ReactTable
-              data={databaseData}
-              columns={columns}
-              className="-highlight"
-              showPagination={false}
-              defaultPageSize={7}
-              loading={loading}
-            />
-          </StyledWrapper>
+          
+            
+            {databaseData.length === 0 ? null : (
+              <StyledWrapper className="wrapper">
+                <h1>List of Datasets</h1>
+                <DownloadButton
+                  data={databaseData}
+                  filename="datasets"
+                  headers={headers}
+                />
+                <ReactTable
+                  data={databaseData}
+                  columns={columns}
+                  className="-highlight"
+                  showPagination={false}
+                  defaultPageSize={9}
+                  loading={loading}
+                />
+              </StyledWrapper>
+            )}
+            
         </main>
         <footer>
           <div className="footer-wrapper">

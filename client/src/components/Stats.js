@@ -72,13 +72,13 @@ class Stats extends Component {
     //     });
     //   });
     this.setState({
-      datasets: 7,
-      tissues: 11,
-      compounds: 1962,
-      cells: 124,
-      combos: 15268,
-      experiments: 477595,
-      datapoints: 5981762,
+      datasets: 9,
+      tissues: 16,
+      compounds: 1973,
+      cells: 151,
+      combos: 14536,
+      experiments: 477839,
+      datapoints: 5996090,
     });
   }
 

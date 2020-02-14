@@ -1,44 +1,55 @@
-[
- {
-   "name": "MIT-MELANOMA",
-   "nCombos": 5778,
-   "nExperiments": 201254,
-   "nDatapoints": 1407169
- },
- {
-   "name": "NCI-ALMANAC",
-   "nCombos": 4184,
-   "nExperiments": 242969,
-   "nDatapoints": 3887504
- },
- {
-   "name": "STANFORD",
-   "nCombos": 1818,
-   "nExperiments": 1818,
-   "nDatapoints": 7272
- },
- {
-   "name": "CLOUD",
-   "nCombos": 1327,
-   "nExperiments": 1327,
-   "nDatapoints": 5308
- },
- {
-   "name": "YALE-PDAC",
-   "nCombos": 820,
-   "nExperiments": 2974,
-   "nDatapoints": 49294
- },
- {
-   "name": "YALE-TNBC",
-   "nCombos": 758,
-   "nExperiments": 4516,
-   "nDatapoints": 54570
- },
- {
-   "name": "MERCK",
-   "nCombos": 583,
-   "nExperiments": 22737,
-   "nDatapoints": 570645
- }
-]
+[{
+	"idSource": 1,
+	"name": "MERCK",
+	"nDatapoints": 570645,
+	"nCombos": 583,
+	"nExperiments": 22737
+}, {
+	"idSource": 2,
+	"name": "NCI-ALMANAC",
+	"nDatapoints": 3887504,
+	"nCombos": 4184,
+	"nExperiments": 242969
+}, {
+	"idSource": 4,
+	"name": "YALE-PDAC",
+	"nDatapoints": 49294,
+	"nCombos": 820,
+	"nExperiments": 2974
+}, {
+	"idSource": 5,
+	"name": "YALE-TNBC",
+	"nDatapoints": 54570,
+	"nCombos": 758,
+	"nExperiments": 4516
+}, {
+	"idSource": 6,
+	"name": "CLOUD",
+	"nDatapoints": 5308,
+	"nCombos": 1327,
+	"nExperiments": 1327
+}, {
+	"idSource": 7,
+	"name": "MIT-MELANOMA",
+	"nDatapoints": 1407169,
+	"nCombos": 5778,
+	"nExperiments": 201254
+}, {
+	"idSource": 8,
+	"name": "STANFORD",
+	"nDatapoints": 7272,
+	"nCombos": 1818,
+	"nExperiments": 1818
+}, {
+	"idSource": 9,
+	"name": "DECREASE",
+	"nDatapoints": 12288,
+	"nCombos": 36,
+	"nExperiments": 210
+}, {
+	"idSource": 10,
+	"name": "VISAGE",
+	"nDatapoints": 2040,
+	"nCombos": 1,
+	"nExperiments": 34
+}]

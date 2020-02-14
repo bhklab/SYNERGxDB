@@ -115,6 +115,14 @@ class BiomarkerBoxPlot extends React.Component {
             color: colors.color_main_1,
             size: 13,
           },
+          title: {
+            text: 'FPKM',
+            font: {
+              family: 'Nunito Sans, sans-serif',
+              color: colors.color_main_1,
+              size: 16,
+            },
+          },
         },
       },
       boxHigh: {

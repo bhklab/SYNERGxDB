@@ -35,6 +35,19 @@ const StyledDiv = styled.div`
   background:white;
   padding: 15px 30px;
   margin-bottom:20px;
+
+  .header {
+    display:flex;
+    align-items: center;
+    
+    a {
+      margin-left: 100px;
+      color: white;
+      font-weight: 600;
+      background: ${colors.color_main_2};
+      padding: 5px 8px;
+    }
+  }
 `;
 
 const StyledContainer = styled.div`
@@ -748,10 +761,11 @@ class Pharmacogenomics extends Component {
     return (
       <main ref={node => this.focusNode = node}>
         <StyledDiv>
-          <h2>Biomarker discovery in Pharmacogenomics</h2>
-          <div>
-            {renderPlot(drugLabel1, drugLabel2)}
+          <div className="header">
+            <h2>Biomarker discovery in Pharmacogenomics</h2>
+            <a href="/pharmacogenomics?example=true">Example</a>       
           </div>
+            {renderPlot(drugLabel1, drugLabel2)}
           <StyledContainer>
             <div className="datatype-container selector">
               <div>

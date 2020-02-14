@@ -13,7 +13,9 @@ const ConsistencyDoc = () => (
     </ol>
     <ol>
       <li>
-      Users can compare two methods of the synergy scores on a scatter plot and statistical testing will be carried out including concordance index, Spearman rho, and Pearson r.
+      Users can compare two methods of the synergy scores on a scatter plot and 
+      statistical testing will be carried out including concordance index, 
+      Spearman rho, and Pearson r.
         {' '}
         <Link to="/consistency?&drugId1=11&drugId2=97">http://SYNERGxDB.ca/consistency?&drugId1=11&drugId2=97</Link>
       </li>

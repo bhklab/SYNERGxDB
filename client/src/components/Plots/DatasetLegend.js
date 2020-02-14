@@ -37,7 +37,7 @@ class DatasetLegend extends React.Component {
         datasets.sort();
 
         const width = 1050;
-        const height = 110;
+        const height = 250;
         const svg = d3.select(`#${plotId}`)
             .append('svg')
             .attr('fill', 'white')
@@ -46,21 +46,26 @@ class DatasetLegend extends React.Component {
             .attr('id', 'legend')
             .append('g')
 
+
         for (let i = 0; i < datasets.length; i++) {
+            const rowHeight = 90;
+            let row = 0;
+            // put on another row
+            if (i > parseInt(datasets.length/2)) row = 1;
             // find the name in the array
             const ind = data.findIndex(item => item.name === datasets[i]);
 
             svg.append('rect')
-                .attr('x', i * 150)
-                .attr('y', 10) 
+                .attr('x', i > parseInt(datasets.length/2) ? (i-parseInt(datasets.length/2)-1)*150 : i * 150) // restarts from beginning
+                .attr('y', 10 + rowHeight*row) 
                 .attr('width', 15)
                 .attr('height', 15)
                 .style('fill', function() {return data[ind].color})
                 .style('opacity', 0.7);
 
             svg.append('foreignObject')
-                .attr('x', 20 + (i * 150))
-                .attr('y', 10) 
+                .attr('x', i > parseInt(datasets.length/2) ? 20 + (i-parseInt(datasets.length/2)-1)*150 : 20 + i * 150) // restarts from beginning
+                .attr('y', 10 + rowHeight*row) 
                 .attr('id', `legendLabel${data[ind].name}`)
                 .style('text-anchor', 'start')
                 .style("text-align", "left")
@@ -69,7 +74,7 @@ class DatasetLegend extends React.Component {
                 .style('opacity', 1)
                 .attr('fill', colors.blue_main)
                 .attr("width", 180)
-                .attr("height", 70)
+                .attr("height", rowHeight)
                 .html(function() {return data[ind].name + "<span>" +
                     "<br> Combos: " + d3.format(",")(data[ind].nCombos)  + "</br>" + 
                     "Experiments: " + d3.format(",") (data[ind].nExperiments) + 

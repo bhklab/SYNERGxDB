@@ -12,9 +12,11 @@ const QueryDiv = styled.div`
   margin-bottom:30px;
   font-size:18px;
   color: ${colors.blue_main};
+  
   .query-container {
     display:flex;
   }
+
   .col {
     position:inherit;
     flex: 1;
@@ -22,6 +24,10 @@ const QueryDiv = styled.div`
     flex-direction: column;
     justify-content: space-between;
     height: 100%;
+  }
+
+  .item {
+    margin: 10px 0px;
   }
 `;
 
@@ -105,23 +111,28 @@ class QueryCard extends Component {
         </h2>
         <div className="query-container">
           <div className="col">
-            <b>Cell Line:</b>
-            {' '}
-            {cellLineName}
-            <p />
-            <b>Dataset:</b>
-            {' '}
-            {datasetName}
+            <div className="item">
+              <b>Cell line:</b>
+              {' '}
+              {cellLineName}
+            </div>
+            <div className="item">
+              <b>Dataset:</b>
+              {' '}
+              {datasetName}
+            </div>
           </div>
           <div className="col">
-            <b>Compound A: </b>
-            {' '}
-            {drugName1}
-            <p />
-            <b>Compound B:</b>
+            <div className="item">
+              <b>Compound <i>A</i>: </b>
+              {' '}
+              {drugName1}
+            </div>
+           <div className="item">
+            <b>Compound <i>B</i>:</b>
             {' '}
             {drugName2}
-            <p />
+           </div>
           </div>
         </div>
       </QueryDiv>

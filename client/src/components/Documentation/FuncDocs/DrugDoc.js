@@ -13,7 +13,10 @@ const DrugDoc = () => (
     </ol>
     <ol>
       <li>
-      Metadata is provided for each drug compound in SYNERGxDB (N = 1,962), which includes: compound name, ATC code, PubChem CID, and DrugBank ID. By hovering over each bar of a chart, users can gain additional information about the number of compounds tested in a given dataset.
+      Metadata is provided for each drug compound in SYNERGxDB (N = 1,973), which includes: 
+      compound name, ATC code, PubChem CID, and DrugBank ID. By hovering over each bar of a 
+      chart, users can gain additional information about the number of compounds tested in a 
+      given dataset.
         {' '}
         <Link to="/drugs">http://SYNERGxDB.ca/drugs</Link>
       </li>

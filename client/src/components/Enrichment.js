@@ -101,6 +101,8 @@ class Enrichment extends Component {
       Header: 'AUC',
       accessor: 'auc',
       filterable: false,
+      className: 'right',
+      Cell: props => <span>{props.value.toFixed(3)}</span>,
     }];
 
     return (

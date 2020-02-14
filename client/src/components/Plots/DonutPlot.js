@@ -10,7 +10,7 @@ class DonutPlot extends React.Component {
     } = this.props;
 
     const data = formatData(donutData, keyName);
-    const sum = data.reduce((count, item) => count + item.num, 0);
+    const sum = data.reduce((count, item) => count + item.num,0);
     this.plotDonut(data, sum, plotId, dimensions, keyName, legendCallBack);
   }
 
@@ -91,7 +91,17 @@ class DonutPlot extends React.Component {
         .attr('y', 5)
         .attr('width', 180)
         .attr('height', 30)
-        .html(() => `<i>N</i> = ${sum.toLocaleString()}`);
+        .html(() => {
+          if (keyName === "Combinations") {
+            return `<i>N</i> = 14,536`
+          } else if (keyName === "Experiments") {
+            return `<i>N</i> = 477,389`
+          } else if (keyName === "Datapoints") {
+            return `<i>N</i> = 5,996,090`
+          } else {
+            return `<i>N</i> = ${sum.toLocaleString()}`
+          }
+        });
     }
 
     const arc = d3.arc()

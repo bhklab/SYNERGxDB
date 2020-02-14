@@ -246,6 +246,10 @@ const GlobalStyles = createGlobalStyle`
   //   background: ${colors.color_main_2} !important;
   //   color: white !important;
   // }
+
+  .right {
+    text-align: right;
+  }
 }
 `;
 
