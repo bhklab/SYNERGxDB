@@ -164,9 +164,6 @@ class CellLines extends Component {
         const csvData = [];
         const cellLineData = [];
 
-        console.log(data);
-
-
         data.forEach((cell) => {
           const {
             tissue, name, sex, origin, age, disease, idCellosaurus,
