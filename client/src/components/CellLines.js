@@ -164,6 +164,9 @@ class CellLines extends Component {
         const csvData = [];
         const cellLineData = [];
 
+        console.log(data);
+
+
         data.forEach((cell) => {
           const {
             tissue, name, sex, origin, age, disease, idCellosaurus,
@@ -172,7 +175,7 @@ class CellLines extends Component {
             tissue, name, sex, age, idCellosaurus, disease: { name: disease, origin },
           });
           csvData.push({
-            tissue, name, sex, age, idCellosaurus, disease: disease.split(',')[0], origin,
+            tissue, name, sex, age, idCellosaurus, disease: disease ? disease.split(',')[0] : '', origin,
           });
         });
         this.setState({
