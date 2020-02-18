@@ -281,13 +281,12 @@ class Pharmacogenomics extends Component {
       example,
     } = requestParams;
     if (example) {
-      // Sketchy code for NAR submission
       await this.setState({
         accessor: 'fpkm',
         dataType: 'null',
         selectedDrug1: '11',
         selectedDrug2: '97',
-        selectedGene: 'FANK1',
+        selectedGene: 'ATP6V1B2',
         drugsData1: [{ value: 11, label: 'Bortezomib' }],
         drugsData2: [{ value: 97, label: 'Topotecan' }],
         example: true,
@@ -763,9 +762,9 @@ class Pharmacogenomics extends Component {
         <StyledDiv>
           <div className="header">
             <h2>Biomarker discovery in Pharmacogenomics</h2>
-            <a href="/pharmacogenomics?example=true">Example</a>       
+            <a href="/pharmacogenomics?example=true">Example</a>
           </div>
-            {renderPlot(drugLabel1, drugLabel2)}
+          {renderPlot(drugLabel1, drugLabel2)}
           <StyledContainer>
             <div className="datatype-container selector">
               <div>
