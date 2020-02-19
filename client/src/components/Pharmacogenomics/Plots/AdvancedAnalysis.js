@@ -148,8 +148,10 @@ class AdvancedAnalysis extends React.Component {
     } = this.props;
     // calculates coefficients for best fit line
 
-    const regressionData = biomarkerData.map(item => [item[accessor], item[selectedScore]]);
-    const bestFitCoefficients = regression.linear(regressionData);
+    // Regression line (temprorarily disabled)
+    // const regressionData = biomarkerData.map(item => [item[accessor], item[selectedScore]]);
+    // const bestFitCoefficients = regression.linear(regressionData);
+
     const xCoordinates = biomarkerData.map(item => item[accessor]);
     const yCoordinates = biomarkerData.map(item => item[selectedScore]);
 
@@ -168,22 +170,24 @@ class AdvancedAnalysis extends React.Component {
       hovertext: biomarkerData.map(item => `${item[accessor]} (${item.cellName})`),
     };
     const data = [datapoints];
-    // Renders best fit line using previously calculated coefficients
-    const bestFitLine = {
-      x: xRange,
-      y: [
-        xRange[0] * bestFitCoefficients.equation[0] + bestFitCoefficients.equation[1],
-        xRange[1] * bestFitCoefficients.equation[0] + bestFitCoefficients.equation[1],
-      ],
-      mode: 'lines',
-      type: 'scatter',
-      showlegend: false,
-      marker: {
-        color: colors.color_accent_1,
-      },
-      hoverinfo: 'none',
-    };
-    data.unshift(bestFitLine);
+
+    // Regression line (temprorarily disabled)
+    // // Renders best fit line using previously calculated coefficients
+    // const bestFitLine = {
+    //   x: xRange,
+    //   y: [
+    //     xRange[0] * bestFitCoefficients.equation[0] + bestFitCoefficients.equation[1],
+    //     xRange[1] * bestFitCoefficients.equation[0] + bestFitCoefficients.equation[1],
+    //   ],
+    //   mode: 'lines',
+    //   type: 'scatter',
+    //   showlegend: false,
+    //   marker: {
+    //     color: colors.color_accent_1,
+    //   },
+    //   hoverinfo: 'none',
+    // };
+    // data.unshift(bestFitLine);
 
     const layout = {
       height: 600,
