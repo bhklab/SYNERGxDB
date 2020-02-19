@@ -49,6 +49,7 @@ class Consistency extends Component {
       super();
       this.state = {
         results: [],
+        datasets: [], 
       };
     }
 
@@ -77,11 +78,27 @@ class Consistency extends Component {
             results: data,
           });
         });
+
+      fetch('/api/datasets'.concat(queryParams), {
+          method: 'GET',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+        })
+          .then(response => response.json())
+          .then((data) => {
+            this.setState({
+              datasets: data,
+            });
+          });
+
+      
     }
 
     render() {
       const {
-        results,
+        results,datasets
       } = this.state;
       const { location } = this.props;
       const requestParams = queryString.parse(location.search);
@@ -113,6 +130,7 @@ class Consistency extends Component {
                   <ConsistencyPlot
                     plotId="consistencyPlot"
                     data={results}
+                    datasets={datasets}
                   />
                 </div>
 

@@ -15,6 +15,14 @@ class DonutPlot extends React.Component {
   }
 
   plotDonut(donutData, sum, plotId, dims, keyName) {
+    
+    // finding the null and removing
+    const nullInd = donutData.findIndex((x) => x.name === "NULL")
+    if (nullInd !== -1) {
+
+      donutData.splice(nullInd, 1)
+    }
+
     // positions and dimensions
     const margin = {
       top: 20,
@@ -185,13 +193,14 @@ class DonutPlot extends React.Component {
 
     // passing the color map back to Datasets.js to create the legend in a separate component
     this.props.legendCallBack(colorMap);
+    console.log(colorMap)
 
     if (!['Combinations', 'Datapoints', 'Experiments'].includes(keyName)) {
       // legend
       for (let i = 0; i < names.length; i += 1) {
         svg.append('rect')
           .attr('x', dims.width - (dims.width / 2 + 30))
-          .attr('y', i * 35 - (dims.height / 2 + dims.rectY))
+          .attr('y', i * 30 - (dims.height / 2 + dims.rectY))
           .attr('width', 15)
           .attr('height', 15)
           .style('fill', () => {
@@ -203,7 +212,7 @@ class DonutPlot extends React.Component {
 
         svg.append('foreignObject')
           .attr('x', dims.width - (dims.width / 2 + 10))
-          .attr('y', i * 35 - (dims.height / 2 + dims.textY))
+          .attr('y', i * 30 - (dims.height / 2 + dims.textY))
           .attr('id', `legendLabel${donutData[i].name}`)
           .style('text-anchor', 'start')
           .style('text-align', 'left')
@@ -213,7 +222,7 @@ class DonutPlot extends React.Component {
           .attr('fill', colors.blue_main)
           .attr('width', 180)
           .attr('height', 30)
-          .html(() => { if (keyName) { return `${names[i]}, <i>N</i> = ${nums[i]}`; } return names[i]; });
+      .html(() => { if (keyName) { return `${names[i]}, ${names[i] === 'upper digestive tract' ? '<br>' : ''}<i>N</i> = ${nums[i]}`; } return names[i]; });
       }
     }
   }
