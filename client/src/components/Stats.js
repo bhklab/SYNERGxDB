@@ -73,7 +73,7 @@ class Stats extends Component {
     //   });
     this.setState({
       datasets: 9,
-      tissues: 16,
+      tissues: 15,
       compounds: 1973,
       cells: 151,
       combos: 14536,

@@ -98,7 +98,7 @@ class Datasets extends Component {
       Header: 'Source',
       accessor: 'author',
       sortable: false,
-      Cell: props => <a className="hover" target="_blank" rel="noopener noreferrer" href={`https://www.ncbi.nlm.nih.gov/pubmed/${props.original.pmID}`}>{props.value}</a>,
+      Cell: props => <a className="hover" target="_blank" rel="noopener noreferrer" href={props.original.name === "DECREASE" ? "https://www.nature.com/articles/s42256-019-0122-4" : `https://www.ncbi.nlm.nih.gov/pubmed/${props.original.pmID}`}>{props.value}</a>,
 
     }, {
       Header: '# of cell lines',
