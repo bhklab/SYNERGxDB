@@ -245,4 +245,28 @@ router.get('/synergy', (req, res) => {
     });
 });
 
+router.get('/dataset/:id', (req, res) => {
+  let idSource;
+  if (req.params.id) {
+    idSource = parseInt(req.params.id, 10);
+  } else {
+    res.status(400).json({ error: 'dataset id is incorrectly specified' });
+    return;
+  }
+  db.countDistinct('idSource as count')
+    .from('bliss_significant')
+    .where({ idSource })
+    .then((data) => {
+      const { count } = data[0];
+      const message = {};
+      message.biomarkers = count > 0;
+      console.log(count);
+      res.status(200).json(message);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({ error: 'Something went wrong' });
+    });
+});
+
 module.exports = router;

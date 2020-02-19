@@ -210,10 +210,10 @@ class ExpressionProfile extends React.Component {
           <CustomSlider
             orientation="vertical"
             value={threshold}
-            min={Math.round(yRange[0] * 100) / 100}
-            max={Math.round(yRange[1] * 100) / 100}
+            min={Math.round(yRange[0] * 1000) / 1000}
+            max={Math.round(yRange[1] * 1000) / 1000}
             aria-labelledby="vertical-discrete-slider-restrict"
-            step={Math.round(((yRange[1] - yRange[0]) / 100) * 100) / 100}
+            step={Math.round(((yRange[1] - yRange[0]) / 100) * 1000) / 1000}
             valueLabelDisplay="auto"
             onChange={(e, value) => this.setState({ customThreshold: value })}
             onChangeCommitted={(e, value) => updateThreshold(e, value)}
