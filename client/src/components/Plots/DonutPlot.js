@@ -185,6 +185,7 @@ class DonutPlot extends React.Component {
 
     // passing the color map back to Datasets.js to create the legend in a separate component
     this.props.legendCallBack(colorMap);
+    console.log(colorMap)
 
     if (!['Combinations', 'Datapoints', 'Experiments'].includes(keyName)) {
       // legend

@@ -14,13 +14,14 @@ export default class ConsistencyPlot extends React.Component {
 
   componentDidMount() {
     const {
-      plotId, data,
+      plotId, data, datasets
     } = this.props;
-    this.plotConsistency(data, plotId);
+    this.plotConsistency(data, datasets, plotId);
   }
 
-  plotConsistency(data, plotId) {
+  plotConsistency(data, datasets, plotId) {
     const methods = ['ZIP', 'Bliss', 'Loewe', 'HSA'];
+    
 
     // set defaults in variables so that X and Y dropdowns can access values
     let xvalue = 'Bliss';
@@ -77,7 +78,7 @@ export default class ConsistencyPlot extends React.Component {
       .text(d => d);
 
     // call plot at the end to plot it after the dropdowns have been rendered
-    this.plotScatter(xvalue.toLowerCase(), yvalue.toLowerCase(), width, height, data, plotId);
+    this.plotScatter(xvalue.toLowerCase(), yvalue.toLowerCase(), width, height, data, datasets, plotId);
   }
 
   async findCIndex(x, y) {
@@ -151,13 +152,20 @@ export default class ConsistencyPlot extends React.Component {
     return r;
   }
 
-  async plotScatter(xvalue, yvalue, width, height, data, plotId) {
+  async plotScatter(xvalue, yvalue, width, height, data, datasets, plotId) {
     const margin = {
       top: 50,
       right: 170,
       bottom: 90,
       left: 180,
     };
+
+    const colorPlot = ['#e69a61', '#9817ff', '#18c61a', '#33b4ff', '#c9167e', '#297853', '#d7011b', '#7456c7', '#7e6276', '#afb113', '#fd879c', '#fb78fa', '#24c373', '#45bbc5', '#766b21', '#abad93', '#c19ce3', '#fd8f11'];
+
+    let colorMap = {};
+    datasets.forEach((x, i) => {
+      colorMap[x.name] = colorPlot[i];
+    })
 
     const svg = d3.select(`#${plotId}`)
       .append('svg')
@@ -235,11 +243,21 @@ export default class ConsistencyPlot extends React.Component {
       .data(data)
       .enter();
 
+    // get datasets plotted
+    const datasetsPlotted = [];
+    data.forEach((x) => {
+      if (!datasetsPlotted.includes(x.sourceName)) {
+        datasetsPlotted.push(x.sourceName);
+      } 
+    })
+
     // add dots
     dots.append('circle')
       .attr('id', 'dot')
       .attr('r', '3px')
-      .attr('fill', `${colors.blue_main}`)
+      .attr('fill', (d) => {
+        return colorMap[d.sourceName];
+      })
       .attr('cx', (d, i) => xrange(d[xvalue]))
       .attr('cy', (d, i) => yrange(d[yvalue]))
       .style('opacity', 1)
@@ -290,7 +308,6 @@ export default class ConsistencyPlot extends React.Component {
       .attr('stroke-width', 2)
       .attr('stroke', colors.color_accent_1);
 
-
     // calculating C-Index - map json to arrays and call, pearson, spearman
     const firstArr = xval_arr;
     const secondArr = data.map(x => x[yvalue]);
@@ -300,7 +317,7 @@ export default class ConsistencyPlot extends React.Component {
 
     // append stats to dom
     svg.append('text')
-      .attr('dx', width + 5)
+      .attr('dx', width + 10)
       .attr('dy', height / 3 - 20)
       .attr('font-size', '17px')
       .style('opacity', '1')
@@ -308,7 +325,7 @@ export default class ConsistencyPlot extends React.Component {
       .text(d => `Concordance index: ${d3.format('.4f')(cindex)}`);
 
     svg.append('text')
-      .attr('dx', width + 5)
+      .attr('dx', width + 10)
       .attr('dy', height / 3 + 20)
       .attr('font-size', '17px')
       .style('opacity', '1')
@@ -316,12 +333,31 @@ export default class ConsistencyPlot extends React.Component {
       .text(d => `Spearman rho: ${d3.format('.4f')(spearman)}`);
 
     svg.append('text')
-      .attr('dx', width + 5)
+      .attr('dx', width + 10)
       .attr('dy', height / 3)
       .attr('font-size', '17px')
       .style('opacity', '1')
       .attr('fill', 'black')
       .text(d => `Pearson r: ${d3.format('.4f')(pearson)}`);
+
+    // plot colour legend
+    datasetsPlotted.forEach((x,i) => {
+      svg.append('rect')
+        .attr('width', 11)
+        .attr('height', 11)
+        .attr('fill', colorMap[x])
+        .attr('x', width + 10)
+        .attr('y', height / 3 + 100 + (20*i))
+
+      svg.append('text')
+        .attr('dx', width + 30)
+        .attr('dy', height / 3 + 111 + (20*i))
+        .attr('font-size', '13px')
+        .style('opacity', '1')
+        .attr('fill', 'black')
+        .text(x);
+    })
+
   }
 
   render() {
