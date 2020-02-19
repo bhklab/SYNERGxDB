@@ -156,6 +156,7 @@ class ComboResults extends Component {
         // eslint-disable-next-line no-console
         err => console.log(err),
       );
+    console.log(cellLineCheck, biomarkerCheck)
     if (cellLineCheck && biomarkerCheck) {
       this.setState({ displayOptions: true });
     }

@@ -77,6 +77,7 @@ class Consistency extends Component {
           this.setState({
             results: data,
           });
+          
         });
 
       fetch('/api/datasets'.concat(queryParams), {
@@ -92,13 +93,12 @@ class Consistency extends Component {
               datasets: data,
             });
           });
-
       
     }
 
     render() {
       const {
-        results,datasets
+        results, datasets
       } = this.state;
       const { location } = this.props;
       const requestParams = queryString.parse(location.search);
@@ -115,25 +115,28 @@ class Consistency extends Component {
               dataset={dataset}
               sample={sample}
             />
-            {results.length === 0 ? null : (
+            {(results.length === 0) ? null : (
               <StyledWrapper className="wrapper">
-                <h2>
-                  Consistency in Synergy Scores,
-                  {' '}
-                  <i>N</i>
-                  {' '}
-                  =
-                  {' '}
-                  {results.length}
-                </h2>
-                <div className="consistencyContainer">
-                  <ConsistencyPlot
-                    plotId="consistencyPlot"
-                    data={results}
-                    datasets={datasets}
-                  />
-                </div>
-
+                {datasets.length === 0 ? null : (
+                  <>
+                    <h2>
+                    Consistency in Synergy Scores,
+                    {' '}
+                    <i>N</i>
+                    {' '}
+                    =
+                    {' '}
+                    {results.length}
+                  </h2>
+                  <div className="consistencyContainer">
+                    <ConsistencyPlot
+                      plotId="consistencyPlot"
+                      data={results}
+                      datasets={datasets}
+                    />
+                  </div>
+                  </>
+                )}
               </StyledWrapper>
             )}
 

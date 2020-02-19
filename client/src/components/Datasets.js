@@ -74,7 +74,7 @@ class Datasets extends Component {
         temp.num = val.nCombos;
       } else if (keyName === 'Experiments') {
         temp.num = val.nExperiments;
-      } else if (keyName === 'Datapoints') {
+      } else if (keyName === 'Measurements') {
         temp.num = val.nDatapoints;
       }
       result.push(temp);
@@ -177,7 +177,7 @@ class Datasets extends Component {
                       />
 
                       <DonutPlot
-                        keyName="Datapoints"
+                        keyName="Measurements"
                         plotId="dsetMiniPlot"
                         dimensions={miniDims}
                         formatData={this.formatData}

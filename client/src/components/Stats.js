@@ -55,7 +55,7 @@ class Stats extends Component {
       cells: 0,
       combos: 0,
       experiments: 0,
-      datapoints: 0,
+      measurements: 0,
     };
   }
 
@@ -65,10 +65,10 @@ class Stats extends Component {
     //   .then(response => response.json())
     //   .then((data) => {
     //     const {
-    //       cells, tissues, combos, experiments, datapoints,
+    //       cells, tissues, combos, experiments, measurements,
     //     } = data;
     //     this.setState({
-    //       cells, tissues, combos, experiments, datapoints,
+    //       cells, tissues, combos, experiments, measurements,
     //     });
     //   });
     this.setState({
@@ -78,13 +78,13 @@ class Stats extends Component {
       cells: 151,
       combos: 14536,
       experiments: 477839,
-      datapoints: 5996090,
+      measurements: 5996090,
     });
   }
 
   render() {
     const {
-      datasets, tissues, compounds, combos, experiments, datapoints, cells,
+      datasets, tissues, compounds, combos, experiments, measurements, cells,
     } = this.state;
     // const easeInOut = (t, b, c, d) => {
     //   if (t === 0) return b;
@@ -180,13 +180,13 @@ class Stats extends Component {
           <h2>
             <CountUp
               start={0}
-              end={datapoints}
+              end={measurements}
               duration={3}
               // easingFn={easeInOut}
               separator=","
             />
           </h2>
-          <h2>Data points</h2>
+          <h2>Measurements</h2>
 
         </div>
       </StyledDiv>

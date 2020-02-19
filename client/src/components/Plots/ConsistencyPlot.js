@@ -20,9 +20,9 @@ export default class ConsistencyPlot extends React.Component {
   }
 
   plotConsistency(data, datasets, plotId) {
+    console.log(datasets)
     const methods = ['ZIP', 'Bliss', 'Loewe', 'HSA'];
-    
-
+  
     // set defaults in variables so that X and Y dropdowns can access values
     let xvalue = 'Bliss';
     let yvalue = 'ZIP';
@@ -159,7 +159,6 @@ export default class ConsistencyPlot extends React.Component {
       bottom: 90,
       left: 180,
     };
-
     const colorPlot = ['#e69a61', '#9817ff', '#18c61a', '#33b4ff', '#c9167e', '#297853', '#d7011b', '#7456c7', '#7e6276', '#afb113', '#fd879c', '#fb78fa', '#24c373', '#45bbc5', '#766b21', '#abad93', '#c19ce3', '#fd8f11'];
 
     let colorMap = {};
@@ -326,7 +325,7 @@ export default class ConsistencyPlot extends React.Component {
 
     svg.append('text')
       .attr('dx', width + 10)
-      .attr('dy', height / 3 + 20)
+      .attr('dy', height / 3)
       .attr('font-size', '17px')
       .style('opacity', '1')
       .attr('fill', 'black')
@@ -334,7 +333,7 @@ export default class ConsistencyPlot extends React.Component {
 
     svg.append('text')
       .attr('dx', width + 10)
-      .attr('dy', height / 3)
+      .attr('dy', height / 3 + 20)
       .attr('font-size', '17px')
       .style('opacity', '1')
       .attr('fill', 'black')
