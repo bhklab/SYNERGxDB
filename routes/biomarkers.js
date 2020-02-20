@@ -245,16 +245,45 @@ router.get('/synergy', async (req, res) => {
     });
 });
 
-router.get('/dataset/:id', (req, res) => {
+// Checks if there is any biomarker data available for a given dataset
+// and synergy score type
+router.get('/dataset/:id/:type', (req, res) => {
   let idSource;
+  const { type } = req.params;
+  console.log(req.params.id, type);
+
+  if (type !== 'zip' && type !== 'bliss' && type !== 'hsa' && type !== 'loewe') {
+    res.status(400).json({ error: 'synergy score type is incorrect' });
+    return;
+  }
+
   if (req.params.id) {
     idSource = parseInt(req.params.id, 10);
   } else {
     res.status(400).json({ error: 'dataset id is incorrectly specified' });
     return;
   }
-  db.countDistinct('idSource as count')
-    .from('bliss_significant')
+  let query = db.countDistinct('idSource as count');
+
+  switch (type) {
+    case 'zip':
+      query = query.from('zip_significant');
+      break;
+    case 'bliss':
+      query = query.from('bliss_significant');
+      break;
+    case 'hsa':
+      query = query.from('hsa_significant');
+      break;
+    case 'loewe':
+      query = query.from('loewe_significant');
+      break;
+    default:
+      query = query.from('zip_significant');
+      break;
+  }
+
+  query
     .where({ idSource })
     .then((data) => {
       const { count } = data[0];

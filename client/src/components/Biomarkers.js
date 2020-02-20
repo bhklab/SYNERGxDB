@@ -172,7 +172,7 @@ class Biomarkers extends Component {
 
     // checks is there is any biomarker data available for a given dataset
     if (dataset) {
-      await fetch(`/api/biomarkers/dataset/${dataset}`)
+      await fetch(`/api/biomarkers/dataset/${dataset}/${score}`)
         .then(response => response.json())
         .then((data) => {
           biomarkerCheck = data.biomarkers;
