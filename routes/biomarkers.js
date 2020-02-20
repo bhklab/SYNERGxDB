@@ -131,7 +131,7 @@ router.get('/association', (req, res) => {
 });
 
 // Retrieves data for the biomarker table
-router.get('/synergy', (req, res) => {
+router.get('/synergy', async (req, res) => {
   const { type } = req.query;
   if (!type || !(type === 'zip' || type === 'bliss' || type === 'hsa' || type === 'loewe')) {
     res.json({ message: 'Synergy type is not specified correctly' });
@@ -141,9 +141,9 @@ router.get('/synergy', (req, res) => {
   let {
     dataset, drugId1, drugId2,
   } = req.query;
+  dataset = dataset && parseInt(dataset, 10);
   drugId1 = drugId1 && parseInt(drugId1, 10);
   drugId2 = drugId2 && parseInt(drugId2, 10);
-  dataset = dataset && parseInt(dataset, 10);
 
   function drugFiltering() {
     if (drugId2) {

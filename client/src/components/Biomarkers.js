@@ -161,11 +161,18 @@ class Biomarkers extends Component {
   }
 
   // retrieves list of SIGNIFICANT biomarkers over API and updates biomarker gene
-  getBiomarkerTableData(score) {
+  async getBiomarkerTableData(score) {
     const { getPlotData } = this;
     const {
       drugId1, drugId2, dataset,
     } = this.state;
+
+    // // checks is there is any biomarker data available
+    // if (dataset) {
+
+    // }
+
+
     let url = `/api/biomarkers/synergy?type=${score}`;
     if (drugId1) url = url.concat(`&drugId1=${drugId1}`);
     if (drugId2) url = url.concat(`&drugId2=${drugId2}`);

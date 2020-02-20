@@ -123,21 +123,21 @@ class ComboResults extends Component {
 
   async checkData(drugA, drugB, dataset, sampleInput) {
     let sample;
-    let cellLineCheck;
-    let biomarkerCheck;
+    // let cellLineCheck;
+    // let biomarkerCheck;
     if (sampleInput) sample = Number.isNaN(parseInt(sampleInput, 10)) ? sampleInput : parseInt(sampleInput, 10);
     if (typeof sample === 'number') {
       return;
     }
     let url = '/api/cell_lines/filter?';
-    if (dataset && dataset !== 'Any') {
-      await fetch(`/api/biomarkers/dataset/${dataset}`)
-        .then(response => response.json())
-        .then((data) => {
-          biomarkerCheck = data.biomarkers;
-        });
-      url = url.concat(`&dataset=${dataset}`);
-    }
+    // if (dataset && dataset !== 'Any') {
+    //   await fetch(`/api/biomarkers/dataset/${dataset}`)
+    //     .then(response => response.json())
+    //     .then((data) => {
+    //       biomarkerCheck = data.biomarkers;
+    //     });
+    //   url = url.concat(`&dataset=${dataset}`);
+    // }
     if (drugA && drugA !== 'Any') url = url.concat(`&drugId1=${drugA}`);
     if (drugB && drugB !== 'Any') url = url.concat(`&drugId2=${drugB}`);
     await fetch(url)
@@ -150,16 +150,16 @@ class ComboResults extends Component {
           cellLines = data;
         }
         if (cellLines.length >= 10) {
-          cellLineCheck = true;
+          this.setState({ displayOptions: true });
         }
       }).catch(
         // eslint-disable-next-line no-console
         err => console.log(err),
       );
-    console.log(cellLineCheck, biomarkerCheck)
-    if (cellLineCheck && biomarkerCheck) {
-      this.setState({ displayOptions: true });
-    }
+    // console.log(cellLineCheck, biomarkerCheck)
+    // if (cellLineCheck && biomarkerCheck) {
+    //   this.setState({ displayOptions: true });
+    // }
   }
 
   handleCombo(index) {
