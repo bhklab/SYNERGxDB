@@ -130,14 +130,14 @@ class ComboResults extends Component {
       return;
     }
     let url = '/api/cell_lines/filter?';
-    // if (dataset && dataset !== 'Any') {
+    if (dataset && dataset !== 'Any') {
     //   await fetch(`/api/biomarkers/dataset/${dataset}`)
     //     .then(response => response.json())
     //     .then((data) => {
     //       biomarkerCheck = data.biomarkers;
     //     });
-    //   url = url.concat(`&dataset=${dataset}`);
-    // }
+      url = url.concat(`&dataset=${dataset}`);
+    }
     if (drugA && drugA !== 'Any') url = url.concat(`&drugId1=${drugA}`);
     if (drugB && drugB !== 'Any') url = url.concat(`&drugId2=${drugB}`);
     await fetch(url)

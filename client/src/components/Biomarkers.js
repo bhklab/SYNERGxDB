@@ -131,6 +131,7 @@ class Biomarkers extends Component {
       drugId2,
       dataset,
       biomarkerData: null,
+      biomarkersAvailable: true,
       selectedBiomarker: null,
       selectedScore: 'zip',
       loadingTable: true,
@@ -152,6 +153,7 @@ class Biomarkers extends Component {
     this.retrieveGeneData = this.retrieveGeneData.bind(this);
     this.handleSelectBiomarker = this.handleSelectBiomarker.bind(this);
     this.updateThreshold = this.updateThreshold.bind(this);
+    this.renderExpression = this.renderExpression.bind(this);
   }
 
   componentDidMount() {
@@ -166,63 +168,82 @@ class Biomarkers extends Component {
     const {
       drugId1, drugId2, dataset,
     } = this.state;
+    let biomarkerCheck = true;
 
-    // // checks is there is any biomarker data available
-    // if (dataset) {
+    // checks is there is any biomarker data available for a given dataset
+    if (dataset) {
+      await fetch(`/api/biomarkers/dataset/${dataset}`)
+        .then(response => response.json())
+        .then((data) => {
+          biomarkerCheck = data.biomarkers;
+        })
+        .catch(() => {
+          // eslint-disable-next-line no-console
+          console.log('Unable to check biomarker data availability');
+        });
+    }
 
-    // }
+    if (biomarkerCheck) {
+      let url = `/api/biomarkers/synergy?type=${score}`;
+      if (drugId1) url = url.concat(`&drugId1=${drugId1}`);
+      if (drugId2) url = url.concat(`&drugId2=${drugId2}`);
+      if (dataset) url = url.concat(`&dataset=${dataset}`);
 
-
-    let url = `/api/biomarkers/synergy?type=${score}`;
-    if (drugId1) url = url.concat(`&drugId1=${drugId1}`);
-    if (drugId2) url = url.concat(`&drugId2=${drugId2}`);
-    if (dataset) url = url.concat(`&dataset=${dataset}`);
-
-    fetch(url,
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
-      })
-      .then(response => response.json())
-      .then((data) => {
-        switch (score) {
-          case 'zip':
-            this.setState({
-              zipBiomarkers: data,
-              loadingTable: false,
-            });
-            break;
-          case 'bliss':
-            this.setState({
-              blissBiomarkers: data,
-              loadingTable: false,
-            });
-            break;
-          case 'hsa':
-            this.setState({
-              hsaBiomarkers: data,
-              loadingTable: false,
-            });
-            break;
-          case 'loewe':
-            this.setState({
-              loeweBiomarkers: data,
-              loadingTable: false,
-            });
-            break;
-          default:
-            break;
-        }
-        getPlotData(data[0].gene, score);
-      })
-      .catch((err) => {
+      fetch(url,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+          },
+        })
+        .then(response => response.json())
+        .then((data) => {
+          switch (score) {
+            case 'zip':
+              this.setState({
+                zipBiomarkers: data,
+                loadingTable: false,
+              });
+              break;
+            case 'bliss':
+              this.setState({
+                blissBiomarkers: data,
+                loadingTable: false,
+              });
+              break;
+            case 'hsa':
+              this.setState({
+                hsaBiomarkers: data,
+                loadingTable: false,
+              });
+              break;
+            case 'loewe':
+              this.setState({
+                loeweBiomarkers: data,
+                loadingTable: false,
+              });
+              break;
+            default:
+              break;
+          }
+          getPlotData(data[0].gene, score);
+        })
+        .catch((err) => {
         // eslint-disable-next-line no-console
-        console.log(err);
-        this.setState({ loadingTable: false });
+          console.log(err);
+          this.setState({
+            loadingTable: false,
+            loadingGraph: false,
+          });
+        });
+    } else {
+      this.setState({
+        loadingTable: false,
+        loadingGraph: false,
+        biomarkersAvailable: false,
       });
+    }
   }
 
   // Updates state with data that is needed to render expression profile plot,
@@ -363,14 +384,42 @@ class Biomarkers extends Component {
     this.setState({ confirmedThreshold: value });
   }
 
-  render() {
-    const { handleSelectScore, handleSelectBiomarker, updateThreshold } = this;
+  renderExpression() {
+    const { updateThreshold } = this;
     const {
-      loadingTable, biomarkerData, selectedBiomarker, xRange,
-      yRange, defaultThreshold, confirmedThreshold,
+      biomarkersAvailable, biomarkerData, selectedBiomarker, xRange, yRange, defaultThreshold,
+      selectedScore, confirmedThreshold, boxPlotData,
+    } = this.state;
+    return biomarkersAvailable ? (
+      <StyledExpressionProfile>
+        <ExpressionProfile
+          biomarkerData={biomarkerData}
+          selectedBiomarker={selectedBiomarker}
+          dimensions={dimensions}
+          xRange={xRange}
+          yRange={yRange}
+          defaultThreshold={defaultThreshold}
+          updateThreshold={updateThreshold}
+          selectedScore={selectedScore}
+        />
+        <BiomarkerBoxPlot
+          threshold={confirmedThreshold !== null ? confirmedThreshold : defaultThreshold}
+          data={boxPlotData}
+          dimensions={dimensions}
+        />
+      </StyledExpressionProfile>
+    ) : null;
+  }
+
+  render() {
+    const {
+      handleSelectScore, handleSelectBiomarker, renderExpression,
+    } = this;
+    const {
+      loadingTable, selectedBiomarker,
       selectedScore, zipBiomarkers, blissBiomarkers,
       hsaBiomarkers, loeweBiomarkers, loadingGraph, sample, drugId1,
-      drugId2, dataset, boxPlotData,
+      drugId2, dataset,
     } = this.state;
 
     const columns = [{
@@ -502,23 +551,7 @@ class Biomarkers extends Component {
           />
 
           { !loadingGraph ? (
-            <StyledExpressionProfile>
-              <ExpressionProfile
-                biomarkerData={biomarkerData}
-                selectedBiomarker={selectedBiomarker}
-                dimensions={dimensions}
-                xRange={xRange}
-                yRange={yRange}
-                defaultThreshold={defaultThreshold}
-                updateThreshold={updateThreshold}
-                selectedScore={selectedScore}
-              />
-              <BiomarkerBoxPlot
-                threshold={confirmedThreshold !== null ? confirmedThreshold : defaultThreshold}
-                data={boxPlotData}
-                dimensions={dimensions}
-              />
-            </StyledExpressionProfile>
+            renderExpression()
           ) : (
             <div className="loading-container">
               <ReactLoading type="bubbles" width={150} height={150} color={colors.color_main_2} />
