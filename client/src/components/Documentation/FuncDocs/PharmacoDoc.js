@@ -20,7 +20,7 @@ const PharmacoDoc = () => (
       results in just one or all possible drug combinations to be analyzed with 
       the respective cell lines. Lastly, synergy scores are selected to be analyzed 
       that will carry out an association test between genomic characteristics and 
-      synergy scores. Here, we showed an example in an association between FANK1 
+      synergy scores. Here, we showed an example in an association between ATP6V1B2 
       expression and synergy scores in ‘Bortezomib + Topotecan’.
         {' '}
         <Link to="/pharmacogenomics?example=true">http://SYNERGxDB.ca/pharmacogenomics?example=true</Link>
