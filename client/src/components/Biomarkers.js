@@ -297,11 +297,15 @@ class Biomarkers extends Component {
         defaultThreshold,
         confirmedThreshold: null,
         boxPlotData,
+        biomarkersAvailable: true,
       });
     } catch (err) {
       // eslint-disable-next-line no-console
       console.log(err);
-      this.setState({ loadingGraph: false });
+      this.setState({
+        loadingGraph: false,
+        biomarkersAvailable: true,
+      });
     }
   }
 
@@ -378,6 +382,7 @@ class Biomarkers extends Component {
     const { getPlotData } = this;
     const { selectedScore } = this.state;
     getPlotData(data.gene, selectedScore);
+    this.setState({ loadingTable: true });
   }
 
   updateThreshold(e, value) {
