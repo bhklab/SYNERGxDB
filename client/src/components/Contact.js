@@ -21,6 +21,9 @@ const StyledWrapper = styled.div`
       line-height: 2em;
   }
 
+  a {
+    color: ${colors.color_main_5};
+  }
   iframe {
       margin: 30px 0px 60px 0px;
       width: calc(20vw + 270px);
@@ -37,7 +40,7 @@ class Drugs extends Component {
           <StyledWrapper className="wrapper">
             <h1>Contact Us</h1>
             <div className="content">
-              <b>Email: </b> synergxdb@gmail.com <p/>
+              <b>Email: </b> <a href='mailto: SYNERGxDB@gmail.com'>SYNERGxDB@gmail.com</a> <p/>
               <b>BHKLAB</b> <br/>
               The MaRS Center<br/>
               TMDT room 11-310<br/>

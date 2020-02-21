@@ -1,9 +1,10 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component, Fragment} from 'react';
 import styled from 'styled-components';
 import ReactTable from 'react-table';
 // import colors from '../styles/colors';
 import 'react-table/react-table.css';
 import ReactLoading from 'react-loading';
+import { Link } from 'react-router-dom';
 
 import DownloadButton from './UtilComponents/DownloadButton';
 import DonutPlot from './Plots/DonutPlot';
@@ -34,6 +35,10 @@ const StyledWrapper = styled.div`
       line-height:5px;
       font-size:85%;
     }
+  }
+
+  .ReactTable a {
+    colors: ${colors.color_main_5} !important;
   }
  
 `;
@@ -99,6 +104,10 @@ class Datasets extends Component {
       Header: 'Name',
       accessor: 'name', // String-based value accessors!
       sortable: false,
+      Cell: props => {
+        console.log(props.original.name)
+        return <Link style={{color: colors.color_main_2}} to={`/dataset_zips/Raw_${props.original.name}.zip`} target="_blank" download>{props.original.name}</Link>
+      }
     }, {
       Header: 'Source',
       accessor: 'author',
