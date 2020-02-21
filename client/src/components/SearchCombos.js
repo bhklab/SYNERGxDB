@@ -691,7 +691,7 @@ class SearchCombos extends Component {
           }
           </ButtonContainer>
         </StyledForm>
-        <Stats />
+        
       </Fragment>
     );
 
@@ -702,6 +702,7 @@ class SearchCombos extends Component {
             {searchForm}
           </StyledWrapper>
         </main>
+        <Stats />
       </Fragment>
     );
   }

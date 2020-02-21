@@ -14,11 +14,11 @@ const StyledDiv = styled.div`
     left:0px;
     position:fixed;  
     display: flex;
-    min-height:90px;
-    line-height:1em;
+    min-height:80px;
+    line-height:0.8em;
     align-items: flex-end;
     justify-content: space-around;
-    flex-wrap: wrap
+    flex-wrap: wrap;
     background:rgba(255, 255, 255, 0.7);
     color: ${colors.nav_links} !important;
     font-family: 'Montserrat', sans-serif;
@@ -27,9 +27,6 @@ const StyledDiv = styled.div`
       h2 {
         font-size: 1em !important;
       }
-    }
-    @media (max-width : 650px) {
-      position:static;
     }
 
     div {
@@ -41,7 +38,8 @@ const StyledDiv = styled.div`
       color: ${colors.nav_links} !important;
       font-family: 'Montserrat', sans-serif;
       font-weight:500;
-      font-size: 1.5em;
+      font-size: 1.3em;
+      text-align:center;
     }
 `;
 
