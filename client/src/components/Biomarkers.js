@@ -290,6 +290,7 @@ class Biomarkers extends Component {
       this.setState({
         selectedBiomarker: gene,
         selectedScore: score,
+        loadingTable: false,
         loadingGraph: false,
         biomarkerData: synergyArray,
         xRange,
@@ -358,6 +359,7 @@ class Biomarkers extends Component {
     const {
       zipBiomarkers, blissBiomarkers, loeweBiomarkers, hsaBiomarkers,
     } = this.state;
+    this.setState({ loadingTable: true, loadingGraph: true, selectedScore: score });
     if (score === 'zip' && zipBiomarkers) {
       getPlotData(zipBiomarkers[0].gene, score);
       return;
@@ -374,7 +376,6 @@ class Biomarkers extends Component {
       getPlotData(hsaBiomarkers[0].gene, score);
       return;
     }
-    this.setState({ loadingTable: true, loadingGraph: true, selectedScore: score });
     getBiomarkerTableData(score);
   }
 
