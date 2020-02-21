@@ -70,12 +70,17 @@ class Datasets extends Component {
     data.forEach((val) => {
       const temp = {};
       temp.name = val.name;
+      // also parsing if number less than threshold
+      // so visible on the donut plot
       if (keyName === 'Combinations') {
-        temp.num = val.nCombos;
+        temp.numLabel = val.nCombos;
+        temp.num = (val.nCombos < 200 ? 200 : val.nCombos);
       } else if (keyName === 'Experiments') {
-        temp.num = val.nExperiments;
+        temp.numLabel = val.nExperiments;
+        temp.num = (val.nExperiments < 4000 ? 4000 : val.nExperiments);
       } else if (keyName === 'Measurements') {
-        temp.num = val.nDatapoints;
+        temp.numLabel = val.nDatapoints;
+        temp.num = (val.nDatapoints < 50000 ? 50000 : val.nDatapoints);
       }
       result.push(temp);
     });
