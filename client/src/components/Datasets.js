@@ -106,7 +106,7 @@ class Datasets extends Component {
       sortable: false,
       Cell: props => {
         console.log(props.original.name)
-        return <Link style={{color: colors.color_main_2}} to={`/dataset_zips/Raw_${props.original.name}.zip`} target="_blank" download>{props.original.name}</Link>
+        return <Link style={{color: colors.color_main_1}} to={`/dataset_zips/Raw_${props.original.name}.zip`} target="_blank" download>{props.original.name}</Link>
       }
     }, {
       Header: 'Source',

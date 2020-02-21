@@ -177,7 +177,7 @@ class BiomarkerBoxPlot extends React.Component {
             displayModeBar: false,
           }}
         />
-        <span>p-value = {pvalue}</span>
+        <span>Student t-test, p-value = {pvalue}</span>
       </StyledContainer>
     );
   }
