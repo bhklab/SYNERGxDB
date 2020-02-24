@@ -397,6 +397,7 @@ class Pharmacogenomics extends Component {
         },
       }).then(response => response.json())
         .then((data) => {
+          console.log(data);
           processSynData(data, selectedMolecule, scoreValue);
         });
     } else if (dataType === 'rnaseq') {
@@ -409,6 +410,7 @@ class Pharmacogenomics extends Component {
         },
       }).then(response => response.json())
         .then((data) => {
+          console.log(data);
           processSynData(data, 'fpkm', scoreValue);
         });
     } else if (dataType === 'cna') {
@@ -421,6 +423,7 @@ class Pharmacogenomics extends Component {
         },
       }).then(response => response.json())
         .then((data) => {
+          console.log(data);
           processSynData(data, 'cn', scoreValue);
         });
     } else {
@@ -567,7 +570,8 @@ class Pharmacogenomics extends Component {
 
   handleDrug2Search(event) {
     const selectedDrug2 = event.target.value;
-    this.setState({ selectedDrug2, focus: false });
+    const { getPlotData } = this;
+    this.setState({ selectedDrug2, focus: false }, () => getPlotData());
   }
 
   processSynData(data, accessor, scoreValue) {
@@ -789,7 +793,7 @@ class Pharmacogenomics extends Component {
                   <RadioGroup aria-label="synscore" name="synscore" value={scoreValue} onChange={scoreChange}>
                     <div className="syn-score">
                       <h3>Select synergy score method</h3>
-                      <CustomFormLabel value="zip" control={<CustomRadio />} label="ZIP" />
+                      <CustomFormLabel value="zip" control={<CustomRadio />} label="ZIP" disabled />
                       <CustomFormLabel value="bliss" control={<CustomRadio />} label="Bliss" />
                       <CustomFormLabel value="loewe" control={<CustomRadio />} label="Loewe" />
                       <CustomFormLabel value="hsa" control={<CustomRadio />} label="HSA" />
