@@ -482,23 +482,39 @@ class Pharmacogenomics extends Component {
   }
 
   moleculeChange(event) {
+    const { getSampleDrugData } = this;
+    const { dataType } = this.state;
     this.setState({
       selectedMolecule: event.target.value,
+      selectedDrug1: 'null',
+      selectedDrug2: 'null',
+      sampleData: [],
+      drugsData1: [],
+      drugsData2: [],
+      biomarkerData: [],
       showPlot: false,
       showOptions: false,
-      biomarkerData: [],
       focus: false,
     });
+    getSampleDrugData(dataType);
   }
 
   geneChange(event) {
+    const { getSampleDrugData } = this;
+    const { dataType } = this.state;
     this.setState({
       selectedGene: event.target.value,
+      selectedDrug1: 'null',
+      selectedDrug2: 'null',
+      sampleData: [],
+      drugsData1: [],
+      drugsData2: [],
+      biomarkerData: [],
       showPlot: false,
       showOptions: false,
-      biomarkerData: [],
       focus: false,
     });
+    getSampleDrugData(dataType);
   }
 
   sampleChange(e) {
@@ -633,6 +649,7 @@ class Pharmacogenomics extends Component {
 
   // Prepares data for plotly based on the synergy score
   processSynData(data, accessor, scoreValue) {
+    console.log(data);
     const paddingPercent = 0.05;
     let lowestFPKM = 0;
     let highestFPKM = 0;

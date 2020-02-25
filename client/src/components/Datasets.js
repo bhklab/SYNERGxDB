@@ -1,4 +1,4 @@
-import React, { Component, Fragment} from 'react';
+import React, { Component, Fragment } from 'react';
 import styled from 'styled-components';
 import ReactTable from 'react-table';
 // import colors from '../styles/colors';
@@ -104,15 +104,12 @@ class Datasets extends Component {
       Header: 'Name',
       accessor: 'name', // String-based value accessors!
       sortable: false,
-      Cell: props => {
-        console.log(props.original.name)
-        return <Link style={{color: colors.color_main_1}} to={`/dataset_zips/Raw_${props.original.name}.zip`} target="_blank" download>{props.original.name}</Link>
-      }
+      Cell: props => <Link style={{ color: colors.color_main_1 }} to={`/dataset_zips/Raw_${props.original.name}.zip`} target="_blank" download>{props.original.name}</Link>,
     }, {
       Header: 'Source',
       accessor: 'author',
       sortable: false,
-      Cell: props => <a className="hover" target="_blank" rel="noopener noreferrer" href={props.original.name === "DECREASE" ? "https://www.nature.com/articles/s42256-019-0122-4" : `https://www.ncbi.nlm.nih.gov/pubmed/${props.original.pmID}`}>{props.value}</a>,
+      Cell: props => <a className="hover" target="_blank" rel="noopener noreferrer" href={props.original.name === 'DECREASE' ? 'https://www.nature.com/articles/s42256-019-0122-4' : `https://www.ncbi.nlm.nih.gov/pubmed/${props.original.pmID}`}>{props.value}</a>,
 
     }, {
       Header: '# of cell lines',
@@ -212,27 +209,25 @@ class Datasets extends Component {
           </StyledWrapper>
 
 
-          
-            
-            {databaseData.length === 0 ? null : (
-              <StyledWrapper className="wrapper">
-                <h1>List of Datasets</h1>
-                <DownloadButton
-                  data={databaseData}
-                  filename="datasets"
-                  headers={headers}
-                />
-                <ReactTable
-                  data={databaseData}
-                  columns={columns}
-                  className="-highlight"
-                  showPagination={false}
-                  defaultPageSize={9}
-                  loading={loading}
-                />
-              </StyledWrapper>
-            )}
-            
+          {databaseData.length === 0 ? null : (
+            <StyledWrapper className="wrapper">
+              <h1>List of Datasets</h1>
+              <DownloadButton
+                data={databaseData}
+                filename="datasets"
+                headers={headers}
+              />
+              <ReactTable
+                data={databaseData}
+                columns={columns}
+                className="-highlight"
+                showPagination={false}
+                defaultPageSize={9}
+                loading={loading}
+              />
+            </StyledWrapper>
+          )}
+
         </main>
         <footer>
           <div className="footer-wrapper">
