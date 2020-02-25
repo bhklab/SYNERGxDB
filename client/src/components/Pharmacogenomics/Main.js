@@ -245,8 +245,9 @@ class Pharmacogenomics extends Component {
       biomarkerData: [],
       tissueObj: {},
       showPlot: false,
+      showOptions: false,
       loadingBiomarkerList: false,
-      loadingBiomarkerData: false,
+      loadingBiomarkerData: true,
       loadingDrug1: true,
       loadingDrug2: true,
       xRange: null,
@@ -482,13 +483,21 @@ class Pharmacogenomics extends Component {
 
   moleculeChange(event) {
     this.setState({
-      selectedMolecule: event.target.value, showPlot: false, biomarkerData: [], focus: false,
+      selectedMolecule: event.target.value,
+      showPlot: false,
+      showOptions: false,
+      biomarkerData: [],
+      focus: false,
     });
   }
 
   geneChange(event) {
     this.setState({
-      selectedGene: event.target.value, showPlot: false, biomarkerData: [], focus: false,
+      selectedGene: event.target.value,
+      showPlot: false,
+      showOptions: false,
+      biomarkerData: [],
+      focus: false,
     });
   }
 
@@ -539,6 +548,7 @@ class Pharmacogenomics extends Component {
       selectedDrug1: 'null',
       selectedDrug2: 'null',
       showPlot: false,
+      showOptions: false,
       biomarkerData: [],
       loadingDrug1: true,
       loadingDrug2: true,
@@ -564,6 +574,7 @@ class Pharmacogenomics extends Component {
       drugsData2: [],
       biomarkerData: [],
       showPlot: false,
+      showOptions: false,
       focus: false,
     });
     if (dataType === 'rnaseq' || dataType === 'mutation' || dataType === 'cna') updateGeneData(dataType);
@@ -599,14 +610,25 @@ class Pharmacogenomics extends Component {
     const { getDrugData } = this;
     const { sampleData, tissueObj } = this.state;
     const newDrug1 = event.target.value;
-    this.setState({ selectedDrug1: newDrug1, loadingDrug2: true, selectedDrug2: 'null' });
+    this.setState({
+      selectedDrug1: newDrug1,
+      loadingDrug2: true,
+      selectedDrug2: 'null',
+      showOptions: false,
+      showPlot: false,
+    });
     getDrugData(sampleData, tissueObj, 'drugsData2', newDrug1);
   }
 
   handleDrug2Search(event) {
     const selectedDrug2 = event.target.value;
     const { getPlotData } = this;
-    this.setState({ selectedDrug2, focus: false }, () => getPlotData());
+    this.setState({
+      selectedDrug2,
+      focus: false,
+      showOptions: false,
+      showPlot: false,
+    }, () => getPlotData());
   }
 
   // Prepares data for plotly based on the synergy score
@@ -645,6 +667,7 @@ class Pharmacogenomics extends Component {
       scoreValue,
       accessor,
       focus: true,
+      showOptions: true,
     });
   }
 
@@ -805,13 +828,14 @@ class Pharmacogenomics extends Component {
   render() {
     const {
       profileChange, scoreChange, renderBiomarkerList,
-      renderSampleDrugData, getPlotData, renderPlot,
+      renderSampleDrugData, renderPlot,
     } = this;
     const {
       dataType, scoreValue, selectedDrug1, selectedDrug2,
-      drugsData1, drugsData2, sampleData, scoreAvailability,
+      drugsData1, drugsData2, showOptions, scoreAvailability,
       loadingBiomarkerData,
     } = this.state;
+    console.log(loadingBiomarkerData);
     // const showSynScore = selectedDrug1 !== 'null' && selectedDrug2 !== 'null' && sampleData.length !== 0;
     const drugLabel1 = generateDrugLabel(selectedDrug1, drugsData1);
     const drugLabel2 = generateDrugLabel(selectedDrug2, drugsData2);
@@ -845,7 +869,7 @@ class Pharmacogenomics extends Component {
               {renderBiomarkerList()}
             </div>
             { renderSampleDrugData()}
-            { loadingBiomarkerData ? (
+            { showOptions ? (
               <div className="synscore-container selector">
                 <FormControl component="fieldset">
                   <RadioGroup aria-label="synscore" name="synscore" value={scoreValue} onChange={scoreChange}>
@@ -860,7 +884,7 @@ class Pharmacogenomics extends Component {
                 </FormControl>
               </div>
             ) : null}
-            {loadingBiomarkerData ? (
+            {showOptions ? (
               <div className="analysis">
                 <StyledButton onClick={() => this.setState({ showPlot: true })} type="button">Analysis</StyledButton>
                 {/* <div>
