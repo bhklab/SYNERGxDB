@@ -3,8 +3,8 @@ import Plot from 'react-plotly.js';
 import styled from 'styled-components';
 
 import PropTypes from 'prop-types';
-import colors from '../../styles/colors';
 import jStat from 'jstat';
+import colors from '../../styles/colors';
 
 const StyledContainer = styled.div`
   width: 50%;
@@ -56,18 +56,17 @@ class BiomarkerBoxPlot extends React.Component {
     }
   }
 
-  
 
   calculateBoxData(sortArr, threshold) {
-    const calculateTTest = (a,b) => {
-      const mA = jStat.mean(a)
-      const mB = jStat.mean(b)
-      const S2 = (jStat.sum(jStat.pow(jStat.subtract(a,mA),2)) + jStat.sum(jStat.pow(jStat.subtract(b,mB),2)))/(a.length+b.length-2) 
-      const t = (mA - mB)/Math.sqrt(S2/a.length+S2/b.length) // t-statistic 1.1260915960439553
-      const ret = (jStat.studentt.cdf(-Math.abs(t), a.length+b.length-2) * 2).toFixed(3)
-  
-      this.setState({pvalue: ret});
-    }
+    const calculateTTest = (a, b) => {
+      const mA = jStat.mean(a);
+      const mB = jStat.mean(b);
+      const S2 = (jStat.sum(jStat.pow(jStat.subtract(a, mA), 2)) + jStat.sum(jStat.pow(jStat.subtract(b, mB), 2))) / (a.length + b.length - 2);
+      const t = (mA - mB) / Math.sqrt(S2 / a.length + S2 / b.length); // t-statistic 1.1260915960439553
+      const ret = (jStat.studentt.cdf(-Math.abs(t), a.length + b.length - 2) * 2).toFixed(3);
+
+      this.setState({ pvalue: ret });
+    };
     const { dimensions } = this.props;
     const boxData = [];
     for (let i = 0; i < sortArr.length; i += 1) {
@@ -155,16 +154,16 @@ class BiomarkerBoxPlot extends React.Component {
         marker: { color: colors.color_main_5 },
       },
     });
-    calculateTTest(boxData[1].map(item => item.fpkm), boxData[0].map(item => item.fpkm))
+    calculateTTest(boxData[1].map(item => item.fpkm), boxData[0].map(item => item.fpkm));
   }
 
 
   // Render this compoenent
   render() {
     const {
-      boxHigh, boxLow, layout, pvalue
+      boxHigh, boxLow, layout, pvalue,
     } = this.state;
-    console.log(boxHigh, boxLow)
+    console.log(boxHigh, boxLow);
     return (
       <StyledContainer>
         <Plot
@@ -177,7 +176,11 @@ class BiomarkerBoxPlot extends React.Component {
             displayModeBar: false,
           }}
         />
-        <span>Student t-test, p-value = {pvalue}</span>
+        <span>
+Student t-test, p-value =
+          {' '}
+          {pvalue}
+        </span>
       </StyledContainer>
     );
   }

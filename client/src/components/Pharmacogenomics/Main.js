@@ -1,3 +1,4 @@
+/* eslint-disable react/no-did-update-set-state */
 /* eslint-disable no-return-assign */
 /* eslint-disable react/no-string-refs */
 /* eslint-disable react/prop-types */
@@ -254,6 +255,12 @@ class Pharmacogenomics extends Component {
       accessor: null,
       focus: false,
       example: false,
+      scoreAvailability: {
+        zip: false,
+        bliss: false,
+        hsa: false,
+        loewe: false,
+      },
     };
     this.getDrugData = this.getDrugData.bind(this);
     this.getSampleDrugData = this.getSampleDrugData.bind(this);
@@ -271,6 +278,7 @@ class Pharmacogenomics extends Component {
     this.updateMoleculeData = this.updateMoleculeData.bind(this);
     this.getPlotData = this.getPlotData.bind(this);
     this.processSynData = this.processSynData.bind(this);
+    this.checkAvailableScores = this.checkAvailableScores.bind(this);
     this.focusNode = null;
   }
 
@@ -299,8 +307,8 @@ class Pharmacogenomics extends Component {
     const { focusNode } = this;
     const { focus } = this.state;
     const { location } = this.props;
-    const requestParams = queryString.parse(location.search);
-    const prevRequestParams = queryString.parse(prevProps.location.search);
+    // const requestParams = queryString.parse(location.search);
+    // const prevRequestParams = queryString.parse(prevProps.location.search);
     if (focus) {
       focusNode.scrollIntoView({ block: 'start' });
     }
@@ -373,6 +381,7 @@ class Pharmacogenomics extends Component {
       });
   }
 
+
   getPlotData() {
     const {
       selectedDrug1, selectedDrug2,
@@ -381,7 +390,7 @@ class Pharmacogenomics extends Component {
     } = this.state;
     let { dataType } = this.state;
     if (example) dataType = 'rnaseq';
-    const { processSynData } = this;
+    const { processSynData, checkAvailableScores } = this;
     this.setState({ loadingBiomarkerData: true, showPlot: true, focus: false });
 
     const sampleString = generateSampleString(sampleData, tissueObj);
@@ -397,7 +406,7 @@ class Pharmacogenomics extends Component {
         },
       }).then(response => response.json())
         .then((data) => {
-          console.log(data);
+          checkAvailableScores(data);
           processSynData(data, selectedMolecule, scoreValue);
         });
     } else if (dataType === 'rnaseq') {
@@ -410,7 +419,7 @@ class Pharmacogenomics extends Component {
         },
       }).then(response => response.json())
         .then((data) => {
-          console.log(data);
+          checkAvailableScores(data);
           processSynData(data, 'fpkm', scoreValue);
         });
     } else if (dataType === 'cna') {
@@ -423,7 +432,7 @@ class Pharmacogenomics extends Component {
         },
       }).then(response => response.json())
         .then((data) => {
-          console.log(data);
+          checkAvailableScores(data);
           processSynData(data, 'cn', scoreValue);
         });
     } else {
@@ -433,6 +442,26 @@ class Pharmacogenomics extends Component {
         loadingBiomarkerData: false,
       });
     }
+  }
+
+  // updates state to decide what synergy scores should be enabled or disabled
+  checkAvailableScores(data) {
+    const scoreAvailability = {
+      zip: false,
+      bliss: false,
+      hsa: false,
+      loewe: false,
+    };
+    for (let i = 0; i < data.length; i += 1) {
+      if (data[i].zip) scoreAvailability.zip = true;
+      if (data[i].bliss) scoreAvailability.bliss = true;
+      if (data[i].hsa) scoreAvailability.hsa = true;
+      if (data[i].loewe) scoreAvailability.loewe = true;
+      if (scoreAvailability.zip && scoreAvailability.bliss
+        && scoreAvailability.hsa && scoreAvailability.loewe) break;
+    }
+    console.log(scoreAvailability);
+    this.setState({ scoreAvailability });
   }
 
   scoreChange(event) {
@@ -574,7 +603,9 @@ class Pharmacogenomics extends Component {
     this.setState({ selectedDrug2, focus: false }, () => getPlotData());
   }
 
+  // Prepares data for plotly based on the synergy score
   processSynData(data, accessor, scoreValue) {
+    console.log(data);
     const paddingPercent = 0.05;
     let lowestFPKM = 0;
     let highestFPKM = 0;
@@ -778,7 +809,11 @@ class Pharmacogenomics extends Component {
                     <RadioGroup aria-label="datatype" name="datatype" value={dataType} onChange={profileChange}>
                       <CustomFormLabel value="metabolomic" control={<CustomRadio />} label="metabolomic" />
                       <CustomFormLabel value="rnaseq" control={<CustomRadio />} label="molecular: expression, RNA-seq" />
-                      {/* <CustomFormLabel value="mutation" control={<CustomRadio />} label="molecular: mutation" /> */}
+                      {/* <CustomFormLabel
+                        value="mutation"
+                        control={<CustomRadio />}
+                        label="molecular: mutation"
+                       /> */}
                       <CustomFormLabel value="cna" control={<CustomRadio />} label="molecular: copy number" />
                     </RadioGroup>
                   </div>
