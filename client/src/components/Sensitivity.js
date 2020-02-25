@@ -15,7 +15,7 @@ import 'react-table/react-table.css';
 
 const SensitivityDiv = styled.div`
   width: 100%;
-  height: 880px;
+  height: ${(props) => props.height+150}px;
   background:white;
   padding:20px 30px;
   margin-bottom:20px;
@@ -50,9 +50,9 @@ const SensitivityDiv = styled.div`
   }
 
   .plotWrapper {
-    overflow-y: scroll;
+    overflow-y: hidden;
     overflow-x: hidden;
-    height:760px;
+    height:${(props) => props.height+50}px;
     position:absolute;
     float:left;
     width:1030px;
@@ -82,6 +82,7 @@ class Sensitivity extends Component {
       sample: '',
       dataset: '',
       legendColors: {},
+      height: "500",
       loading: true,
     };
   }
@@ -130,10 +131,14 @@ class Sensitivity extends Component {
     this.setState({ legendColors: data });
   }
 
+  heightCallback = (height) => {
+    this.setState({height: height});
+  }
+
   render() {
     const {
       data, sample, drugId1, drugId2, drugName1,
-      drugName2, dataset, legendColors, loading,
+      drugName2, dataset, legendColors, loading, height
     } = this.state;
     const query = [drugId1, drugId2];
     return (
@@ -147,7 +152,7 @@ class Sensitivity extends Component {
           />
         )}
 
-        <SensitivityDiv>
+        <SensitivityDiv className="sensitivity-div" height={height}>
           {loading ? (
             <div className="loading-container">
               <ReactLoading type="bubbles" width={150} height={150} color={colors.color_main_2} />
@@ -166,6 +171,7 @@ class Sensitivity extends Component {
                   data={data}
                   query={query}
                   plotId="sensHeatMap"
+                  heightCallback={this.heightCallback}
                 />
                 <SensBoxPlot
                   data={data}

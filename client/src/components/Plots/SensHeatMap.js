@@ -9,7 +9,7 @@ class SensHeatMap extends React.Component {
 
   componentDidMount() {
     const {
-      data, query, plotId,
+      data, query, plotId, heightCallback
     } = this.props;
     const result = this.formatData(data, query);
     // return [data, combos, samples, datasets, query]
@@ -143,6 +143,9 @@ class SensHeatMap extends React.Component {
 
     const width = 1500;
     const height = combos.length * 18 + 100;
+    this.props.heightCallback(height);
+  
+    // document.getElementsByClassName('sensitivity-div').style.height(height)
 
     // Add the svg canvas
     const svg = d3.select(`#${plotId}`)
