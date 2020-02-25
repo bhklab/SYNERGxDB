@@ -29,10 +29,25 @@ const StyledAPIDocs = styled.div`
 
     &:hover {
         color: ${colors.color_main_3};
+        img {
+          background-color: ${colors.color_main_3}
+        }
     }
   }
   .doc-img {
     margin: 10px 0;
+  }
+  .doi {
+    width: auto;
+    height: 30px;
+    margin-top: 30px;
+  }
+  .zenodo {
+    width: 24px;
+    padding: 3px;
+    background-color: ${colors.color_main_2}
+    display: inline-block
+    transition: ${transitions.main_trans}
   }
 `;
 
