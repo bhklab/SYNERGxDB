@@ -182,7 +182,7 @@ class SensBoxPlot extends React.Component {
 
         // color scale
         let color = {};
-        let arrColor = ['#5fcfff','#fca03e','#54c9b7', '#f788c1','#9a95de', '#f3c833'];
+        let arrColor = ['#5fcfff','#fca03e','#54c9b7', '#f788c1','#9a95de', '#f3c833', '#7456c7', '#7e6276', '#afb113',];
         datasets.forEach((x,i) => {
             color[x] = arrColor[i];
         });

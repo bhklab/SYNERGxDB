@@ -563,9 +563,17 @@ class SearchCombos extends Component {
       pathname: '/synergy_score',
       search: '?drugId1=11&drugId2=97',
     };
+    const exampleBiomarker = {
+      pathname: '/biomarker',
+      search:'?drugId1=11&drugId2=97'
+    }
     const examplePharmUrl = {
       pathname: '/pharmacogenomics',
       search: '?example=true',
+    };
+    const exampleCompare = {
+      pathname: '/sensitivity',
+      search: '?drugId1=11&drugId2=97',
     };
     const exampleConsistency = {
       pathname: '/sensitivity',
@@ -656,11 +664,15 @@ class SearchCombos extends Component {
               Topotecan):
               {' '}
               <p>
-                <Link className="hover" to={exampleDrugUrl}>Synergy Scores</Link>
+                <Link className="hover" to={exampleDrugUrl}>Synergy scores</Link>
               &nbsp;&nbsp;|&nbsp;&nbsp;
-                <Link className="hover" to={exampleConsistency}>Compare across datasets</Link>
+                <Link className="hover" to={exampleDrugUrl}>Biomarker discovery</Link>
               &nbsp;&nbsp;|&nbsp;&nbsp;
-                <Link className="hover" to={examplePharmUrl}>Biomarker Discovery</Link>
+                <Link className="hover" to={exampleCompare}>Compare across datasets</Link>
+              &nbsp;&nbsp;<br/>
+                <Link className="hover" to={exampleConsistency}>Consistency check</Link>
+              &nbsp;&nbsp;|&nbsp;&nbsp;
+                <Link className="hover" to={examplePharmUrl}>Pharmacogenomics analysis</Link>
               </p>
             </ExampleSpan>
             { checkUserInput() ? (
@@ -691,7 +703,7 @@ class SearchCombos extends Component {
           }
           </ButtonContainer>
         </StyledForm>
-        <Stats />
+        
       </Fragment>
     );
 
@@ -702,6 +714,7 @@ class SearchCombos extends Component {
             {searchForm}
           </StyledWrapper>
         </main>
+        <Stats />
       </Fragment>
     );
   }

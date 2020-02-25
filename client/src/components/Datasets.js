@@ -1,9 +1,10 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component, Fragment} from 'react';
 import styled from 'styled-components';
 import ReactTable from 'react-table';
 // import colors from '../styles/colors';
 import 'react-table/react-table.css';
 import ReactLoading from 'react-loading';
+import { Link } from 'react-router-dom';
 
 import DownloadButton from './UtilComponents/DownloadButton';
 import DonutPlot from './Plots/DonutPlot';
@@ -34,6 +35,10 @@ const StyledWrapper = styled.div`
       line-height:5px;
       font-size:85%;
     }
+  }
+
+  .ReactTable a {
+    colors: ${colors.color_main_5} !important;
   }
  
 `;
@@ -70,12 +75,17 @@ class Datasets extends Component {
     data.forEach((val) => {
       const temp = {};
       temp.name = val.name;
+      // also parsing if number less than threshold
+      // so visible on the donut plot
       if (keyName === 'Combinations') {
-        temp.num = val.nCombos;
+        temp.numLabel = val.nCombos;
+        temp.num = (val.nCombos < 200 ? 200 : val.nCombos);
       } else if (keyName === 'Experiments') {
-        temp.num = val.nExperiments;
+        temp.numLabel = val.nExperiments;
+        temp.num = (val.nExperiments < 4000 ? 4000 : val.nExperiments);
       } else if (keyName === 'Measurements') {
-        temp.num = val.nDatapoints;
+        temp.numLabel = val.nDatapoints;
+        temp.num = (val.nDatapoints < 50000 ? 50000 : val.nDatapoints);
       }
       result.push(temp);
     });
@@ -94,6 +104,10 @@ class Datasets extends Component {
       Header: 'Name',
       accessor: 'name', // String-based value accessors!
       sortable: false,
+      Cell: props => {
+        console.log(props.original.name)
+        return <Link style={{color: colors.color_main_1}} to={`/dataset_zips/Raw_${props.original.name}.zip`} target="_blank" download>{props.original.name}</Link>
+      }
     }, {
       Header: 'Source',
       accessor: 'author',

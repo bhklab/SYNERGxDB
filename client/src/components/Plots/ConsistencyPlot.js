@@ -159,7 +159,7 @@ export default class ConsistencyPlot extends React.Component {
       bottom: 90,
       left: 180,
     };
-    const colorPlot = ['#e69a61', '#9817ff', '#18c61a', '#33b4ff', '#c9167e', '#297853', '#d7011b', '#7456c7', '#7e6276', '#afb113', '#fd879c', '#fb78fa', '#24c373', '#45bbc5', '#766b21', '#abad93', '#c19ce3', '#fd8f11'];
+    const colorPlot = ['#fca03e','#5fcfff','#f788c1','#54c9b7','#9a95de', '#f3c833','#7456c7', '#7e6276', '#afb113', '#fd879c', '#fb78fa', '#24c373', '#45bbc5', '#766b21', '#abad93', '#c19ce3', '#fd8f11'];
 
     let colorMap = {};
     datasets.forEach((x, i) => {

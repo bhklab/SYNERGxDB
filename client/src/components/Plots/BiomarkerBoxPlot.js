@@ -4,12 +4,17 @@ import styled from 'styled-components';
 
 import PropTypes from 'prop-types';
 import colors from '../../styles/colors';
+import jStat from 'jstat';
 
 const StyledContainer = styled.div`
   width: 50%;
   min-width: 400px
   height: 450x;
   padding-right: 34px;
+  
+  span {
+    margin-left:60px;
+  }
 `;
 
 class BiomarkerBoxPlot extends React.Component {
@@ -30,6 +35,7 @@ class BiomarkerBoxPlot extends React.Component {
           color: colors.nav_links,
           family: 'Nunito Sans',
         },
+        pvalue: null,
       },
     };
     this.calculateBoxData = this.calculateBoxData.bind(this);
@@ -50,7 +56,18 @@ class BiomarkerBoxPlot extends React.Component {
     }
   }
 
+  
+
   calculateBoxData(sortArr, threshold) {
+    const calculateTTest = (a,b) => {
+      const mA = jStat.mean(a)
+      const mB = jStat.mean(b)
+      const S2 = (jStat.sum(jStat.pow(jStat.subtract(a,mA),2)) + jStat.sum(jStat.pow(jStat.subtract(b,mB),2)))/(a.length+b.length-2) 
+      const t = (mA - mB)/Math.sqrt(S2/a.length+S2/b.length) // t-statistic 1.1260915960439553
+      const ret = (jStat.studentt.cdf(-Math.abs(t), a.length+b.length-2) * 2).toFixed(3)
+  
+      this.setState({pvalue: ret});
+    }
     const { dimensions } = this.props;
     const boxData = [];
     for (let i = 0; i < sortArr.length; i += 1) {
@@ -107,7 +124,7 @@ class BiomarkerBoxPlot extends React.Component {
           tickcolor: colors.color_main_1,
           linecolor: colors.color_main_1,
           fixedrange: true,
-          showticklabels: false,
+          showticklabels: true,
           mirror: true,
           linewidth: 3,
           tickfont: {
@@ -138,14 +155,16 @@ class BiomarkerBoxPlot extends React.Component {
         marker: { color: colors.color_main_5 },
       },
     });
+    calculateTTest(boxData[1].map(item => item.fpkm), boxData[0].map(item => item.fpkm))
   }
 
 
   // Render this compoenent
   render() {
     const {
-      boxHigh, boxLow, layout,
+      boxHigh, boxLow, layout, pvalue
     } = this.state;
+    console.log(boxHigh, boxLow)
     return (
       <StyledContainer>
         <Plot
@@ -158,6 +177,7 @@ class BiomarkerBoxPlot extends React.Component {
             displayModeBar: false,
           }}
         />
+        <span>Student t-test, p-value = {pvalue}</span>
       </StyledContainer>
     );
   }
