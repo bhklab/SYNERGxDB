@@ -227,7 +227,6 @@ class Pharmacogenomics extends Component {
     location: ReactRouterPropTypes.location.isRequired,
   }
 
-
   constructor() {
     super();
     this.state = {
@@ -386,12 +385,12 @@ class Pharmacogenomics extends Component {
     const {
       selectedDrug1, selectedDrug2,
       selectedGene, sampleData, selectedMolecule,
-      tissueObj, scoreValue, example,
+      tissueObj, example,
     } = this.state;
     let { dataType } = this.state;
     if (example) dataType = 'rnaseq';
-    const { processSynData, checkAvailableScores } = this;
-    this.setState({ loadingBiomarkerData: true, showPlot: true, focus: false });
+    const { checkAvailableScores } = this;
+    this.setState({ loadingBiomarkerData: true, showPlot: false, focus: false });
 
     const sampleString = generateSampleString(sampleData, tissueObj);
     let queryParams = `?drugId1=${selectedDrug1}&drugId2=${selectedDrug2}&sample=${sampleString}`;
@@ -406,8 +405,8 @@ class Pharmacogenomics extends Component {
         },
       }).then(response => response.json())
         .then((data) => {
-          checkAvailableScores(data);
-          processSynData(data, selectedMolecule, scoreValue);
+          checkAvailableScores(data, selectedMolecule);
+          // processSynData(data, selectedMolecule, scoreValue);
         });
     } else if (dataType === 'rnaseq') {
       queryParams = queryParams.concat(`&gene=${selectedGene}`);
@@ -419,8 +418,8 @@ class Pharmacogenomics extends Component {
         },
       }).then(response => response.json())
         .then((data) => {
-          checkAvailableScores(data);
-          processSynData(data, 'fpkm', scoreValue);
+          checkAvailableScores(data, 'fpkm');
+          // processSynData(data, 'fpkm', scoreValue);
         });
     } else if (dataType === 'cna') {
       queryParams = queryParams.concat(`&gene=${selectedGene}`);
@@ -432,8 +431,8 @@ class Pharmacogenomics extends Component {
         },
       }).then(response => response.json())
         .then((data) => {
-          checkAvailableScores(data);
-          processSynData(data, 'cn', scoreValue);
+          checkAvailableScores(data, 'cn');
+          // processSynData(data, 'cn', scoreValue);
         });
     } else {
       // eslint-disable-next-line no-console
@@ -445,7 +444,8 @@ class Pharmacogenomics extends Component {
   }
 
   // updates state to decide what synergy scores should be enabled or disabled
-  checkAvailableScores(data) {
+  checkAvailableScores(data, accessor) {
+    const { processSynData } = this;
     const scoreAvailability = {
       zip: false,
       bliss: false,
@@ -453,15 +453,21 @@ class Pharmacogenomics extends Component {
       loewe: false,
     };
     for (let i = 0; i < data.length; i += 1) {
-      if (data[i].zip) scoreAvailability.zip = true;
-      if (data[i].bliss) scoreAvailability.bliss = true;
-      if (data[i].hsa) scoreAvailability.hsa = true;
-      if (data[i].loewe) scoreAvailability.loewe = true;
+      if (data[i].zip !== null) scoreAvailability.zip = true;
+      if (data[i].bliss !== null) scoreAvailability.bliss = true;
+      if (data[i].hsa !== null) scoreAvailability.hsa = true;
+      if (data[i].loewe !== null) scoreAvailability.loewe = true;
       if (scoreAvailability.zip && scoreAvailability.bliss
         && scoreAvailability.hsa && scoreAvailability.loewe) break;
     }
-    console.log(scoreAvailability);
-    this.setState({ scoreAvailability });
+    // if no zip score, it changes default score to
+    if (scoreAvailability.zip) {
+      this.setState({ scoreAvailability });
+      processSynData(data, accessor, 'zip');
+    } else {
+      this.setState({ scoreAvailability, scoreValue: 'bliss' });
+      processSynData(data, accessor, 'bliss');
+    }
   }
 
   scoreChange(event) {
@@ -605,7 +611,6 @@ class Pharmacogenomics extends Component {
 
   // Prepares data for plotly based on the synergy score
   processSynData(data, accessor, scoreValue) {
-    console.log(data);
     const paddingPercent = 0.05;
     let lowestFPKM = 0;
     let highestFPKM = 0;
@@ -731,10 +736,10 @@ class Pharmacogenomics extends Component {
   renderPlot(drugLabel1, drugLabel2) {
     const {
       scoreValue, showPlot, xRange, yRange,
-      biomarkerData, selectedGene, loadingBiomarkerData,
+      biomarkerData, selectedGene,
       selectedMolecule, dataType, example,
     } = this.state;
-    const checkBiomarkerData = biomarkerData.some(item => item[scoreValue] !== null);
+    // const checkBiomarkerData = biomarkerData.some(item => item[scoreValue] !== null);
     let accessor;
     const selectedBiomarker = dataType === 'metabolomic' ? selectedMolecule : selectedGene;
     if (dataType === 'metabolomic') accessor = selectedMolecule;
@@ -742,41 +747,58 @@ class Pharmacogenomics extends Component {
     if (dataType === 'cna') accessor = 'cn';
     if (example) accessor = 'fpkm';
 
-    if (showPlot) {
-      return !loadingBiomarkerData ? (
+    return showPlot
+      ? (
         <div className="plot">
-          {checkBiomarkerData ? (
-            <AdvancedAnalysis
-              biomarkerData={biomarkerData}
-              selectedBiomarker={selectedBiomarker}
-              dimensions={dimensions}
-              xRange={xRange}
-              yRange={yRange}
-              selectedScore={scoreValue}
-              drug1={drugLabel1}
-              drug2={drugLabel2}
-              accessor={accessor}
-            />
-          ) : (
-            <div style={{
-              paddingBottom: '20px', paddingTop: '20px',
-            }}
-            >
-              <h4
-                style={{ color: colors.red_color_accent, fontWeight: 'bold' }}
-              >
-                No data found for a given set of parameters, please modify the query
-              </h4>
-            </div>
-          )}
+          <AdvancedAnalysis
+            biomarkerData={biomarkerData}
+            selectedBiomarker={selectedBiomarker}
+            dimensions={dimensions}
+            xRange={xRange}
+            yRange={yRange}
+            selectedScore={scoreValue}
+            drug1={drugLabel1}
+            drug2={drugLabel2}
+            accessor={accessor}
+          />
         </div>
-      ) : (
-        <div className="loading-container">
-          <ReactLoading type="bubbles" width={150} height={150} color={colors.color_main_2} />
-        </div>
-      );
-    }
-    return null;
+      ) : null;
+
+    // if (showPlot) {
+    //   return !loadingBiomarkerData ? (
+    //     <div className="plot">
+    //       {checkBiomarkerData ? (
+    //         <AdvancedAnalysis
+    //           biomarkerData={biomarkerData}
+    //           selectedBiomarker={selectedBiomarker}
+    //           dimensions={dimensions}
+    //           xRange={xRange}
+    //           yRange={yRange}
+    //           selectedScore={scoreValue}
+    //           drug1={drugLabel1}
+    //           drug2={drugLabel2}
+    //           accessor={accessor}
+    //         />
+    //       ) : (
+    //         <div style={{
+    //           paddingBottom: '20px', paddingTop: '20px',
+    //         }}
+    //         >
+    //           <h4
+    //             style={{ color: colors.red_color_accent, fontWeight: 'bold' }}
+    //           >
+    //             No data found for a given set of parameters, please modify the query
+    //           </h4>
+    //         </div>
+    //       )}
+    //     </div>
+    //   ) : (
+    //     <div className="loading-container">
+    //       <ReactLoading type="bubbles" width={150} height={150} color={colors.color_main_2} />
+    //     </div>
+    //   );
+    // }
+    // return null;
   }
 
 
@@ -786,10 +808,11 @@ class Pharmacogenomics extends Component {
       renderSampleDrugData, getPlotData, renderPlot,
     } = this;
     const {
-      dataType, scoreValue, selectedDrug1,
-      selectedDrug2, drugsData1, drugsData2, sampleData,
+      dataType, scoreValue, selectedDrug1, selectedDrug2,
+      drugsData1, drugsData2, sampleData, scoreAvailability,
+      loadingBiomarkerData,
     } = this.state;
-    const showSynScore = selectedDrug1 !== 'null' && selectedDrug2 !== 'null' && sampleData.length !== 0;
+    // const showSynScore = selectedDrug1 !== 'null' && selectedDrug2 !== 'null' && sampleData.length !== 0;
     const drugLabel1 = generateDrugLabel(selectedDrug1, drugsData1);
     const drugLabel2 = generateDrugLabel(selectedDrug2, drugsData2);
     return (
@@ -822,24 +845,24 @@ class Pharmacogenomics extends Component {
               {renderBiomarkerList()}
             </div>
             { renderSampleDrugData()}
-            { showSynScore ? (
+            { loadingBiomarkerData ? (
               <div className="synscore-container selector">
                 <FormControl component="fieldset">
                   <RadioGroup aria-label="synscore" name="synscore" value={scoreValue} onChange={scoreChange}>
                     <div className="syn-score">
                       <h3>Select synergy score method</h3>
-                      <CustomFormLabel value="zip" control={<CustomRadio />} label="ZIP" disabled />
-                      <CustomFormLabel value="bliss" control={<CustomRadio />} label="Bliss" />
-                      <CustomFormLabel value="loewe" control={<CustomRadio />} label="Loewe" />
-                      <CustomFormLabel value="hsa" control={<CustomRadio />} label="HSA" />
+                      <CustomFormLabel value="zip" control={<CustomRadio />} label="ZIP" disabled={!scoreAvailability.zip} />
+                      <CustomFormLabel value="bliss" control={<CustomRadio />} label="Bliss" disabled={!scoreAvailability.bliss} />
+                      <CustomFormLabel value="loewe" control={<CustomRadio />} label="Loewe" disabled={!scoreAvailability.loewe} />
+                      <CustomFormLabel value="hsa" control={<CustomRadio />} label="HSA" disabled={!scoreAvailability.hsa} />
                     </div>
                   </RadioGroup>
                 </FormControl>
               </div>
             ) : null}
-            {showSynScore ? (
+            {loadingBiomarkerData ? (
               <div className="analysis">
-                <StyledButton onClick={getPlotData} type="button">Analysis</StyledButton>
+                <StyledButton onClick={() => this.setState({ showPlot: true })} type="button">Analysis</StyledButton>
                 {/* <div>
                 {renderPlot(drugLabel1, drugLabel2)}
               </div> */}
