@@ -559,7 +559,7 @@ class SearchCombos extends Component {
       handleDatasetSearch, handleEnterPress, checkUserInput,
     } = this;
 
-    const exampleDrugUrl = {
+    const exampleSynergy = {
       pathname: '/synergy_score',
       search: '?drugId1=11&drugId2=97',
     };
@@ -567,17 +567,17 @@ class SearchCombos extends Component {
       pathname: '/biomarker',
       search:'?drugId1=11&drugId2=97'
     }
-    const examplePharmUrl = {
-      pathname: '/pharmacogenomics',
-      search: '?example=true',
-    };
     const exampleCompare = {
       pathname: '/sensitivity',
       search: '?drugId1=11&drugId2=97',
     };
     const exampleConsistency = {
-      pathname: '/sensitivity',
+      pathname: '/consistency',
       search: '?drugId1=11&drugId2=97',
+    };
+    const examplePharmUrl = {
+      pathname: '/pharmacogenomics',
+      search: '?example=true',
     };
     // const exampleDatasetUrl = {
     //   pathname: '/synergy_score',
@@ -664,9 +664,9 @@ class SearchCombos extends Component {
               Topotecan):
               {' '}
               <p>
-                <Link className="hover" to={exampleDrugUrl}>Synergy scores</Link>
+                <Link className="hover" to={exampleSynergy}>Synergy scores</Link>
               &nbsp;&nbsp;|&nbsp;&nbsp;
-                <Link className="hover" to={exampleDrugUrl}>Biomarker discovery</Link>
+                <Link className="hover" to={exampleBiomarker}>Biomarker discovery</Link>
               &nbsp;&nbsp;|&nbsp;&nbsp;
                 <Link className="hover" to={exampleCompare}>Compare across datasets</Link>
               &nbsp;&nbsp;<br/>
