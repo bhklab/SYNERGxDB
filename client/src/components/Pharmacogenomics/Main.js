@@ -298,8 +298,15 @@ class Pharmacogenomics extends Component {
         drugsData1: [{ value: 11, label: 'Bortezomib' }],
         drugsData2: [{ value: 97, label: 'Topotecan' }],
         example: true,
+        scoreAvailability: {
+          zip: true,
+          bliss: true,
+          hsa: true,
+          loewe: true,
+        },
       });
       await this.getPlotData();
+      // await this.setState({ showPlot: true, showOptions: false });
     }
   }
 
@@ -592,6 +599,7 @@ class Pharmacogenomics extends Component {
       showPlot: false,
       showOptions: false,
       focus: false,
+      example: false,
     });
     if (dataType === 'rnaseq' || dataType === 'mutation' || dataType === 'cna') updateGeneData(dataType);
     if (dataType === 'metabolomic') updateMoleculeData();
@@ -649,6 +657,7 @@ class Pharmacogenomics extends Component {
 
   // Prepares data for plotly based on the synergy score
   processSynData(data, accessor, scoreValue) {
+    const { example } = this.state;
     console.log(data);
     const paddingPercent = 0.05;
     let lowestFPKM = 0;
@@ -676,7 +685,7 @@ class Pharmacogenomics extends Component {
       lowestSynScore - rangeSynScore * paddingPercent,
       highestSynScore + rangeSynScore * paddingPercent,
     ];
-    this.setState({
+    const stateUpdate = {
       biomarkerData: data,
       xRange,
       yRange,
@@ -684,8 +693,14 @@ class Pharmacogenomics extends Component {
       scoreValue,
       accessor,
       focus: true,
-      showOptions: true,
-    });
+    };
+    // splits state updates in two categories (normal and example queries)
+    if (example) {
+      stateUpdate.showPlot = true;
+    } else {
+      stateUpdate.showOptions = true;
+    }
+    this.setState(stateUpdate);
   }
 
   renderBiomarkerList() {
@@ -803,42 +818,6 @@ class Pharmacogenomics extends Component {
           />
         </div>
       ) : null;
-
-    // if (showPlot) {
-    //   return !loadingBiomarkerData ? (
-    //     <div className="plot">
-    //       {checkBiomarkerData ? (
-    //         <AdvancedAnalysis
-    //           biomarkerData={biomarkerData}
-    //           selectedBiomarker={selectedBiomarker}
-    //           dimensions={dimensions}
-    //           xRange={xRange}
-    //           yRange={yRange}
-    //           selectedScore={scoreValue}
-    //           drug1={drugLabel1}
-    //           drug2={drugLabel2}
-    //           accessor={accessor}
-    //         />
-    //       ) : (
-    //         <div style={{
-    //           paddingBottom: '20px', paddingTop: '20px',
-    //         }}
-    //         >
-    //           <h4
-    //             style={{ color: colors.red_color_accent, fontWeight: 'bold' }}
-    //           >
-    //             No data found for a given set of parameters, please modify the query
-    //           </h4>
-    //         </div>
-    //       )}
-    //     </div>
-    //   ) : (
-    //     <div className="loading-container">
-    //       <ReactLoading type="bubbles" width={150} height={150} color={colors.color_main_2} />
-    //     </div>
-    //   );
-    // }
-    // return null;
   }
 
 
@@ -852,7 +831,7 @@ class Pharmacogenomics extends Component {
       drugsData1, drugsData2, showOptions, scoreAvailability,
       loadingBiomarkerData,
     } = this.state;
-    console.log(loadingBiomarkerData);
+    console.log(showOptions);
     // const showSynScore = selectedDrug1 !== 'null' && selectedDrug2 !== 'null' && sampleData.length !== 0;
     const drugLabel1 = generateDrugLabel(selectedDrug1, drugsData1);
     const drugLabel2 = generateDrugLabel(selectedDrug2, drugsData2);
