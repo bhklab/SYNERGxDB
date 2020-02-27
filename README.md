@@ -5,8 +5,8 @@
 - Fork and clone this repo
 
 ```
-git clone git@github.com/{yourUsername}/SYNERGxDB-Web-App/.git
-cd SYNERGxDB-Web-App
+git clone git@github.com/{yourUsername}/SYNERGxDB/.git
+cd SYNERGxDB
 ```
 
 - Create .env using .env.example as a reference to access the database
