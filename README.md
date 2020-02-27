@@ -51,3 +51,7 @@ cd SYNERGxDB-Web-App
 
 - Production server: [http://synergxdb.ca/](http://synergxdb.ca/)
 - Testing server: [http://beta.synergxdb.ca/](http://testing.synergxdb.ca/)
+
+## Database
+
+A MySQL dump of pharmacological and molecular profiles of SYNERGxDB is available through Zenodo: [https://doi.org/10.5281/zenodo.3687222](https://doi.org/10.5281/zenodo.3687222)

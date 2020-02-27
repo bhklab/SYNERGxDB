@@ -34,7 +34,7 @@ const OverviewDoc = () => (
         <ol>
           <b>Database</b>
           <li>
-            A MySQL dump of all the data contained in the current release of
+            A MySQL dump of pharmacological and molecular profiles of
             {' '}
             <b>SYNERGxDB</b>
             {' '}
