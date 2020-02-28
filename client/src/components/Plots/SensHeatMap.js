@@ -129,7 +129,13 @@ class SensHeatMap extends React.Component {
     // Call by key to get the corresponding zip
   }
 
-  plotSensHeatMap(data, combos, samples, datasets, queryCombo, plotId) {
+  plotSensHeatMap(data, oldCombos, samples, datasets, queryCombo, plotId) {
+    let combos = [];
+    oldCombos.forEach((item, i) => {
+      if (i % 12 === 0) {
+        combos.push(item)
+      }
+    })
     // positions and dimensions
     const margin = {
       top: 20,

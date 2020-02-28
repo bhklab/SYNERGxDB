@@ -20,7 +20,6 @@ export default class ConsistencyPlot extends React.Component {
   }
 
   plotConsistency(data, datasets, plotId) {
-    console.log(datasets)
     const methods = ['ZIP', 'Bliss', 'Loewe', 'HSA'];
   
     // set defaults in variables so that X and Y dropdowns can access values
@@ -37,7 +36,7 @@ export default class ConsistencyPlot extends React.Component {
         xvalue = dropdownX.property('value');
         // plot the scatter based on the method
         d3.select('#scatter').remove();
-        this.plotScatter(xvalue.toLowerCase(), yvalue.toLowerCase(), width, height, data, plotId);
+        this.plotScatter(xvalue.toLowerCase(), yvalue.toLowerCase(), width, height, data, datasets, plotId);
       });
 
 
@@ -61,7 +60,7 @@ export default class ConsistencyPlot extends React.Component {
         yvalue = dropdownY.property('value');
         // plot the scatter based on the method
         d3.select('#scatter').remove();
-        this.plotScatter(xvalue.toLowerCase(), yvalue.toLowerCase(), width, height, data, plotId);
+        this.plotScatter(xvalue.toLowerCase(), yvalue.toLowerCase(), width, height, data, datasets, plotId);
       });
 
     dropdownY.selectAll('option')
@@ -76,7 +75,7 @@ export default class ConsistencyPlot extends React.Component {
       })
       .attr('value', d => d)
       .text(d => d);
-
+    
     // call plot at the end to plot it after the dropdowns have been rendered
     this.plotScatter(xvalue.toLowerCase(), yvalue.toLowerCase(), width, height, data, datasets, plotId);
   }
@@ -153,6 +152,7 @@ export default class ConsistencyPlot extends React.Component {
   }
 
   async plotScatter(xvalue, yvalue, width, height, data, datasets, plotId) {
+    console.log(datasets)
     const margin = {
       top: 50,
       right: 170,
