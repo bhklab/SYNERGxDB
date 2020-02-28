@@ -658,7 +658,6 @@ class Pharmacogenomics extends Component {
   // Prepares data for plotly based on the synergy score
   processSynData(data, accessor, scoreValue) {
     const { example } = this.state;
-    console.log(data);
     const paddingPercent = 0.05;
     let lowestFPKM = 0;
     let highestFPKM = 0;
@@ -801,7 +800,6 @@ class Pharmacogenomics extends Component {
     if (dataType === 'rnaseq') accessor = 'fpkm';
     if (dataType === 'cna') accessor = 'cn';
     if (example) accessor = 'fpkm';
-
     return showPlot
       ? (
         <div className="plot">
@@ -812,6 +810,7 @@ class Pharmacogenomics extends Component {
             xRange={xRange}
             yRange={yRange}
             selectedScore={scoreValue}
+            selectedProfile={dataType}
             drug1={drugLabel1}
             drug2={drugLabel2}
             accessor={accessor}
@@ -831,7 +830,6 @@ class Pharmacogenomics extends Component {
       drugsData1, drugsData2, showOptions, scoreAvailability,
       loadingBiomarkerData,
     } = this.state;
-    console.log(showOptions);
     // const showSynScore = selectedDrug1 !== 'null' && selectedDrug2 !== 'null' && sampleData.length !== 0;
     const drugLabel1 = generateDrugLabel(selectedDrug1, drugsData1);
     const drugLabel2 = generateDrugLabel(selectedDrug2, drugsData2);

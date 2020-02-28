@@ -4,7 +4,7 @@ import React from 'react';
 import Plot from 'react-plotly.js';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import regression from 'regression';
+// import regression from 'regression';
 
 import colors from '../../../styles/colors';
 
@@ -48,7 +48,7 @@ const StyledInfo = styled.div`
 `;
 async function findCIndex(x, y) {
   if (x.length < 2 || y.length < 2) {
-    return null;
+    return { cIndex: null, pValue: null };
   }
   try {
     const response = await fetch('http://52.138.39.182/ocpu/library/wCI/R/paired.concordance.index/json', {
@@ -61,11 +61,11 @@ async function findCIndex(x, y) {
       }),
     });
     const data = await response.json();
-    return data.cindex[0].toFixed(3);
+    return { cIndex: data.cindex[0].toFixed(3), pValue: data['p.value'][0].toExponential(1).toString() };
   } catch (err) {
     // eslint-disable-next-line no-console
     console.log(err);
-    return null;
+    return { cIndex: null, pValue: null };
   }
 }
 
@@ -123,6 +123,7 @@ class AdvancedAnalysis extends React.Component {
       cIndex: null,
       pearsonR: null,
       spearmanRho: null,
+      pValue: null,
     };
   }
 
@@ -249,7 +250,8 @@ class AdvancedAnalysis extends React.Component {
         },
       },
     };
-    const cIndex = await findCIndex(xCoordinates, yCoordinates);
+
+    const { cIndex, pValue } = await findCIndex(xCoordinates, yCoordinates);
     const pearsonR = findPearson(xCoordinates, yCoordinates);
     const spearmanRho = findSpearman([xCoordinates, yCoordinates], 0, 1);
     this.setState({
@@ -258,17 +260,17 @@ class AdvancedAnalysis extends React.Component {
       cIndex,
       pearsonR,
       spearmanRho,
+      pValue,
     });
   }
 
   render() {
     const {
-      data, layout, cIndex, pearsonR, spearmanRho,
+      data, layout, cIndex, pearsonR, spearmanRho, pValue,
     } = this.state;
     const {
-      drug1, drug2, selectedBiomarker, selectedScore, biomarkerData,
+      drug1, drug2, selectedBiomarker, selectedScore, biomarkerData, selectedProfile,
     } = this.props;
-
     let displayData;
     if (data) {
       displayData = data;
@@ -304,9 +306,12 @@ class AdvancedAnalysis extends React.Component {
               {' '}
               {selectedScore.toUpperCase()}
               {' '}
-            x
+            </h4>
+            <h4>
+              <span className="info-field">{selectedProfile === 'metabolomic' ? 'Molecule: ' : 'Gene: '}</span>
               {' '}
               {selectedBiomarker}
+              {' '}
             </h4>
             <h4>
               <span className="info-field">Tested in</span>
@@ -323,6 +328,14 @@ class AdvancedAnalysis extends React.Component {
                 <span className="info-field">Concordance Index =</span>
                 {' '}
                 {cIndex}
+                {' '}
+                <span className="info-field">
+                  (
+                  <em>P</em>
+                  =
+                  {pValue}
+                  )
+                </span>
               </h4>
               <h4>
                 <span className="info-field">Spearman rho =</span>
@@ -345,6 +358,7 @@ class AdvancedAnalysis extends React.Component {
 
 AdvancedAnalysis.propTypes = {
   selectedBiomarker: PropTypes.string.isRequired,
+  selectedProfile: PropTypes.string.isRequired,
   biomarkerData: PropTypes.arrayOf(PropTypes.object).isRequired,
   dimensions: PropTypes.objectOf(PropTypes.number).isRequired,
   xRange: PropTypes.arrayOf(PropTypes.number).isRequired,
