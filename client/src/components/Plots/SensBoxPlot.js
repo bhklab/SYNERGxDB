@@ -103,13 +103,7 @@ class SensBoxPlot extends React.Component {
         return [newData, newCombos, datasets];
     }
 
-    plotSensBoxPlot(data, oldCombos, datasets, plotId) {
-        let combos = [];
-        oldCombos.forEach((item, i) => {
-        if (i % 12 === 0) {
-            combos.push(item)
-        }
-        })
+    plotSensBoxPlot(data, combos, datasets, plotId) {
         // positions and dimensions
         const margin = {
             top: 20,
