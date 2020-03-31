@@ -70,6 +70,7 @@ class ComboResults extends Component {
     super();
     this.state = {
       results: [],
+      csvData: [],
       drugId1: null,
       drugId2: null,
       loading: true,
@@ -117,7 +118,14 @@ class ComboResults extends Component {
     })
       .then(response => response.json())
       .then((data) => {
-        this.setState({ results: data, loading: false });
+        // inserts quatations for drug names that have commas in its names
+        const csvData = data.map((row) => {
+          const csvRow = { ...row };
+          if (csvRow.drugNameA.includes(',')) csvRow.drugNameA = `"${csvRow.drugNameA}"`;
+          if (csvRow.drugNameB.includes(',')) csvRow.drugNameB = `"${csvRow.drugNameB}"`;
+          return csvRow;
+        });
+        this.setState({ csvData, results: data, loading: false });
       });
   }
 
@@ -179,7 +187,7 @@ class ComboResults extends Component {
   render() {
     const {
       results, loading,
-      queryParams, displayOptions,
+      queryParams, displayOptions, csvData,
     } = this.state;
     const { location } = this.props;
     const requestParams = queryString.parse(location.search);
@@ -328,7 +336,7 @@ class ComboResults extends Component {
             {totalSynergyScores}
           </h2>
           <DownloadButton
-            data={results}
+            data={csvData}
             headers={headers}
             filename={filename}
           />
