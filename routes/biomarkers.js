@@ -154,75 +154,63 @@ router.get('/synergy', async (req, res) => {
       .orWhere({ idDrugB: drugId1 });
   }
 
-  function subqueryPValueGene() {
-    let subquery = this.select('gene', 'pValue');
-    // let subquery = this.select('gene').min('pValue as minPValue');
+  function subqueryBiomarkers() {
+    let subquery;
     switch (type) {
       case 'zip':
-        subquery = subquery.from('zip_significant');
+        subquery = this.select('zip_significant.*').from('zip_significant');
         break;
       case 'bliss':
-        subquery = subquery.from('bliss_significant');
+        subquery = this.select('bliss_significant.*').from('bliss_significant');
         break;
       case 'hsa':
-        subquery = subquery.from('hsa_significant');
+        subquery = this.select('hsa_significant.*').from('hsa_significant');
         break;
       case 'loewe':
-        subquery = subquery.from('loewe_significant');
+        subquery = this.select('loewe_significant.*').from('loewe_significant');
         break;
       default:
         break;
     }
     if (drugId1) subquery = subquery.where(drugFiltering);
     if (dataset) subquery = subquery.andWhere({ idSource: dataset });
-    // return subquery.groupBy('gene').as('t1');
-    return subquery.as('t1');
+    return subquery.as('biomark');
   }
 
-  function subqueryBiomarkers() {
+  function subqueryGeneDatasetPairs() {
     let query;
     switch (type) {
       case 'zip':
-        query = this.select('zip_significant.*')
-          .from(subqueryPValueGene)
-          .innerJoin('zip_significant', function () {
-            this.on('zip_significant.gene', '=', 't1.gene');
-            this.andOn('zip_significant.pValue', '=', 't1.pValue');
-            // this.andOn('zip_significant.pValue', '=', 't1.minPValue');
-          });
+        query = this.distinct('gene', 'idSource')
+          .from('zip_significant');
         break;
       case 'bliss':
-        query = this.select('bliss_significant.*')
-          .from(subqueryPValueGene)
-          .innerJoin('bliss_significant', function () {
-            this.on('bliss_significant.gene', '=', 't1.gene');
-            this.andOn('bliss_significant.pValue', '=', 't1.pValue');
-            // this.andOn('bliss_significant.pValue', '=', 't1.minPValue');
-          });
+        query = this.distinct('gene', 'idSource')
+          .from('bliss_significant');
         break;
       case 'hsa':
-        query = this.select('hsa_significant.*')
-          .from(subqueryPValueGene)
-          .innerJoin('hsa_significant', function () {
-            this.on('hsa_significant.gene', '=', 't1.gene');
-            this.andOn('hsa_significant.pValue', '=', 't1.pValue');
-            // this.andOn('hsa_significant.pValue', '=', 't1.minPValue');
-          });
+        query = this.distinct('gene', 'idSource')
+          .from('hsa_significant');
         break;
       case 'loewe':
-        query = this.select('loewe_significant.*')
-          .from(subqueryPValueGene)
-          .innerJoin('loewe_significant', function () {
-            this.on('loewe_significant.gene', '=', 't1.gene');
-            this.andOn('loewe_significant.pValue', '=', 't1.pValue');
-            // this.andOn('loewe_significant.pValue', '=', 't1.minPValue');
-          });
+        query = this.distinct('gene', 'idSource')
+          .from('loewe_significant');
         break;
       default:
         break;
     }
-    // return query.groupBy('gene').as('biomark');
-    return query.as('biomark');
+    if (drugId1) query = query.where(drugFiltering);
+    return query.as('GDP');
+  }
+
+  function subqueryOccurrences() {
+    let query;
+    if (dataset) {
+      query = this.select(db.raw('gene, 1 as \'occurrences\''));
+    } else {
+      query = this.select('gene').count('idSource as occurrences');
+    }
+    return query.from(subqueryGeneDatasetPairs).groupBy('gene').as('O');
   }
 
   function subqueryDataset() {
@@ -237,10 +225,17 @@ router.get('/synergy', async (req, res) => {
       .innerJoin('drug', 'drug.idDrug', '=', 'DS.idDrugA')
       .as('D1');
   }
+  function subqueryDrugB() {
+    this.select('gene', 'concordanceIndex', 'pValue', 'dataset', 'drugA', 'name as drugB')
+      .from(subqueryDrugA)
+      .innerJoin('drug', 'drug.idDrug', '=', 'D1.idDrugB')
+      .as('D2');
+  }
+  // db.select().from(subqueryOccurrences)
 
-  db.select('gene', 'concordanceIndex', 'pValue', 'dataset', 'drugA', 'name as drugB')
-    .from(subqueryDrugA)
-    .innerJoin('drug', 'drug.idDrug', '=', 'D1.idDrugB')
+  db.select('occurrences', 'D2.gene as gene', 'concordanceIndex', 'pValue', 'dataset', 'drugA', 'drugB')
+    .from(subqueryDrugB)
+    .innerJoin(subqueryOccurrences, 'O.gene', '=', 'D2.gene')
     .orderBy('pValue')
     .orderBy('concordanceIndex')
     .then((data) => {
