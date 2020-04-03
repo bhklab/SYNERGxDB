@@ -155,7 +155,8 @@ router.get('/synergy', async (req, res) => {
   }
 
   function subqueryPValueGene() {
-    let subquery = this.select('gene').min('pValue as minPValue');
+    let subquery = this.select('gene', 'pValue');
+    // let subquery = this.select('gene').min('pValue as minPValue');
     switch (type) {
       case 'zip':
         subquery = subquery.from('zip_significant');
@@ -174,7 +175,8 @@ router.get('/synergy', async (req, res) => {
     }
     if (drugId1) subquery = subquery.where(drugFiltering);
     if (dataset) subquery = subquery.andWhere({ idSource: dataset });
-    return subquery.groupBy('gene').as('t1');
+    // return subquery.groupBy('gene').as('t1');
+    return subquery.as('t1');
   }
 
   function subqueryBiomarkers() {
@@ -185,7 +187,8 @@ router.get('/synergy', async (req, res) => {
           .from(subqueryPValueGene)
           .innerJoin('zip_significant', function () {
             this.on('zip_significant.gene', '=', 't1.gene');
-            this.andOn('zip_significant.pValue', '=', 't1.minPValue');
+            this.andOn('zip_significant.pValue', '=', 't1.pValue');
+            // this.andOn('zip_significant.pValue', '=', 't1.minPValue');
           });
         break;
       case 'bliss':
@@ -193,7 +196,8 @@ router.get('/synergy', async (req, res) => {
           .from(subqueryPValueGene)
           .innerJoin('bliss_significant', function () {
             this.on('bliss_significant.gene', '=', 't1.gene');
-            this.andOn('bliss_significant.pValue', '=', 't1.minPValue');
+            this.andOn('bliss_significant.pValue', '=', 't1.pValue');
+            // this.andOn('bliss_significant.pValue', '=', 't1.minPValue');
           });
         break;
       case 'hsa':
@@ -201,7 +205,8 @@ router.get('/synergy', async (req, res) => {
           .from(subqueryPValueGene)
           .innerJoin('hsa_significant', function () {
             this.on('hsa_significant.gene', '=', 't1.gene');
-            this.andOn('hsa_significant.pValue', '=', 't1.minPValue');
+            this.andOn('hsa_significant.pValue', '=', 't1.pValue');
+            // this.andOn('hsa_significant.pValue', '=', 't1.minPValue');
           });
         break;
       case 'loewe':
@@ -209,7 +214,8 @@ router.get('/synergy', async (req, res) => {
           .from(subqueryPValueGene)
           .innerJoin('loewe_significant', function () {
             this.on('loewe_significant.gene', '=', 't1.gene');
-            this.andOn('loewe_significant.pValue', '=', 't1.minPValue');
+            this.andOn('loewe_significant.pValue', '=', 't1.pValue');
+            // this.andOn('loewe_significant.pValue', '=', 't1.minPValue');
           });
         break;
       default:
