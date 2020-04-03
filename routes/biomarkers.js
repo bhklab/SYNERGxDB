@@ -178,23 +178,19 @@ router.get('/synergy', async (req, res) => {
   }
 
   function subqueryGeneDatasetPairs() {
-    let query;
+    let query = this.distinct('gene', 'idSource', 'idDrugA', 'idDrugB');
     switch (type) {
       case 'zip':
-        query = this.distinct('gene', 'idSource')
-          .from('zip_significant');
+        query = query.from('zip_significant');
         break;
       case 'bliss':
-        query = this.distinct('gene', 'idSource')
-          .from('bliss_significant');
+        query = query.from('bliss_significant');
         break;
       case 'hsa':
-        query = this.distinct('gene', 'idSource')
-          .from('hsa_significant');
+        query = query.from('hsa_significant');
         break;
       case 'loewe':
-        query = this.distinct('gene', 'idSource')
-          .from('loewe_significant');
+        query = query.from('loewe_significant');
         break;
       default:
         break;
@@ -206,11 +202,11 @@ router.get('/synergy', async (req, res) => {
   function subqueryOccurrences() {
     let query;
     if (dataset) {
-      query = this.select(db.raw('gene, 1 as \'occurrences\''));
+      query = this.select(db.raw('gene, idDrugA, idDrugB, 1 as \'occurrences\''));
     } else {
-      query = this.select('gene').count('idSource as occurrences');
+      query = this.select('gene', 'idDrugA', 'idDrugB').count('idSource as occurrences');
     }
-    return query.from(subqueryGeneDatasetPairs).groupBy('gene').as('O');
+    return query.from(subqueryGeneDatasetPairs).groupBy('gene', 'idDrugA', 'idDrugB').as('O');
   }
 
   function subqueryDataset() {
@@ -220,24 +216,30 @@ router.get('/synergy', async (req, res) => {
       .as('DS');
   }
   function subqueryDrugA() {
-    this.select('gene', 'concordanceIndex', 'pValue', 'dataset', 'name as drugA', 'idDrugB')
+    this.select('gene', 'concordanceIndex', 'pValue', 'dataset', 'idDrugA', 'name as drugA', 'idDrugB')
       .from(subqueryDataset)
       .innerJoin('drug', 'drug.idDrug', '=', 'DS.idDrugA')
       .as('D1');
   }
   function subqueryDrugB() {
-    this.select('gene', 'concordanceIndex', 'pValue', 'dataset', 'drugA', 'name as drugB')
+    this.select('gene', 'concordanceIndex', 'pValue', 'dataset', 'idDrugA', 'idDrugB', 'drugA', 'name as drugB')
       .from(subqueryDrugA)
       .innerJoin('drug', 'drug.idDrug', '=', 'D1.idDrugB')
       .as('D2');
   }
-  // db.select().from(subqueryOccurrences)
 
   db.select('occurrences', 'D2.gene as gene', 'concordanceIndex', 'pValue', 'dataset', 'drugA', 'drugB')
     .from(subqueryDrugB)
-    .innerJoin(subqueryOccurrences, 'O.gene', '=', 'D2.gene')
+    .innerJoin(subqueryOccurrences, function () {
+      this.on('O.gene', '=', 'D2.gene');
+      this.andOn('O.idDrugA', '=', 'D2.idDrugA');
+      this.andOn('O.idDrugB', '=', 'D2.idDrugB');
+    })
+    .orderBy('occurrences', 'desc')
+    .orderBy('gene')
+    // .orderBy('drugA')
+    // .orderBy('drugB')
     .orderBy('pValue')
-    .orderBy('concordanceIndex')
     .then((data) => {
       res.json(data);
     })
