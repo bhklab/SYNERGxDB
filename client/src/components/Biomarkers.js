@@ -199,22 +199,6 @@ class Biomarkers extends Component {
         })
         .then(response => response.json())
         .then((data) => {
-          console.log(data);
-
-          // checks how if same gene appears in more then one dataset
-          // const biomarkerFrequency = {};
-          // data.forEach((biomarker) => {
-          //   if (!biomarkerFrequency[biomarker.gene]) {
-          //     biomarkerFrequency[biomarker.gene] = 1;
-          //   } else {
-          //     biomarkerFrequency[biomarker.gene] = 1 + biomarkerFrequency[biomarker.gene];
-          //     console.log('+');
-          //   }
-          // });
-          // const prefilteredData = data.map(biomarker => ({ ...biomarker, frequency: biomarkerFrequency[biomarker.gene] }));
-
-          // console.log(biomarkerFrequency);
-          // console.log(prefilteredData);
           switch (score) {
             case 'zip':
               this.setState({
@@ -553,6 +537,16 @@ class Biomarkers extends Component {
             filterable
             defaultFilterMethod={(filter, row) => String(row[filter.id]
               .toLowerCase()).startsWith(filter.value.toLowerCase())}
+            getTrProps={(state, rowInfo, column) => {
+              if (rowInfo) {
+                return {
+                  style: {
+                    fontWeight: rowInfo.original.occurrences > 1 ? '700' : 'normal',
+                  },
+                };
+              }
+              return {};
+            }}
             getTdProps={(state, rowInfo) => ({
               onClick: (e, handleOriginal) => {
                 handleSelectBiomarker(rowInfo.original);

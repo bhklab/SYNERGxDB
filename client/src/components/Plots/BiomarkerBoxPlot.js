@@ -61,8 +61,10 @@ class BiomarkerBoxPlot extends React.Component {
     const calculateTTest = (a, b) => {
       const mA = jStat.mean(a);
       const mB = jStat.mean(b);
-      const S2 = (jStat.sum(jStat.pow(jStat.subtract(a, mA), 2)) + jStat.sum(jStat.pow(jStat.subtract(b, mB), 2))) / (a.length + b.length - 2);
-      const t = (mA - mB) / Math.sqrt(S2 / a.length + S2 / b.length); // t-statistic 1.1260915960439553
+      const S2 = (jStat.sum(jStat.pow(jStat.subtract(a, mA), 2))
+        + jStat.sum(jStat.pow(jStat.subtract(b, mB), 2))) / (a.length + b.length - 2);
+      const t = (mA - mB) / Math.sqrt(S2 / a.length + S2 / b.length);
+      // t-statistic 1.1260915960439553
       const ret = (jStat.studentt.cdf(-Math.abs(t), a.length + b.length - 2) * 2).toFixed(3);
 
       this.setState({ pvalue: ret });
@@ -163,7 +165,6 @@ class BiomarkerBoxPlot extends React.Component {
     const {
       boxHigh, boxLow, layout, pvalue,
     } = this.state;
-    console.log(boxHigh, boxLow);
     return (
       <StyledContainer>
         <Plot

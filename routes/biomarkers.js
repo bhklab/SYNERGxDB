@@ -237,8 +237,6 @@ router.get('/synergy', async (req, res) => {
     })
     .orderBy('occurrences', 'desc')
     .orderBy('gene')
-    // .orderBy('drugA')
-    // .orderBy('drugB')
     .orderBy('pValue')
     .then((data) => {
       res.json(data);
