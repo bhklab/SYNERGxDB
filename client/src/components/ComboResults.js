@@ -118,6 +118,7 @@ class ComboResults extends Component {
     })
       .then(response => response.json())
       .then((data) => {
+        console.log(data);
         // inserts quatations for drug names that have commas in its names
         const csvData = data.map((row) => {
           const csvRow = { ...row };
