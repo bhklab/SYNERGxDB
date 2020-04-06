@@ -127,6 +127,8 @@ class ComboResults extends Component {
           if (csvRow.disease && csvRow.disease.includes(',')) csvRow.disease = `"${csvRow.disease}"`;
           if (csvRow.descriptionDrugA && csvRow.descriptionDrugA.includes(',')) csvRow.descriptionDrugA = `"${csvRow.descriptionDrugA}"`;
           if (csvRow.descriptionDrugB && csvRow.descriptionDrugB.includes(',')) csvRow.descriptionDrugB = `"${csvRow.descriptionDrugB}"`;
+          if (csvRow.atcCodeDrugA && csvRow.atcCodeDrugA.includes(',')) csvRow.atcCodeDrugA = `"${csvRow.atcCodeDrugA}"`;
+          if (csvRow.atcCodeDrugB && csvRow.atcCodeDrugB.includes(',')) csvRow.atcCodeDrugB = `"${csvRow.atcCodeDrugB}"`;
           return csvRow;
         });
         this.setState({ csvData, results: data, loading: false });
