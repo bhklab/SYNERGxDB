@@ -124,6 +124,9 @@ class ComboResults extends Component {
           const csvRow = { ...row };
           if (csvRow.drugNameA.includes(',')) csvRow.drugNameA = `"${csvRow.drugNameA}"`;
           if (csvRow.drugNameB.includes(',')) csvRow.drugNameB = `"${csvRow.drugNameB}"`;
+          if (csvRow.disease && csvRow.disease.includes(',')) csvRow.disease = `"${csvRow.disease}"`;
+          if (csvRow.descriptionDrugA && csvRow.descriptionDrugA.includes(',')) csvRow.descriptionDrugA = `"${csvRow.descriptionDrugA}"`;
+          if (csvRow.descriptionDrugB && csvRow.descriptionDrugB.includes(',')) csvRow.descriptionDrugB = `"${csvRow.descriptionDrugB}"`;
           return csvRow;
         });
         this.setState({ csvData, results: data, loading: false });
@@ -267,8 +270,21 @@ class ComboResults extends Component {
     const headers = [
       { displayName: 'Tissue', id: 'tissue' },
       { displayName: 'Cell Line', id: 'sampleName' },
+      { displayName: 'Cellosaurus ID', id: 'idCellosaurus' },
+      { displayName: 'Sex', id: 'sex' },
+      { displayName: 'Age', id: 'age' },
+      { displayName: 'Disease', id: 'disease' },
+      { displayName: 'Origin', id: 'origin' },
       { displayName: 'Compound A', id: 'drugNameA' },
+      { displayName: 'ATC Code (Compound A)', id: 'atCodeDrugA' },
+      { displayName: 'DrugBank ID (Compound A)', id: 'idDrugBankA' },
+      { displayName: 'PubChem ID (Compound A)', id: 'idPubChemDrugA' },
+      { displayName: 'Description (Compound A)', id: 'descriptionDrugA' },
       { displayName: 'Compound B', id: 'drugNameB' },
+      { displayName: 'ATC Code (Compound B)', id: 'atCodeDrugB' },
+      { displayName: 'DrugBank ID (Compound B)', id: 'idDrugBankB' },
+      { displayName: 'PubChem ID (Compound B)', id: 'idPubChemDrugB' },
+      { displayName: 'Description (Compound B)', id: 'descriptionDrugB' },
       { displayName: 'ZIP', id: 'zip' },
       { displayName: 'Bliss', id: 'bliss' },
       { displayName: 'Loewe', id: 'loewe' },
