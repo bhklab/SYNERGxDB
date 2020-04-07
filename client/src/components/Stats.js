@@ -29,6 +29,14 @@ const StyledDiv = styled.div`
       }
     }
 
+    @media (max-height : 900px) {
+      h2 {
+        font-size: 1.1em !important;
+        line-height: 0.6em;
+      }
+      min-height: 70px;
+    }
+
     div {
         padding: 0 10px; 
         max-width: 175px;

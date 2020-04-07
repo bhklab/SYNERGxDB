@@ -31,6 +31,11 @@ const StyledWrapper = styled.div`
     font-family:'Raleway', sans-serif;
     font-weight:700;
     margin: 0px 0px 50px 0px;
+
+    @media (max-height : 900px) {
+      font-size: calc(1em + 0.7vw);
+      margin-bottom: 20px;
+    }
   }
   h1 span {
     color: ${colors.nav_link_hov};
@@ -41,6 +46,10 @@ const StyledWrapper = styled.div`
 `;
 
 const StyledForm = styled.form`
+  @media (max-height : 900px) {
+    max-width: 700px; 
+    font-size: 0.9em;    
+  }
   max-width: 800px;
   width: 100%;
   background-color: rgb(255,255,255,0.85); 
@@ -171,6 +180,12 @@ const ButtonContainer = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
+  @media (max-height : 900px) {
+    a {
+      font-size: 0.85em;  
+    }
+      
+  }
 `;
 
 const StyledButton = styled.button`
@@ -183,6 +198,11 @@ const StyledButton = styled.button`
   transition: ${transitions.main_trans};
   outline-style: none;
 
+  @media (max-height : 900px) {
+    padding: 5px 10px; 
+    margin: 0px auto;
+  }
+
   &:hover {
     color: ${colors.nav_links};
     background: ${colors.nav_bg};
@@ -191,6 +211,9 @@ const StyledButton = styled.button`
   }
   &[type="button"] {
     font-size: 2em;
+    @media (max-height : 900px) {
+      font-size: 1.5em; 
+    }
   }
 `;
 

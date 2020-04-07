@@ -24,6 +24,12 @@ const StyledNav = styled.div`
     height:75px;
   }
 
+  @media (max-height : 900px) {
+    font-size: calc(0.2vw + 0.9em);
+    height: 70px;
+    line-height: 2.5em;
+  }
+
   a {
     color: ${colors.nav_links};
     transition: ${transitions.main_trans}
@@ -72,6 +78,9 @@ const StyledNav = styled.div`
 
 const StyledLogo = styled.img`
   width:150px;
+  @media (max-height : 900px) {
+      width: 120px;
+  }
 `;
 
 const BurgerMenuStyles = {
