@@ -81,54 +81,64 @@ export default class ComboDetails extends Component {
     };
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     const { location } = this.props;
     const requestParams = queryString.parse(location.search);
     const {
       idSource, idDrugA, idDrugB, idSample, comboId,
     } = requestParams;
 
+    let cellData; let drugsData; let
+      sourceData;
+
+    await fetch(`/api/cell_lines/info?idSample=${idSample}`, {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(response => response.json())
+      .then((data) => {
+        cellData = data;
+      });
+    await fetch(`/api/drugs/info?idDrugA=${idDrugA}&idDrugB=${idDrugB}`, {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(response => response.json())
+      .then((data) => {
+        drugsData = data;
+      });
+    await fetch(`/api/datasets?idSource=${idSource}`, {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(response => response.json())
+      .then((data) => {
+        sourceData = data;
+      });
+
     this.setState({
       comboId: parseInt(comboId, 10),
       idSource: parseInt(idSource, 10),
       idSample: parseInt(idSample, 10),
+      cellData,
+      drugsData,
+      sourceData,
       // ComboScore available only for NCI-Almanac
       enableComboScore: idSource === '2',
     });
+    console.log('cellData:', cellData);
+    console.log('drugsData:', drugsData);
+    console.log('sourceData:', sourceData);
 
-    fetch(`/api/cell_lines/info?idSample=${idSample}`, {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-    })
-      .then(response => response.json())
-      .then((cellData) => {
-        this.setState({ cellData });
-      });
-    fetch(`/api/drugs/info?idDrugA=${idDrugA}&idDrugB=${idDrugB}`, {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-    })
-      .then(response => response.json())
-      .then((drugsData) => {
-        this.setState({ drugsData });
-      });
-    fetch(`/api/datasets?idSource=${idSource}`, {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-    })
-      .then(response => response.json())
-      .then((sourceData) => {
-        this.setState({ sourceData });
-      });
     fetch(`/api/combos/matrix?comboId=${comboId}&idSource=${idSource}`)
       .then(response => response.json())
       .then((data) => {
