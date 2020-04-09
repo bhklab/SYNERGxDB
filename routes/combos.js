@@ -99,9 +99,17 @@ router.get('/matrix', (req, res) => {
   let { comboId, idSource } = req.query;
   comboId = parseInt(comboId, 10);
   idSource = parseInt(idSource, 10);
-  db.select('concA', 'concB', 'raw_matrix', 'bliss_matrix', 'loewe_matrix', 'hsa_matrix', 'zip_matrix', 'idSource')
-    .from('Combo_matrix')
-    .where({ idCombo_Design: comboId, idSource })
+
+  function subqueryComboMatrix() {
+    this.select('idCombo_Design', 'concA', 'concB', 'raw_matrix', 'bliss_matrix', 'loewe_matrix', 'hsa_matrix', 'zip_matrix', 'combo_score', 'idSource')
+      .from('Combo_matrix')
+      .where({ idCombo_Design: comboId, idSource })
+      .as('CM');
+  }
+
+  db.select('idCombo_Design', 'concA', 'concB', 'raw_matrix', 'bliss_matrix', 'loewe_matrix', 'hsa_matrix', 'zip_matrix', 'CM.idSource', 'Source.name as sourceName')
+    .from(subqueryComboMatrix)
+    .join('Source', 'Source.idSource', '=', 'CM.idSource')
     .then((data) => {
       res.json(data);
     })

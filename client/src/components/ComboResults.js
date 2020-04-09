@@ -118,7 +118,6 @@ class ComboResults extends Component {
     })
       .then(response => response.json())
       .then((data) => {
-        console.log(data);
         // inserts quatations for drug names that have commas in its names
         const csvData = data.map((row) => {
           const csvRow = { ...row };
@@ -269,6 +268,7 @@ class ComboResults extends Component {
       Header: 'Source',
       accessor: 'sourceName',
     }];
+
     const headers = [
       { displayName: 'Tissue', id: 'tissue' },
       { displayName: 'Cell Line', id: 'sampleName' },
@@ -293,6 +293,8 @@ class ComboResults extends Component {
       { displayName: 'HSA', id: 'hsa' },
       { displayName: 'Source', id: 'sourceName' },
     ];
+
+
     let filename = 'drug_combos';
     if (sample) filename = filename.concat(`_${sample}`);
     if (dataset) filename = filename.concat(`_${dataset}`);

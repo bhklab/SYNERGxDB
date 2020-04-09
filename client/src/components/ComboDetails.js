@@ -4,6 +4,7 @@ import React, { Component, Fragment } from 'react';
 import ReactRouterPropTypes from 'react-router-prop-types';
 import queryString from 'query-string';
 import styled from 'styled-components';
+import DownloadButton from './UtilComponents/DownloadButton';
 // import Loading from 'react-loading-components';
 
 import colors from '../styles/colors';
@@ -75,6 +76,8 @@ export default class ComboDetails extends Component {
       synergyData: null,
       loadingSynergyData: true,
       isDataAvailable: false,
+      enableComboScore: false,
+      csvData: [],
     };
   }
 
@@ -89,6 +92,8 @@ export default class ComboDetails extends Component {
       comboId: parseInt(comboId, 10),
       idSource: parseInt(idSource, 10),
       idSample: parseInt(idSample, 10),
+      // ComboScore available only for NCI-Almanac
+      enableComboScore: idSource === '2',
     });
 
     fetch(`/api/cell_lines/info?idSample=${idSample}`, {
@@ -127,6 +132,7 @@ export default class ComboDetails extends Component {
     fetch(`/api/combos/matrix?comboId=${comboId}&idSource=${idSource}`)
       .then(response => response.json())
       .then((data) => {
+        console.log(data);
         const standarizedData = standarizeRawData(data);
         // Sorts data this step is required for some datasets
         // to standarize data for synergy table and heat map
@@ -185,9 +191,9 @@ export default class ComboDetails extends Component {
 
   render() {
     const {
-      cellData, drugsData, sourceData, loadingSummary, loadingSynergyData, isDataAvailable,
+      cellData, drugsData, sourceData, loadingSummary, loadingSynergyData, isDataAvailable, enableComboScore,
     } = this.state;
-
+    console.log(enableComboScore);
 
     return (
 
