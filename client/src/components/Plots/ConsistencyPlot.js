@@ -1,3 +1,6 @@
+/* eslint-disable no-plusplus */
+/* eslint-disable no-restricted-properties */
+/* eslint-disable class-methods-use-this */
 import * as d3 from 'd3';
 import React, { Fragment } from 'react';
 import regression from 'regression';
@@ -14,19 +17,28 @@ export default class ConsistencyPlot extends React.Component {
 
   componentDidMount() {
     const {
-      plotId, data, datasets
+      plotId, data, datasets,
     } = this.props;
     this.plotConsistency(data, datasets, plotId);
   }
 
   plotConsistency(data, datasets, plotId) {
     const methods = ['ZIP', 'Bliss', 'Loewe', 'HSA'];
-  
+
     // set defaults in variables so that X and Y dropdowns can access values
     let xvalue = 'Bliss';
     let yvalue = 'ZIP';
-    const width = 700;
-    const height = 400;
+
+    // if all, big plot. Else, small
+    let width;
+    let height;
+    if (plotId.includes('All')) {
+      width = 700;
+      height = 400;
+    } else {
+      width = 350;
+      height = 300;
+    }
 
     // dropdown to choose the method
     const dropdownX = d3.select(`#${plotId}`)
@@ -35,7 +47,7 @@ export default class ConsistencyPlot extends React.Component {
       .on('change', () => {
         xvalue = dropdownX.property('value');
         // plot the scatter based on the method
-        d3.select('#scatter').remove();
+        d3.select(`#scatter${plotId}`).remove();
         this.plotScatter(xvalue.toLowerCase(), yvalue.toLowerCase(), width, height, data, datasets, plotId);
       });
 
@@ -59,7 +71,7 @@ export default class ConsistencyPlot extends React.Component {
       .on('change', () => {
         yvalue = dropdownY.property('value');
         // plot the scatter based on the method
-        d3.select('#scatter').remove();
+        d3.select(`#scatter${plotId}`).remove();
         this.plotScatter(xvalue.toLowerCase(), yvalue.toLowerCase(), width, height, data, datasets, plotId);
       });
 
@@ -75,7 +87,7 @@ export default class ConsistencyPlot extends React.Component {
       })
       .attr('value', d => d)
       .text(d => d);
-    
+
     // call plot at the end to plot it after the dropdowns have been rendered
     this.plotScatter(xvalue.toLowerCase(), yvalue.toLowerCase(), width, height, data, datasets, plotId);
   }
@@ -127,22 +139,22 @@ export default class ConsistencyPlot extends React.Component {
     const order = [];
     let sum = 0;
 
-    for (var i = 0; i < N; i++) {
+    for (let i = 0; i < N; i++) {
       order.push([multiList[p1][i], multiList[p2][i]]);
     }
 
     order.sort((a, b) => a[0] - b[0]);
 
-    for (var i = 0; i < N; i++) {
+    for (let i = 0; i < N; i++) {
       order[i].push(i + 1);
     }
 
     order.sort((a, b) => a[1] - b[1]);
 
-    for (var i = 0; i < N; i++) {
+    for (let i = 0; i < N; i++) {
       order[i].push(i + 1);
     }
-    for (var i = 0; i < N; i++) {
+    for (let i = 0; i < N; i++) {
       sum += Math.pow((order[i][2]) - (order[i][3]), 2);
     }
 
@@ -152,24 +164,24 @@ export default class ConsistencyPlot extends React.Component {
   }
 
   async plotScatter(xvalue, yvalue, width, height, data, datasets, plotId) {
-    console.log(datasets)
+    console.log(data);
     const margin = {
       top: 50,
       right: 170,
       bottom: 90,
       left: 180,
     };
-    const colorPlot = ['#fca03e','#5fcfff','#f788c1','#54c9b7','#9a95de', '#f3c833','#7456c7', '#7e6276', '#afb113', '#fd879c', '#fb78fa', '#24c373', '#45bbc5', '#766b21', '#abad93', '#c19ce3', '#fd8f11'];
+    const colorPlot = ['#fca03e', '#5fcfff', '#f788c1', '#54c9b7', '#9a95de', '#f3c833', '#7456c7', '#7e6276', '#afb113', '#fd879c', '#fb78fa', '#24c373', '#45bbc5', '#766b21', '#abad93', '#c19ce3', '#fd8f11'];
 
-    let colorMap = {};
+    const colorMap = {};
     datasets.forEach((x, i) => {
       colorMap[x.name] = colorPlot[i];
-    })
+    });
 
     const svg = d3.select(`#${plotId}`)
       .append('svg')
       .attr('fill', 'white')
-      .attr('id', 'scatter')
+      .attr('id', `scatter${plotId}`)
       .attr('width', width + margin.left + margin.right)
       .attr('height', height + margin.top + margin.bottom)
       .append('g')
@@ -215,6 +227,8 @@ export default class ConsistencyPlot extends React.Component {
     // Add the X Axis
     svg.append('g')
       .attr('class', 'x axis')
+      // .attr('x', 0)
+      // .attr('y', yrange(0))
       .attr('transform', `translate(0,${height})`)
       .attr('fill', 'none')
       .attr('stroke', 'black')
@@ -247,16 +261,14 @@ export default class ConsistencyPlot extends React.Component {
     data.forEach((x) => {
       if (!datasetsPlotted.includes(x.sourceName)) {
         datasetsPlotted.push(x.sourceName);
-      } 
-    })
+      }
+    });
 
     // add dots
     dots.append('circle')
       .attr('id', 'dot')
       .attr('r', '3px')
-      .attr('fill', (d) => {
-        return colorMap[d.sourceName];
-      })
+      .attr('fill', d => colorMap[d.sourceName])
       .attr('cx', (d, i) => xrange(d[xvalue]))
       .attr('cy', (d, i) => yrange(d[yvalue]))
       .style('opacity', 1)
@@ -293,9 +305,9 @@ export default class ConsistencyPlot extends React.Component {
     const b = coeffs.equation[1];
 
     // finding the start and end by putting the min x value and max x value into y = mx+b
-    const xval_arr = data.map(item => item[xvalue]);
-    const x1 = d3.min(xval_arr);
-    const x2 = d3.max(xval_arr);
+    const xvalArr = data.map(item => item[xvalue]);
+    const x1 = d3.min(xvalArr);
+    const x2 = d3.max(xvalArr);
     const y1 = m * x1 + b;
     const y2 = m * x2 + b;
 
@@ -308,7 +320,7 @@ export default class ConsistencyPlot extends React.Component {
       .attr('stroke', colors.color_accent_1);
 
     // calculating C-Index - map json to arrays and call, pearson, spearman
-    const firstArr = xval_arr;
+    const firstArr = xvalArr;
     const secondArr = data.map(x => x[yvalue]);
     const cindex = await this.findCIndex(firstArr, secondArr);
     const pearson = this.findPearson(firstArr, secondArr);
@@ -318,7 +330,12 @@ export default class ConsistencyPlot extends React.Component {
     svg.append('text')
       .attr('dx', width + 10)
       .attr('dy', height / 3 - 20)
-      .attr('font-size', '17px')
+      .attr('font-size', () => {
+        if (plotId.includes('All')) {
+          return '17px';
+        }
+        return '13px';
+      })
       .style('opacity', '1')
       .attr('fill', 'black')
       .text(d => `Concordance index: ${d3.format('.4f')(cindex)}`);
@@ -326,7 +343,12 @@ export default class ConsistencyPlot extends React.Component {
     svg.append('text')
       .attr('dx', width + 10)
       .attr('dy', height / 3)
-      .attr('font-size', '17px')
+      .attr('font-size', () => {
+        if (plotId.includes('All')) {
+          return '17px';
+        }
+        return '13px';
+      })
       .style('opacity', '1')
       .attr('fill', 'black')
       .text(d => `Spearman rho: ${d3.format('.4f')(spearman)}`);
@@ -334,29 +356,33 @@ export default class ConsistencyPlot extends React.Component {
     svg.append('text')
       .attr('dx', width + 10)
       .attr('dy', height / 3 + 20)
-      .attr('font-size', '17px')
+      .attr('font-size', () => {
+        if (plotId.includes('All')) {
+          return '17px';
+        }
+        return '13px';
+      })
       .style('opacity', '1')
       .attr('fill', 'black')
       .text(d => `Pearson r: ${d3.format('.4f')(pearson)}`);
 
     // plot colour legend
-    datasetsPlotted.forEach((x,i) => {
+    datasetsPlotted.forEach((x, i) => {
       svg.append('rect')
         .attr('width', 11)
         .attr('height', 11)
         .attr('fill', colorMap[x])
         .attr('x', width + 10)
-        .attr('y', height / 3 + 100 + (20*i))
+        .attr('y', height / 3 + 100 + (20 * i));
 
       svg.append('text')
         .attr('dx', width + 30)
-        .attr('dy', height / 3 + 111 + (20*i))
+        .attr('dy', height / 3 + 111 + (20 * i))
         .attr('font-size', '13px')
         .style('opacity', '1')
         .attr('fill', 'black')
         .text(x);
-    })
-
+    });
   }
 
   render() {
