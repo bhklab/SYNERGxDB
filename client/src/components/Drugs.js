@@ -79,6 +79,7 @@ class Drugs extends Component {
     fetch('/api/drugs/')
       .then(response => response.json())
       .then((data) => {
+        console.log(data);
         // Sorts by presence of ATC code, then by presence of DrugBank id,
         // then by presence of PubChem id and lastly it sorts drug names alphabetically
         data.sort((a, b) => {
@@ -147,6 +148,12 @@ class Drugs extends Component {
       Header: 'DrugBank ID',
       accessor: 'idDrugBank',
       Cell: props => <a className="hover" target="_blank" rel="noopener noreferrer" href={`https://www.drugbank.ca/drugs/${props.value}`}>{props.value}</a>,
+    }, {
+      Header: 'Smiles',
+      accessor: 'smiles',
+    }, {
+      Header: 'InChI Key',
+      accessor: 'inchikey',
     }];
     const headers = [
       { displayName: 'Name', id: 'name' },
