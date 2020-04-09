@@ -4,7 +4,6 @@ import React, { Component, Fragment } from 'react';
 import ReactRouterPropTypes from 'react-router-prop-types';
 import queryString from 'query-string';
 import styled from 'styled-components';
-import DownloadButton from './UtilComponents/DownloadButton';
 // import Loading from 'react-loading-components';
 
 import colors from '../styles/colors';
@@ -76,7 +75,6 @@ export default class ComboDetails extends Component {
       synergyData: null,
       loadingSynergyData: true,
       isDataAvailable: false,
-      enableComboScore: false,
       csvData: [],
     };
   }
@@ -132,17 +130,34 @@ export default class ComboDetails extends Component {
       cellData,
       drugsData,
       sourceData,
-      // ComboScore available only for NCI-Almanac
-      enableComboScore: idSource === '2',
     });
-    console.log('cellData:', cellData);
-    console.log('drugsData:', drugsData);
-    console.log('sourceData:', sourceData);
 
     fetch(`/api/combos/matrix?comboId=${comboId}&idSource=${idSource}`)
       .then(response => response.json())
       .then((data) => {
-        console.log(data);
+        const csvData = data.map(row => ({
+          compoundA: drugsData[0].name,
+          compoundB: drugsData[1].name,
+          ...row,
+          sourceName: sourceData.name,
+        }));
+
+        const csvHeaders = [
+          { displayName: 'Compound A', id: 'compoundA' },
+          { displayName: 'Compound B', id: 'compoundB' },
+          { displayName: 'Concentration (Compound A)', id: 'concA' },
+          { displayName: 'Concentration (Compound B)', id: 'concB' },
+          { displayName: 'Source', id: 'sourceName' },
+          { displayName: 'Raw Matrix', id: 'raw_matrix' },
+          { displayName: 'ZIP Matrix', id: 'zip_matrix' },
+          { displayName: 'Bliss Matrix', id: 'bliss_matrix' },
+          { displayName: 'Loewe Matrix', id: 'loewe_matrix' },
+          { displayName: 'HSA Matrix', id: 'hsa_matrix' },
+        ];
+        // ComboScore available only for NCI-Almanac
+        if (idSource === '2') csvHeaders.push({ displayName: 'Comboscore', id: 'combo_score' });
+        const csvFileName = `combo_matrix_${comboId}_${idSource}`;
+
         const standarizedData = standarizeRawData(data);
         // Sorts data this step is required for some datasets
         // to standarize data for synergy table and heat map
@@ -185,7 +200,14 @@ export default class ComboDetails extends Component {
             }
           });
         });
-        this.setState({ synergyData, loadingSynergyData: false, isDataAvailable: true });
+        this.setState({
+          synergyData,
+          loadingSynergyData: false,
+          isDataAvailable: true,
+          csvData,
+          csvHeaders,
+          csvFileName,
+        });
       });
   }
 
@@ -201,9 +223,8 @@ export default class ComboDetails extends Component {
 
   render() {
     const {
-      cellData, drugsData, sourceData, loadingSummary, loadingSynergyData, isDataAvailable, enableComboScore,
+      cellData, drugsData, sourceData, loadingSummary, loadingSynergyData, isDataAvailable,
     } = this.state;
-    console.log(enableComboScore);
 
     return (
 

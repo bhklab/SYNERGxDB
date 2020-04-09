@@ -6,6 +6,7 @@ import 'react-table/react-table.css';
 import transitions from '../styles/transitions';
 
 import Plot3D from './Plots/Plot3D';
+import DownloadButton from './UtilComponents/DownloadButton';
 
 import { ComboContext } from './Context/ComboContext';
 
@@ -13,6 +14,16 @@ const SynergyContainer = styled.div`
   padding-bottom: 10px;
   border-bottom: 2px solid ${colors.color_main_3};
   margin-bottom: 10px;
+
+  .top-matrix {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    
+    h2 {
+      width: 300px;
+    }
+  }
 `;
 
 
@@ -94,7 +105,9 @@ class SynergyMatrices extends Component {
 
   render() {
     const { handleClick } = this;
-    const { drugsData, cellData, synergyData } = this.context;
+    const {
+      drugsData, cellData, synergyData, csvData, csvHeaders, csvFileName,
+    } = this.context;
     const {
       dataTypes, selectedType,
     } = this.state;
@@ -163,7 +176,14 @@ class SynergyMatrices extends Component {
     const scoreExist = accessor => synergyData.every(item => item[accessor] !== null);
     return (
       <SynergyContainer>
-        <h2>Synergy Matrices</h2>
+        <div className="top-matrix">
+          <h2>Synergy Matrices</h2>
+          <DownloadButton
+            data={csvData}
+            headers={csvHeaders}
+            filename={csvFileName}
+          />
+        </div>
         <ButtonContainer>
           <button
             type="button"
