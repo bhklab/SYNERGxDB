@@ -29,6 +29,8 @@ const StyledWrapper = styled.div`
 
   .consistencyGrid {
     display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
 
     .consistencyContainer {
       flex: 45%;
@@ -157,7 +159,7 @@ class Consistency extends Component {
                       {' '}
                       =
                       {' '}
-                      {results.length}
+                      {allResults.length}
                     </h2>
                     <div className="consistencyContainer">
                       <ConsistencyPlot
@@ -169,6 +171,7 @@ class Consistency extends Component {
                     <div className="consistencyGrid">
                       {Object.keys(results).map(x => (
                         <div key={x} className="consistencyContainer">
+                          {console.log(x, results[x])}
                           <ConsistencyPlot
                             plotId={`consistencyPlot${x}`}
                             data={results[x]}
