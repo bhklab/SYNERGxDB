@@ -6,7 +6,7 @@ import styled from 'styled-components';
 
 import { ComboContext } from '../Context/ComboContext';
 
-import colors from '../../styles/colors';
+import colors from '../../../styles/colors';
 
 const StyledDiv = styled.div`
     grid-column: 2;

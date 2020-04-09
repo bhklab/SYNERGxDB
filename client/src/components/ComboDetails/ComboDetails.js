@@ -4,19 +4,17 @@ import React, { Component, Fragment } from 'react';
 import ReactRouterPropTypes from 'react-router-prop-types';
 import queryString from 'query-string';
 import styled from 'styled-components';
-// import Loading from 'react-loading-components';
 
-import colors from '../styles/colors';
-import cellosaurus from '../images/logos/cellosaurus.jpg';
-import drugbank from '../images/logos/drugbank.png';
-import pubchem from '../images/logos/pubchem.gif';
-import pubmed from '../images/logos/pubmed.jpeg';
+import colors from '../../styles/colors';
+import cellosaurus from '../../images/logos/cellosaurus.jpg';
+import drugbank from '../../images/logos/drugbank.png';
+import pubchem from '../../images/logos/pubchem.gif';
+import pubmed from '../../images/logos/pubmed.jpeg';
 
 import SynergyMatrices from './SynergyMatrices';
 import { ComboContext } from './Context/ComboContext';
 import SynergisticInhibition from './SynergisticInhibition';
 import SynScoreComboPlot from './Plots/SynScoreComboPlot';
-// import SingleAgents from './SingleAgents';
 
 
 const StyledSummary = styled.div`
@@ -58,6 +56,20 @@ const standarizeRawData = (array) => {
   // it's inhibition data, no changes needed
   return array;
 };
+
+// Different datasets use different units for concentrations
+const getDatasetUnits = (sourceString) => {
+  switch (sourceString) {
+    case '2':
+    // NCI-ALMANAC
+      return 'M';
+    // DECREASE
+    case '9':
+      return 'nM';
+    default:
+      return 'µM';
+  }
+};
 export default class ComboDetails extends Component {
   static propTypes = {
     location: ReactRouterPropTypes.location.isRequired,
@@ -88,6 +100,8 @@ export default class ComboDetails extends Component {
 
     let cellData; let drugsData; let
       sourceData;
+
+    const datasetUnits = getDatasetUnits(idSource);
 
     await fetch(`/api/cell_lines/info?idSample=${idSample}`, {
       method: 'GET',
@@ -130,6 +144,7 @@ export default class ComboDetails extends Component {
       cellData,
       drugsData,
       sourceData,
+      datasetUnits,
     });
 
     fetch(`/api/combos/matrix?comboId=${comboId}&idSource=${idSource}`)

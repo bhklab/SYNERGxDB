@@ -5,7 +5,7 @@ import Plot from 'react-plotly.js';
 import styled from 'styled-components';
 import ReactLoading from 'react-loading';
 
-import colors from '../../styles/colors';
+import colors from '../../../styles/colors';
 import { ComboContext } from '../Context/ComboContext';
 
 

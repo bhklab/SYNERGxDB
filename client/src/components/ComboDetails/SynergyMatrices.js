@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import ReactTable from 'react-table';
-import colors from '../styles/colors';
+import colors from '../../styles/colors';
 import 'react-table/react-table.css';
-import transitions from '../styles/transitions';
+import transitions from '../../styles/transitions';
 
 import Plot3D from './Plots/Plot3D';
-import DownloadButton from './UtilComponents/DownloadButton';
+import DownloadButton from '../UtilComponents/DownloadButton';
 
 import { ComboContext } from './Context/ComboContext';
 
@@ -106,7 +106,8 @@ class SynergyMatrices extends Component {
   render() {
     const { handleClick } = this;
     const {
-      drugsData, cellData, synergyData, csvData, csvHeaders, csvFileName,
+      drugsData, cellData, synergyData, csvData,
+      csvHeaders, csvFileName, datasetUnits,
     } = this.context;
     const {
       dataTypes, selectedType,
@@ -126,7 +127,7 @@ class SynergyMatrices extends Component {
       const concBArray = [...new Set(synergyData.map(item => item.concB))];
       // Building column structure
       const subcolumns = concBArray.map((item, index) => ({
-        Header: `${item} µM`,
+        Header: `${item} ${datasetUnits}`,
         accessor: `${dataTypes[selectedType]}.${index}`,
         Cell: props => <div style={{ textAlign: 'center' }}>{props.value !== null ? props.value.toFixed(3) : '-'}</div>,
       }));
@@ -142,7 +143,7 @@ class SynergyMatrices extends Component {
             <div className="raw-names">
               {props.value}
               {' '}
-              µM
+              {datasetUnits}
             </div>
           ),
         }],

@@ -1,10 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
-// import SingleDrugInhibitionPlot from './Plots/SingleDrugInhibitionPlot';
 import SingleAgentPlot from './Plots/SingleAgentPlot';
 import InhibitionHeatMap from './Plots/InhibitionHeatMap';
 
-import colors from '../styles/colors';
+import colors from '../../styles/colors';
 
 const StyledContainer = styled.div`
     padding-bottom: 10px;
