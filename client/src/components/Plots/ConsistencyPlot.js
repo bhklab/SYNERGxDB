@@ -27,7 +27,7 @@ export default class ConsistencyPlot extends React.Component {
 
     // set defaults in variables so that X and Y dropdowns can access values
     let xvalue = 'Bliss';
-    let yvalue = 'ZIP';
+    let yvalue = 'Loewe';
 
     // if all, big plot. Else, small
     let width;
@@ -36,7 +36,7 @@ export default class ConsistencyPlot extends React.Component {
       width = 700;
       height = 400;
     } else {
-      width = 350;
+      width = 400;
       height = 300;
     }
 
@@ -164,13 +164,15 @@ export default class ConsistencyPlot extends React.Component {
   }
 
   async plotScatter(xvalue, yvalue, width, height, data, datasets, plotId) {
-    console.log(data);
     const margin = {
       top: 50,
       right: 170,
       bottom: 90,
       left: 180,
     };
+    if (!plotId.includes('All')) {
+      margin.right = 30;
+    }
     const colorPlot = ['#fca03e', '#5fcfff', '#f788c1', '#54c9b7', '#9a95de', '#f3c833', '#7456c7', '#7e6276', '#afb113', '#fd879c', '#fb78fa', '#24c373', '#45bbc5', '#766b21', '#abad93', '#c19ce3', '#fd8f11'];
 
     const colorMap = {};
@@ -201,7 +203,8 @@ export default class ConsistencyPlot extends React.Component {
     // set axes for graph
     const xAxis = d3.axisBottom()
       .scale(xrange)
-      .tickPadding(2);
+      .tickPadding(2)
+      .tickFormat(d => d3.format('.1f')(d));
 
     const yAxis = d3.axisLeft()
       .scale(yrange)
@@ -216,7 +219,12 @@ export default class ConsistencyPlot extends React.Component {
       .call(yAxis)
       .selectAll('text')
       .attr('fill', 'black')
-      .style('font-size', 15)
+      .attr('font-size', () => {
+        if (plotId.includes('All')) {
+          return '15px';
+        }
+        return '13px';
+      })
       .attr('stroke', 'none');
 
     svg.selectAll('.tick')
@@ -236,7 +244,12 @@ export default class ConsistencyPlot extends React.Component {
       .call(xAxis)
       .selectAll('text')
       .attr('fill', 'black')
-      .style('font-size', 14)
+      .attr('font-size', () => {
+        if (plotId.includes('All')) {
+          return '14px';
+        }
+        return '13px';
+      })
       .attr('stroke', 'none');
 
     // const dropdownYLabel = svg.append('text')
@@ -328,8 +341,18 @@ export default class ConsistencyPlot extends React.Component {
 
     // append stats to dom
     svg.append('text')
-      .attr('dx', width + 10)
-      .attr('dy', height / 3 - 20)
+      .attr('dx', () => {
+        if (plotId.includes('All')) {
+          return width + 10;
+        }
+        return width / 2 + 30;
+      })
+      .attr('dy', () => {
+        if (plotId.includes('All')) {
+          return height / 3 - 20;
+        }
+        return height + 40;
+      })
       .attr('font-size', () => {
         if (plotId.includes('All')) {
           return '17px';
@@ -338,11 +361,21 @@ export default class ConsistencyPlot extends React.Component {
       })
       .style('opacity', '1')
       .attr('fill', 'black')
-      .text(d => `Concordance index: ${d3.format('.4f')(cindex)}`);
+      .text(() => `Concordance index: ${d3.format('.4f')(cindex)}`);
 
     svg.append('text')
-      .attr('dx', width + 10)
-      .attr('dy', height / 3)
+      .attr('dx', () => {
+        if (plotId.includes('All')) {
+          return width + 10;
+        }
+        return width / 2 + 30;
+      })
+      .attr('dy', () => {
+        if (plotId.includes('All')) {
+          return height / 3;
+        }
+        return height + 60;
+      })
       .attr('font-size', () => {
         if (plotId.includes('All')) {
           return '17px';
@@ -354,8 +387,18 @@ export default class ConsistencyPlot extends React.Component {
       .text(d => `Spearman rho: ${d3.format('.4f')(spearman)}`);
 
     svg.append('text')
-      .attr('dx', width + 10)
-      .attr('dy', height / 3 + 20)
+      .attr('dx', () => {
+        if (plotId.includes('All')) {
+          return width + 10;
+        }
+        return width / 2 + 30;
+      })
+      .attr('dy', () => {
+        if (plotId.includes('All')) {
+          return height / 3 + 20;
+        }
+        return height + 80;
+      })
       .attr('font-size', () => {
         if (plotId.includes('All')) {
           return '17px';
@@ -366,23 +409,25 @@ export default class ConsistencyPlot extends React.Component {
       .attr('fill', 'black')
       .text(d => `Pearson r: ${d3.format('.4f')(pearson)}`);
 
-    // plot colour legend
-    datasetsPlotted.forEach((x, i) => {
-      svg.append('rect')
-        .attr('width', 11)
-        .attr('height', 11)
-        .attr('fill', colorMap[x])
-        .attr('x', width + 10)
-        .attr('y', height / 3 + 100 + (20 * i));
+    if (plotId.includes('All')) {
+      // plot colour legend
+      datasetsPlotted.forEach((x, i) => {
+        svg.append('rect')
+          .attr('width', 11)
+          .attr('height', 11)
+          .attr('fill', colorMap[x])
+          .attr('x', width + 10)
+          .attr('y', height / 3 + 100 + (20 * i));
 
-      svg.append('text')
-        .attr('dx', width + 30)
-        .attr('dy', height / 3 + 111 + (20 * i))
-        .attr('font-size', '13px')
-        .style('opacity', '1')
-        .attr('fill', 'black')
-        .text(x);
-    });
+        svg.append('text')
+          .attr('dx', width + 30)
+          .attr('dy', height / 3 + 111 + (20 * i))
+          .attr('font-size', '13px')
+          .style('opacity', '1')
+          .attr('fill', 'black')
+          .text(x);
+      });
+    }
   }
 
   render() {
