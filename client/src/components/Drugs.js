@@ -79,7 +79,6 @@ class Drugs extends Component {
     fetch('/api/drugs/')
       .then(response => response.json())
       .then((data) => {
-        console.log(data);
         // Sorts by presence of ATC code, then by presence of DrugBank id,
         // then by presence of PubChem id and lastly it sorts drug names alphabetically
         data.sort((a, b) => {

@@ -75,58 +75,89 @@ export default class ComboDetails extends Component {
       synergyData: null,
       loadingSynergyData: true,
       isDataAvailable: false,
+      csvData: [],
     };
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     const { location } = this.props;
     const requestParams = queryString.parse(location.search);
     const {
       idSource, idDrugA, idDrugB, idSample, comboId,
     } = requestParams;
 
+    let cellData; let drugsData; let
+      sourceData;
+
+    await fetch(`/api/cell_lines/info?idSample=${idSample}`, {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(response => response.json())
+      .then((data) => {
+        cellData = data;
+      });
+    await fetch(`/api/drugs/info?idDrugA=${idDrugA}&idDrugB=${idDrugB}`, {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(response => response.json())
+      .then((data) => {
+        drugsData = data;
+      });
+    await fetch(`/api/datasets?idSource=${idSource}`, {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(response => response.json())
+      .then((data) => {
+        sourceData = data;
+      });
+
     this.setState({
       comboId: parseInt(comboId, 10),
       idSource: parseInt(idSource, 10),
       idSample: parseInt(idSample, 10),
+      cellData,
+      drugsData,
+      sourceData,
     });
 
-    fetch(`/api/cell_lines/info?idSample=${idSample}`, {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-    })
-      .then(response => response.json())
-      .then((cellData) => {
-        this.setState({ cellData });
-      });
-    fetch(`/api/drugs/info?idDrugA=${idDrugA}&idDrugB=${idDrugB}`, {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-    })
-      .then(response => response.json())
-      .then((drugsData) => {
-        this.setState({ drugsData });
-      });
-    fetch(`/api/datasets?idSource=${idSource}`, {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-    })
-      .then(response => response.json())
-      .then((sourceData) => {
-        this.setState({ sourceData });
-      });
     fetch(`/api/combos/matrix?comboId=${comboId}&idSource=${idSource}`)
       .then(response => response.json())
       .then((data) => {
+        const csvData = data.map(row => ({
+          compoundA: drugsData[0].name,
+          compoundB: drugsData[1].name,
+          ...row,
+          sourceName: sourceData.name,
+        }));
+
+        const csvHeaders = [
+          { displayName: 'Compound A', id: 'compoundA' },
+          { displayName: 'Compound B', id: 'compoundB' },
+          { displayName: 'Concentration (Compound A)', id: 'concA' },
+          { displayName: 'Concentration (Compound B)', id: 'concB' },
+          { displayName: 'Source', id: 'sourceName' },
+          { displayName: 'Raw Matrix', id: 'raw_matrix' },
+          { displayName: 'ZIP Matrix', id: 'zip_matrix' },
+          { displayName: 'Bliss Matrix', id: 'bliss_matrix' },
+          { displayName: 'Loewe Matrix', id: 'loewe_matrix' },
+          { displayName: 'HSA Matrix', id: 'hsa_matrix' },
+        ];
+        // ComboScore available only for NCI-Almanac
+        if (idSource === '2') csvHeaders.push({ displayName: 'Comboscore', id: 'combo_score' });
+        const csvFileName = `combo_matrix_${comboId}_${idSource}`;
+
         const standarizedData = standarizeRawData(data);
         // Sorts data this step is required for some datasets
         // to standarize data for synergy table and heat map
@@ -169,7 +200,14 @@ export default class ComboDetails extends Component {
             }
           });
         });
-        this.setState({ synergyData, loadingSynergyData: false, isDataAvailable: true });
+        this.setState({
+          synergyData,
+          loadingSynergyData: false,
+          isDataAvailable: true,
+          csvData,
+          csvHeaders,
+          csvFileName,
+        });
       });
   }
 
@@ -187,7 +225,6 @@ export default class ComboDetails extends Component {
     const {
       cellData, drugsData, sourceData, loadingSummary, loadingSynergyData, isDataAvailable,
     } = this.state;
-
 
     return (
 
