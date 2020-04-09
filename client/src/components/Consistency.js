@@ -14,6 +14,37 @@ const StyledWrapper = styled.div`
     flex-direction: column;
     justify-content: center;
     align-items: center;
+
+    .selectX {
+      margin-left: 460px;
+      margin-top: 500px;
+      
+    }
+  
+    .selectY {
+      margin-left: 0px;
+      margin-top: 250px;
+    }
+  }
+
+  .consistencyGrid {
+    display: flex;
+
+    .consistencyContainer {
+      flex: 45%;
+      width: 45%;
+    }
+
+    .selectX {
+      margin-left: 250px;
+      margin-top: 400px;
+      
+    }
+  
+    .selectY {
+      margin-left: 50px;
+      margin-top: 20px;
+    }
   }
   
   text-align: left;
@@ -22,17 +53,6 @@ const StyledWrapper = styled.div`
 
   select {
     position:absolute;
-  }
-
-  .selectX {
-    margin-left: 460px;
-    margin-top: 500px;
-    
-  }
-
-  .selectY {
-    margin-left: 0px;
-    margin-top: 250px;
   }
 
   h2 {
@@ -49,7 +69,8 @@ class Consistency extends Component {
       super();
       this.state = {
         results: [],
-        datasets: [], 
+        allResults: [],
+        datasets: [],
       };
     }
 
@@ -74,31 +95,41 @@ class Consistency extends Component {
       })
         .then(response => response.json())
         .then((data) => {
-          this.setState({
-            results: data,
+          // parse data into json for all and separate datasets
+          const results = {};
+          const datasets = [...new Set(data.map(x => x.sourceName))];
+          datasets.forEach((x) => {
+            results[x] = [];
           });
-          
+
+          data.forEach((x) => {
+            results[x.sourceName].push(x);
+          });
+
+          this.setState({
+            results,
+            allResults: data,
+          });
         });
 
       fetch('/api/datasets'.concat(queryParams), {
-          method: 'GET',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-        })
-          .then(response => response.json())
-          .then((data) => {
-            this.setState({
-              datasets: data,
-            });
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+      })
+        .then(response => response.json())
+        .then((data) => {
+          this.setState({
+            datasets: data,
           });
-      
+        });
     }
 
     render() {
       const {
-        results, datasets
+        results, allResults, datasets,
       } = this.state;
       const { location } = this.props;
       const requestParams = queryString.parse(location.search);
@@ -120,21 +151,33 @@ class Consistency extends Component {
                 {datasets.length === 0 ? null : (
                   <>
                     <h2>
-                    Consistency in Synergy Scores,
-                    {' '}
-                    <i>N</i>
-                    {' '}
-                    =
-                    {' '}
-                    {results.length}
-                  </h2>
-                  <div className="consistencyContainer">
-                    <ConsistencyPlot
-                      plotId="consistencyPlot"
-                      data={results}
-                      datasets={datasets}
-                    />
-                  </div>
+                      Consistency in Synergy Scores,
+                      {' '}
+                      <i>N</i>
+                      {' '}
+                      =
+                      {' '}
+                      {results.length}
+                    </h2>
+                    <div className="consistencyContainer">
+                      <ConsistencyPlot
+                        plotId="consistencyPlotAll"
+                        data={allResults}
+                        datasets={datasets}
+                      />
+                    </div>
+                    <div className="consistencyGrid">
+                      {Object.keys(results).map(x => (
+                        <div key={x} className="consistencyContainer">
+                          <ConsistencyPlot
+                            plotId={`consistencyPlot${x}`}
+                            data={results[x]}
+                            datasets={datasets}
+                          />
+                        </div>
+                      ))}
+                    </div>
+
                   </>
                 )}
               </StyledWrapper>
