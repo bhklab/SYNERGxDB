@@ -20,8 +20,6 @@ const types = [
 
 
 class Plot3D extends React.Component {
-  static contextType = ComboContext
-
   constructor(props) {
     super(props);
     this.state = {
@@ -43,6 +41,8 @@ class Plot3D extends React.Component {
       this.updatePlotData();
     }
   }
+
+  static contextType = ComboContext
 
   checkDataValidity(xData, yData) {
     if (xData.length < 2 || (xData.length === 2 && xData[0] === 0)) {
