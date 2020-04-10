@@ -1,98 +1,23 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable no-plusplus */
 /* eslint-disable no-restricted-properties */
 /* eslint-disable class-methods-use-this */
 import * as d3 from 'd3';
-import React, { Fragment } from 'react';
+import React, { useState, useEffect, Fragment } from 'react';
 import regression from 'regression';
 import colors from '../../styles/colors';
+import ConsistencyContainer from '../ConsistencyContainer';
 
 
-export default class ConsistencyPlot extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      cindex: 0,
-    };
-  }
+const ConsistencyPlot = (props) => {
+  const {
+    data, datasets, xvalue, yvalue, plotId,
+  } = props;
 
-  componentDidMount() {
-    const {
-      plotId, data, datasets,
-    } = this.props;
-    this.plotConsistency(data, datasets, plotId);
-  }
+  let width;
+  let height;
 
-  plotConsistency(data, datasets, plotId) {
-    const methods = ['ZIP', 'Bliss', 'Loewe', 'HSA'];
-
-    // set defaults in variables so that X and Y dropdowns can access values
-    let xvalue = 'Bliss';
-    let yvalue = 'Loewe';
-
-    // if all, big plot. Else, small
-    let width;
-    let height;
-    if (plotId.includes('All')) {
-      width = 700;
-      height = 400;
-    } else {
-      width = 400;
-      height = 300;
-    }
-
-    // dropdown to choose the method
-    const dropdownX = d3.select(`#${plotId}`)
-      .append('select')
-      .attr('class', 'selectX')
-      .on('change', () => {
-        xvalue = dropdownX.property('value');
-        // plot the scatter based on the method
-        d3.select(`#scatter${plotId}`).remove();
-        this.plotScatter(xvalue.toLowerCase(), yvalue.toLowerCase(), width, height, data, datasets, plotId);
-      });
-
-
-    dropdownX.selectAll('option')
-      .data(methods)
-      .enter()
-      .append('option')
-      .property('selected', (d) => { // roundabout way to make a default value but ok
-        if (d === xvalue) {
-          return d;
-        }
-      })
-      .attr('value', d => d)
-      .text(d => d);
-
-
-    const dropdownY = d3.select(`#${plotId}`)
-      .append('select')
-      .attr('class', 'selectY')
-      .on('change', () => {
-        yvalue = dropdownY.property('value');
-        // plot the scatter based on the method
-        d3.select(`#scatter${plotId}`).remove();
-        this.plotScatter(xvalue.toLowerCase(), yvalue.toLowerCase(), width, height, data, datasets, plotId);
-      });
-
-    dropdownY.selectAll('option')
-      .data(methods)
-      .enter()
-      .append('option')
-      .property('selected', (d) => { // roundabout way to make a default value but ok
-        if (d === yvalue) {
-          return d;
-        }
-        return null;
-      })
-      .attr('value', d => d)
-      .text(d => d);
-
-    // call plot at the end to plot it after the dropdowns have been rendered
-    this.plotScatter(xvalue.toLowerCase(), yvalue.toLowerCase(), width, height, data, datasets, plotId);
-  }
-
-  async findCIndex(x, y) {
+  const findCIndex = async (x, y) => {
     const response = await fetch('http://52.138.39.182/ocpu/library/wCI/R/paired.concordance.index/json', {
       method: 'post',
       headers: { 'Content-Type': 'application/json' },
@@ -104,7 +29,7 @@ export default class ConsistencyPlot extends React.Component {
     });
     const data = await response.json();
     return data.cindex[0];
-  }
+  };
 
 
   /**
@@ -113,7 +38,7 @@ export default class ConsistencyPlot extends React.Component {
      * @param {number[]} d1
      * @param {number[]} d2
      */
-  findPearson(d1, d2) {
+  const findPearson = (d1, d2) => {
     const { min, pow, sqrt } = Math;
     const add = (a, b) => a + b;
     const n = min(d1.length, d2.length);
@@ -129,12 +54,12 @@ export default class ConsistencyPlot extends React.Component {
       return 0;
     }
     return (mulSum - (sum1 * sum2 / n)) / dense;
-  }
+  };
 
   /**
      * from https://stackoverflow.com/questions/15886527/javascript-library-for-pearson-and-or-spearman-correlations
     */
-  findSpearman(multiList, p1, p2) {
+  const findSpearman = (multiList, p1, p2) => {
     const N = multiList[p1].length;
     const order = [];
     let sum = 0;
@@ -161,9 +86,9 @@ export default class ConsistencyPlot extends React.Component {
     const r = 1 - (6 * sum / (N * (N * N - 1)));
 
     return r;
-  }
+  };
 
-  async plotScatter(xvalue, yvalue, width, height, data, datasets, plotId) {
+  const plotScatter = async (xvalue, yvalue, width, height, data, datasets, plotId) => {
     const margin = {
       top: 50,
       right: 170,
@@ -184,6 +109,7 @@ export default class ConsistencyPlot extends React.Component {
       .append('svg')
       .attr('fill', 'white')
       .attr('id', `scatter${plotId}`)
+      .attr('class', 'scatter')
       .attr('width', width + margin.left + margin.right)
       .attr('height', height + margin.top + margin.bottom)
       .append('g')
@@ -335,9 +261,9 @@ export default class ConsistencyPlot extends React.Component {
     // calculating C-Index - map json to arrays and call, pearson, spearman
     const firstArr = xvalArr;
     const secondArr = data.map(x => x[yvalue]);
-    const cindex = await this.findCIndex(firstArr, secondArr);
-    const pearson = this.findPearson(firstArr, secondArr);
-    const spearman = this.findSpearman([firstArr, secondArr], 0, 1);
+    const cindex = await findCIndex(firstArr, secondArr);
+    const pearson = findPearson(firstArr, secondArr);
+    const spearman = findSpearman([firstArr, secondArr], 0, 1);
 
     // append stats to dom
     svg.append('text')
@@ -428,15 +354,43 @@ export default class ConsistencyPlot extends React.Component {
           .text(x);
       });
     }
-  }
+  };
 
-  render() {
-    const { data, plotId } = this.props;
-    return (
-      <Fragment>
-        {/* <h2>Consistency in Synergy Scores, <i>N</i> = {data.length}</h2> */}
-        <div id={plotId} className="plot" />
-      </Fragment>
-    );
-  }
-}
+  // TODO: multiple useeffects will cause it to render twice, which is
+  // quite a load. Find a solution
+  useEffect(() => {
+    // if all, big plot. Else, small
+    if (plotId.includes('All')) {
+      width = 700;
+      height = 400;
+    } else {
+      width = 400;
+      height = 300;
+    }
+    d3.select(`#scatter${plotId}`).remove();
+    plotScatter(xvalue.toLowerCase(), yvalue.toLowerCase(), width, height, data, datasets, plotId);
+  }, []);
+
+  useEffect(() => {
+    // if all, big plot. Else, small
+    if (plotId.includes('All')) {
+      width = 700;
+      height = 400;
+    } else {
+      width = 400;
+      height = 300;
+    }
+    d3.select(`#scatter${plotId}`).remove();
+    plotScatter(xvalue.toLowerCase(), yvalue.toLowerCase(), width, height, data, datasets, plotId);
+  }, [xvalue, yvalue]);
+
+
+  return (
+    <Fragment>
+      {/* <h2>Consistency in Synergy Scores, <i>N</i> = {data.length}</h2> */}
+      <div id={plotId} className="plot" />
+    </Fragment>
+  );
+};
+
+export default ConsistencyPlot;

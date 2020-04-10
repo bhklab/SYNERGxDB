@@ -4,51 +4,10 @@ import ReactRouterPropTypes from 'react-router-prop-types';
 import queryString from 'query-string';
 
 // import colors from '../styles/colors';
-import ConsistencyPlot from './Plots/ConsistencyPlot';
+import ConsistencyContainer from './ConsistencyContainer';
 import QueryCard from './UtilComponents/QueryCard';
 
-const StyledWrapper = styled.div`
-
-  .consistencyContainer {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-
-    .selectX {
-      margin-left: 460px;
-      margin-top: 500px;
-      
-    }
-  
-    .selectY {
-      margin-left: 0px;
-      margin-top: 250px;
-    }
-  }
-
-  .consistencyGrid {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-
-    .consistencyContainer {
-      flex: 45%;
-      width: 45%;
-    }
-
-    .selectX {
-      margin-left: 250px;
-      margin-top: 400px;
-      
-    }
-  
-    .selectY {
-      margin-left: 50px;
-      margin-top: 20px;
-    }
-  }
-  
+const StyledWrapper = styled.div`  
   text-align: left;
   background:white;
   padding:10px 30px;
@@ -161,26 +120,11 @@ class Consistency extends Component {
                       {' '}
                       {allResults.length}
                     </h2>
-                    <div className="consistencyContainer">
-                      <ConsistencyPlot
-                        plotId="consistencyPlotAll"
-                        data={allResults}
-                        datasets={datasets}
-                      />
-                    </div>
-                    <div className="consistencyGrid">
-                      {Object.keys(results).map(x => (
-                        <div key={x} className="consistencyContainer">
-                          {console.log(x, results[x])}
-                          <ConsistencyPlot
-                            plotId={`consistencyPlot${x}`}
-                            data={results[x]}
-                            datasets={datasets}
-                          />
-                        </div>
-                      ))}
-                    </div>
-
+                    <ConsistencyContainer
+                      data={results}
+                      allData={allResults}
+                      datasets={datasets}
+                    />
                   </>
                 )}
               </StyledWrapper>
