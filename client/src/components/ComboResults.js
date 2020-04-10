@@ -287,13 +287,15 @@ class ComboResults extends Component {
       { displayName: 'DrugBank ID (Compound B)', id: 'idDrugBankB' },
       { displayName: 'PubChem ID (Compound B)', id: 'idPubChemDrugB' },
       { displayName: 'Description (Compound B)', id: 'descriptionDrugB' },
+      { displayName: 'Source', id: 'sourceName' },
       { displayName: 'ZIP', id: 'zip' },
       { displayName: 'Bliss', id: 'bliss' },
       { displayName: 'Loewe', id: 'loewe' },
       { displayName: 'HSA', id: 'hsa' },
-      { displayName: 'Source', id: 'sourceName' },
     ];
 
+    // comboscore values are only available for NCI-ALMANAC DATASET
+    if (!dataset || dataset === '2') headers.push({ displayName: 'Comboscore', id: 'comboscore' });
 
     let filename = 'drug_combos';
     if (sample) filename = filename.concat(`_${sample}`);
