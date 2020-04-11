@@ -209,7 +209,7 @@ class ComboResults extends Component {
       const score = props.value ? (props.value > 0 ? props.value.toFixed(4) : props.value.toFixed(3)) : null;
       return (
         <div className="score">
-          {score >= 0.2 ? <span className="high-score">{score}</span> : <span>{score}</span>}
+          {score >= 10 ? <span className="high-score">{score}</span> : <span>{score}</span>}
         </div>
       );
     };
@@ -287,13 +287,15 @@ class ComboResults extends Component {
       { displayName: 'DrugBank ID (Compound B)', id: 'idDrugBankB' },
       { displayName: 'PubChem ID (Compound B)', id: 'idPubChemDrugB' },
       { displayName: 'Description (Compound B)', id: 'descriptionDrugB' },
+      { displayName: 'Source', id: 'sourceName' },
       { displayName: 'ZIP', id: 'zip' },
       { displayName: 'Bliss', id: 'bliss' },
       { displayName: 'Loewe', id: 'loewe' },
       { displayName: 'HSA', id: 'hsa' },
-      { displayName: 'Source', id: 'sourceName' },
     ];
 
+    // comboscore values are only available for NCI-ALMANAC DATASET
+    if (!dataset || dataset === '2') headers.push({ displayName: 'Comboscore', id: 'comboscore' });
 
     let filename = 'drug_combos';
     if (sample) filename = filename.concat(`_${sample}`);
