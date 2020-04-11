@@ -60,9 +60,7 @@ const ConsistencyContainer = (props) => {
         .append('select')
         .attr('class', 'selectX')
         .on('change', () => {
-          // d3.selectAll('.scatter').remove();
           setXValue(dropdownX.property('value'));
-          // CALL
         });
 
 
@@ -83,9 +81,7 @@ const ConsistencyContainer = (props) => {
         .append('select')
         .attr('class', 'selectY')
         .on('change', () => {
-          // d3.selectAll('.scatter').remove();
           setYValue(dropdownY.property('value'));
-          // CALL
         });
 
       dropdownY.selectAll('option')
@@ -100,8 +96,6 @@ const ConsistencyContainer = (props) => {
         })
         .attr('value', d => d)
         .text(d => d);
-
-      // CALL
     };
     plotDropdowns('consistencyPlot');
   }, []);
@@ -118,17 +112,25 @@ const ConsistencyContainer = (props) => {
         />
       </div>
       <div className="consistencyGrid">
-        {Object.keys(data).map(x => (
-          <div key={x} className="consistencyContainer">
-            <ConsistencyPlot
-              plotId={`consistencyPlot${x}`}
-              data={data[x]}
-              datasets={datasets}
-              xvalue={xvalue}
-              yvalue={yvalue}
-            />
-          </div>
-        ))}
+        {Object.keys(data).map((x) => {
+          // if data is all null on either axis by itself, do not plot
+          const isNullX = [...new Set(data[x].map(item => item[xvalue.toLowerCase()]))];
+          const isNullY = [...new Set(data[x].map(item => item[yvalue.toLowerCase()]))];
+          if ((isNullX.length === 1 && isNullX[0] === null) || (isNullY.length === 1 && isNullY[0] === null)) {
+            return null;
+          }
+          return (
+            <div key={x} className="consistencyContainer">
+              <ConsistencyPlot
+                plotId={`consistencyPlot${x}`}
+                data={data[x]}
+                datasets={datasets}
+                xvalue={xvalue}
+                yvalue={yvalue}
+              />
+            </div>
+          );
+        })}
       </div>
     </StyledConsistencyContainer>
 

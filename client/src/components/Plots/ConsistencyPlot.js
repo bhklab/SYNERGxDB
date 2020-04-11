@@ -91,12 +91,13 @@ const ConsistencyPlot = (props) => {
   const plotScatter = async (xvalue, yvalue, width, height, data, datasets, plotId) => {
     const margin = {
       top: 50,
-      right: 170,
+      right: 230,
       bottom: 90,
       left: 180,
     };
     if (!plotId.includes('All')) {
-      margin.right = 30;
+      margin.right = 100;
+      margin.left = 80;
     }
     const colorPlot = ['#fca03e', '#5fcfff', '#f788c1', '#54c9b7', '#9a95de', '#f3c833', '#7456c7', '#7e6276', '#afb113', '#fd879c', '#fb78fa', '#24c373', '#45bbc5', '#766b21', '#abad93', '#c19ce3', '#fd8f11'];
 
@@ -114,7 +115,7 @@ const ConsistencyPlot = (props) => {
       .attr('height', height + margin.top + margin.bottom)
       .append('g')
       .attr('transform',
-        `translate(${130},${margin.top})`);
+        `translate(${margin.left},${margin.top})`);
 
 
     // set range for data by domain, and scale by range
@@ -204,19 +205,20 @@ const ConsistencyPlot = (props) => {
     });
 
     // add dots
-    dots.append('circle')
+    dots.filter(d => d[xvalue] != null && d[yvalue] != null)
+      .append('circle')
       .attr('id', 'dot')
       .attr('r', '3px')
       .attr('fill', d => colorMap[d.sourceName])
-      .attr('cx', (d, i) => xrange(d[xvalue]))
-      .attr('cy', (d, i) => yrange(d[yvalue]))
+      .attr('cx', d => xrange(d[xvalue]))
+      .attr('cy', d => yrange(d[yvalue]))
       .style('opacity', 1)
-      .on('mouseover', function (d, i) {
-        d3.select(`${'.' + 'dot-name'}${i}`).transition().duration(300).style('opacity', '1');
+      .on('mouseover', (d, i) => {
+        d3.select(`${'.dot-name'}${i}`).transition().duration(300).style('opacity', '1');
         d3.select(this).style('cursor', 'pointer');
       })
-      .on('mouseout', function (d, i) {
-        d3.select(`${'.' + 'dot-name'}${i}`).transition().duration(300).style('opacity', '0');
+      .on('mouseout', (d, i) => {
+        d3.select(`${'.dot-name'}${i}`).transition().duration(300).style('opacity', '0');
         d3.select(this).style('cursor', 'default');
       });
 
@@ -356,8 +358,6 @@ const ConsistencyPlot = (props) => {
     }
   };
 
-  // TODO: multiple useeffects will cause it to render twice, which is
-  // quite a load. Find a solution
   useEffect(() => {
     // if all, big plot. Else, small
     if (plotId.includes('All')) {
