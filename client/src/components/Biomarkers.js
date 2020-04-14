@@ -431,6 +431,7 @@ class Biomarkers extends Component {
     const columns = [{
       Header: 'Gene symbol',
       accessor: 'gene',
+      Cell: props => <i>{props.value}</i>,
     }, {
       Header: 'Compound A',
       accessor: 'drugA',
