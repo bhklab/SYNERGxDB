@@ -56,7 +56,7 @@ class DatasetLegend extends React.Component {
             const ind = data.findIndex(item => item.name === datasets[i]);
 
             svg.append('rect')
-                .attr('x', i > parseInt(datasets.length/2) ? (i-parseInt(datasets.length/2)-1)*150 : i * 150) // restarts from beginning
+                .attr('x', i > parseInt(datasets.length/2) ? (i-parseInt(datasets.length/2)-1)*200 : i * 200) // restarts from beginning
                 .attr('y', 10 + rowHeight*row) 
                 .attr('width', 15)
                 .attr('height', 15)
@@ -64,7 +64,7 @@ class DatasetLegend extends React.Component {
                 .style('opacity', 0.7);
 
             svg.append('foreignObject')
-                .attr('x', i > parseInt(datasets.length/2) ? 20 + (i-parseInt(datasets.length/2)-1)*150 : 20 + i * 150) // restarts from beginning
+                .attr('x', i > parseInt(datasets.length/2) ? 20 + (i-parseInt(datasets.length/2)-1)*200 : 20 + i * 200) // restarts from beginning
                 .attr('y', 10 + rowHeight*row) 
                 .attr('id', `legendLabel${data[ind].name}`)
                 .style('text-anchor', 'start')
@@ -78,7 +78,7 @@ class DatasetLegend extends React.Component {
                 .html(function() {return data[ind].name + "<span>" +
                     "<br> Combos: " + d3.format(",")(data[ind].nCombos)  + "</br>" + 
                     "Experiments: " + d3.format(",") (data[ind].nExperiments) + 
-                    "<br> Datapoints: " + d3.format(",")(data[ind].nDatapoints) + "</br>" + 
+                    "<br> Measurements: " + d3.format(",")(data[ind].nDatapoints) + "</br>" + 
                     "</span>"
                 });
             }

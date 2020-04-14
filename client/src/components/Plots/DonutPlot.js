@@ -101,11 +101,11 @@ class DonutPlot extends React.Component {
         .attr('height', 30)
         .html(() => {
           if (keyName === "Combinations") {
-            return `<i>N</i> = 14,536`
+            return `<i>N</i> = 22,507`
           } else if (keyName === "Experiments") {
-            return `<i>N</i> = 477,389`
+            return `<i>N</i> = 536,596`
           } else if (keyName === "Measurements") {
-            return `<i>N</i> = 5,996,090`
+            return `<i>N</i> = 6,678,592`
           } else {
             return `<i>N</i> = ${sum.toLocaleString()}`
           }

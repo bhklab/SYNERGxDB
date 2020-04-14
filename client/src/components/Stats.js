@@ -80,11 +80,11 @@ class Stats extends Component {
     this.setState({
       datasets: 9,
       tissues: 15,
-      compounds: 1973,
+      compounds: 1977,
       cells: 151,
-      combos: 14536,
-      experiments: 477839,
-      measurements: 5996090,
+      combos: 22507,
+      experiments: 536596,
+      measurements: 6678592,
     });
   }
 
@@ -139,7 +139,7 @@ class Stats extends Component {
                 separator=","
               />
             </h2>
-            <h2>Cell Lines</h2>
+            <h2>Cell lines</h2>
           </Link>
         </div>
         <div>
