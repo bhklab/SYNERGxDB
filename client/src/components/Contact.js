@@ -40,7 +40,7 @@ const Contact = () => (
       <div className="content">
         <b>Email: </b>
         {' '}
-        <a href="mailto: support@synergxdb.ca">support@synergxdb.ca</a>
+        <a href="mailto: support@synergxdb.ca">support@SYNERGxDB.ca</a>
         {' '}
         <p />
         <b>BHKLAB</b>
