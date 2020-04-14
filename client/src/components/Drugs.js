@@ -164,7 +164,6 @@ class Drugs extends Component {
       { displayName: 'SMILES', id: 'smiles' },
       { displayName: 'InChI Key', id: 'inchikey' },
     ];
-    console.log(csvData);
 
     return (
       <Fragment>

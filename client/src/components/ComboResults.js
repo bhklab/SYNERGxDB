@@ -124,10 +124,10 @@ class ComboResults extends Component {
           if (csvRow.drugNameA.includes(',')) csvRow.drugNameA = `"${csvRow.drugNameA}"`;
           if (csvRow.drugNameB.includes(',')) csvRow.drugNameB = `"${csvRow.drugNameB}"`;
           if (csvRow.disease && csvRow.disease.includes(',')) csvRow.disease = `"${csvRow.disease}"`;
-          if (csvRow.descriptionDrugA && csvRow.descriptionDrugA.includes(',')) csvRow.descriptionDrugA = `"${csvRow.descriptionDrugA}"`;
-          if (csvRow.descriptionDrugB && csvRow.descriptionDrugB.includes(',')) csvRow.descriptionDrugB = `"${csvRow.descriptionDrugB}"`;
           if (csvRow.atcCodeDrugA && csvRow.atcCodeDrugA.includes(',')) csvRow.atcCodeDrugA = `"${csvRow.atcCodeDrugA}"`;
           if (csvRow.atcCodeDrugB && csvRow.atcCodeDrugB.includes(',')) csvRow.atcCodeDrugB = `"${csvRow.atcCodeDrugB}"`;
+          if (csvRow.inchikeyDrugA) csvRow.inchikeyDrugA = `"${csvRow.inchikeyDrugA}"`;
+          if (csvRow.inchikeyDrugB) csvRow.inchikeyDrugB = `"${csvRow.inchikeyDrugB}"`;
           return csvRow;
         });
         this.setState({ csvData, results: data, loading: false });
@@ -275,19 +275,20 @@ class ComboResults extends Component {
       { displayName: 'Cellosaurus ID', id: 'idCellosaurus' },
       { displayName: 'Sex', id: 'sex' },
       { displayName: 'Age', id: 'age' },
-      { displayName: 'Disease', id: 'disease' },
-      { displayName: 'Origin', id: 'origin' },
+      { displayName: 'Cancer Type', id: 'disease' },
       { displayName: 'Compound A', id: 'drugNameA' },
       { displayName: 'ATC Code (Compound A)', id: 'atCodeDrugA' },
       { displayName: 'DrugBank ID (Compound A)', id: 'idDrugBankA' },
-      { displayName: 'PubChem ID (Compound A)', id: 'idPubChemDrugA' },
-      { displayName: 'Description (Compound A)', id: 'descriptionDrugA' },
+      { displayName: 'PubChem CID (Compound A)', id: 'idPubChemDrugA' },
+      { displayName: 'SMILES (Compound A)', id: 'smilesDrugA' },
+      { displayName: 'InChi Key (Compound A)', id: 'inchikeyDrugA' },
       { displayName: 'Compound B', id: 'drugNameB' },
       { displayName: 'ATC Code (Compound B)', id: 'atCodeDrugB' },
       { displayName: 'DrugBank ID (Compound B)', id: 'idDrugBankB' },
-      { displayName: 'PubChem ID (Compound B)', id: 'idPubChemDrugB' },
-      { displayName: 'Description (Compound B)', id: 'descriptionDrugB' },
-      { displayName: 'Source', id: 'sourceName' },
+      { displayName: 'PubChem CID (Compound B)', id: 'idPubChemDrugB' },
+      { displayName: 'SMILES (Compound B)', id: 'smilesDrugB' },
+      { displayName: 'InChi Key (Compound B)', id: 'inchikeyDrugB' },
+      { displayName: 'Dataset', id: 'sourceName' },
       { displayName: 'ZIP', id: 'zip' },
       { displayName: 'Bliss', id: 'bliss' },
       { displayName: 'Loewe', id: 'loewe' },
