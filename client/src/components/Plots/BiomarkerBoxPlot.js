@@ -146,13 +146,13 @@ class BiomarkerBoxPlot extends React.Component {
       boxHigh: {
         y: boxData[1].map(item => item.fpkm),
         type: 'box',
-        name: 'High, N='.concat(boxData[1].length),
+        name: 'High, <i>N</i>='.concat(boxData[1].length),
         marker: { color: colors.color_main_2 },
       },
       boxLow: {
         y: boxData[0].map(item => item.fpkm),
         type: 'box',
-        name: 'Low, N='.concat(boxData[0].length),
+        name: 'Low, <i>N</i>='.concat(boxData[0].length),
         marker: { color: colors.color_main_5 },
       },
     });
@@ -178,7 +178,7 @@ class BiomarkerBoxPlot extends React.Component {
           }}
         />
         <span>
-Student t-test, p-value =
+Student <i>t</i>-test, <i>p</i>-value =
           {' '}
           {pvalue}
         </span>
