@@ -139,7 +139,7 @@ class Stats extends Component {
                 separator=","
               />
             </h2>
-            <h2>Cell Lines</h2>
+            <h2>Cell lines</h2>
           </Link>
         </div>
         <div>
