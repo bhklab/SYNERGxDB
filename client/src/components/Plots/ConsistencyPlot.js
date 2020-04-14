@@ -191,6 +191,18 @@ const ConsistencyPlot = (props) => {
     //   .attr('dx', width / 2 - 80)
     //   .text('X Axis:');
 
+    // title
+    if (!plotId.includes('All')) {
+      svg.append('text')
+        .attr('dx', width / 2 - 50)
+        .attr('dy', 0)
+        .attr('font-size', '17px')
+        .style('font-weight', 'bold')
+        .style('opacity', '1')
+        .attr('fill', 'black')
+        .text(`N = ${data.length}`);
+    }
+
     // make group for dots
     const dots = svg.selectAll('dot')
       .data(data)

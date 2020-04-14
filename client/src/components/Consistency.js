@@ -57,7 +57,6 @@ class Consistency extends Component {
       })
         .then(response => response.json())
         .then((data) => {
-          console.log(this.state.loading);
           // parse data into json for all and separate datasets
           const results = {};
           const datasets = [...new Set(data.map(x => x.sourceName))];
