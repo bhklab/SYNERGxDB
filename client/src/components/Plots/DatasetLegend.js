@@ -78,7 +78,7 @@ class DatasetLegend extends React.Component {
                 .html(function() {return data[ind].name + "<span>" +
                     "<br> Combos: " + d3.format(",")(data[ind].nCombos)  + "</br>" + 
                     "Experiments: " + d3.format(",") (data[ind].nExperiments) + 
-                    "<br> Datapoints: " + d3.format(",")(data[ind].nDatapoints) + "</br>" + 
+                    "<br> Measurements: " + d3.format(",")(data[ind].nDatapoints) + "</br>" + 
                     "</span>"
                 });
             }
