@@ -334,10 +334,10 @@ class SearchCombos extends Component {
       filteredDrugsData2: null,
       filteredSampleData: null,
       filteredDatasetData: null,
-      selectedSample: { value: 'Any', label: 'Any Sample' },
+      selectedSample: { value: 'Any', label: 'Any sample' },
       selectedDrug1: null,
       selectedDrug2: null,
-      selectedDataset: { value: 'Any', label: 'Any Dataset' },
+      selectedDataset: { value: 'Any', label: 'Any dataset' },
       allowRedirect: true,
     };
     this.handleDrug1Search = this.handleDrug1Search.bind(this);
@@ -360,8 +360,8 @@ class SearchCombos extends Component {
       .then(response => response.json())
       .then((data) => {
         const drugsData = data.map(item => ({ value: item.idDrug, label: item.name }));
-        this.setState({ drugsData1: [{ value: 'Any', label: 'Any Compound' }, ...drugsData] });
-        this.setState({ drugsData2: [{ value: 'Any', label: 'Any Compound' }, ...drugsData] });
+        this.setState({ drugsData1: [{ value: 'Any', label: 'Any compound' }, ...drugsData] });
+        this.setState({ drugsData2: [{ value: 'Any', label: 'Any compound' }, ...drugsData] });
       });
     fetch('/api/cell_lines')
       .then(response => response.json())
@@ -380,7 +380,7 @@ class SearchCombos extends Component {
         this.setState({
           sampleData: [
             {
-              label: 'Any Sample',
+              label: 'Any sample',
               value: 'Any',
             },
             {
@@ -389,7 +389,7 @@ class SearchCombos extends Component {
             },
 
             {
-              label: 'Cell Lines',
+              label: 'Cell lines',
               options: cellsData,
             },
           ],
@@ -399,7 +399,7 @@ class SearchCombos extends Component {
       .then(response => response.json())
       .then((data) => {
         const datasets = data.map(source => ({ value: source.idSource, label: source.name }));
-        this.setState({ datasetData: [{ value: 'Any', label: 'Any Dataset' }, ...datasets] });
+        this.setState({ datasetData: [{ value: 'Any', label: 'Any dataset' }, ...datasets] });
       });
   }
 
@@ -452,7 +452,7 @@ class SearchCombos extends Component {
         this.setState({
           filteredSampleData: [
             {
-              label: 'Any Sample',
+              label: 'Any sample',
               value: 'Any',
             },
             {
@@ -461,7 +461,7 @@ class SearchCombos extends Component {
             },
 
             {
-              label: 'Cell Lines',
+              label: 'Cell lines',
               options: cellsData,
             },
           ],
