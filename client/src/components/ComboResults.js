@@ -118,6 +118,7 @@ class ComboResults extends Component {
     })
       .then(response => response.json())
       .then((data) => {
+        console.log(data);
         // inserts quatations for drug names that have commas in its names
         const csvData = data.map((row) => {
           const csvRow = { ...row };
@@ -316,33 +317,33 @@ class ComboResults extends Component {
             <h2>Analysis </h2>
             <div className="buttonsContainer">
               <a href={`/biomarker${queryParams}`}>
-                  Biomarker
+                Biomarker
                 {' '}
                 <br />
                 {' '}
-                  Discovery
+                Discovery
               </a>
               {drugId1 ? (
                 <Fragment>
                   <a href={`/sensitivity${queryParams}`}>
-                Cell Line
+                    Cell Line
                     {' '}
                     <br />
-                Sensitivity Analysis
+                    Sensitivity Analysis
                   </a>
                 </Fragment>
               ) : null }
               <a href={`/enrichment${queryParams}`}>
-              Tissue-Specific
+                Tissue-Specific
                 {' '}
                 <br />
-              Enrichment Analysis
+                Enrichment Analysis
               </a>
               <a href={`/consistency${queryParams}`}>
-              Consistency in
+                Consistency in
                 {' '}
                 <br />
-              Synergy Scores
+                Synergy Scores
               </a>
             </div>
 

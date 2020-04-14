@@ -100,7 +100,7 @@ router.get('/matrix', (req, res) => {
   comboId = parseInt(comboId, 10);
   idSource = parseInt(idSource, 10);
   db.select('concA', 'concB', 'raw_matrix', 'bliss_matrix', 'loewe_matrix', 'hsa_matrix', 'zip_matrix', 'combo_score')
-    .from('Combo_matrix')
+    .from('combo_matrix')
     .where({ idCombo_Design: comboId, idSource })
     .then((data) => {
       res.json(data);
