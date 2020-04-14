@@ -7,7 +7,7 @@ const OverviewDoc = () => (
   <Fragment>
     <span>
       {' '}
-      <b>SYNERGxDB</b>
+      <b><i>SYNERGxDB</i></b>
       {' '}
           is a comprehensive database to explore synergistic drug combinations for biomarker discovery.
     </span>
@@ -24,9 +24,9 @@ const OverviewDoc = () => (
                 However, the impact of genetics on variability in combo responses for discovering predictive
                 and prognostic biomarkers is currently unknown. To help solve this issue, we created
             {' '}
-            <b>SYNERGxDB</b>
+            <b><i>SYNERGxDB</i></b>
                 , a web-application that possesses the largest database of seven collections of pharmacological and molecular profiles of corresponding cell lines
-                (151 cell lines in 15 tissue types and 1,973 drugs/compounds - 14,536 combinations). This application allows researchers and clinicians to identify
+                (151 cell lines in 15 tissue types and 1,977 drugs/compounds - 22,507 combinations). This application allows researchers and clinicians to identify
                 novel synergistic drug combinations, in order to discover potential prognostic and predictive biomarkers that can help improve
                 patient prognosis and selection.
           </li>
@@ -34,9 +34,9 @@ const OverviewDoc = () => (
         <ol>
           <b>Database</b>
           <li>
-            A MySQL dump of pharmacological and molecular profiles of
+            The MySQL dump of pharmacological and molecular profiles of
             {' '}
-            <b>SYNERGxDB</b>
+            <b><i>SYNERGxDB</i></b>
             {' '}
             is available through
             {' '}
