@@ -2,8 +2,8 @@ import React, { Component, Fragment } from 'react';
 import styled from 'styled-components';
 import ReactRouterPropTypes from 'react-router-prop-types';
 import queryString from 'query-string';
-
-// import colors from '../styles/colors';
+import ReactLoading from 'react-loading';
+import colors from '../styles/colors';
 import ConsistencyContainer from './ConsistencyContainer';
 import QueryCard from './UtilComponents/QueryCard';
 
@@ -32,6 +32,7 @@ class Consistency extends Component {
         results: [],
         allResults: [],
         datasets: [],
+        loading: true,
       };
     }
 
@@ -56,6 +57,7 @@ class Consistency extends Component {
       })
         .then(response => response.json())
         .then((data) => {
+          console.log(this.state.loading);
           // parse data into json for all and separate datasets
           const results = {};
           const datasets = [...new Set(data.map(x => x.sourceName))];
@@ -66,7 +68,6 @@ class Consistency extends Component {
           data.forEach((x) => {
             results[x.sourceName].push(x);
           });
-
           this.setState({
             results,
             allResults: data,
@@ -84,13 +85,14 @@ class Consistency extends Component {
         .then((data) => {
           this.setState({
             datasets: data,
+            loading: false,
           });
         });
     }
 
     render() {
       const {
-        results, allResults, datasets,
+        results, allResults, datasets, loading,
       } = this.state;
       const { location } = this.props;
       const requestParams = queryString.parse(location.search);
@@ -120,11 +122,17 @@ class Consistency extends Component {
                       {' '}
                       {allResults.length}
                     </h2>
-                    <ConsistencyContainer
-                      data={results}
-                      allData={allResults}
-                      datasets={datasets}
-                    />
+                    {loading ? (
+                      <div className="loading-container">
+                        <ReactLoading type="bubbles" width={150} height={150} color={colors.color_main_2} />
+                      </div>
+                    ) : (
+                      <ConsistencyContainer
+                        data={results}
+                        allData={allResults}
+                        datasets={datasets}
+                      />
+                    )}
                   </>
                 )}
               </StyledWrapper>
