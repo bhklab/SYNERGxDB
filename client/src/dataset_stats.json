@@ -7,21 +7,21 @@
 }, {
 	"idSource": 2,
 	"name": "NCI-ALMANAC",
-	"nDatapoints": 3887504,
-	"nCombos": 4184,
-	"nExperiments": 242969
+	"nDatapoints": 4567145,
+	"nCombos": 5354,
+	"nExperiments": 311407
 }, {
 	"idSource": 4,
 	"name": "YALE-PDAC",
-	"nDatapoints": 49294,
-	"nCombos": 820,
-	"nExperiments": 2974
+	"nDatapoints": 50707,
+	"nCombos": 861,
+	"nExperiments": 3326
 }, {
 	"idSource": 5,
 	"name": "YALE-TNBC",
-	"nDatapoints": 54570,
-	"nCombos": 758,
-	"nExperiments": 4516
+	"nDatapoints": 54912,
+	"nCombos": 768,
+	"nExperiments": 4576
 }, {
 	"idSource": 6,
 	"name": "CLOUD",
@@ -31,7 +31,7 @@
 }, {
 	"idSource": 7,
 	"name": "MIT-MELANOMA",
-	"nDatapoints": 1407169,
+	"nDatapoints": 1407123,
 	"nCombos": 5778,
 	"nExperiments": 201254
 }, {
@@ -43,7 +43,7 @@
 }, {
 	"idSource": 9,
 	"name": "DECREASE",
-	"nDatapoints": 12288,
+	"nDatapoints": 13440,
 	"nCombos": 36,
 	"nExperiments": 210
 }, {
