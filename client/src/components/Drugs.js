@@ -107,6 +107,7 @@ class Drugs extends Component {
           if (csvRow.disease && csvRow.disease.includes(',')) csvRow.disease = `"${csvRow.disease}"`;
           if (csvRow.description && csvRow.description.includes(',')) csvRow.description = `"${csvRow.description}"`;
           if (csvRow.atcCode && csvRow.atcCode.includes(',')) csvRow.atcCode = `"${csvRow.atcCode}"`;
+          if (csvRow.inchikey) csvRow.inchikey = `"${csvRow.inchikey}"`;
           return csvRow;
         });
 
@@ -148,7 +149,7 @@ class Drugs extends Component {
       accessor: 'idDrugBank',
       Cell: props => <a className="hover" target="_blank" rel="noopener noreferrer" href={`https://www.drugbank.ca/drugs/${props.value}`}>{props.value}</a>,
     }, {
-      Header: 'Smiles',
+      Header: 'SMILES',
       accessor: 'smiles',
     }, {
       Header: 'InChI Key',
@@ -160,7 +161,10 @@ class Drugs extends Component {
       { displayName: 'PubChem CID', id: 'idPubChem' },
       { displayName: 'DrugBank ID', id: 'idDrugBank' },
       { displayName: 'Description', id: 'description' },
+      { displayName: 'SMILES', id: 'smiles' },
+      { displayName: 'InChI Key', id: 'inchikey' },
     ];
+    console.log(csvData);
 
     return (
       <Fragment>
