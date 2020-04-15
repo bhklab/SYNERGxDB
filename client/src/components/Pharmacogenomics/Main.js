@@ -109,11 +109,17 @@ const StyledContainer = styled.div`
       border-top: none;
     }
   }
+
+  .synscore-container fieldset {
+    margin: 0 auto;
+  }
   .syn-score {
-    display: flex;
-    justify-content: space-between;
+    div {
+      display: flex;
+      justify-content: space-between;
+    }
     h3 {
-      padding-right: 50px;
+      text-align: center;
     }
   }
 
