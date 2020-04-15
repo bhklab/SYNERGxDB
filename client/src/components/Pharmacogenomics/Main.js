@@ -261,6 +261,7 @@ class Pharmacogenomics extends Component {
         hsa: false,
         loewe: false,
       },
+      selectHighlight: 'dataType',
     };
     this.getDrugData = this.getDrugData.bind(this);
     this.getSampleDrugData = this.getSampleDrugData.bind(this);
@@ -304,6 +305,7 @@ class Pharmacogenomics extends Component {
           hsa: true,
           loewe: true,
         },
+        selectHighlight: null,
       });
       await this.getPlotData();
       // await this.setState({ showPlot: true, showOptions: false });
@@ -330,24 +332,9 @@ class Pharmacogenomics extends Component {
         drugsData2: [],
         example: false,
         showPlot: false,
+        selectHighlight: 'dataType',
       });
     }
-  }
-
-  // Updates drug data based on samples
-  getDrugData(data, keyStore, type, drug) {
-    const querySamples = generateSampleString(data, keyStore);
-    let urlString = `/api/drugs/filter?sample=${querySamples}`;
-    if (type === 'drugsData1' && drug) urlString = urlString.concat(`&drugId=${drug}`);
-    if (type === 'drugsData2' && drug) urlString = urlString.concat(`&drugId=${drug}`);
-    fetch(urlString)
-      .then(response => response.json())
-      .then((drugData) => {
-        const drugsData = drugData.map(item => ({ value: item.idDrug, label: item.name }));
-        if (type === 'drugsData1') this.setState({ [type]: drugsData, loadingDrug1: false, focus: false });
-        if (type === 'drugsData2') this.setState({ [type]: drugsData, loadingDrug2: false, focus: false });
-      // eslint-disable-next-line no-console
-      }).catch(err => console.log(err));
   }
 
   getSampleDrugData(dataType) {
@@ -386,6 +373,22 @@ class Pharmacogenomics extends Component {
         console.log(err);
         this.setState({ dataType });
       });
+  }
+
+  // Updates drug data based on samples
+  getDrugData(data, keyStore, type, drug) {
+    const querySamples = generateSampleString(data, keyStore);
+    let urlString = `/api/drugs/filter?sample=${querySamples}`;
+    if (type === 'drugsData1' && drug) urlString = urlString.concat(`&drugId=${drug}`);
+    if (type === 'drugsData2' && drug) urlString = urlString.concat(`&drugId=${drug}`);
+    fetch(urlString)
+      .then(response => response.json())
+      .then((drugData) => {
+        const drugsData = drugData.map(item => ({ value: item.idDrug, label: item.name }));
+        if (type === 'drugsData1') this.setState({ [type]: drugsData, loadingDrug1: false, focus: false });
+        if (type === 'drugsData2') this.setState({ [type]: drugsData, loadingDrug2: false, focus: false });
+      // eslint-disable-next-line no-console
+      }).catch(err => console.log(err));
   }
 
 
@@ -830,7 +833,8 @@ class Pharmacogenomics extends Component {
       drugsData1, drugsData2, showOptions, scoreAvailability,
       loadingBiomarkerData,
     } = this.state;
-    // const showSynScore = selectedDrug1 !== 'null' && selectedDrug2 !== 'null' && sampleData.length !== 0;
+    // const showSynScore = selectedDrug1 !== 'null'
+    //  && selectedDrug2 !== 'null' && sampleData.length !== 0;
     const drugLabel1 = generateDrugLabel(selectedDrug1, drugsData1);
     const drugLabel2 = generateDrugLabel(selectedDrug2, drugsData2);
     return (
