@@ -763,23 +763,30 @@ class Pharmacogenomics extends Component {
     const {
       drugsData1, drugsData2, selectedDrug1, sampleData,
       selectedDrug2, selectedGene, selectedMolecule,
-      loadingDrug1, loadingDrug2,
+      loadingDrug1, loadingDrug2, selectHighlight,
     } = this.state;
+    const { color_main_2, highlight_pharmacogenomics } = colors;
     if (selectedMolecule !== 'null' || selectedGene !== 'null') {
       return sampleData.length > 0 && drugsData1.length > 0 ? (
         <div className="selector">
-          <SampleList
-            data={sampleData}
-            sampleChange={sampleChange}
-          />
+          <div className="samples-container">
+            <h3 style={{ color: selectHighlight === 'sample' ? highlight_pharmacogenomics : color_main_2 }}>Select samples</h3>
+            <SampleList
+              data={sampleData}
+              sampleChange={sampleChange}
+            />
+          </div>
           {!loadingDrug1
             ? (
-              <DrugList
-                data={drugsData1}
-                drugChange={handleDrug1Search}
-                selectedDrug={selectedDrug1}
-                drugLabel="A"
-              />
+              <div className="drug-container">
+                <h3 style={{ color: selectHighlight === 'drug1' ? highlight_pharmacogenomics : color_main_2 }}>Select compound A</h3>
+                <DrugList
+                  data={drugsData1}
+                  drugChange={handleDrug1Search}
+                  selectedDrug={selectedDrug1}
+                  drugLabel="A"
+                />
+              </div>
             ) : (
               <div className="loading-container">
                 <ReactLoading type="bubbles" width={150} height={150} color={colors.color_main_2} />
@@ -787,12 +794,15 @@ class Pharmacogenomics extends Component {
             )
           }
           {!loadingDrug2 ? (
-            <DrugList
-              data={drugsData2}
-              drugChange={handleDrug2Search}
-              selectedDrug={selectedDrug2}
-              drugLabel="B"
-            />
+            <div className="drug-container">
+              <h3 style={{ color: selectHighlight === 'drug2' ? highlight_pharmacogenomics : color_main_2 }}>Select compound B</h3>
+              <DrugList
+                data={drugsData2}
+                drugChange={handleDrug2Search}
+                selectedDrug={selectedDrug2}
+                drugLabel="B"
+              />
+            </div>
           ) : (
             <div className="loading-container">
               <ReactLoading type="bubbles" width={150} height={150} color={colors.color_main_2} />
@@ -888,7 +898,7 @@ class Pharmacogenomics extends Component {
                 <FormControl component="fieldset">
                   <RadioGroup aria-label="synscore" name="synscore" value={scoreValue} onChange={scoreChange}>
                     <div className="syn-score">
-                      <h3>Select synergy score method</h3>
+                      <h3 style={{ color: selectHighlight === 'score' ? highlight_pharmacogenomics : color_main_2 }}>Select synergy score method</h3>
                       <CustomFormLabel value="zip" control={<CustomRadio />} label="ZIP" disabled={!scoreAvailability.zip} />
                       <CustomFormLabel value="bliss" control={<CustomRadio />} label="Bliss" disabled={!scoreAvailability.bliss} />
                       <CustomFormLabel value="loewe" control={<CustomRadio />} label="Loewe" disabled={!scoreAvailability.loewe} />

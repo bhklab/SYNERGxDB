@@ -150,46 +150,43 @@ class SampleList extends Component {
     });
     cacheSamples.clearAll();
     return (
-      <div className="samples-container">
-        <FormControl component="fieldset">
-          <h3>Select samples</h3>
-          <FormGroup>
-            <CustomTextField
-              id="standard-textarea"
-              label="Search by cell line/tissue"
-              placeholder="Enter sample name"
-              multiline
-              margin="normal"
-              value={value}
-              onChange={e => handleFilter(e)}
-            />
-            <div className="list-container">
-              <AutoSizer>
-                {({ width, height }) => (
-                  <List
-                    width={width}
-                    height={height}
-                    rowCount={filteredData.length}
-                    deferredMeasurementCache={cacheSamples}
-                    rowHeight={cacheSamples.rowHeight}
-                    rowRenderer={({
-                      key, index, parent, style,
-                    }) => rowRendererSamples({
-                      key,
-                      index,
-                      parent,
-                      style,
-                      data: filteredData,
-                      cache: cacheSamples,
-                      sampleChange,
-                    })}
-                  />
-                )}
-              </AutoSizer>
-            </div>
-          </FormGroup>
-        </FormControl>
-      </div>
+      <FormControl component="fieldset">
+        <FormGroup>
+          <CustomTextField
+            id="standard-textarea"
+            label="Search by cell line/tissue"
+            placeholder="Enter sample name"
+            multiline
+            margin="normal"
+            value={value}
+            onChange={e => handleFilter(e)}
+          />
+          <div className="list-container">
+            <AutoSizer>
+              {({ width, height }) => (
+                <List
+                  width={width}
+                  height={height}
+                  rowCount={filteredData.length}
+                  deferredMeasurementCache={cacheSamples}
+                  rowHeight={cacheSamples.rowHeight}
+                  rowRenderer={({
+                    key, index, parent, style,
+                  }) => rowRendererSamples({
+                    key,
+                    index,
+                    parent,
+                    style,
+                    data: filteredData,
+                    cache: cacheSamples,
+                    sampleChange,
+                  })}
+                />
+              )}
+            </AutoSizer>
+          </div>
+        </FormGroup>
+      </FormControl>
     );
   }
 }
