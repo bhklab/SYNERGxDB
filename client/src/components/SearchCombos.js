@@ -25,7 +25,6 @@ const StyledWrapper = styled.div`
   align-items: center;
   text-align: center;
   width: 100%;
-  // margin-top: -200px;
   h1 {
     color: ${colors.nav_links};
     font-family:'Raleway', sans-serif;
@@ -588,8 +587,8 @@ class SearchCombos extends Component {
     };
     const exampleBiomarker = {
       pathname: '/biomarker',
-      search:'?drugId1=11&drugId2=97'
-    }
+      search: '?drugId1=11&drugId2=97',
+    };
     const exampleCompare = {
       pathname: '/sensitivity',
       search: '?drugId1=11&drugId2=97',
@@ -680,7 +679,7 @@ class SearchCombos extends Component {
           </div>
           <ButtonContainer>
             <ExampleSpan>
-            Examples (Bortezomib
+              Examples (Bortezomib
               {' '}
               {'&'}
               {' '}
@@ -692,7 +691,7 @@ class SearchCombos extends Component {
                 <Link className="hover" to={exampleBiomarker}>Biomarker discovery</Link>
               &nbsp;&nbsp;|&nbsp;&nbsp;
                 <Link className="hover" to={exampleCompare}>Compare across datasets</Link>
-              &nbsp;&nbsp;<br/>
+                <br />
                 <Link className="hover" to={exampleConsistency}>Consistency check</Link>
               &nbsp;&nbsp;|&nbsp;&nbsp;
                 <Link className="hover" to={examplePharmUrl}>Pharmacogenomics analysis</Link>
@@ -726,7 +725,7 @@ class SearchCombos extends Component {
           }
           </ButtonContainer>
         </StyledForm>
-        
+
       </Fragment>
     );
 

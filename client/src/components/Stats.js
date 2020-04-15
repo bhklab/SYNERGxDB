@@ -29,6 +29,7 @@ const StyledDiv = styled.div`
       }
     }
 
+    
     @media (max-height : 900px) {
       h2 {
         font-size: 1.1em !important;
@@ -36,7 +37,14 @@ const StyledDiv = styled.div`
       }
       min-height: 70px;
     }
-
+    
+    @media (max-width: 649px) {
+      position: static;
+      margin-top:50px;
+      h2 {
+        font-size: 0.8em !important;
+      }
+    }
     div {
         padding: 0 10px; 
         max-width: 175px;

@@ -93,6 +93,10 @@ const GlobalStyles = createGlobalStyle`
     align-items: center;
     justify-content: center;
     margin-top: 0px;
+
+    @media (max-width: 649px) {
+      margin-top: 150px;
+    }
   }
 
   main.summary {
