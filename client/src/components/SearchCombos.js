@@ -25,7 +25,6 @@ const StyledWrapper = styled.div`
   align-items: center;
   text-align: center;
   width: 100%;
-  // margin-top: -200px;
   h1 {
     color: ${colors.nav_links};
     font-family:'Raleway', sans-serif;
@@ -42,6 +41,9 @@ const StyledWrapper = styled.div`
     font-family:'Raleway', sans-serif;
     font-weight:800;
     font-size: 1.15em;
+  }
+  span {
+    color: ${colors.blue_main};
   }
 `;
 
@@ -107,10 +109,16 @@ const customStyles = {
     background: 'rgb(0,0,0,0)',
     border: `1px solid ${colors.nav_links}`,
     margin: '5px 0px',
+    padding: '2px 2px 2px 9px',
     '&:hover': {
       border: `1px solid ${colors.nav_links}`,
       cursor: 'text',
     },
+  }),
+  valueContainer: provided => ({
+    ...provided,
+    padding: '0px',
+    color: `${colors.nav_links}`,
   }),
   placeholder: provided => ({
     ...provided,
@@ -347,6 +355,7 @@ class SearchCombos extends Component {
     this.handleDatasetSearch = this.handleDatasetSearch.bind(this);
     this.handleEnterPress = this.handleEnterPress.bind(this);
     this.checkUserInput = this.checkUserInput.bind(this);
+    this.exampleClick = this.exampleClick.bind(this);
 
     // New Search/Filtering UI
     this.filterDrugAData = this.filterDrugAData.bind(this);
@@ -401,6 +410,44 @@ class SearchCombos extends Component {
         const datasets = data.map(source => ({ value: source.idSource, label: source.name }));
         this.setState({ datasetData: [{ value: 'Any', label: 'Any dataset' }, ...datasets] });
       });
+  }
+
+  exampleClick(num) {
+    const { drugsData1, drugsData2 } = this.state;
+    let drug1; let drug2;
+    switch (num) {
+      case 1:
+        drug1 = 'Bortezomib';
+        drug2 = 'Topotecan';
+        break;
+      case 2:
+        drug1 = 'Lapatinib';
+        drug2 = 'Erlotinib';
+        break;
+      case 3:
+        drug1 = 'Fluorouracil';
+        drug2 = 'Vorinostat';
+        break;
+      default:
+        return;
+    }
+    let ind1;
+    let ind2;
+    drugsData1.find((item, i) => {
+      if (item.label === drug1) {
+        ind1 = i;
+        return i;
+      }
+    });
+
+    drugsData2.find((item, i) => {
+      if (item.label === drug2) {
+        ind2 = i;
+        return i;
+      }
+    });
+
+    this.setState({ selectedDrug1: drugsData1[ind1], selectedDrug2: drugsData2[ind2] });
   }
 
   filterDrugAData(sample, drugB, dataset) {
@@ -579,7 +626,7 @@ class SearchCombos extends Component {
     } = this.state;
     const {
       handleSampleSearch, handleDrug1Search, handleDrug2Search, userRedirect,
-      handleDatasetSearch, handleEnterPress, checkUserInput,
+      handleDatasetSearch, handleEnterPress, checkUserInput, exampleClick,
     } = this;
 
     const exampleSynergy = {
@@ -588,8 +635,8 @@ class SearchCombos extends Component {
     };
     const exampleBiomarker = {
       pathname: '/biomarker',
-      search:'?drugId1=11&drugId2=97'
-    }
+      search: '?drugId1=11&drugId2=97',
+    };
     const exampleCompare = {
       pathname: '/sensitivity',
       search: '?drugId1=11&drugId2=97',
@@ -609,8 +656,7 @@ class SearchCombos extends Component {
     // const exampleSampleUrl = {
     //   pathname: '/synergy_score',
     //   search: '?&sample=pancreas',
-    // };
-
+    // };z
     const searchForm = (
       <Fragment>
         <h1>
@@ -680,22 +726,13 @@ class SearchCombos extends Component {
           </div>
           <ButtonContainer>
             <ExampleSpan>
-            Examples (Bortezomib
-              {' '}
-              {'&'}
-              {' '}
-              Topotecan):
-              {' '}
+              Examples:
               <p>
-                <Link className="hover" to={exampleSynergy}>Synergy scores</Link>
-              &nbsp;&nbsp;|&nbsp;&nbsp;
-                <Link className="hover" to={exampleBiomarker}>Biomarker discovery</Link>
-              &nbsp;&nbsp;|&nbsp;&nbsp;
-                <Link className="hover" to={exampleCompare}>Compare across datasets</Link>
-              &nbsp;&nbsp;<br/>
-                <Link className="hover" to={exampleConsistency}>Consistency check</Link>
-              &nbsp;&nbsp;|&nbsp;&nbsp;
-                <Link className="hover" to={examplePharmUrl}>Pharmacogenomics analysis</Link>
+                <a onClick={e => exampleClick(1)}>Bortezomib + Topotecan</a>
+                &nbsp;&nbsp;|&nbsp;&nbsp;
+                <a onClick={e => exampleClick(2)}>Lapatinib + Erlotinib</a>
+                &nbsp;&nbsp;|&nbsp;&nbsp;
+                <a onClick={e => exampleClick(3)}>Fluorouracil + Vorinostat</a>
               </p>
             </ExampleSpan>
             { checkUserInput() ? (
@@ -726,7 +763,7 @@ class SearchCombos extends Component {
           }
           </ButtonContainer>
         </StyledForm>
-        
+
       </Fragment>
     );
 
