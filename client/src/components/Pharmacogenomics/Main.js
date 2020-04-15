@@ -281,7 +281,10 @@ class Pharmacogenomics extends Component {
     this.getPlotData = this.getPlotData.bind(this);
     this.processSynData = this.processSynData.bind(this);
     this.checkAvailableScores = this.checkAvailableScores.bind(this);
-    this.focusNode = null;
+    this.focusNodePlot = null;
+    this.focusNodeBiomarker = null;
+    this.focusNodeSampleDrug = null;
+    this.focusNodeButton = null;
   }
 
   async componentDidMount() {
@@ -314,13 +317,26 @@ class Pharmacogenomics extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { focusNode } = this;
+    const { focusNodePlot } = this;
     const { focus } = this.state;
     const { location } = this.props;
-    // const requestParams = queryString.parse(location.search);
-    // const prevRequestParams = queryString.parse(prevProps.location.search);
-    if (focus) {
-      focusNode.scrollIntoView({ block: 'start' });
+
+    // defines what part of the page to scroll into view
+    switch (focus) {
+      case 'plot':
+        focusNodePlot.scrollIntoView({ block: 'start' });
+        break;
+      case 'biomarker':
+        this.focusNodePlot.scrollIntoView({ block: 'start' });
+        break;
+      case 'sample-drug':
+        this.focusNodePlot.scrollIntoView({ block: 'end' });
+        break;
+      case 'button':
+        this.focusNodePlot.scrollIntoView({ block: 'end' });
+        break;
+      default:
+        break;
     }
     if (location !== prevProps.location) {
       this.setState({
@@ -365,7 +381,7 @@ class Pharmacogenomics extends Component {
           }));
         const sampleData = [{ value: 'All', label: 'SELECT ALL', checked: false }, ...tissueData, ...cellData];
         this.setState({
-          sampleData, tissueObj, dataType, focus: false,
+          sampleData, tissueObj, dataType, focus: 'sample-drug',
         });
         getDrugData(cellData, tissueObj, 'drugsData1');
         getDrugData(cellData, tissueObj, 'drugsData2');
@@ -386,8 +402,8 @@ class Pharmacogenomics extends Component {
       .then(response => response.json())
       .then((drugData) => {
         const drugsData = drugData.map(item => ({ value: item.idDrug, label: item.name }));
-        if (type === 'drugsData1') this.setState({ [type]: drugsData, loadingDrug1: false, focus: false });
-        if (type === 'drugsData2') this.setState({ [type]: drugsData, loadingDrug2: false, focus: false });
+        if (type === 'drugsData1') this.setState({ [type]: drugsData, loadingDrug1: false, focus: 'sample-drug' });
+        if (type === 'drugsData2') this.setState({ [type]: drugsData, loadingDrug2: false, focus: 'button' });
       // eslint-disable-next-line no-console
       }).catch(err => console.log(err));
   }
@@ -505,7 +521,7 @@ class Pharmacogenomics extends Component {
       biomarkerData: [],
       showPlot: false,
       showOptions: false,
-      focus: false,
+      focus: 'sample-drug',
       selectHighlight: 'sample',
     });
     getSampleDrugData(dataType);
@@ -524,7 +540,7 @@ class Pharmacogenomics extends Component {
       biomarkerData: [],
       showPlot: false,
       showOptions: false,
-      focus: false,
+      focus: 'sample-drug',
       selectHighlight: 'sample',
     });
     getSampleDrugData(dataType);
@@ -581,7 +597,7 @@ class Pharmacogenomics extends Component {
       biomarkerData: [],
       loadingDrug1: true,
       loadingDrug2: true,
-      focus: false,
+      focus: 'sample-drug',
       selectHighlight: 'drug1',
     });
 
@@ -617,7 +633,7 @@ class Pharmacogenomics extends Component {
   updateGeneData(dataType) {
     fetch(`/api/pharmacogenomics/genes?datatype=${dataType}`)
       .then(response => response.json())
-      .then((data) => {
+      .then(async (data) => {
         const geneData = data.map((item) => {
           let label = item.gene;
           if (dataType === 'cna') [label] = item.gene.split(' ');
@@ -625,16 +641,20 @@ class Pharmacogenomics extends Component {
             value: item.gene_id ? item.gene_id : item.gene, label,
           });
         });
-        this.setState({ geneData, loadingBiomarkerList: false, focus: false });
+        await this.setState({ geneData, loadingBiomarkerList: false });
+        // focus node value will be updated after rendering is over
+        this.setState({ focus: 'biomarker' });
       });
   }
 
   updateMoleculeData() {
     fetch('/api/pharmacogenomics/molecules')
       .then(response => response.json())
-      .then((data) => {
+      .then(async (data) => {
         const moleculeData = data.map(item => ({ value: item, label: item }));
-        this.setState({ moleculeData, loadingBiomarkerList: false, focus: false });
+        this.setState({ moleculeData, loadingBiomarkerList: false });
+        // focus node value will be updated after rendering is over
+        this.setState({ focus: 'biomarker' });
       });
   }
 
@@ -648,6 +668,7 @@ class Pharmacogenomics extends Component {
       selectedDrug2: 'null',
       showOptions: false,
       showPlot: false,
+      focus: false,
       selectHighlight: 'drug2',
     });
     getDrugData(sampleData, tissueObj, 'drugsData2', newDrug1);
@@ -701,7 +722,7 @@ class Pharmacogenomics extends Component {
       loadingBiomarkerData: false,
       scoreValue,
       accessor,
-      focus: true,
+      focus: 'plot',
     };
     // splits state updates in two categories (normal and example queries)
     if (example) {
@@ -709,7 +730,7 @@ class Pharmacogenomics extends Component {
     } else {
       stateUpdate.showOptions = true;
     }
-    this.setState(stateUpdate);
+    this.setState({ ...stateUpdate, focus: 'button' });
   }
 
   renderBiomarkerList() {
@@ -731,7 +752,11 @@ class Pharmacogenomics extends Component {
     if (dataType === 'metabolomic' && moleculeData.length > 0) {
       return (
         <div className="molecule-container">
-          <h3 style={{ color: selectHighlight === 'biomarker' ? highlight_pharmacogenomics : color_main_2 }}>Select biological molecule</h3>
+          <h3
+            style={{ color: selectHighlight === 'biomarker' ? highlight_pharmacogenomics : color_main_2 }}
+          >
+            Select biological molecule
+          </h3>
           <MoleculeList
             data={moleculeData}
             moleculeChange={moleculeChange}
@@ -743,7 +768,11 @@ class Pharmacogenomics extends Component {
     if (dataType !== 'metabolomic' && geneData.length > 0) {
       return (
         <div className="genes-container">
-          <h3 style={{ color: selectHighlight === 'biomarker' ? highlight_pharmacogenomics : color_main_2 }}>Select gene</h3>
+          <h3
+            style={{ color: selectHighlight === 'biomarker' ? highlight_pharmacogenomics : color_main_2 }}
+          >
+            Select gene
+          </h3>
           <GeneList
             data={geneData}
             geneChange={geneChange}
@@ -770,7 +799,11 @@ class Pharmacogenomics extends Component {
       return sampleData.length > 0 && drugsData1.length > 0 ? (
         <div className="selector">
           <div className="samples-container">
-            <h3 style={{ color: selectHighlight === 'sample' ? highlight_pharmacogenomics : color_main_2 }}>Select samples</h3>
+            <h3
+              style={{ color: selectHighlight === 'sample' ? highlight_pharmacogenomics : color_main_2 }}
+            >
+              Select samples
+            </h3>
             <SampleList
               data={sampleData}
               sampleChange={sampleChange}
@@ -864,7 +897,7 @@ class Pharmacogenomics extends Component {
     const drugLabel2 = generateDrugLabel(selectedDrug2, drugsData2);
     console.log(selectHighlight);
     return (
-      <main ref={node => this.focusNode = node}>
+      <main ref={node => this.focusNodePlot = node}>
         <StyledDiv>
           <div className="header">
             <h2>Biomarker discovery in Pharmacogenomics</h2>
@@ -910,7 +943,12 @@ class Pharmacogenomics extends Component {
             ) : null}
             {showOptions ? (
               <div className="analysis">
-                <StyledButton onClick={() => this.setState({ showPlot: true, selectHighlight: null })} type="button">Analysis</StyledButton>
+                <StyledButton
+                  onClick={() => this.setState({ showPlot: true, selectHighlight: null, focus: 'plot' })}
+                  type="button"
+                >
+                  Analysis
+                </StyledButton>
                 {/* <div>
                 {renderPlot(drugLabel1, drugLabel2)}
               </div> */}
