@@ -176,7 +176,7 @@ class Drugs extends Component {
               <i>
                 N =
                 {' '}
-                {drugsData.length.toLocaleString()}
+                1,977
               </i>
             </h1>
             {datasetData.length === 0 ? null : (
