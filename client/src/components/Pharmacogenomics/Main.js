@@ -231,9 +231,9 @@ class Pharmacogenomics extends Component {
   constructor() {
     super();
     this.state = {
+      // Material UI wants to have some initial value for the radio group, thus 'null'
       dataType: 'null',
       scoreValue: 'zip',
-      // Material UI wants to have some initial value for the radio group, thus 'null'
       selectedDrug1: 'null',
       selectedDrug2: 'null',
       selectedMolecule: 'null',
@@ -248,7 +248,6 @@ class Pharmacogenomics extends Component {
       showPlot: false,
       showOptions: false,
       loadingBiomarkerList: false,
-      loadingBiomarkerData: true,
       loadingDrug1: true,
       loadingDrug2: true,
       xRange: null,
@@ -281,10 +280,7 @@ class Pharmacogenomics extends Component {
     this.getPlotData = this.getPlotData.bind(this);
     this.processSynData = this.processSynData.bind(this);
     this.checkAvailableScores = this.checkAvailableScores.bind(this);
-    this.focusNodePlot = null;
-    this.focusNodeBiomarker = null;
-    this.focusNodeSampleDrug = null;
-    this.focusNodeButton = null;
+    this.focusNode = null;
   }
 
   async componentDidMount() {
@@ -317,23 +313,23 @@ class Pharmacogenomics extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { focusNodePlot } = this;
+    const { focusNode } = this;
     const { focus } = this.state;
     const { location } = this.props;
 
     // defines what part of the page to scroll into view
     switch (focus) {
       case 'plot':
-        focusNodePlot.scrollIntoView({ block: 'start' });
+        focusNode.scrollIntoView({ block: 'start' });
         break;
       case 'biomarker':
-        this.focusNodePlot.scrollIntoView({ block: 'start' });
+        this.focusNode.scrollIntoView({ block: 'start' });
         break;
       case 'sample-drug':
-        this.focusNodePlot.scrollIntoView({ block: 'end' });
+        this.focusNode.scrollIntoView({ block: 'end' });
         break;
       case 'button':
-        this.focusNodePlot.scrollIntoView({ block: 'end' });
+        this.focusNode.scrollIntoView({ block: 'end' });
         break;
       default:
         break;
@@ -418,7 +414,7 @@ class Pharmacogenomics extends Component {
     let { dataType } = this.state;
     if (example) dataType = 'rnaseq';
     const { checkAvailableScores } = this;
-    this.setState({ loadingBiomarkerData: true, showPlot: false, focus: false });
+    this.setState({ showPlot: false, focus: false });
 
     const sampleString = generateSampleString(sampleData, tissueObj);
     let queryParams = `?drugId1=${selectedDrug1}&drugId2=${selectedDrug2}&sample=${sampleString}`;
@@ -465,9 +461,6 @@ class Pharmacogenomics extends Component {
     } else {
       // eslint-disable-next-line no-console
       console.log('wrong datatype');
-      this.setState({
-        loadingBiomarkerData: false,
-      });
     }
   }
 
@@ -888,16 +881,13 @@ class Pharmacogenomics extends Component {
     const {
       dataType, scoreValue, selectedDrug1, selectedDrug2,
       drugsData1, drugsData2, showOptions, scoreAvailability,
-      loadingBiomarkerData, selectHighlight,
+      selectHighlight,
     } = this.state;
     const { color_main_2, highlight_pharmacogenomics } = colors;
-    // const showSynScore = selectedDrug1 !== 'null'
-    //  && selectedDrug2 !== 'null' && sampleData.length !== 0;
     const drugLabel1 = generateDrugLabel(selectedDrug1, drugsData1);
     const drugLabel2 = generateDrugLabel(selectedDrug2, drugsData2);
-    console.log(selectHighlight);
     return (
-      <main ref={node => this.focusNodePlot = node}>
+      <main ref={node => this.focusNode = node}>
         <StyledDiv>
           <div className="header">
             <h2>Biomarker discovery in Pharmacogenomics</h2>
