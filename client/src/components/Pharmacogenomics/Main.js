@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 /* eslint-disable react/no-did-update-set-state */
 /* eslint-disable no-return-assign */
 /* eslint-disable react/no-string-refs */
@@ -261,6 +262,7 @@ class Pharmacogenomics extends Component {
         hsa: false,
         loewe: false,
       },
+      selectHighlight: 'dataType',
     };
     this.getDrugData = this.getDrugData.bind(this);
     this.getSampleDrugData = this.getSampleDrugData.bind(this);
@@ -304,6 +306,7 @@ class Pharmacogenomics extends Component {
           hsa: true,
           loewe: true,
         },
+        selectHighlight: null,
       });
       await this.getPlotData();
       // await this.setState({ showPlot: true, showOptions: false });
@@ -330,24 +333,9 @@ class Pharmacogenomics extends Component {
         drugsData2: [],
         example: false,
         showPlot: false,
+        selectHighlight: 'dataType',
       });
     }
-  }
-
-  // Updates drug data based on samples
-  getDrugData(data, keyStore, type, drug) {
-    const querySamples = generateSampleString(data, keyStore);
-    let urlString = `/api/drugs/filter?sample=${querySamples}`;
-    if (type === 'drugsData1' && drug) urlString = urlString.concat(`&drugId=${drug}`);
-    if (type === 'drugsData2' && drug) urlString = urlString.concat(`&drugId=${drug}`);
-    fetch(urlString)
-      .then(response => response.json())
-      .then((drugData) => {
-        const drugsData = drugData.map(item => ({ value: item.idDrug, label: item.name }));
-        if (type === 'drugsData1') this.setState({ [type]: drugsData, loadingDrug1: false, focus: false });
-        if (type === 'drugsData2') this.setState({ [type]: drugsData, loadingDrug2: false, focus: false });
-      // eslint-disable-next-line no-console
-      }).catch(err => console.log(err));
   }
 
   getSampleDrugData(dataType) {
@@ -386,6 +374,22 @@ class Pharmacogenomics extends Component {
         console.log(err);
         this.setState({ dataType });
       });
+  }
+
+  // Updates drug data based on samples
+  getDrugData(data, keyStore, type, drug) {
+    const querySamples = generateSampleString(data, keyStore);
+    let urlString = `/api/drugs/filter?sample=${querySamples}`;
+    if (type === 'drugsData1' && drug) urlString = urlString.concat(`&drugId=${drug}`);
+    if (type === 'drugsData2' && drug) urlString = urlString.concat(`&drugId=${drug}`);
+    fetch(urlString)
+      .then(response => response.json())
+      .then((drugData) => {
+        const drugsData = drugData.map(item => ({ value: item.idDrug, label: item.name }));
+        if (type === 'drugsData1') this.setState({ [type]: drugsData, loadingDrug1: false, focus: false });
+        if (type === 'drugsData2') this.setState({ [type]: drugsData, loadingDrug2: false, focus: false });
+      // eslint-disable-next-line no-console
+      }).catch(err => console.log(err));
   }
 
 
@@ -502,6 +506,7 @@ class Pharmacogenomics extends Component {
       showPlot: false,
       showOptions: false,
       focus: false,
+      selectHighlight: 'sample',
     });
     getSampleDrugData(dataType);
   }
@@ -520,6 +525,7 @@ class Pharmacogenomics extends Component {
       showPlot: false,
       showOptions: false,
       focus: false,
+      selectHighlight: 'sample',
     });
     getSampleDrugData(dataType);
   }
@@ -576,6 +582,7 @@ class Pharmacogenomics extends Component {
       loadingDrug1: true,
       loadingDrug2: true,
       focus: false,
+      selectHighlight: 'drug1',
     });
 
     getDrugData(updatedSamplesData, tissueObj, 'drugsData1');
@@ -600,6 +607,7 @@ class Pharmacogenomics extends Component {
       showOptions: false,
       focus: false,
       example: false,
+      selectHighlight: 'biomarker',
     });
     if (dataType === 'rnaseq' || dataType === 'mutation' || dataType === 'cna') updateGeneData(dataType);
     if (dataType === 'metabolomic') updateMoleculeData();
@@ -640,6 +648,7 @@ class Pharmacogenomics extends Component {
       selectedDrug2: 'null',
       showOptions: false,
       showPlot: false,
+      selectHighlight: 'drug2',
     });
     getDrugData(sampleData, tissueObj, 'drugsData2', newDrug1);
   }
@@ -652,6 +661,7 @@ class Pharmacogenomics extends Component {
       focus: false,
       showOptions: false,
       showPlot: false,
+      selectHighlight: 'score',
     }, () => getPlotData());
   }
 
@@ -704,12 +714,13 @@ class Pharmacogenomics extends Component {
 
   renderBiomarkerList() {
     const {
-      dataType, moleculeData, geneData, selectedMolecule,
-      selectedGene, loadingBiomarkerList,
-    } = this.state;
-    const {
       moleculeChange, geneChange,
     } = this;
+    const {
+      dataType, moleculeData, geneData, selectedMolecule,
+      selectedGene, loadingBiomarkerList, selectHighlight,
+    } = this.state;
+    const { color_main_2, highlight_pharmacogenomics } = colors;
     if (loadingBiomarkerList) {
       return (
         <div className="loading-container">
@@ -719,20 +730,26 @@ class Pharmacogenomics extends Component {
     }
     if (dataType === 'metabolomic' && moleculeData.length > 0) {
       return (
-        <MoleculeList
-          data={moleculeData}
-          moleculeChange={moleculeChange}
-          selectedMolecule={selectedMolecule}
-        />
+        <div className="molecule-container">
+          <h3 style={{ color: selectHighlight === 'biomarker' ? highlight_pharmacogenomics : color_main_2 }}>Select biological molecule</h3>
+          <MoleculeList
+            data={moleculeData}
+            moleculeChange={moleculeChange}
+            selectedMolecule={selectedMolecule}
+          />
+        </div>
       );
     }
     if (dataType !== 'metabolomic' && geneData.length > 0) {
       return (
-        <GeneList
-          data={geneData}
-          geneChange={geneChange}
-          selectedGene={selectedGene}
-        />
+        <div className="genes-container">
+          <h3 style={{ color: selectHighlight === 'biomarker' ? highlight_pharmacogenomics : color_main_2 }}>Select gene</h3>
+          <GeneList
+            data={geneData}
+            geneChange={geneChange}
+            selectedGene={selectedGene}
+          />
+        </div>
       );
     }
     return null;
@@ -828,11 +845,14 @@ class Pharmacogenomics extends Component {
     const {
       dataType, scoreValue, selectedDrug1, selectedDrug2,
       drugsData1, drugsData2, showOptions, scoreAvailability,
-      loadingBiomarkerData,
+      loadingBiomarkerData, selectHighlight,
     } = this.state;
-    // const showSynScore = selectedDrug1 !== 'null' && selectedDrug2 !== 'null' && sampleData.length !== 0;
+    const { color_main_2, highlight_pharmacogenomics } = colors;
+    // const showSynScore = selectedDrug1 !== 'null'
+    //  && selectedDrug2 !== 'null' && sampleData.length !== 0;
     const drugLabel1 = generateDrugLabel(selectedDrug1, drugsData1);
     const drugLabel2 = generateDrugLabel(selectedDrug2, drugsData2);
+    console.log(selectHighlight);
     return (
       <main ref={node => this.focusNode = node}>
         <StyledDiv>
@@ -845,7 +865,7 @@ class Pharmacogenomics extends Component {
             <div className="datatype-container selector">
               <div>
                 <FormControl component="fieldset">
-                  <h3>Select datatype</h3>
+                  <h3 style={{ color: selectHighlight === 'dataType' ? highlight_pharmacogenomics : color_main_2 }}>Select datatype</h3>
                   <div style={{ marginTop: '37px' }}>
                     <RadioGroup aria-label="datatype" name="datatype" value={dataType} onChange={profileChange}>
                       <CustomFormLabel value="metabolomic" control={<CustomRadio />} label="metabolomic" />
@@ -880,7 +900,7 @@ class Pharmacogenomics extends Component {
             ) : null}
             {showOptions ? (
               <div className="analysis">
-                <StyledButton onClick={() => this.setState({ showPlot: true })} type="button">Analysis</StyledButton>
+                <StyledButton onClick={() => this.setState({ showPlot: true, selectHighlight: null })} type="button">Analysis</StyledButton>
                 {/* <div>
                 {renderPlot(drugLabel1, drugLabel2)}
               </div> */}

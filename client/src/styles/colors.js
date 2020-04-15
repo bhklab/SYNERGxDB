@@ -23,4 +23,5 @@ export default {
   pagination: '#5675b3',
   pagination_dark: '#234280',
   button_hover: '#58a3c7',
+  highlight_pharmacogenomics: '#efa127',
 };
