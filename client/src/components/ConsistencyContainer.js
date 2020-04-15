@@ -22,8 +22,6 @@ const StyledConsistencyContainer = styled.div`
 
   .consistencyGrid {
     display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
 
     .consistencyContainer {
       flex: 45%;
