@@ -109,10 +109,16 @@ const customStyles = {
     background: 'rgb(0,0,0,0)',
     border: `1px solid ${colors.nav_links}`,
     margin: '5px 0px',
+    padding: '2px 2px 2px 9px',
     '&:hover': {
       border: `1px solid ${colors.nav_links}`,
       cursor: 'text',
     },
+  }),
+  valueContainer: provided => ({
+    ...provided,
+    padding: '0px',
+    color: `${colors.nav_links}`,
   }),
   placeholder: provided => ({
     ...provided,
