@@ -714,12 +714,13 @@ class Pharmacogenomics extends Component {
 
   renderBiomarkerList() {
     const {
-      dataType, moleculeData, geneData, selectedMolecule,
-      selectedGene, loadingBiomarkerList,
-    } = this.state;
-    const {
       moleculeChange, geneChange,
     } = this;
+    const {
+      dataType, moleculeData, geneData, selectedMolecule,
+      selectedGene, loadingBiomarkerList, selectHighlight,
+    } = this.state;
+    const { color_main_2, highlight_pharmacogenomics } = colors;
     if (loadingBiomarkerList) {
       return (
         <div className="loading-container">
@@ -729,20 +730,26 @@ class Pharmacogenomics extends Component {
     }
     if (dataType === 'metabolomic' && moleculeData.length > 0) {
       return (
-        <MoleculeList
-          data={moleculeData}
-          moleculeChange={moleculeChange}
-          selectedMolecule={selectedMolecule}
-        />
+        <div className="molecule-container">
+          <h3 style={{ color: selectHighlight === 'biomarker' ? highlight_pharmacogenomics : color_main_2 }}>Select biological molecule</h3>
+          <MoleculeList
+            data={moleculeData}
+            moleculeChange={moleculeChange}
+            selectedMolecule={selectedMolecule}
+          />
+        </div>
       );
     }
     if (dataType !== 'metabolomic' && geneData.length > 0) {
       return (
-        <GeneList
-          data={geneData}
-          geneChange={geneChange}
-          selectedGene={selectedGene}
-        />
+        <div className="genes-container">
+          <h3 style={{ color: selectHighlight === 'biomarker' ? highlight_pharmacogenomics : color_main_2 }}>Select gene</h3>
+          <GeneList
+            data={geneData}
+            geneChange={geneChange}
+            selectedGene={selectedGene}
+          />
+        </div>
       );
     }
     return null;

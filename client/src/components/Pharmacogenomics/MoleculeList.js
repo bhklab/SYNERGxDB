@@ -157,40 +157,39 @@ class MoleculeList extends Component {
     } = this.state;
     const { moleculeChange } = this.props;
     return (
-      <div className="molecule-container">
-        <FormControl component="fieldset">
-          <h3>Select biological molecule</h3>
-          <RadioGroup aria-label="molecule" name="molecule" value={selectedMolecule} onChange={moleculeChange}>
-            <CustomTextField
-              id="standard-textarea"
-              label="Search by biological molecule name"
-              placeholder="Enter biological molecule"
-              multiline
-              margin="normal"
-              value={value}
-              onChange={e => handleFilter(e)}
-            />
-            <div className="list-container">
-              <AutoSizer>
-                {({ width, height }) => (
-                  <List
-                    width={width}
-                    height={height}
-                    rowCount={filteredData.length}
-                    deferredMeasurementCache={cacheMolecules}
-                    rowHeight={cacheMolecules.rowHeight}
-                    rowRenderer={({
-                      key, index, parent, style,
-                    }) => rowRenderer({
-                      key, index, parent, style, cache: cacheMolecules, data: filteredData,
-                    })}
-                  />
-                )}
-              </AutoSizer>
-            </div>
-          </RadioGroup>
-        </FormControl>
-      </div>
+
+      <FormControl component="fieldset">
+        <RadioGroup aria-label="molecule" name="molecule" value={selectedMolecule} onChange={moleculeChange}>
+          <CustomTextField
+            id="standard-textarea"
+            label="Search by biological molecule name"
+            placeholder="Enter biological molecule"
+            multiline
+            margin="normal"
+            value={value}
+            onChange={e => handleFilter(e)}
+          />
+          <div className="list-container">
+            <AutoSizer>
+              {({ width, height }) => (
+                <List
+                  width={width}
+                  height={height}
+                  rowCount={filteredData.length}
+                  deferredMeasurementCache={cacheMolecules}
+                  rowHeight={cacheMolecules.rowHeight}
+                  rowRenderer={({
+                    key, index, parent, style,
+                  }) => rowRenderer({
+                    key, index, parent, style, cache: cacheMolecules, data: filteredData,
+                  })}
+                />
+              )}
+            </AutoSizer>
+          </div>
+        </RadioGroup>
+      </FormControl>
+
     );
   }
 }

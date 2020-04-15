@@ -160,40 +160,37 @@ class MoleculeList extends Component {
     } = this.state;
     const { geneChange } = this.props;
     return (
-      <div className="genes-container">
-        <FormControl component="fieldset">
-          <h3>Select gene</h3>
-          <RadioGroup aria-label="gene" name="gene" value={selectedGene} onChange={geneChange}>
-            <CustomTextField
-              id="standard-textarea"
-              label="Search by gene name"
-              placeholder="Enter gene"
-              multiline
-              margin="normal"
-              value={value}
-              onChange={e => handleFilter(e)}
-            />
-            <div className="list-container">
-              <AutoSizer>
-                {({ width, height }) => (
-                  <List
-                    width={width}
-                    height={height}
-                    rowCount={filteredData.length}
-                    deferredMeasurementCache={cacheGenes}
-                    rowHeight={cacheGenes.rowHeight}
-                    rowRenderer={({
-                      key, index, parent, style,
-                    }) => rowRenderer({
-                      key, index, parent, style, cache: cacheGenes, data: filteredData,
-                    })}
-                  />
-                )}
-              </AutoSizer>
-            </div>
-          </RadioGroup>
-        </FormControl>
-      </div>
+      <FormControl component="fieldset">
+        <RadioGroup aria-label="gene" name="gene" value={selectedGene} onChange={geneChange}>
+          <CustomTextField
+            id="standard-textarea"
+            label="Search by gene name"
+            placeholder="Enter gene"
+            multiline
+            margin="normal"
+            value={value}
+            onChange={e => handleFilter(e)}
+          />
+          <div className="list-container">
+            <AutoSizer>
+              {({ width, height }) => (
+                <List
+                  width={width}
+                  height={height}
+                  rowCount={filteredData.length}
+                  deferredMeasurementCache={cacheGenes}
+                  rowHeight={cacheGenes.rowHeight}
+                  rowRenderer={({
+                    key, index, parent, style,
+                  }) => rowRenderer({
+                    key, index, parent, style, cache: cacheGenes, data: filteredData,
+                  })}
+                />
+              )}
+            </AutoSizer>
+          </div>
+        </RadioGroup>
+      </FormControl>
     );
   }
 }
