@@ -429,8 +429,9 @@ class Biomarkers extends Component {
     } = this.state;
 
     const columns = [{
-      Header: 'Gene Symbol',
+      Header: 'Gene symbol',
       accessor: 'gene',
+      Cell: props => <i>{props.value}</i>,
     }, {
       Header: 'Compound A',
       accessor: 'drugA',
@@ -468,7 +469,7 @@ class Biomarkers extends Component {
         break;
     }
     const headers = [
-      { displayName: 'Gene Symbol', id: 'gene' },
+      { displayName: 'Gene symbol', id: 'gene' },
       { displayName: 'Compound A', id: 'drugA' },
       { displayName: 'Compound B', id: 'drugB' },
       { displayName: 'Dataset', id: 'dataset' },

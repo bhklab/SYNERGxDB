@@ -413,7 +413,7 @@ class SearchCombos extends Component {
       .then(response => response.json())
       .then((data) => {
         const drugsData = data.map(item => ({ value: item.idDrug, label: item.name }));
-        this.setState({ filteredDrugsData1: [{ value: 'Any', label: 'Any Compound' }, ...drugsData] });
+        this.setState({ filteredDrugsData1: [{ value: 'Any', label: 'Any compound' }, ...drugsData] });
       });
   }
 
@@ -427,7 +427,7 @@ class SearchCombos extends Component {
       .then(response => response.json())
       .then((data) => {
         const drugsData = data.map(item => ({ value: item.idDrug, label: item.name }));
-        this.setState({ filteredDrugsData2: [{ value: 'Any', label: 'Any Compound' }, ...drugsData] });
+        this.setState({ filteredDrugsData2: [{ value: 'Any', label: 'Any compound' }, ...drugsData] });
       });
   }
 
@@ -629,7 +629,7 @@ class SearchCombos extends Component {
               }}
               styles={customStyles}
               options={filteredSampleData || sampleData}
-              placeholder="Enter Cell Line or Tissue"
+              placeholder="Enter cell line or tissue"
               onChange={handleSampleSearch}
               value={selectedSample}
               filterOption={customFilterOption}
@@ -644,7 +644,7 @@ class SearchCombos extends Component {
               }}
               styles={customStyles}
               options={filteredDatasetData || datasetData}
-              placeholder="Enter Dataset"
+              placeholder="Enter dataset"
               value={selectedDataset}
               onChange={handleDatasetSearch}
               filterOption={customFilterOption}
@@ -658,7 +658,7 @@ class SearchCombos extends Component {
               }}
               styles={customStyles}
               options={filteredDrugsData1 || drugsData1}
-              placeholder="Enter Compound A"
+              placeholder="Enter compound A"
               onChange={e => handleDrug1Search(e)}
               value={selectedDrug1}
               filterOption={customFilterOption}
@@ -672,7 +672,7 @@ class SearchCombos extends Component {
               }}
               styles={customStyles}
               options={filteredDrugsData2 || drugsData2}
-              placeholder="Enter Compound B"
+              placeholder="Enter compound B"
               value={selectedDrug2}
               onChange={handleDrug2Search}
               filterOption={customFilterOption}
