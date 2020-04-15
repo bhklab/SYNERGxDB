@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 /* eslint-disable react/no-did-update-set-state */
 /* eslint-disable no-return-assign */
 /* eslint-disable react/no-string-refs */
@@ -505,6 +506,7 @@ class Pharmacogenomics extends Component {
       showPlot: false,
       showOptions: false,
       focus: false,
+      selectHighlight: 'sample',
     });
     getSampleDrugData(dataType);
   }
@@ -523,6 +525,7 @@ class Pharmacogenomics extends Component {
       showPlot: false,
       showOptions: false,
       focus: false,
+      selectHighlight: 'sample',
     });
     getSampleDrugData(dataType);
   }
@@ -579,6 +582,7 @@ class Pharmacogenomics extends Component {
       loadingDrug1: true,
       loadingDrug2: true,
       focus: false,
+      selectHighlight: 'drug1',
     });
 
     getDrugData(updatedSamplesData, tissueObj, 'drugsData1');
@@ -603,6 +607,7 @@ class Pharmacogenomics extends Component {
       showOptions: false,
       focus: false,
       example: false,
+      selectHighlight: 'biomarker',
     });
     if (dataType === 'rnaseq' || dataType === 'mutation' || dataType === 'cna') updateGeneData(dataType);
     if (dataType === 'metabolomic') updateMoleculeData();
@@ -643,6 +648,7 @@ class Pharmacogenomics extends Component {
       selectedDrug2: 'null',
       showOptions: false,
       showPlot: false,
+      selectHighlight: 'drug2',
     });
     getDrugData(sampleData, tissueObj, 'drugsData2', newDrug1);
   }
@@ -655,6 +661,7 @@ class Pharmacogenomics extends Component {
       focus: false,
       showOptions: false,
       showPlot: false,
+      selectHighlight: 'score',
     }, () => getPlotData());
   }
 
@@ -831,12 +838,14 @@ class Pharmacogenomics extends Component {
     const {
       dataType, scoreValue, selectedDrug1, selectedDrug2,
       drugsData1, drugsData2, showOptions, scoreAvailability,
-      loadingBiomarkerData,
+      loadingBiomarkerData, selectHighlight,
     } = this.state;
+    const { color_main_2, highlight_pharmacogenomics } = colors;
     // const showSynScore = selectedDrug1 !== 'null'
     //  && selectedDrug2 !== 'null' && sampleData.length !== 0;
     const drugLabel1 = generateDrugLabel(selectedDrug1, drugsData1);
     const drugLabel2 = generateDrugLabel(selectedDrug2, drugsData2);
+    console.log(selectHighlight);
     return (
       <main ref={node => this.focusNode = node}>
         <StyledDiv>
@@ -849,7 +858,7 @@ class Pharmacogenomics extends Component {
             <div className="datatype-container selector">
               <div>
                 <FormControl component="fieldset">
-                  <h3>Select datatype</h3>
+                  <h3 style={{ color: selectHighlight === 'dataType' ? highlight_pharmacogenomics : color_main_2 }}>Select datatype</h3>
                   <div style={{ marginTop: '37px' }}>
                     <RadioGroup aria-label="datatype" name="datatype" value={dataType} onChange={profileChange}>
                       <CustomFormLabel value="metabolomic" control={<CustomRadio />} label="metabolomic" />
@@ -884,7 +893,7 @@ class Pharmacogenomics extends Component {
             ) : null}
             {showOptions ? (
               <div className="analysis">
-                <StyledButton onClick={() => this.setState({ showPlot: true })} type="button">Analysis</StyledButton>
+                <StyledButton onClick={() => this.setState({ showPlot: true, selectHighlight: null })} type="button">Analysis</StyledButton>
                 {/* <div>
                 {renderPlot(drugLabel1, drugLabel2)}
               </div> */}
