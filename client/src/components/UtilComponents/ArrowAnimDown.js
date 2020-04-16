@@ -38,7 +38,7 @@ const StyledArrow = styled.div`
 `;
 
 
-const ArrowAnim = () => (
+const ArrowAnimDown = () => (
   <StyledArrow>
     <svg className="arrow">
       <path className="a1" d="M0 0 L20 12 L40 0" />
@@ -49,4 +49,4 @@ const ArrowAnim = () => (
 );
 
 
-export default ArrowAnim;
+export default ArrowAnimDown;

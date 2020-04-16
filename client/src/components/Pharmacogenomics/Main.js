@@ -24,7 +24,7 @@ import GeneList from './GeneList';
 import SampleList from './SampleList';
 import DrugList from './DrugList';
 import AdvancedAnalysis from './Plots/AdvancedAnalysis';
-import ArrowAnim from '../UtilComponents/ArrowAnim';
+import ArrowAnimDown from '../UtilComponents/ArrowAnimDown';
 
 const dimensions = {
   left: 55,
@@ -802,7 +802,7 @@ class Pharmacogenomics extends Component {
     if (selectedMolecule !== 'null' || selectedGene !== 'null') {
       return sampleData.length > 0 && drugsData1.length > 0 ? (
         <div className="selector">
-          <div className="samples-container">
+          <div className="samples-container data-container">
             <h3
               style={{ color: selectHighlight === 'sample' ? highlight_pharmacogenomics : color_main_2 }}
             >
@@ -815,7 +815,7 @@ class Pharmacogenomics extends Component {
           </div>
           {!loadingDrug1
             ? (
-              <div className="drug-container">
+              <div className="drug-container data-container">
                 <h3 style={{ color: selectHighlight === 'drug1' ? highlight_pharmacogenomics : color_main_2 }}>Select compound A</h3>
                 <DrugList
                   data={drugsData1}
@@ -823,15 +823,20 @@ class Pharmacogenomics extends Component {
                   selectedDrug={selectedDrug1}
                   drugLabel="A"
                 />
+                {selectHighlight === 'score' ? (
+                  <div className="arrow-container" style={{ position: 'absolute', bottom: '-45px', left: 'calc(50% - 25px)' }}>
+                    <ArrowAnimDown />
+                  </div>
+                ) : null}
               </div>
             ) : (
-              <div className="loading-container">
+              <div className="loading-container data-container">
                 <ReactLoading type="bubbles" width={150} height={150} color={colors.color_main_2} />
               </div>
             )
           }
           {!loadingDrug2 ? (
-            <div className="drug-container">
+            <div className="drug-container data-container">
               <h3 style={{ color: selectHighlight === 'drug2' ? highlight_pharmacogenomics : color_main_2 }}>Select compound B</h3>
               <DrugList
                 data={drugsData2}
@@ -920,7 +925,7 @@ class Pharmacogenomics extends Component {
                 </FormControl>
                 {selectHighlight === 'sample' ? (
                   <div className="arrow-container" style={{ position: 'absolute', bottom: '-45px', left: 'calc(33% - 25px)' }}>
-                    <ArrowAnim />
+                    <ArrowAnimDown />
                   </div>
                 ) : null}
               </div>
