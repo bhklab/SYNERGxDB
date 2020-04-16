@@ -433,21 +433,21 @@ class SearchCombos extends Component {
     }
     let ind1;
     let ind2;
-    drugsData1.find((item, i) => {
+    const event1 = drugsData1.find((item, i) => {
       if (item.label === drug1) {
         ind1 = i;
         return i;
       }
     });
 
-    drugsData2.find((item, i) => {
+    const event2 = drugsData2.find((item, i) => {
       if (item.label === drug2) {
         ind2 = i;
         return i;
       }
     });
-
-    this.setState({ selectedDrug1: drugsData1[ind1], selectedDrug2: drugsData2[ind2] });
+    this.handleDrug1Search(event1);
+    this.handleDrug2Search(event2);
   }
 
   filterDrugAData(sample, drugB, dataset) {
