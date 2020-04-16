@@ -24,6 +24,7 @@ import GeneList from './GeneList';
 import SampleList from './SampleList';
 import DrugList from './DrugList';
 import AdvancedAnalysis from './Plots/AdvancedAnalysis';
+import ArrowAnim from '../UtilComponents/ArrowAnim';
 
 const dimensions = {
   left: 55,
@@ -89,7 +90,7 @@ const StyledContainer = styled.div`
       min-height: 450px;
       width: 30%;
     }
-    &:nth-of-type(1) > div {
+    &:nth-of-type(1) > .data-container {
       padding: 0 20px;
       width: 50%;
       &:nth-of-type(2) {
@@ -743,14 +744,14 @@ class Pharmacogenomics extends Component {
     const { color_main_2, highlight_pharmacogenomics } = colors;
     if (loadingBiomarkerList) {
       return (
-        <div className="loading-container">
+        <div className="loading-container data-container">
           <ReactLoading type="bubbles" width={150} height={150} color={colors.color_main_2} />
         </div>
       );
     }
     if (dataType === 'metabolomic' && moleculeData.length > 0) {
       return (
-        <div className="molecule-container">
+        <div className="molecule-container data-container">
           <h3
             style={{ color: selectHighlight === 'biomarker' ? highlight_pharmacogenomics : color_main_2 }}
           >
@@ -766,7 +767,7 @@ class Pharmacogenomics extends Component {
     }
     if (dataType !== 'metabolomic' && geneData.length > 0) {
       return (
-        <div className="genes-container">
+        <div className="genes-container data-container">
           <h3
             style={{ color: selectHighlight === 'biomarker' ? highlight_pharmacogenomics : color_main_2 }}
           >
@@ -901,8 +902,8 @@ class Pharmacogenomics extends Component {
           </div>
           {renderPlot(drugLabel1, drugLabel2)}
           <StyledContainer>
-            <div className="datatype-container selector">
-              <div>
+            <div className="datatype-container selector" style={{ position: 'relative' }}>
+              <div className="data-container">
                 <FormControl component="fieldset">
                   <h3 style={{ color: selectHighlight === 'dataType' ? highlight_pharmacogenomics : color_main_2 }}>Select datatype</h3>
                   <div style={{ marginTop: '37px' }}>
@@ -920,6 +921,9 @@ class Pharmacogenomics extends Component {
                 </FormControl>
               </div>
               {renderBiomarkerList()}
+              {/* <div className="arrow-container" style={{ position: 'absolute', bottom: '-25px', left: 'calc(20% - 25px)' }}>
+                <ArrowAnim />
+              </div> */}
             </div>
             { renderSampleDrugData()}
             { showOptions ? (
