@@ -25,6 +25,7 @@ import SampleList from './SampleList';
 import DrugList from './DrugList';
 import AdvancedAnalysis from './Plots/AdvancedAnalysis';
 import ArrowAnimDown from '../UtilComponents/ArrowAnimDown';
+import ArrowAnimRight from '../UtilComponents/ArrowAnimRight';
 
 const dimensions = {
   left: 55,
@@ -923,6 +924,11 @@ class Pharmacogenomics extends Component {
                     </RadioGroup>
                   </div>
                 </FormControl>
+                {selectHighlight === 'biomarker' ? (
+                  <div className="arrow-container" style={{ position: 'absolute', top: 'calc(50% - 25px)', right: '-25px' }}>
+                    <ArrowAnimRight />
+                  </div>
+                ) : null}
                 {selectHighlight === 'sample' ? (
                   <div className="arrow-container" style={{ position: 'absolute', bottom: '-45px', left: 'calc(33% - 25px)' }}>
                     <ArrowAnimDown />

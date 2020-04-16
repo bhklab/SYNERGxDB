@@ -13,9 +13,9 @@ const StyledArrow = styled.div`
     width: 100%;
     height: 80%;
     position: absolute; /* don't forget set container to relative */
-    left: 10%;
+    left: 20%;
     margin-left: 0px;
-    bottom: 5%;
+    bottom: 10%;
     z-index:999;
   }
   /* set arrow styles */
@@ -39,15 +39,15 @@ const StyledArrow = styled.div`
 `;
 
 
-const ArrowAnimDown = () => (
+const ArrowAnimRight = () => (
   <StyledArrow>
     <svg className="arrow">
-      <path className="a1" d="M0 0 L20 12 L40 0" />
-      <path className="a2" d="M0 10 L20 22 L40 10" />
-      <path className="a3" d="M0 20 L20 32 L40 20" />
+      <path className="a1" d="M0 0 L12 20 L0 40" />
+      <path className="a2" d="M10 0 L22 22 L10 40" />
+      <path className="a3" d="M20 0 L32 20 L20 40" />
     </svg>
   </StyledArrow>
 );
 
 
-export default ArrowAnimDown;
+export default ArrowAnimRight;
