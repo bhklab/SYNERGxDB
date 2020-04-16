@@ -810,7 +810,6 @@ class Pharmacogenomics extends Component {
       selectedDrug2, selectedGene, selectedMolecule,
       loadingDrug1, loadingDrug2, selectHighlight,
     } = this.state;
-    console.log(selectHighlight);
     const { color_main_2, highlight_pharmacogenomics } = colors;
     if (selectedMolecule !== 'null' || selectedGene !== 'null') {
       return sampleData.length > 0 && drugsData1.length > 0 ? (
