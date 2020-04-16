@@ -682,13 +682,24 @@ class Pharmacogenomics extends Component {
   handleDrug2Search(event) {
     const selectedDrug2 = event.target.value;
     const { getPlotData } = this;
-    this.setState({
-      selectedDrug2,
-      focus: false,
-      showOptions: false,
-      showPlot: false,
-      selectHighlight: 'score',
-    }, () => getPlotData());
+    const { selectedDrug1 } = this.state;
+    if (selectedDrug1 !== 'null') {
+      this.setState({
+        selectedDrug2,
+        focus: false,
+        showOptions: false,
+        showPlot: false,
+        selectHighlight: 'score',
+      }, () => getPlotData());
+    } else {
+      this.setState({
+        selectedDrug2,
+        focus: false,
+        showOptions: false,
+        showPlot: false,
+        selectHighlight: 'drug1',
+      });
+    }
   }
 
   // Prepares data for plotly based on the synergy score
