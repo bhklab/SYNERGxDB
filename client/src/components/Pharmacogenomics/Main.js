@@ -109,11 +109,17 @@ const StyledContainer = styled.div`
       border-top: none;
     }
   }
+
+  .synscore-container fieldset {
+    margin: 0 auto;
+  }
   .syn-score {
-    display: flex;
-    justify-content: space-between;
+    div {
+      display: flex;
+      justify-content: space-between;
+    }
     h3 {
-      padding-right: 50px;
+      text-align: center;
     }
   }
 
@@ -231,9 +237,9 @@ class Pharmacogenomics extends Component {
   constructor() {
     super();
     this.state = {
+      // Material UI wants to have some initial value for the radio group, thus 'null'
       dataType: 'null',
       scoreValue: 'zip',
-      // Material UI wants to have some initial value for the radio group, thus 'null'
       selectedDrug1: 'null',
       selectedDrug2: 'null',
       selectedMolecule: 'null',
@@ -248,7 +254,6 @@ class Pharmacogenomics extends Component {
       showPlot: false,
       showOptions: false,
       loadingBiomarkerList: false,
-      loadingBiomarkerData: true,
       loadingDrug1: true,
       loadingDrug2: true,
       xRange: null,
@@ -317,10 +322,23 @@ class Pharmacogenomics extends Component {
     const { focusNode } = this;
     const { focus } = this.state;
     const { location } = this.props;
-    // const requestParams = queryString.parse(location.search);
-    // const prevRequestParams = queryString.parse(prevProps.location.search);
-    if (focus) {
-      focusNode.scrollIntoView({ block: 'start' });
+
+    // defines what part of the page to scroll into view
+    switch (focus) {
+      case 'plot':
+        focusNode.scrollIntoView({ block: 'start' });
+        break;
+      case 'biomarker':
+        this.focusNode.scrollIntoView({ block: 'start' });
+        break;
+      case 'sample-drug':
+        this.focusNode.scrollIntoView({ block: 'end' });
+        break;
+      case 'button':
+        this.focusNode.scrollIntoView({ block: 'end' });
+        break;
+      default:
+        break;
     }
     if (location !== prevProps.location) {
       this.setState({
@@ -365,7 +383,7 @@ class Pharmacogenomics extends Component {
           }));
         const sampleData = [{ value: 'All', label: 'SELECT ALL', checked: false }, ...tissueData, ...cellData];
         this.setState({
-          sampleData, tissueObj, dataType, focus: false,
+          sampleData, tissueObj, dataType, focus: 'sample-drug',
         });
         getDrugData(cellData, tissueObj, 'drugsData1');
         getDrugData(cellData, tissueObj, 'drugsData2');
@@ -386,8 +404,8 @@ class Pharmacogenomics extends Component {
       .then(response => response.json())
       .then((drugData) => {
         const drugsData = drugData.map(item => ({ value: item.idDrug, label: item.name }));
-        if (type === 'drugsData1') this.setState({ [type]: drugsData, loadingDrug1: false, focus: false });
-        if (type === 'drugsData2') this.setState({ [type]: drugsData, loadingDrug2: false, focus: false });
+        if (type === 'drugsData1') this.setState({ [type]: drugsData, loadingDrug1: false, focus: 'sample-drug' });
+        if (type === 'drugsData2') this.setState({ [type]: drugsData, loadingDrug2: false, focus: 'button' });
       // eslint-disable-next-line no-console
       }).catch(err => console.log(err));
   }
@@ -402,7 +420,7 @@ class Pharmacogenomics extends Component {
     let { dataType } = this.state;
     if (example) dataType = 'rnaseq';
     const { checkAvailableScores } = this;
-    this.setState({ loadingBiomarkerData: true, showPlot: false, focus: false });
+    this.setState({ showPlot: false, focus: false });
 
     const sampleString = generateSampleString(sampleData, tissueObj);
     let queryParams = `?drugId1=${selectedDrug1}&drugId2=${selectedDrug2}&sample=${sampleString}`;
@@ -449,9 +467,6 @@ class Pharmacogenomics extends Component {
     } else {
       // eslint-disable-next-line no-console
       console.log('wrong datatype');
-      this.setState({
-        loadingBiomarkerData: false,
-      });
     }
   }
 
@@ -505,7 +520,7 @@ class Pharmacogenomics extends Component {
       biomarkerData: [],
       showPlot: false,
       showOptions: false,
-      focus: false,
+      focus: 'sample-drug',
       selectHighlight: 'sample',
     });
     getSampleDrugData(dataType);
@@ -524,7 +539,7 @@ class Pharmacogenomics extends Component {
       biomarkerData: [],
       showPlot: false,
       showOptions: false,
-      focus: false,
+      focus: 'sample-drug',
       selectHighlight: 'sample',
     });
     getSampleDrugData(dataType);
@@ -581,7 +596,7 @@ class Pharmacogenomics extends Component {
       biomarkerData: [],
       loadingDrug1: true,
       loadingDrug2: true,
-      focus: false,
+      focus: 'sample-drug',
       selectHighlight: 'drug1',
     });
 
@@ -617,7 +632,7 @@ class Pharmacogenomics extends Component {
   updateGeneData(dataType) {
     fetch(`/api/pharmacogenomics/genes?datatype=${dataType}`)
       .then(response => response.json())
-      .then((data) => {
+      .then(async (data) => {
         const geneData = data.map((item) => {
           let label = item.gene;
           if (dataType === 'cna') [label] = item.gene.split(' ');
@@ -625,16 +640,20 @@ class Pharmacogenomics extends Component {
             value: item.gene_id ? item.gene_id : item.gene, label,
           });
         });
-        this.setState({ geneData, loadingBiomarkerList: false, focus: false });
+        await this.setState({ geneData, loadingBiomarkerList: false });
+        // focus node value will be updated after rendering is over
+        this.setState({ focus: 'biomarker' });
       });
   }
 
   updateMoleculeData() {
     fetch('/api/pharmacogenomics/molecules')
       .then(response => response.json())
-      .then((data) => {
+      .then(async (data) => {
         const moleculeData = data.map(item => ({ value: item, label: item }));
-        this.setState({ moleculeData, loadingBiomarkerList: false, focus: false });
+        this.setState({ moleculeData, loadingBiomarkerList: false });
+        // focus node value will be updated after rendering is over
+        this.setState({ focus: 'biomarker' });
       });
   }
 
@@ -648,6 +667,7 @@ class Pharmacogenomics extends Component {
       selectedDrug2: 'null',
       showOptions: false,
       showPlot: false,
+      focus: false,
       selectHighlight: 'drug2',
     });
     getDrugData(sampleData, tissueObj, 'drugsData2', newDrug1);
@@ -701,7 +721,7 @@ class Pharmacogenomics extends Component {
       loadingBiomarkerData: false,
       scoreValue,
       accessor,
-      focus: true,
+      focus: 'plot',
     };
     // splits state updates in two categories (normal and example queries)
     if (example) {
@@ -709,7 +729,7 @@ class Pharmacogenomics extends Component {
     } else {
       stateUpdate.showOptions = true;
     }
-    this.setState(stateUpdate);
+    this.setState({ ...stateUpdate, focus: 'button' });
   }
 
   renderBiomarkerList() {
@@ -731,7 +751,11 @@ class Pharmacogenomics extends Component {
     if (dataType === 'metabolomic' && moleculeData.length > 0) {
       return (
         <div className="molecule-container">
-          <h3 style={{ color: selectHighlight === 'biomarker' ? highlight_pharmacogenomics : color_main_2 }}>Select biological molecule</h3>
+          <h3
+            style={{ color: selectHighlight === 'biomarker' ? highlight_pharmacogenomics : color_main_2 }}
+          >
+            Select biological molecule
+          </h3>
           <MoleculeList
             data={moleculeData}
             moleculeChange={moleculeChange}
@@ -743,7 +767,11 @@ class Pharmacogenomics extends Component {
     if (dataType !== 'metabolomic' && geneData.length > 0) {
       return (
         <div className="genes-container">
-          <h3 style={{ color: selectHighlight === 'biomarker' ? highlight_pharmacogenomics : color_main_2 }}>Select gene</h3>
+          <h3
+            style={{ color: selectHighlight === 'biomarker' ? highlight_pharmacogenomics : color_main_2 }}
+          >
+            Select gene
+          </h3>
           <GeneList
             data={geneData}
             geneChange={geneChange}
@@ -763,23 +791,34 @@ class Pharmacogenomics extends Component {
     const {
       drugsData1, drugsData2, selectedDrug1, sampleData,
       selectedDrug2, selectedGene, selectedMolecule,
-      loadingDrug1, loadingDrug2,
+      loadingDrug1, loadingDrug2, selectHighlight,
     } = this.state;
+    const { color_main_2, highlight_pharmacogenomics } = colors;
     if (selectedMolecule !== 'null' || selectedGene !== 'null') {
       return sampleData.length > 0 && drugsData1.length > 0 ? (
         <div className="selector">
-          <SampleList
-            data={sampleData}
-            sampleChange={sampleChange}
-          />
+          <div className="samples-container">
+            <h3
+              style={{ color: selectHighlight === 'sample' ? highlight_pharmacogenomics : color_main_2 }}
+            >
+              Select samples
+            </h3>
+            <SampleList
+              data={sampleData}
+              sampleChange={sampleChange}
+            />
+          </div>
           {!loadingDrug1
             ? (
-              <DrugList
-                data={drugsData1}
-                drugChange={handleDrug1Search}
-                selectedDrug={selectedDrug1}
-                drugLabel="A"
-              />
+              <div className="drug-container">
+                <h3 style={{ color: selectHighlight === 'drug1' ? highlight_pharmacogenomics : color_main_2 }}>Select compound A</h3>
+                <DrugList
+                  data={drugsData1}
+                  drugChange={handleDrug1Search}
+                  selectedDrug={selectedDrug1}
+                  drugLabel="A"
+                />
+              </div>
             ) : (
               <div className="loading-container">
                 <ReactLoading type="bubbles" width={150} height={150} color={colors.color_main_2} />
@@ -787,12 +826,15 @@ class Pharmacogenomics extends Component {
             )
           }
           {!loadingDrug2 ? (
-            <DrugList
-              data={drugsData2}
-              drugChange={handleDrug2Search}
-              selectedDrug={selectedDrug2}
-              drugLabel="B"
-            />
+            <div className="drug-container">
+              <h3 style={{ color: selectHighlight === 'drug2' ? highlight_pharmacogenomics : color_main_2 }}>Select compound B</h3>
+              <DrugList
+                data={drugsData2}
+                drugChange={handleDrug2Search}
+                selectedDrug={selectedDrug2}
+                drugLabel="B"
+              />
+            </div>
           ) : (
             <div className="loading-container">
               <ReactLoading type="bubbles" width={150} height={150} color={colors.color_main_2} />
@@ -845,14 +887,11 @@ class Pharmacogenomics extends Component {
     const {
       dataType, scoreValue, selectedDrug1, selectedDrug2,
       drugsData1, drugsData2, showOptions, scoreAvailability,
-      loadingBiomarkerData, selectHighlight,
+      selectHighlight,
     } = this.state;
     const { color_main_2, highlight_pharmacogenomics } = colors;
-    // const showSynScore = selectedDrug1 !== 'null'
-    //  && selectedDrug2 !== 'null' && sampleData.length !== 0;
     const drugLabel1 = generateDrugLabel(selectedDrug1, drugsData1);
     const drugLabel2 = generateDrugLabel(selectedDrug2, drugsData2);
-    console.log(selectHighlight);
     return (
       <main ref={node => this.focusNode = node}>
         <StyledDiv>
@@ -888,7 +927,7 @@ class Pharmacogenomics extends Component {
                 <FormControl component="fieldset">
                   <RadioGroup aria-label="synscore" name="synscore" value={scoreValue} onChange={scoreChange}>
                     <div className="syn-score">
-                      <h3>Select synergy score method</h3>
+                      <h3 style={{ color: selectHighlight === 'score' ? highlight_pharmacogenomics : color_main_2 }}>Select synergy score method</h3>
                       <CustomFormLabel value="zip" control={<CustomRadio />} label="ZIP" disabled={!scoreAvailability.zip} />
                       <CustomFormLabel value="bliss" control={<CustomRadio />} label="Bliss" disabled={!scoreAvailability.bliss} />
                       <CustomFormLabel value="loewe" control={<CustomRadio />} label="Loewe" disabled={!scoreAvailability.loewe} />
@@ -900,7 +939,12 @@ class Pharmacogenomics extends Component {
             ) : null}
             {showOptions ? (
               <div className="analysis">
-                <StyledButton onClick={() => this.setState({ showPlot: true, selectHighlight: null })} type="button">Analysis</StyledButton>
+                <StyledButton
+                  onClick={() => this.setState({ showPlot: true, selectHighlight: null, focus: 'plot' })}
+                  type="button"
+                >
+                  Analysis
+                </StyledButton>
                 {/* <div>
                 {renderPlot(drugLabel1, drugLabel2)}
               </div> */}

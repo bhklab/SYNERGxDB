@@ -180,44 +180,37 @@ class DrugList extends Component {
       }
     });
     return (
-      <div className="drug-container">
-        <FormControl component="fieldset">
-          <h3>
-            Select compound
-            {' '}
-            {drugLabel}
-          </h3>
-          <RadioGroup aria-label={`drug${drugLabel}`} name={`drug${drugLabel}`} value={selectedDrug} onChange={drugChange}>
-            <CustomTextField
-              id="standard-textarea"
-              label="Search by compound name"
-              placeholder={`Enter compound ${drugLabel}`}
-              multiline
-              margin="normal"
-              value={value}
-              onChange={e => handleFilter(e)}
-            />
-            <div className="list-container">
-              <AutoSizer>
-                {({ width, height }) => (
-                  <List
-                    width={width}
-                    height={height}
-                    rowCount={filteredData.length}
-                    deferredMeasurementCache={drugLabel === 'A' ? cacheDrug1 : cacheDrug2}
-                    rowHeight={drugLabel === 'A' ? cacheDrug1.rowHeight : cacheDrug2.rowHeight}
-                    rowRenderer={({
-                      key, index, parent, style,
-                    }) => rowRenderer({
-                      key, index, parent, style, cache: drugLabel === 'A' ? cacheDrug1 : cacheDrug2, data: filteredData,
-                    })}
-                  />
-                )}
-              </AutoSizer>
-            </div>
-          </RadioGroup>
-        </FormControl>
-      </div>
+      <FormControl component="fieldset">
+        <RadioGroup aria-label={`drug${drugLabel}`} name={`drug${drugLabel}`} value={selectedDrug} onChange={drugChange}>
+          <CustomTextField
+            id="standard-textarea"
+            label="Search by compound name"
+            placeholder={`Enter compound ${drugLabel}`}
+            multiline
+            margin="normal"
+            value={value}
+            onChange={e => handleFilter(e)}
+          />
+          <div className="list-container">
+            <AutoSizer>
+              {({ width, height }) => (
+                <List
+                  width={width}
+                  height={height}
+                  rowCount={filteredData.length}
+                  deferredMeasurementCache={drugLabel === 'A' ? cacheDrug1 : cacheDrug2}
+                  rowHeight={drugLabel === 'A' ? cacheDrug1.rowHeight : cacheDrug2.rowHeight}
+                  rowRenderer={({
+                    key, index, parent, style,
+                  }) => rowRenderer({
+                    key, index, parent, style, cache: drugLabel === 'A' ? cacheDrug1 : cacheDrug2, data: filteredData,
+                  })}
+                />
+              )}
+            </AutoSizer>
+          </div>
+        </RadioGroup>
+      </FormControl>
     );
   }
 }
