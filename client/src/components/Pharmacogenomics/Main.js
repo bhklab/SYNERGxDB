@@ -83,6 +83,10 @@ const StyledContainer = styled.div`
     justify-content: space-between;
     border-top: 2px solid ${colors.color_main_3};
 
+    .data-container {
+      position: relative // bacause it contains arrow animation component
+    }
+
     &.datatype-container {
       justify-content: space-between;
     }
@@ -910,20 +914,17 @@ class Pharmacogenomics extends Component {
                     <RadioGroup aria-label="datatype" name="datatype" value={dataType} onChange={profileChange}>
                       <CustomFormLabel value="metabolomic" control={<CustomRadio />} label="metabolomic" />
                       <CustomFormLabel value="rnaseq" control={<CustomRadio />} label="molecular: expression, RNA-seq" />
-                      {/* <CustomFormLabel
-                        value="mutation"
-                        control={<CustomRadio />}
-                        label="molecular: mutation"
-                       /> */}
                       <CustomFormLabel value="cna" control={<CustomRadio />} label="molecular: copy number" />
                     </RadioGroup>
                   </div>
                 </FormControl>
+                {selectHighlight === 'sample' ? (
+                  <div className="arrow-container" style={{ position: 'absolute', bottom: '-45px', left: 'calc(33% - 25px)' }}>
+                    <ArrowAnim />
+                  </div>
+                ) : null}
               </div>
               {renderBiomarkerList()}
-              {/* <div className="arrow-container" style={{ position: 'absolute', bottom: '-25px', left: 'calc(20% - 25px)' }}>
-                <ArrowAnim />
-              </div> */}
             </div>
             { renderSampleDrugData()}
             { showOptions ? (
