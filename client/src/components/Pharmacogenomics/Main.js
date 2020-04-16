@@ -799,6 +799,7 @@ class Pharmacogenomics extends Component {
       selectedDrug2, selectedGene, selectedMolecule,
       loadingDrug1, loadingDrug2, selectHighlight,
     } = this.state;
+    console.log(selectHighlight);
     const { color_main_2, highlight_pharmacogenomics } = colors;
     if (selectedMolecule !== 'null' || selectedGene !== 'null') {
       return sampleData.length > 0 && drugsData1.length > 0 ? (
@@ -813,6 +814,11 @@ class Pharmacogenomics extends Component {
               data={sampleData}
               sampleChange={sampleChange}
             />
+            {selectHighlight === 'drug1' ? (
+              <div className="arrow-container" style={{ position: 'absolute', top: 'calc(50% - 25px)', right: '-25px' }}>
+                <ArrowAnimRight />
+              </div>
+            ) : null}
           </div>
           {!loadingDrug1
             ? (
@@ -824,6 +830,11 @@ class Pharmacogenomics extends Component {
                   selectedDrug={selectedDrug1}
                   drugLabel="A"
                 />
+                {selectHighlight === 'drug2' ? (
+                  <div className="arrow-container" style={{ position: 'absolute', top: 'calc(50% - 25px)', right: '-25px' }}>
+                    <ArrowAnimRight />
+                  </div>
+                ) : null}
                 {selectHighlight === 'score' ? (
                   <div className="arrow-container" style={{ position: 'absolute', bottom: '-45px', left: 'calc(50% - 25px)' }}>
                     <ArrowAnimDown />

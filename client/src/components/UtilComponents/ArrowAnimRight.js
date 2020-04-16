@@ -22,7 +22,7 @@ const StyledArrow = styled.div`
   .arrow path {
     stroke: ${colors.trans_color_main_2};
     stroke-width: 2px;
-    fill: transparent;	
+    fill: transparent;
     animation: down 2s infinite;
   }
   /* arrow keyframe animation */
