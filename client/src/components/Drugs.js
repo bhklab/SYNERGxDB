@@ -105,7 +105,6 @@ class Drugs extends Component {
           const csvRow = { ...row };
           if (csvRow.name.includes(',')) csvRow.name = `"${csvRow.name}"`;
           if (csvRow.disease && csvRow.disease.includes(',')) csvRow.disease = `"${csvRow.disease}"`;
-          if (csvRow.description && csvRow.description.includes(',')) csvRow.description = `"${csvRow.description}"`;
           if (csvRow.atcCode && csvRow.atcCode.includes(',')) csvRow.atcCode = `"${csvRow.atcCode}"`;
           if (csvRow.inchikey) csvRow.inchikey = `"${csvRow.inchikey}"`;
           return csvRow;
@@ -160,7 +159,6 @@ class Drugs extends Component {
       { displayName: 'ATC Code', id: 'atcCode' },
       { displayName: 'PubChem CID', id: 'idPubChem' },
       { displayName: 'DrugBank ID', id: 'idDrugBank' },
-      { displayName: 'Description', id: 'description' },
       { displayName: 'SMILES', id: 'smiles' },
       { displayName: 'InChI Key', id: 'inchikey' },
     ];
