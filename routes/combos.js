@@ -157,7 +157,7 @@ router.get('/heatmap', (req, res) => {
 
 
   // getting all data
-  let query = db.select('cd.idSample AS idSample', 'sa.name AS sample', 'so.name AS source', 'idDrugA', 'idDrugB', db.raw('left(??,12) AS ??', ['d.name', 'drugNameA']), db.raw('left(??,12) AS ??', ['dd.name', 'drugNameB']), 'zip')
+  let query = db.select('cd.idSample AS idSample', 'sa.name AS sample', 'so.name AS source', 'idDrugA', 'idDrugB', db.raw('left(??,12) AS ??', ['d.name', 'drugNameA']), db.raw('left(??,12) AS ??', ['dd.name', 'drugNameB']), 'zip', 'bliss', 'loewe', 'hsa')
     .from('combo_design AS cd')
     .join('synergy_score AS ss', 'ss.idCombo_Design', 'cd.idCombo_Design')
     .join('drug AS d', 'idDrugA', 'd.idDrug')

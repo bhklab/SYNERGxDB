@@ -6,14 +6,28 @@ import React, { Fragment } from 'react';
 class SensHeatMap extends React.Component {
   componentDidMount() {
     const {
-      data, query, plotId, heightCallback,
+      data, query, plotId, heightCallback, synScore,
     } = this.props;
-    const result = this.formatData(data, query);
+    const result = this.formatData(data, query, synScore);
+
     // return [data, combos, samples, datasets, query]
-    this.plotSensHeatMap(result[0], result[1], result[2], result[3], result[4], plotId);
+    this.plotSensHeatMap(result[0], result[1], result[2], result[3], result[4], plotId, synScore);
   }
 
-  formatData(data, query) {
+  componentDidUpdate(prevProps) {
+    // if synScore is updated
+    const {
+      data, query, plotId, heightCallback, synScore,
+    } = this.props;
+    if (synScore !== prevProps.synScore) {
+      const result = this.formatData(data, query, synScore);
+      d3.select('#heatmap').remove();
+      d3.select('#leftAxisLegendSvg').remove();
+      this.plotSensHeatMap(result[0], result[1], result[2], result[3], result[4], plotId, synScore);
+    }
+  }
+
+  formatData(data, query, synScore) {
     // data is currently in a JSON array of sample, source, drugA, drugB, zip
     // make into a json object like
     // {
@@ -33,21 +47,21 @@ class SensHeatMap extends React.Component {
     let datasets = [];
     data.forEach((x) => {
       const combo = `${x.drugNameA} + ${x.drugNameB}/${x.source}`;
-      if (x.idDrugA == query[0] && x.idDrugB == query[1]) {
+      if (x.idDrugA === parseInt(query[0]) && x.idDrugB === parseInt(query[1])) {
         queryCombo = [x.drugNameA, x.drugNameB];
       }
       datasets.push(x.source);
       if (newData[combo] === undefined) { // TODO: fix drug A + B, B + A
         newData[combo] = {
-          zip: [x.zip == null ? 0 : x.zip],
+          synScore: [x[synScore] === null ? 0 : x[synScore]],
           median: 0,
           samples: {},
           dataset: x.source,
         };
       } else {
-        newData[combo].zip.push(x.zip == null ? 0 : x.zip);
+        newData[combo].synScore.push(x[synScore] === null ? 0 : x[synScore]);
       }
-      newData[combo].samples[x.sample] = x.zip;
+      newData[combo].samples[x.sample] = x[synScore];
       allSamples.push(x.sample);
     });
 
@@ -66,37 +80,37 @@ class SensHeatMap extends React.Component {
 
     // calculate median so it isn't 0 anymore
     // and create array of median objs for sorting
-    const medZips = [];
+    const medScores = [];
     Object.keys(newData).forEach((x) => {
-      const medianValue = median(newData[x].zip);
+      const medianValue = median(newData[x].synScore);
       newData[x].median = medianValue;
-      medZips.push({
+      medScores.push({
         combo: x,
         median: medianValue,
       });
     });
 
     // sort by median decreasing, and output an array of combos to call them as the key
-    medZips.sort((a, b) => b.median - a.median);
-    const combos = medZips.map(x => x.combo);
+    medScores.sort((a, b) => b.median - a.median);
+    const combos = medScores.map(x => x.combo);
 
     // sort by first row samples decreasing and output an array of samples to call them as the key
     // get first row and create array of zip objs for sorting
     const firstRow = newData[combos[0]];
-    const firstZips = [];
+    const firstScores = [];
     Object.keys(firstRow.samples).forEach((x) => {
-      firstZips.push({
+      firstScores.push({
         sample: x,
-        zip: firstRow.samples[x],
+        synScore: firstRow.samples[x],
       });
     });
 
     // sort by zip decreasing, output an array of samples to call them as the key
-    firstZips.sort((a, b) => b.zip - a.zip);
+    firstScores.sort((a, b) => b.synScore - a.synScore);
 
     // for all the samples that are in allSamples but not in the first row samples,
     // add to the end of the first row samples array (have a zip of null)
-    let samples = firstZips.map(x => x.sample);
+    let samples = firstScores.map(x => x.sample);
     const diff = allSamples.filter(x => !samples.includes(x));
     samples = samples.concat(diff);
 
@@ -112,8 +126,8 @@ class SensHeatMap extends React.Component {
 
     // same for samples = remove samples with zip null
     let newSamples = samples.map((s) => {
-      const samplesZip = Object.values(newData).map(x => x.samples[s]);
-      if (samplesZip.every(x => !x)) {
+      const samplesScores = Object.values(newData).map(x => x.samples[s]);
+      if (samplesScores.every(x => !x)) {
         return null;
       }
       return s;
@@ -126,7 +140,7 @@ class SensHeatMap extends React.Component {
     // Call by key to get the corresponding zip
   }
 
-  plotSensHeatMap(data, combos, samples, datasets, queryCombo, plotId) {
+  plotSensHeatMap(data, combos, samples, datasets, queryCombo, plotId, synScore) {
     // positions and dimensions
     const margin = {
       top: 20,
@@ -159,6 +173,7 @@ class SensHeatMap extends React.Component {
       .append('svg')
       .attr('fill', 'white')
       .attr('width', yAxisWidth)
+      .attr('id', 'leftAxisLegendSvg')
       .attr('height', height + margin.top + margin.bottom)
       .append('g')
       .attr('transform',
