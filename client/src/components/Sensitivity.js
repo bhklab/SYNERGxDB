@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import ReactRouterPropTypes from 'react-router-prop-types';
 import queryString from 'query-string';
 import ReactLoading from 'react-loading';
+import Select from 'react-select';
 import QueryCard from './UtilComponents/QueryCard';
 import SensHeatMap from './Plots/SensHeatMap';
 import SensBoxPlot from './Plots/SensBoxPlot';
@@ -49,6 +50,11 @@ const SensitivityDiv = styled.div`
     float:left;
   }
 
+  #leftAxisLegend {
+    width: 50%;
+    float: left;
+  }
+
   .plotWrapper {
     overflow-y: hidden;
     overflow-x: hidden;
@@ -62,6 +68,13 @@ const SensitivityDiv = styled.div`
     display: flex;
     align-items: center;
     height: 100%;
+  }
+  .select {
+    width: 30%;
+    float: right;
+  }
+  .top-container {
+    height: 70px;
   }
 `;
 
@@ -84,7 +97,9 @@ class Sensitivity extends Component {
       legendColors: {},
       height: '500',
       loading: true,
+      synScore: 'zip',
     };
+    this.onSelectChange = this.onSelectChange.bind(this);
   }
 
   componentDidMount() {
@@ -135,11 +150,20 @@ class Sensitivity extends Component {
     this.setState({ height });
   }
 
+  onSelectChange = (e) => {
+    this.setState({ synScore: e.value });
+  }
+
   render() {
     const {
       data, sample, drugId1, drugId2, drugName1,
-      drugName2, dataset, legendColors, loading, height,
+      drugName2, dataset, legendColors, loading, height, synScore,
     } = this.state;
+    const options = [{ value: 'zip', label: 'ZIP' },
+      { value: 'bliss', label: 'Bliss' },
+      { value: 'loewe', label: 'Loewe' },
+      { value: 'hsa', label: 'HSA' }];
+
     const query = [drugId1, drugId2];
     return (
       <main>
@@ -159,23 +183,33 @@ class Sensitivity extends Component {
             </div>
           ) : (
             <Fragment>
-              {!drugName2 ? null : (
-                <SensAxisLegend
-                  query={[drugName1, drugName2]}
-                  plotId="leftAxisLegend"
-                />
-              )}
-
+              <div className="top-container">
+                {!drugName2 ? null : (
+                  <SensAxisLegend
+                    query={[drugName1, drugName2]}
+                    plotId="leftAxisLegend"
+                  />
+                )}
+                <div className="select">
+                  <Select
+                    options={options}
+                    defaultValue={options[0]}
+                    onChange={this.onSelectChange}
+                  />
+                </div>
+              </div>
               <div className="plotWrapper">
                 <SensHeatMap
                   data={data}
                   query={query}
                   plotId="sensHeatMap"
+                  synScore={synScore}
                   heightCallback={this.heightCallback}
                 />
                 <SensBoxPlot
                   data={data}
                   query={query}
+                  synScore={synScore}
                   callBack={this.callBackLegendColor}
                   plotId="sensBoxPlot"
                 />
@@ -185,6 +219,7 @@ class Sensitivity extends Component {
           {Object.keys(legendColors).length === 0 ? null : (
             <CellSensLegends
               legendColors={legendColors}
+              synScore={synScore}
               plotId="legend"
             />
           )}

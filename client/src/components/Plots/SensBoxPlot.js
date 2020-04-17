@@ -14,14 +14,26 @@ class SensBoxPlot extends React.Component {
 
   componentDidMount() {
     const {
-      data, query, plotId,
+      data, query, plotId, synScore,
     } = this.props;
-    const result = this.formatData(data);
+    const result = this.formatData(data, synScore);
     this.plotSensBoxPlot(result[0], result[1], result[2], plotId);
     // this.setState({legendColors: legendColors});
   }
 
-  formatData(data) {
+  componentDidUpdate(prevProps) {
+    // if synScore is updated
+    const {
+      data, query, plotId, synScore,
+    } = this.props;
+    if (synScore !== prevProps.synScore) {
+      const result = this.formatData(data, synScore);
+      d3.select('#boxplot').remove();
+      this.plotSensBoxPlot(result[0], result[1], result[2], plotId);
+    }
+  }
+
+  formatData(data, synScore) {
     // data is currently in a JSON array of sample, source, drugA, drugB, zip
     // make into a json object like
     // {
@@ -40,25 +52,25 @@ class SensBoxPlot extends React.Component {
       datasets.push(x.source);
       if (newData[combo] === undefined) {
         newData[combo] = {
-          zip: [x.zip == null ? 0 : x.zip],
+          synScore: [x[synScore] == null ? 0 : x[synScore]],
           quant: {},
           line: {},
           whisk: [],
           dataset: x.source,
         };
       } else {
-        newData[combo].zip.push(x.zip == null ? 0 : x.zip);
+        newData[combo].synScore.push(x[synScore] == null ? 0 : x[synScore]);
       }
     });
 
     // calculate all the boxplot stuff
     // and create array of median objs for sorting
-    const medZips = [];
+    const medScores = [];
     Object.keys(newData).forEach((x) => {
-      const data_sorted = newData[x].zip.sort(d3.ascending);
-      const q1 = d3.quantile(data_sorted, 0.25);
-      const median = d3.quantile(data_sorted, 0.5);
-      const q3 = d3.quantile(data_sorted, 0.75);
+      const dataSorted = newData[x].synScore.sort(d3.ascending);
+      const q1 = d3.quantile(dataSorted, 0.25);
+      const median = d3.quantile(dataSorted, 0.5);
+      const q3 = d3.quantile(dataSorted, 0.75);
       const interQuantileRange = q3 - q1;
       const min = q1 - 1.5 * interQuantileRange;
       const max = q1 + 1.5 * interQuantileRange;
@@ -71,24 +83,24 @@ class SensBoxPlot extends React.Component {
         max,
       };
       newData[x].whisk = [min, median, max];
-      medZips.push({
+      medScores.push({
         combo: x,
         median,
       });
     });
 
     // sort by median decreasing, and output an array of combos to call them as the key
-    medZips.sort((a, b) => b.median - a.median);
+    medScores.sort((a, b) => b.median - a.median);
 
     // unique array of all datasets
     datasets = [...new Set(datasets)];
 
-    const combos = medZips.map(x => x.combo);
+    const combos = medScores.map(x => x.combo);
 
     // i made all nulls = 0 earlier. If the entire array
     // is full of 0s for each combo, then don't include
     let newCombos = combos.map((c) => {
-      if ((newData[c].zip).every(x => x == 0)) {
+      if ((newData[c].synScore).every(x => x == 0)) {
         return null;
       }
       return c;
@@ -117,10 +129,10 @@ class SensBoxPlot extends React.Component {
     const svg = d3.select(`#${plotId}`)
       .append('svg')
       .attr('fill', 'white')
+      .attr('id', 'boxplot')
       .attr('width', width + margin.left + margin.right)
       .attr('height', height + margin.top + margin.bottom)
       .append('g')
-      .attr('id', 'boxplot')
       .attr('transform',
         `translate(${margin.left + 20},${margin.top})`);
 

@@ -6,12 +6,24 @@ import React, { Fragment } from 'react';
 class CellSensLegends extends React.Component {
   componentDidMount() {
     const {
-      legendColors, plotId,
+      legendColors, plotId, synScore,
     } = this.props;
-    this.plotLegends(legendColors, plotId);
+    this.plotLegends(legendColors, plotId, synScore);
   }
 
-  plotLegends(legendColors, plotId) {
+  componentDidUpdate(prevProps) {
+    // if synScore is updated
+    const {
+      legendColors, synScore, plotId,
+    } = this.props;
+    if (synScore !== prevProps.synScore) {
+      d3.select('#boxplotLegendSvg').remove();
+      this.plotLegends(legendColors, plotId, synScore);
+    }
+  }
+
+  plotLegends(legendColors, plotId, synScore) {
+    console.log(synScore);
     // positions and dimensions
     const margin = {
       top: 20,
@@ -32,15 +44,15 @@ class CellSensLegends extends React.Component {
       .attr('fill', 'white')
       .attr('width', width + margin.left + margin.right)
       .attr('height', height + margin.top + margin.bottom)
+      .attr('id', 'boxplotLegendSvg')
       .append('g')
-      .attr('id', 'boxplot')
       .attr('transform',
         `translate(${margin.left + 20},${margin.top})`);
 
-    const zip = svg.append('g');
+    const score = svg.append('g');
 
-    const zipColors = ['#5fcfff', '#de5757'];
-    const gradient = zip.append('defs')
+    const scoreColors = ['#5fcfff', '#de5757'];
+    const gradient = score.append('defs')
       .append('linearGradient')
       .attr('id', 'grad')
       .attr('x1', '0%')
@@ -49,21 +61,22 @@ class CellSensLegends extends React.Component {
       .attr('y2', '100%');
 
     gradient.selectAll('stop')
-      .data(zipColors)
+      .data(scoreColors)
       .enter()
       .append('stop')
       .style('stop-color', d => d)
-      .attr('offset', (d, i) => `${100 * (i / (zipColors.length - 1))}%`);
+      .attr('offset', (d, i) => `${100 * (i / (scoreColors.length - 1))}%`);
 
-    zip.append('text')
+    score.append('text')
       .attr('dx', 15)
       .attr('dy', 0)
       .attr('fill', 'black')
       .attr('font-size', 13)
+      .style('text-transform', 'uppercase')
       .style('font-weight', 'bold')
-      .text('ZIP');
+      .text(synScore);
 
-    zip.append('rect')
+    score.append('rect')
       .attr('x', 10)
       .attr('y', 10)
       .attr('width', 30)
@@ -71,7 +84,7 @@ class CellSensLegends extends React.Component {
       .style('fill', 'url(#grad)');
 
 
-    zip.selectAll('zipLeg')
+    score.selectAll('scoreLeg')
       .data([15, 0, -15])
       .enter()
       .append('text')
