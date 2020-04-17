@@ -29,7 +29,7 @@ const Documentation = lazy(() => import('./Documentation/MainDocument'));
 const Pharmacogenomics = lazy(() => import('./Pharmacogenomics/Main'));
 const ComboResults = lazy(() => import('./ComboResults'));
 const ComboDetails = lazy(() => import('./ComboDetails/ComboDetails'));
-const Biomarkers = lazy(() => import('./Biomarkers'));
+const Biomarkers = lazy(() => import('./Biomarkers/BiomarkersMain'));
 const Sensitivity = lazy(() => import('./Sensitivity'));
 const Enrichment = lazy(() => import('./Enrichment'));
 const Consistency = lazy(() => import('./Consistency'));

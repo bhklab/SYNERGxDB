@@ -7,7 +7,7 @@ import regression from 'regression';
 import Slider from '@material-ui/core/Slider';
 import { withStyles } from '@material-ui/core/styles';
 
-import colors from '../../styles/colors';
+import colors from '../../../styles/colors';
 
 const CustomSlider = withStyles({
   root: {
@@ -47,9 +47,10 @@ class ExpressionProfile extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { selectedBiomarker, selectedScore } = this.props;
+    const { selectedBiomarker, selectedScore, selectedDataset } = this.props;
     if (selectedBiomarker !== prevProps.selectedBiomarker
-      || selectedScore !== prevProps.selectedScore) {
+      || selectedScore !== prevProps.selectedScore
+      || selectedDataset !== prevProps.selectedDataset) {
       this.updatePlotData();
     }
   }
@@ -233,6 +234,7 @@ ExpressionProfile.propTypes = {
   defaultThreshold: PropTypes.number.isRequired,
   updateThreshold: PropTypes.func.isRequired,
   selectedScore: PropTypes.string.isRequired,
+  selectedDataset: PropTypes.number.isRequired,
 };
 
 

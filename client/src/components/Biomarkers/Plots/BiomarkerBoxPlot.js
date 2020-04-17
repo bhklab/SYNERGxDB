@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import PropTypes from 'prop-types';
 import jStat from 'jstat';
-import colors from '../../styles/colors';
+import colors from '../../../styles/colors';
 
 const StyledContainer = styled.div`
   width: 50%;
@@ -178,7 +178,13 @@ class BiomarkerBoxPlot extends React.Component {
           }}
         />
         <span>
-Student <i>t</i>-test, <i>p</i>-value =
+Stude
+          {' '}
+          <i>t</i>
+-test,
+          {' '}
+          <i>p</i>
+-value =
           {' '}
           {pvalue}
         </span>
