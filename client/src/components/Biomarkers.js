@@ -200,7 +200,6 @@ class Biomarkers extends Component {
         })
         .then(response => response.json())
         .then((data) => {
-          console.log(data);
           switch (score) {
             case 'zip':
               this.setState({
@@ -252,7 +251,6 @@ class Biomarkers extends Component {
   // box plot and slider for a given gene
   async getPlotData(gene, score, dataset) {
     try {
-      console.log(dataset);
       const { retrieveGeneData } = this;
       const synergyArray = await retrieveGeneData(gene, dataset);
       // ***************************
@@ -316,17 +314,19 @@ class Biomarkers extends Component {
   // eturn data that is needed for expression profile and box plot
   async retrieveGeneData(gene, dataset) {
     const {
-      sample, drugId1, drugId2, biomarkerGeneStorage, selectedScore,
+      sample, drugId1, drugId2, biomarkerGeneStorage,
+      selectedScore,
     } = this.state;
-    console.log(dataset, this.state.dataset);
     // Checks if biomarker gene data has already been retrieved over API
-    if (biomarkerGeneStorage[selectedScore] && biomarkerGeneStorage[selectedScore][gene]) {
-      return biomarkerGeneStorage[selectedScore][gene];
+    if (biomarkerGeneStorage[selectedScore]
+      && biomarkerGeneStorage[selectedScore][dataset.name]
+      && biomarkerGeneStorage[selectedScore][dataset.name][gene]) {
+      return biomarkerGeneStorage[selectedScore][dataset.name][gene];
     }
     try {
       // Retrieves data from the API and stores it in the state
       this.setState({ loadingGraph: true });
-      let queryParams = `?&dataset=${dataset}`;
+      let queryParams = `?&dataset=${dataset.id}`;
       if (sample) queryParams = queryParams.concat(`&sample=${sample}`);
       if (drugId1) queryParams = queryParams.concat(`&drugId1=${drugId1}`);
       if (drugId2) queryParams = queryParams.concat(`&drugId2=${drugId2}`);
@@ -343,12 +343,27 @@ class Biomarkers extends Component {
         .then((data) => {
           synergyArray = data;
         });
-      this.setState({
-        biomarkerGeneStorage: {
-          ...biomarkerGeneStorage,
-          [selectedScore]: { ...biomarkerGeneStorage[selectedScore], [gene]: synergyArray },
-        },
-      });
+      // created a nested storage object with three levels
+      // top level is synergy score, then dataset, then biomarker gene
+      const updatedGeneStorage = { ...biomarkerGeneStorage };
+      if (!updatedGeneStorage[selectedScore]) updatedGeneStorage[selectedScore] = {};
+      if (!updatedGeneStorage[selectedScore][dataset.name]) {
+        updatedGeneStorage[selectedScore][dataset.name] = {};
+      }
+      updatedGeneStorage[selectedScore][dataset.name][gene] = synergyArray;
+      this.setState({ biomarkerGeneStorage: updatedGeneStorage });
+      // this.setState({
+      //   biomarkerGeneStorage: {
+      //     ...biomarkerGeneStorage,
+      //     [selectedScore]: {
+      //       ...biomarkerGeneStorage[selectedScore],
+      //       [dataset.name]: {
+      //         ...biomarkerGeneStorage[selectedScore][dataset.name],
+      //         [gene]: synergyArray,
+      //       },
+      //     },
+      //   },
+      // });
       return synergyArray;
     } catch (err) {
       // eslint-disable-next-line no-console
@@ -398,7 +413,7 @@ class Biomarkers extends Component {
     const { updateThreshold } = this;
     const {
       biomarkersAvailable, biomarkerData, selectedBiomarker, xRange, yRange, defaultThreshold,
-      selectedScore, confirmedThreshold, boxPlotData,
+      selectedScore, confirmedThreshold, boxPlotData, selectedDataset,
     } = this.state;
     return biomarkersAvailable ? (
       <StyledExpressionProfile>
@@ -411,6 +426,7 @@ class Biomarkers extends Component {
           defaultThreshold={defaultThreshold}
           updateThreshold={updateThreshold}
           selectedScore={selectedScore}
+          selectedDataset={selectedDataset.id}
         />
         <BiomarkerBoxPlot
           threshold={confirmedThreshold !== null ? confirmedThreshold : defaultThreshold}
@@ -485,6 +501,7 @@ class Biomarkers extends Component {
     if (dataset) filename = filename.concat(`_${dataset}`);
     if (drugId1) filename = filename.concat(`_${drugId1}`);
     if (drugId2) filename = filename.concat(`_${drugId2}`);
+
     return (
       <main>
         <QueryCard
@@ -542,7 +559,7 @@ class Biomarkers extends Component {
             filterable
             defaultFilterMethod={(filter, row) => String(row[filter.id]
               .toLowerCase()).startsWith(filter.value.toLowerCase())}
-            getTrProps={(state, rowInfo, column) => {
+            getTrProps={(state, rowInfo) => {
               if (rowInfo) {
                 return {
                   style: {
