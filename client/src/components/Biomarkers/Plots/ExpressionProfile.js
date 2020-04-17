@@ -7,7 +7,7 @@ import regression from 'regression';
 import Slider from '@material-ui/core/Slider';
 import { withStyles } from '@material-ui/core/styles';
 
-import colors from '../../styles/colors';
+import colors from '../../../styles/colors';
 
 const CustomSlider = withStyles({
   root: {

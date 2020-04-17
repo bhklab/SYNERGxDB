@@ -7,14 +7,14 @@ import ReactLoading from 'react-loading';
 import 'react-table/react-table.css';
 import ReactTable from 'react-table';
 
-import colors from '../styles/colors';
-import transitions from '../styles/transitions';
+import colors from '../../styles/colors';
+import transitions from '../../styles/transitions';
 
 import ExpressionProfile from './Plots/ExpressionProfile';
-import QueryCard from './UtilComponents/QueryCard';
+import QueryCard from '../UtilComponents/QueryCard';
 import BiomarkerBoxPlot from './Plots/BiomarkerBoxPlot';
-import LoadingComponent from './UtilComponents/Loading';
-import DownloadButton from './UtilComponents/DownloadButton';
+import LoadingComponent from '../UtilComponents/Loading';
+import DownloadButton from '../UtilComponents/DownloadButton';
 
 // used to align plot and slider (in px)
 const dimensions = {
