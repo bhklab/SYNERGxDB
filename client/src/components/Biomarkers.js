@@ -134,6 +134,7 @@ class Biomarkers extends Component {
       biomarkersAvailable: true,
       selectedBiomarker: null,
       selectedScore: 'zip',
+      selectedDataset: null,
       loadingTable: true,
       loadingGraph: true,
       xRange: null,
@@ -227,7 +228,7 @@ class Biomarkers extends Component {
             default:
               break;
           }
-          getPlotData(data[0].gene, score);
+          getPlotData(data[0].gene, score, data[0].dataset);
         })
         .catch((err) => {
         // eslint-disable-next-line no-console
@@ -248,9 +249,9 @@ class Biomarkers extends Component {
 
   // Updates state with data that is needed to render expression profile plot,
   // box plot and slider for a given gene
-  async getPlotData(gene, score) {
-    // const { selectedScore } = this.state;
+  async getPlotData(gene, score, dataset) {
     try {
+      console.log(dataset);
       const { retrieveGeneData } = this;
       const synergyArray = await retrieveGeneData(gene);
       // ***************************
@@ -289,6 +290,7 @@ class Biomarkers extends Component {
       const defaultThreshold = calculateThreshold(synScoreArray);
       this.setState({
         selectedBiomarker: gene,
+        selectedDataset: dataset,
         selectedScore: score,
         loadingTable: false,
         loadingGraph: false,
@@ -380,9 +382,10 @@ class Biomarkers extends Component {
   }
 
   handleSelectBiomarker(data) {
+    const { gene, dataset } = data;
     const { getPlotData } = this;
     const { selectedScore } = this.state;
-    getPlotData(data.gene, selectedScore);
+    getPlotData(gene, selectedScore, dataset);
     this.setState({ loadingTable: true });
   }
 
@@ -425,7 +428,7 @@ class Biomarkers extends Component {
       loadingTable, selectedBiomarker,
       selectedScore, zipBiomarkers, blissBiomarkers,
       hsaBiomarkers, loeweBiomarkers, loadingGraph, sample, drugId1,
-      drugId2, dataset,
+      drugId2, dataset, selectedDataset,
     } = this.state;
 
     const columns = [{
@@ -561,7 +564,7 @@ class Biomarkers extends Component {
                 }
               },
               style: {
-                background: rowInfo && rowInfo.original.gene === selectedBiomarker ? colors.button_hover : 'transparent',
+                background: rowInfo && rowInfo.original.gene === selectedBiomarker && rowInfo.original.dataset === selectedDataset ? colors.button_hover : 'transparent',
               },
             })
           }
