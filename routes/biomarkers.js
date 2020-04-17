@@ -37,11 +37,13 @@ router.get('/association', (req, res) => {
   let {
     drugId1, drugId2, dataset,
   } = req.query;
+  console.log('Initial Dataset value is ', dataset);
   drugId1 = drugId1 && parseInt(drugId1, 10);
   drugId2 = drugId2 && parseInt(drugId2, 10);
   dataset = dataset && parseInt(dataset, 10);
 
   console.log(sample);
+  console.log('Dataset ', dataset);
   let sampleArray;
   let tissue;
   if (sample) {
@@ -210,25 +212,25 @@ router.get('/synergy', async (req, res) => {
   }
 
   function subqueryDataset() {
-    this.select('gene', 'concordanceIndex', 'pValue', 'name as dataset', 'idDrugA', 'idDrugB')
+    this.select('gene', 'concordanceIndex', 'pValue', 'name as dataset', 'source.idSource', 'idDrugA', 'idDrugB')
       .from(subqueryBiomarkers)
       .innerJoin('source', 'source.idSource', '=', 'biomark.idSource')
       .as('DS');
   }
   function subqueryDrugA() {
-    this.select('gene', 'concordanceIndex', 'pValue', 'dataset', 'idDrugA', 'name as drugA', 'idDrugB')
+    this.select('gene', 'concordanceIndex', 'pValue', 'dataset', 'idSource', 'idDrugA', 'name as drugA', 'idDrugB')
       .from(subqueryDataset)
       .innerJoin('drug', 'drug.idDrug', '=', 'DS.idDrugA')
       .as('D1');
   }
   function subqueryDrugB() {
-    this.select('gene', 'concordanceIndex', 'pValue', 'dataset', 'idDrugA', 'idDrugB', 'drugA', 'name as drugB')
+    this.select('gene', 'concordanceIndex', 'pValue', 'dataset', 'idSource', 'idDrugA', 'idDrugB', 'drugA', 'name as drugB')
       .from(subqueryDrugA)
       .innerJoin('drug', 'drug.idDrug', '=', 'D1.idDrugB')
       .as('D2');
   }
 
-  db.select('occurrences', 'D2.gene as gene', 'concordanceIndex', 'pValue', 'dataset', 'drugA', 'drugB')
+  db.select('occurrences', 'D2.gene as gene', 'concordanceIndex', 'pValue', 'dataset', 'idSource', 'drugA', 'drugB')
     .from(subqueryDrugB)
     .innerJoin(subqueryOccurrences, function () {
       this.on('O.gene', '=', 'D2.gene');

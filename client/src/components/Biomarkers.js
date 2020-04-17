@@ -200,6 +200,7 @@ class Biomarkers extends Component {
         })
         .then(response => response.json())
         .then((data) => {
+          console.log(data);
           switch (score) {
             case 'zip':
               this.setState({
@@ -228,7 +229,7 @@ class Biomarkers extends Component {
             default:
               break;
           }
-          getPlotData(data[0].gene, score, data[0].dataset);
+          getPlotData(data[0].gene, score, { name: data[0].dataset, id: data[0].idSource });
         })
         .catch((err) => {
         // eslint-disable-next-line no-console
@@ -253,7 +254,7 @@ class Biomarkers extends Component {
     try {
       console.log(dataset);
       const { retrieveGeneData } = this;
-      const synergyArray = await retrieveGeneData(gene);
+      const synergyArray = await retrieveGeneData(gene, dataset);
       // ***************************
       // Sets plot range
       // ***************************
@@ -313,10 +314,11 @@ class Biomarkers extends Component {
   }
 
   // eturn data that is needed for expression profile and box plot
-  async retrieveGeneData(gene) {
+  async retrieveGeneData(gene, dataset) {
     const {
-      sample, drugId1, drugId2, dataset, biomarkerGeneStorage, selectedScore,
+      sample, drugId1, drugId2, biomarkerGeneStorage, selectedScore,
     } = this.state;
+    console.log(dataset, this.state.dataset);
     // Checks if biomarker gene data has already been retrieved over API
     if (biomarkerGeneStorage[selectedScore] && biomarkerGeneStorage[selectedScore][gene]) {
       return biomarkerGeneStorage[selectedScore][gene];
@@ -324,9 +326,8 @@ class Biomarkers extends Component {
     try {
       // Retrieves data from the API and stores it in the state
       this.setState({ loadingGraph: true });
-      let queryParams = '?';
+      let queryParams = `?&dataset=${dataset}`;
       if (sample) queryParams = queryParams.concat(`&sample=${sample}`);
-      if (dataset) queryParams = queryParams.concat(`&dataset=${dataset}`);
       if (drugId1) queryParams = queryParams.concat(`&drugId1=${drugId1}`);
       if (drugId2) queryParams = queryParams.concat(`&drugId2=${drugId2}`);
 
@@ -359,33 +360,33 @@ class Biomarkers extends Component {
   handleSelectScore(score) {
     const { getBiomarkerTableData, getPlotData } = this;
     const {
-      zipBiomarkers, blissBiomarkers, loeweBiomarkers, hsaBiomarkers,
+      zipBiomarkers, blissBiomarkers, loeweBiomarkers, hsaBiomarkers, selectedDataset,
     } = this.state;
     this.setState({ loadingTable: true, loadingGraph: true, selectedScore: score });
     if (score === 'zip' && zipBiomarkers) {
-      getPlotData(zipBiomarkers[0].gene, score);
+      getPlotData(zipBiomarkers[0].gene, score, selectedDataset);
       return;
     }
     if (score === 'bliss' && blissBiomarkers) {
-      getPlotData(blissBiomarkers[0].gene, score);
+      getPlotData(blissBiomarkers[0].gene, score, selectedDataset);
       return;
     }
     if (score === 'loewe' && loeweBiomarkers) {
-      getPlotData(loeweBiomarkers[0].gene, score);
+      getPlotData(loeweBiomarkers[0].gene, score, selectedDataset);
       return;
     }
     if (score === 'hsa' && hsaBiomarkers) {
-      getPlotData(hsaBiomarkers[0].gene, score);
+      getPlotData(hsaBiomarkers[0].gene, score, selectedDataset);
       return;
     }
     getBiomarkerTableData(score);
   }
 
   handleSelectBiomarker(data) {
-    const { gene, dataset } = data;
+    const { gene, dataset, idSource } = data;
     const { getPlotData } = this;
     const { selectedScore } = this.state;
-    getPlotData(gene, selectedScore, dataset);
+    getPlotData(gene, selectedScore, { name: dataset, id: idSource });
     this.setState({ loadingTable: true });
   }
 
@@ -564,7 +565,7 @@ class Biomarkers extends Component {
                 }
               },
               style: {
-                background: rowInfo && rowInfo.original.gene === selectedBiomarker && rowInfo.original.dataset === selectedDataset ? colors.button_hover : 'transparent',
+                background: rowInfo && rowInfo.original.gene === selectedBiomarker && rowInfo.original.dataset === selectedDataset.name ? colors.button_hover : 'transparent',
               },
             })
           }
