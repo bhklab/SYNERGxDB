@@ -15,7 +15,7 @@ import 'react-table/react-table.css';
 
 const SensitivityDiv = styled.div`
   width: 100%;
-  height: ${(props) => props.height+150}px;
+  height: ${props => props.height + 150}px;
   background:white;
   padding:20px 30px;
   margin-bottom:20px;
@@ -52,7 +52,7 @@ const SensitivityDiv = styled.div`
   .plotWrapper {
     overflow-y: hidden;
     overflow-x: hidden;
-    height:${(props) => props.height+50}px;
+    height:${props => props.height + 50}px;
     position:absolute;
     float:left;
     width:1030px;
@@ -82,7 +82,7 @@ class Sensitivity extends Component {
       sample: '',
       dataset: '',
       legendColors: {},
-      height: "500",
+      height: '500',
       loading: true,
     };
   }
@@ -132,13 +132,13 @@ class Sensitivity extends Component {
   }
 
   heightCallback = (height) => {
-    this.setState({height: height});
+    this.setState({ height });
   }
 
   render() {
     const {
       data, sample, drugId1, drugId2, drugName1,
-      drugName2, dataset, legendColors, loading, height
+      drugName2, dataset, legendColors, loading, height,
     } = this.state;
     const query = [drugId1, drugId2];
     return (
