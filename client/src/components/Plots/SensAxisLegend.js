@@ -1,12 +1,9 @@
+/* eslint-disable class-methods-use-this */
 import * as d3 from 'd3';
 import React, { Fragment } from 'react';
 // import colors from '../../styles/colors';
 
 class CellSensLegends extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   componentDidMount() {
     const {
       query, plotId,

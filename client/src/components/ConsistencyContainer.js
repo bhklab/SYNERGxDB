@@ -22,9 +22,11 @@ const StyledConsistencyContainer = styled.div`
 
   .consistencyGrid {
     display: flex;
-
+    flex-wrap: wrap;
+    min-height: 0;
+    min-width: 0;
     .consistencyContainer {
-      flex: 45%;
+      // flex: 1 45%;
       width: 45%;
     }
 
@@ -111,7 +113,7 @@ const ConsistencyContainer = (props) => {
       </div>
       {Object.keys(data).length <= 1 ? null : (
         <div className="consistencyGrid">
-          {Object.keys(data).map((x) => {
+          {Object.keys(data).map((x, i) => {
             // if data is all null on either axis by itself, do not plot
             const isNullX = [...new Set(data[x].map(item => item[xvalue.toLowerCase()]))];
             const isNullY = [...new Set(data[x].map(item => item[yvalue.toLowerCase()]))];
