@@ -17,7 +17,7 @@ class SensBoxPlot extends React.Component {
       data, query, plotId, synScore,
     } = this.props;
     const result = this.formatData(data, synScore);
-    this.plotSensBoxPlot(result[0], result[1], result[2], plotId);
+    this.plotSensBoxPlot(result[0], result[1], result[2], plotId, result[3], result[4], synScore);
     // this.setState({legendColors: legendColors});
   }
 
@@ -29,7 +29,7 @@ class SensBoxPlot extends React.Component {
     if (synScore !== prevProps.synScore) {
       const result = this.formatData(data, synScore);
       d3.select('#boxplot').remove();
-      this.plotSensBoxPlot(result[0], result[1], result[2], plotId);
+      this.plotSensBoxPlot(result[0], result[1], result[2], plotId, result[3], result[4], synScore);
     }
   }
 
@@ -66,6 +66,8 @@ class SensBoxPlot extends React.Component {
     // calculate all the boxplot stuff
     // and create array of median objs for sorting
     const medScores = [];
+    const minArr = [];
+    const maxArr = [];
     Object.keys(newData).forEach((x) => {
       const dataSorted = newData[x].synScore.sort(d3.ascending);
       const q1 = d3.quantile(dataSorted, 0.25);
@@ -74,6 +76,8 @@ class SensBoxPlot extends React.Component {
       const interQuantileRange = q3 - q1;
       const min = q1 - 1.5 * interQuantileRange;
       const max = q1 + 1.5 * interQuantileRange;
+      minArr.push(min);
+      maxArr.push(max);
       newData[x].quant = {
         q1,
         q3,
@@ -106,11 +110,13 @@ class SensBoxPlot extends React.Component {
       return c;
     });
     newCombos = newCombos.filter(x => x != null);
+    const max = Math.max(...maxArr);
+    const min = Math.min(...minArr);
     // return [data, combos]
-    return [newData, newCombos, datasets];
+    return [newData, newCombos, datasets, min, max];
   }
 
-  plotSensBoxPlot(data, combos, datasets, plotId) {
+  plotSensBoxPlot(data, combos, datasets, plotId, min, max, synScore) {
     // positions and dimensions
     const margin = {
       top: 20,
@@ -119,8 +125,8 @@ class SensBoxPlot extends React.Component {
       left: 20,
     };
     const boxHeight = 18;
-    const yAxisWidth = 180; const
-      xAxisHeight = 100;
+    const yAxisWidth = 180;
+    const xAxisHeight = 100;
 
     const width = 300;
     const height = combos.length * boxHeight + 100;
@@ -138,7 +144,7 @@ class SensBoxPlot extends React.Component {
 
     // x and y scales
     const xrange = d3.scaleLinear()
-      .domain([-15, 15])
+      .domain([min - 1, max + 1])
       .range([0, width]);
 
     const yrange = d3.scaleBand()
@@ -172,7 +178,8 @@ class SensBoxPlot extends React.Component {
       .attr('x', width / 2)
       .attr('y', height - 50)
       .attr('fill', 'black')
-      .text('ZIP');
+      .style('text-transform', 'uppercase')
+      .text(synScore);
 
     // Add the Y Axis
     svg.append('g')
