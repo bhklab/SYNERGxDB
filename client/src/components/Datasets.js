@@ -43,6 +43,29 @@ const StyledWrapper = styled.div`
  
 `;
 
+const formatData = (data, keyName) => {
+  // initialize
+  const result = [];
+  data.forEach((val) => {
+    const temp = {};
+    temp.name = val.name;
+    // also parsing if number less than threshold
+    // so visible on the donut plot
+    if (keyName === 'Combinations') {
+      temp.numLabel = val.nCombos;
+      temp.num = (val.nCombos < 200 ? 200 : val.nCombos);
+    } else if (keyName === 'Experiments') {
+      temp.numLabel = val.nExperiments;
+      temp.num = (val.nExperiments < 4000 ? 4000 : val.nExperiments);
+    } else if (keyName === 'Measurements') {
+      temp.numLabel = val.nDatapoints;
+      temp.num = (val.nDatapoints < 50000 ? 50000 : val.nDatapoints);
+    }
+    result.push(temp);
+  });
+  return result;
+};
+
 class Datasets extends Component {
   constructor() {
     super();
@@ -61,36 +84,9 @@ class Datasets extends Component {
         this.setState({ databaseData });
       });
 
-    // fetch('/api/combos/stats')
-    //   .then(response => response.json())
-    //   .then((datasetData) => {
-    //     this.setState({ datasetData: datasetData, loading: false });
-    //   });
     this.setState({ datasetData: datasetStats, loading: false });
   }
 
-  formatData(data, keyName) {
-    // initialize
-    const result = [];
-    data.forEach((val) => {
-      const temp = {};
-      temp.name = val.name;
-      // also parsing if number less than threshold
-      // so visible on the donut plot
-      if (keyName === 'Combinations') {
-        temp.numLabel = val.nCombos;
-        temp.num = (val.nCombos < 200 ? 200 : val.nCombos);
-      } else if (keyName === 'Experiments') {
-        temp.numLabel = val.nExperiments;
-        temp.num = (val.nExperiments < 4000 ? 4000 : val.nExperiments);
-      } else if (keyName === 'Measurements') {
-        temp.numLabel = val.nDatapoints;
-        temp.num = (val.nDatapoints < 50000 ? 50000 : val.nDatapoints);
-      }
-      result.push(temp);
-    });
-    return result;
-  }
 
   legendCallBack = (colorMap) => {
     this.setState({ colorMap });
@@ -173,7 +169,7 @@ class Datasets extends Component {
                         keyName="Combinations"
                         plotId="dsetMiniPlot"
                         dimensions={miniDims}
-                        formatData={this.formatData}
+                        formatData={formatData}
                         donutData={datasetData}
                         legendCallBack={this.legendCallBack}
                       />
@@ -182,7 +178,7 @@ class Datasets extends Component {
                         keyName="Experiments"
                         plotId="dsetMiniPlot"
                         dimensions={miniDims}
-                        formatData={this.formatData}
+                        formatData={formatData}
                         donutData={datasetData}
                         legendCallBack={this.legendCallBack}
                       />
@@ -191,7 +187,7 @@ class Datasets extends Component {
                         keyName="Measurements"
                         plotId="dsetMiniPlot"
                         dimensions={miniDims}
-                        formatData={this.formatData}
+                        formatData={formatData}
                         donutData={datasetData}
                         legendCallBack={this.legendCallBack}
                       />

@@ -40,13 +40,17 @@ const OverviewDoc = () => (
             {' '}
             is available through
             {' '}
-            <a href="https://zenodo.org/record/3687222/files/SYNERGxDB.sql.gz?download=1">
+            <a href="https://zenodo.org/record/3755875/files/SYNERGxDB.v0.2.1.sql.zip?download=1">
               Zenodo
               {' '}
               <img className="zenodo" src={downloadIcon} alt="download icon" />
             </a>
           </li>
-          <li><a href="https://doi.org/10.5281/zenodo.3687222"><img className="doi" src="https://zenodo.org/badge/DOI/10.5281/zenodo.3687222.svg" alt="DOI" /></a></li>
+          <li>
+            <a href="https://doi.org/10.5281/zenodo.3755875">
+              <img className="doi" src="https://zenodo.org/badge/DOI/10.5281/zenodo.3755875.svg" alt="DOI" />
+            </a>
+          </li>
         </ol>
 
       </li>
