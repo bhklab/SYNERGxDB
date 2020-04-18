@@ -251,7 +251,7 @@ class CellLines extends Component {
       translate: 85,
     };
     const normalDims = {
-      width: 620,
+      width: 670,
       height: 400,
       radius: 230,
       rectY: 20,

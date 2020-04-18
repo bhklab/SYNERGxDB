@@ -10,24 +10,22 @@ class DonutPlot extends React.Component {
     } = this.props;
 
     const data = formatData(donutData, keyName);
-    const sum = data.reduce((count, item) => count + item.num,0);
+    const sum = data.reduce((count, item) => count + item.num, 0);
     this.plotDonut(data, sum, plotId, dimensions, keyName, legendCallBack);
   }
 
   plotDonut(donutData, sum, plotId, dims, keyName) {
-    
     // finding the null and removing
-    const nullInd = donutData.findIndex((x) => x.name === "NULL")
+    const nullInd = donutData.findIndex(x => x.name === 'NULL');
     if (nullInd !== -1) {
-
-      donutData.splice(nullInd, 1)
+      donutData.splice(nullInd, 1);
     }
 
     // positions and dimensions
     const margin = {
       top: 20,
       right: 60,
-      bottom: 90,
+      bottom: 100,
       left: 20,
     };
 
@@ -100,15 +98,14 @@ class DonutPlot extends React.Component {
         .attr('width', 180)
         .attr('height', 30)
         .html(() => {
-          if (keyName === "Combinations") {
-            return `<i>N</i> = 22,507`
-          } else if (keyName === "Experiments") {
-            return `<i>N</i> = 536,596`
-          } else if (keyName === "Measurements") {
-            return `<i>N</i> = 6,678,592`
-          } else {
-            return `<i>N</i> = ${sum.toLocaleString()}`
+          if (keyName === 'Combinations') {
+            return '<i>N</i> = 22,507';
+          } if (keyName === 'Experiments') {
+            return '<i>N</i> = 536,596';
+          } if (keyName === 'Measurements') {
+            return '<i>N</i> = 6,678,592';
           }
+          return `<i>N</i> = ${sum.toLocaleString()}`;
         });
     }
 
@@ -197,7 +194,7 @@ class DonutPlot extends React.Component {
 
     // passing the color map back to Datasets.js to create the legend in a separate component
     this.props.legendCallBack(colorMap);
-    console.log(colorMap)
+    console.log(colorMap);
 
     if (!['Combinations', 'Measurements', 'Experiments'].includes(keyName)) {
       // legend
@@ -224,9 +221,9 @@ class DonutPlot extends React.Component {
           .style('text-transform', () => { if (keyName === 'tissue') { return 'uppercase'; } return 'normal'; })
           .style('opacity', 1)
           .attr('fill', colors.blue_main)
-          .attr('width', 180)
-          .attr('height', 30)
-      .html(() => { if (keyName) { return `${names[i]}, ${names[i] === 'upper digestive tract' ? '<br>' : ''}<i>N</i> = ${nums[i]}`; } return names[i]; });
+          .attr('width', 220)
+          .attr('height', 50)
+          .html(() => { if (keyName) { return `${names[i]}, ${names[i] === 'upper digestive tract' ? '<br>' : ''}<i>N</i> = ${nums[i]}`; } return names[i]; });
       }
     }
   }
