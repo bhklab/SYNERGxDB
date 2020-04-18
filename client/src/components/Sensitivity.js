@@ -97,7 +97,7 @@ class Sensitivity extends Component {
       legendColors: {},
       height: '500',
       loading: true,
-      synScore: 'zip',
+      synScore: 'bliss',
     };
     this.onSelectChange = this.onSelectChange.bind(this);
   }
@@ -193,7 +193,7 @@ class Sensitivity extends Component {
                 <div className="select">
                   <Select
                     options={options}
-                    defaultValue={options[0]}
+                    defaultValue={options[1]}
                     onChange={this.onSelectChange}
                   />
                 </div>
