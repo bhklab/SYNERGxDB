@@ -517,28 +517,28 @@ class Biomarkers extends Component {
               onClick={() => handleSelectScore('zip')}
               className={selectedScore === 'zip' ? 'active-score' : null}
             >
-                ZIP
+              ZIP
             </button>
             <button
               type="button"
               onClick={() => handleSelectScore('bliss')}
               className={selectedScore === 'bliss' ? 'active-score' : null}
             >
-                Bliss
+              Bliss
             </button>
             <button
               type="button"
               onClick={() => handleSelectScore('loewe')}
               className={selectedScore === 'loewe' ? 'active-score' : null}
             >
-                Loewe
+              Loewe
             </button>
             <button
               type="button"
               onClick={() => handleSelectScore('hsa')}
               className={selectedScore === 'hsa' ? 'active-score' : null}
             >
-                HSA
+              HSA
             </button>
           </ButtonContainer>
           {!loadingTable ? (
