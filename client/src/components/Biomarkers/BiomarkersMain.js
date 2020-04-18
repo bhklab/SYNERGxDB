@@ -133,7 +133,7 @@ class Biomarkers extends Component {
       biomarkerData: null,
       biomarkersAvailable: true,
       selectedBiomarker: null,
-      selectedScore: 'zip',
+      selectedScore: 'bliss',
       selectedDataset: null,
       loadingTable: true,
       loadingGraph: true,
