@@ -20,7 +20,7 @@ const StyledArrow = styled.div`
   }
   /* set arrow styles */
   .arrow path {
-    stroke: ${colors.trans_color_main_4};
+    stroke: ${colors.trans_color_main_2};
     stroke-width: 2px;
     fill: transparent;
     animation: down 2s infinite;
