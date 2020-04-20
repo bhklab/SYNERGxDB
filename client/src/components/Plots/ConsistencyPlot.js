@@ -93,11 +93,11 @@ const ConsistencyPlot = (props) => {
       top: 50,
       right: 230,
       bottom: 90,
-      left: 180,
+      left: 160,
     };
     if (!plotId.includes('All')) {
       margin.right = 100;
-      margin.left = 80;
+      margin.left = 120;
     }
     const colorPlot = ['#fca03e', '#5fcfff', '#f788c1', '#54c9b7', '#9a95de', '#f3c833', '#7456c7', '#7e6276', '#afb113', '#fd879c', '#fb78fa', '#24c373', '#45bbc5', '#766b21', '#abad93', '#c19ce3', '#fd8f11'];
 
@@ -179,17 +179,19 @@ const ConsistencyPlot = (props) => {
       })
       .attr('stroke', 'none');
 
-    // const dropdownYLabel = svg.append('text')
-    //   .attr('fill', 'black')
-    //   .attr('dy', height / 2 - 10)
-    //   .attr('dx', -110)
-    //   .text('Y Axis:');
+    if (!plotId.includes('All')) {
+      const dropdownYLabel = svg.append('text')
+        .attr('fill', 'black')
+        .attr('dy', height / 2 - 10)
+        .attr('dx', -110)
+        .text(yvalue.charAt(0).toUpperCase() + yvalue.slice(1));
 
-    // const dropdownXLabel = svg.append('text')
-    //   .attr('fill', 'black')
-    //   .attr('dy', height + 68)
-    //   .attr('dx', width / 2 - 80)
-    //   .text('X Axis:');
+      const dropdownXLabel = svg.append('text')
+        .attr('fill', 'black')
+        .attr('dy', height + 68)
+        .attr('dx', width / 2 - 80)
+        .text(xvalue.charAt(0).toUpperCase() + xvalue.slice(1));
+    }
 
     // title
     if (!plotId.includes('All')) {
