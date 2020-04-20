@@ -2,10 +2,10 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import * as d3 from 'd3';
-import ConsistencyPlot from './Plots/ConsistencyPlot';
+import ConsistencySynPlot from './Plots/ConsistencySynPlot';
 
-const StyledConsistencyContainer = styled.div`
-.consistencyContainer {
+const StyledConsistencySynContainer = styled.div`
+.consistencySynContainer {
     display: flex;
 
     .selectX {
@@ -25,7 +25,7 @@ const StyledConsistencyContainer = styled.div`
     flex-wrap: wrap;
     min-height: 0;
     min-width: 0;
-    .consistencyContainer {
+    .consistencySynContainer {
       // flex: 1 45%;
       width: 45%;
     }
@@ -44,7 +44,7 @@ const StyledConsistencyContainer = styled.div`
 `;
 
 
-const ConsistencyContainer = (props) => {
+const ConsistencySynContainer = (props) => {
   const { data, allData, datasets } = props;
   const [xvalue, setXValue] = useState('Bliss');
   const [yvalue, setYValue] = useState('Loewe');
@@ -56,7 +56,7 @@ const ConsistencyContainer = (props) => {
       const methods = ['ZIP', 'Bliss', 'Loewe', 'HSA'];
 
       // dropdown to choose the method
-      const dropdownX = d3.select('.consistencyContainer')
+      const dropdownX = d3.select('.consistencySynContainer')
         .append('select')
         .attr('class', 'selectX')
         .on('change', () => {
@@ -77,7 +77,7 @@ const ConsistencyContainer = (props) => {
         .text(d => d);
 
 
-      const dropdownY = d3.select('.consistencyContainer')
+      const dropdownY = d3.select('.consistencySynContainer')
         .append('select')
         .attr('class', 'selectY')
         .on('change', () => {
@@ -101,9 +101,9 @@ const ConsistencyContainer = (props) => {
   }, []);
 
   return (
-    <StyledConsistencyContainer>
-      <div className="consistencyContainer">
-        <ConsistencyPlot
+    <StyledConsistencySynContainer>
+      <div className="consistencySynContainer">
+        <ConsistencySynPlot
           plotId="consistencyPlotAll"
           data={allData}
           datasets={datasets}
@@ -121,9 +121,9 @@ const ConsistencyContainer = (props) => {
               return null;
             }
             return (
-              <div key={x} className="consistencyContainer">
-                <ConsistencyPlot
-                  plotId={`consistencyPlot${x}`}
+              <div key={x} className="consistencySynContainer">
+                <ConsistencySynPlot
+                  plotId={`consistencyDsetPlot${x}`}
                   data={data[x]}
                   datasets={datasets}
                   xvalue={xvalue}
@@ -134,9 +134,9 @@ const ConsistencyContainer = (props) => {
           })}
         </div>
       )}
-    </StyledConsistencyContainer>
+    </StyledConsistencySynContainer>
 
   );
 };
 
-export default ConsistencyContainer;
+export default ConsistencySynContainer;
