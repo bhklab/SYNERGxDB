@@ -89,14 +89,14 @@ const ConsistencyDsetPlot = (props) => {
       top: 50,
       right: 100,
       bottom: 90,
-      left: 150,
+      left: 160,
     };
     let width = 350;
     let height = 300;
 
     if (single) {
-      margin.right = 100;
-      margin.left = 120;
+      margin.right = 230;
+      margin.left = 150;
       width = 700;
       height = 400;
     }
@@ -177,7 +177,7 @@ const ConsistencyDsetPlot = (props) => {
     const yAxisLabel = svg.append('text')
       .attr('fill', 'black')
       .attr('dy', height / 2 - 10)
-      .attr('dx', -40)
+      .attr('dx', -50)
       .style('text-anchor', 'end')
       .style('font-size', 13)
       .text(pair[1]);
@@ -185,7 +185,7 @@ const ConsistencyDsetPlot = (props) => {
     const xAxisLabel = svg.append('text')
       .attr('fill', 'black')
       .attr('dy', height + 40)
-      .attr('dx', width / 2 - 20)
+      .attr('dx', width / 2 - 80)
       .style('font-size', 13)
       .text(pair[0]);
 
@@ -234,110 +234,111 @@ const ConsistencyDsetPlot = (props) => {
     tooltips.append('text')
       .attr('class', (d, i) => `dot-name${i}`)
       .attr('dx', width + 5)
-      .attr('dy', height / 2)
-      .attr('font-size', '17px')
+      .attr('dy', height / 2 + 50)
+      .attr('font-size', 13)
       .style('opacity', '0')
       .attr('fill', 'black')
       .text(d => d.sample);
 
 
-    // // calculating regression
-    // const regressionData = data.map(item => [item[xvalue], item[yvalue]]);
-    // const coeffs = regression.linear(regressionData);
-    // const m = coeffs.equation[0];
-    // const b = coeffs.equation[1];
+    // calculating regression
+    const regressionData = data.map(item => [item.x, item.x]);
+    const coeffs = regression.linear(regressionData);
+    const m = coeffs.equation[0];
+    const b = coeffs.equation[1];
 
-    // // finding the start and end by putting the min x value and max x value into y = mx+b
-    // const xvalArr = data.map(item => item[xvalue]);
-    // const x1 = d3.min(xvalArr);
-    // const x2 = d3.max(xvalArr);
-    // const y1 = m * x1 + b;
-    // const y2 = m * x2 + b;
+    // finding the start and end by putting the min x value and max x value into y = mx+b
+    // making sure the line doesn't go over bounds
+    const xvalArr = data.map(item => item.x);
+    const x1 = Math.max(d3.min(xvalArr), d3.extent(data, d => d.x)[0]);
+    const x2 = Math.min(d3.max(xvalArr), d3.extent(data, d => d.x)[1]);
+    const y1 = Math.max(m * x1 + b, d3.extent(data, d => d.y)[0]);
+    const y2 = Math.min(m * x2 + b, d3.extent(data, d => d.y)[1]);
 
-    // svg.append('line')
-    //   .attr('x1', xrange(x1))
-    //   .attr('x2', xrange(x2))
-    //   .attr('y1', yrange(y1))
-    //   .attr('y2', yrange(y2))
-    //   .attr('stroke-width', 2)
-    //   .attr('stroke', colors.color_accent_1);
+    svg.append('line')
+      .attr('x1', xrange(x1))
+      .attr('x2', xrange(x2))
+      .attr('y1', yrange(y1))
+      .attr('y2', yrange(y2))
+      .attr('stroke-width', 2)
+      .attr('stroke', colors.color_accent_1);
 
-    // // calculating C-Index - map json to arrays and call, pearson, spearman
-    // const firstArr = xvalArr;
-    // const secondArr = data.map(x => x[yvalue]);
-    // const cindex = await findCIndex(firstArr, secondArr);
-    // const pearson = findPearson(firstArr, secondArr);
-    // const spearman = findSpearman([firstArr, secondArr], 0, 1);
+    // calculating C-Index - map json to arrays and call, pearson, spearman
+    const firstArr = xvalArr;
+    const secondArr = data.map(n => n.y);
+    const cindex = await findCIndex(firstArr, secondArr);
+    const pearson = findPearson(firstArr, secondArr);
+    const spearman = findSpearman([firstArr, secondArr], 0, 1);
 
-    // // append stats to dom
-    // svg.append('text')
-    //   .attr('dx', () => {
-    //     if (plotId.includes('All')) {
-    //       return width + 10;
-    //     }
-    //     return width / 2 + 30;
-    //   })
-    //   .attr('dy', () => {
-    //     if (plotId.includes('All')) {
-    //       return height / 3 - 20;
-    //     }
-    //     return height + 40;
-    //   })
-    //   .attr('font-size', () => {
-    //     if (plotId.includes('All')) {
-    //       return '17px';
-    //     }
-    //     return '13px';
-    //   })
-    //   .style('opacity', '1')
-    //   .attr('fill', 'black')
-    //   .text(() => `Concordance index: ${d3.format('.4f')(cindex)}`);
+    // append stats to dom
+    svg.append('text')
+      .attr('dx', () => {
+        if (single) {
+          return width + 10;
+        }
+        return width / 2 + 30;
+      })
+      .attr('dy', () => {
+        if (single) {
+          return height / 3 - 20;
+        }
+        return height + 40;
+      })
+      .attr('font-size', () => {
+        if (single) {
+          return '17px';
+        }
+        return 12;
+      })
+      .style('opacity', '1')
+      .attr('fill', 'black')
+      .text(() => `Concordance index: ${d3.format('.4f')(cindex)}`);
 
-    // svg.append('text')
-    //   .attr('dx', () => {
-    //     if (plotId.includes('All')) {
-    //       return width + 10;
-    //     }
-    //     return width / 2 + 30;
-    //   })
-    //   .attr('dy', () => {
-    //     if (plotId.includes('All')) {
-    //       return height / 3;
-    //     }
-    //     return height + 60;
-    //   })
-    //   .attr('font-size', () => {
-    //     if (plotId.includes('All')) {
-    //       return '17px';
-    //     }
-    //     return '13px';
-    //   })
-    //   .style('opacity', '1')
-    //   .attr('fill', 'black')
-    //   .text(d => `Spearman rho: ${d3.format('.4f')(spearman)}`);
+    svg.append('text')
+      .attr('dx', () => {
+        if (single) {
+          return width + 10;
+        }
+        return width / 2 + 30;
+      })
+      .attr('dy', () => {
+        if (single) {
+          return height / 3;
+        }
+        return height + 60;
+      })
+      .attr('font-size', () => {
+        if (single) {
+          return '17px';
+        }
+        return 12;
+      })
+      .style('opacity', '1')
+      .attr('fill', 'black')
+      .text(d => `Spearman rho: ${d3.format('.4f')(spearman)}`);
 
-    // svg.append('text')
-    //   .attr('dx', () => {
-    //     if (plotId.includes('All')) {
-    //       return width + 10;
-    //     }
-    //     return width / 2 + 30;
-    //   })
-    //   .attr('dy', () => {
-    //     if (plotId.includes('All')) {
-    //       return height / 3 + 20;
-    //     }
-    //     return height + 80;
-    //   })
-    //   .attr('font-size', () => {
-    //     if (plotId.includes('All')) {
-    //       return '17px';
-    //     }
-    //     return '13px';
-    //   })
-    //   .style('opacity', '1')
-    //   .attr('fill', 'black')
-    //   .text(d => `Pearson r: ${d3.format('.4f')(pearson)}`);
+    svg.append('text')
+      .attr('dx', () => {
+        if (single) {
+          return width + 10;
+        }
+        return width / 2 + 30;
+      })
+      .attr('dy', () => {
+        if (single) {
+          return height / 3 + 20;
+        }
+        return height + 80;
+      })
+      .attr('font-size', () => {
+        if (single) {
+          return '17px';
+        }
+        return 12;
+      })
+      .style('opacity', '1')
+      .attr('fill', 'black')
+      .text(d => `Pearson r: ${d3.format('.4f')(pearson)}`);
   };
 
   useEffect(() => {
