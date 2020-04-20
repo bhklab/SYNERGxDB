@@ -154,14 +154,17 @@ export default class ComboDetails extends Component {
           compoundA: drugsData[0].name,
           compoundB: drugsData[1].name,
           ...row,
+          idSample: cellData.idSample,
+          sampleName: cellData.name,
           sourceName: sourceData.name,
         }));
-
         const csvHeaders = [
           { displayName: 'Compound A', id: 'compoundA' },
           { displayName: 'Compound B', id: 'compoundB' },
           { displayName: 'Concentration (Compound A)', id: 'concA' },
           { displayName: 'Concentration (Compound B)', id: 'concB' },
+          { displayName: 'idSample', id: 'idSample' },
+          { displayName: 'Cell Line', id: 'sampleName' },
           { displayName: 'Source', id: 'sourceName' },
           { displayName: 'Raw Matrix', id: 'raw_matrix' },
           { displayName: 'ZIP Matrix', id: 'zip_matrix' },

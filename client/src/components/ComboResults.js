@@ -272,7 +272,7 @@ class ComboResults extends Component {
     const headers = [
       { displayName: 'Tissue', id: 'tissue' },
       { displayName: 'Cell Line', id: 'sampleName' },
-      { displayName: 'Cell Line ID', id: 'idSample' },
+      { displayName: 'idSample', id: 'idSample' },
       { displayName: 'Cellosaurus ID', id: 'idCellosaurus' },
       { displayName: 'Sex', id: 'sex' },
       { displayName: 'Age', id: 'age' },
