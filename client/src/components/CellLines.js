@@ -1,13 +1,49 @@
 import React, { Component, Fragment } from 'react';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import ReactTable from 'react-table';
+// eslint-disable-next-line import/no-unresolved
+import CsvDownloader from 'react-csv-downloader';
 import 'react-table/react-table.css';
-// import colors from '../styles/colors';
-// import transitions from '../styles/transitions';
 
 import LoadingComponent from './UtilComponents/Loading';
-import DownloadButton from './UtilComponents/DownloadButton';
+// import DownloadButton from './UtilComponents/DownloadButton';
 import DonutPlot from './Plots/DonutPlot';
+
+import colors from '../styles/colors';
+import downloadIcon from '../images/icons/download.svg';
+import transitions from '../styles/transitions';
+
+
+const StyledButtonContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+
+  div {
+    display: flex;
+    justify-content: flex-end;
+
+    button {
+      color: #fff !important;
+      background: ${colors.pagination};
+      
+      padding: 8px;
+      border: 0;
+      font-size: 13px;
+      transition: ${transitions.main_trans}
+      img {
+          display: inline-block;
+          height: 13px;
+          width: auto;
+          margin-left: 5px;
+      }
+      &:hover {
+          background-color: ${colors.pagination_dark};
+      }
+    }
+  }
+`;
 
 const StyledWrapper = styled.div`
   display: flex;
@@ -317,11 +353,30 @@ class CellLines extends Component {
           </StyledWrapper>
           <StyledWrapper className="wrapper">
             <h1>List of Cell Lines</h1>
-            <DownloadButton
-              data={csvData}
-              filename="samples"
-              headers={headers}
-            />
+            <StyledButtonContainer>
+              <div>
+                <button type="button">
+                  <Link style={{ color: 'white' }} to="/dataset_zips/molecular_data.zip" target="_blank" download>
+                    Download Molecular Data
+                    {'   '}
+                    <img src={downloadIcon} alt="download icon" />
+                  </Link>
+                </button>
+              </div>
+              <div>
+                <CsvDownloader
+                  datas={csvData}
+                  columns={headers}
+                  filename="samples"
+                >
+                  <button type="button">
+                    Download Cell Line Data
+                    {'   '}
+                    <img src={downloadIcon} alt="download icon" />
+                  </button>
+                </CsvDownloader>
+              </div>
+            </StyledButtonContainer>
             <ReactTable
               data={cellLineData}
               columns={columns}
