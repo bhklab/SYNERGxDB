@@ -3,9 +3,13 @@ import styled from 'styled-components';
 import ReactRouterPropTypes from 'react-router-prop-types';
 import queryString from 'query-string';
 import ReactLoading from 'react-loading';
+import {
+  Tab, Tabs, TabList, TabPanel,
+} from 'react-tabs';
 import colors from '../styles/colors';
 import ConsistencyContainer from './ConsistencyContainer';
 import QueryCard from './UtilComponents/QueryCard';
+import 'react-tabs/style/react-tabs.css';
 
 const StyledWrapper = styled.div`  
   text-align: left;
@@ -126,6 +130,27 @@ class Consistency extends Component {
                         <ReactLoading type="bubbles" width={150} height={150} color={colors.color_main_2} />
                       </div>
                     ) : (
+                    // <Tabs>
+                    //   <TabList>
+                    //     <Tab>Consistency of Synergy Metrics</Tab>
+                    //     <Tab>Consistency Across Datasets</Tab>
+                    //   </TabList>
+
+                    //   <TabPanel>
+                    //     <ConsistencyContainer
+                    //       data={results}
+                    //       allData={allResults}
+                    //       datasets={datasets}
+                    //     />
+                    //   </TabPanel>
+                    //   <TabPanel>
+                    //     <ConsistencyContainer
+                    //       data={results}
+                    //       allData={allResults}
+                    //       datasets={datasets}
+                    //     />
+                    //   </TabPanel>
+                    // </Tabs>
                       <ConsistencyContainer
                         data={results}
                         allData={allResults}
