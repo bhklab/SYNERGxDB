@@ -202,13 +202,13 @@ class CellLines extends Component {
 
         data.forEach((cell) => {
           const {
-            tissue, name, sex, origin, age, disease, idCellosaurus,
+            idSample, tissue, name, sex, origin, age, disease, idCellosaurus,
           } = cell;
           cellLineData.push({
             tissue, name, sex, age, idCellosaurus, disease: { name: disease, origin },
           });
           csvData.push({
-            tissue, name, sex, age, idCellosaurus, disease: disease ? disease.split(',')[0] : '', origin,
+            idSample, tissue, name, sex, age, idCellosaurus, disease: disease ? disease.split(',')[0] : '', origin,
           });
         });
         this.setState({
@@ -269,8 +269,9 @@ class CellLines extends Component {
       sortable: false,
     }];
     const headers = [
-      { displayName: 'Tissue', id: 'tissue' },
+      { displayName: 'ID', id: 'idSample' },
       { displayName: 'Name', id: 'name' },
+      { displayName: 'Tissue', id: 'tissue' },
       { displayName: 'Sex', id: 'sex' },
       { displayName: 'Age', id: 'age' },
       { displayName: 'Disease', id: 'disease' },
@@ -294,8 +295,8 @@ class CellLines extends Component {
       textY: 18,
       translate: 5,
     };
-    return (
 
+    return (
       <Fragment>
         {/* <style>{'#root { background: #e7f3f8  !important; }'}</style> */}
         <main className="summary">
@@ -319,7 +320,6 @@ class CellLines extends Component {
                   donutData={donutData}
                   legendCallBack={this.legendCallBack}
                 />
-
                 <DonutPlot
                   keyName="sex"
                   plotId="cellMiniPlot"
@@ -328,7 +328,6 @@ class CellLines extends Component {
                   donutData={donutData}
                   legendCallBack={this.legendCallBack}
                 />
-
                 <DonutPlot
                   keyName="origin"
                   plotId="cellMiniPlot"
@@ -337,7 +336,6 @@ class CellLines extends Component {
                   donutData={donutData}
                   legendCallBack={this.legendCallBack}
                 />
-
                 <DonutPlot
                   keyName="age"
                   plotId="cellMiniPlot"
