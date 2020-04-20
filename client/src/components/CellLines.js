@@ -17,30 +17,26 @@ import transitions from '../styles/transitions';
 
 const StyledButtonContainer = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   width: 100%;
 
-  div {
-    display: flex;
-    justify-content: flex-end;
-
-    button {
-      color: #fff !important;
-      background: ${colors.pagination};
-      
-      padding: 8px;
-      border: 0;
-      font-size: 13px;
-      transition: ${transitions.main_trans}
-      img {
-          display: inline-block;
-          height: 13px;
-          width: auto;
-          margin-left: 5px;
-      }
-      &:hover {
-          background-color: ${colors.pagination_dark};
-      }
+  button {
+    margin-left: 10px;
+    color: #fff !important;
+    background: ${colors.pagination};
+    
+    padding: 8px;
+    border: 0;
+    font-size: 13px;
+    transition: ${transitions.main_trans}
+    img {
+        display: inline-block;
+        height: 13px;
+        width: auto;
+        margin-left: 5px;
+    }
+    &:hover {
+        background-color: ${colors.pagination_dark};
     }
   }
 `;
