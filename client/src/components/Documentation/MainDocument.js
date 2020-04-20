@@ -131,6 +131,11 @@ class MainDocument extends React.Component {
           display, type: 'general',
         });
         break;
+      case 'download':
+        this.setState({
+          display, type: 'general',
+        });
+        break;
       case 'pharmaco':
         this.setState({
           display, type: 'general',
@@ -216,6 +221,11 @@ class MainDocument extends React.Component {
               >
                 <button type="button" onClick={() => handleDocChange('datasets')}>Datasets</button>
               </li>
+              <li
+                className={display === 'download' ? 'selected sub-func' : 'sub-func'}
+              >
+                <button type="button" onClick={() => handleDocChange('download')}>Download</button>
+              </li>
               {/* Advanced features */}
               <li className="sub-head">Advanced Features</li>
               <li
@@ -249,11 +259,11 @@ class MainDocument extends React.Component {
                 <button type="button" onClick={() => handleDocChange('detailed')}>Detailed synergy scores</button>
               </li>
               {/* Use case */}
-              <li
+              {/* <li
                 className={display === 'use' ? 'selected sub-func' : 'sub-func'}
               >
                 <button type="button" onClick={() => handleDocChange('use')}>Use case</button>
-              </li>
+              </li> */}
               {/* Functionality sub-features end */}
               {/* API */}
               <li

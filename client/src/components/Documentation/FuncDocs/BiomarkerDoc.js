@@ -6,17 +6,13 @@ import img from '../../../images/docs/biomarker.JPG';
 
 const BiomarkerDoc = () => (
   <Fragment>
+    <h3>Biomarker discovery</h3>
     <ol>
       <li>
-        <b>Biomarker discovery</b>
-      </li>
-    </ol>
-    <ol>
-      <li>
-      We tested an association between gene expression and synergy score in each dataset 
-      and provide concordance indices in order to identify potential predictive biomarkers 
-      in combination therapies. Users can select a threshold to define two groups – synergy 
-      score high and low – to carry out statistical testing between the two groups in terms 
+      We tested an association between gene expression and synergy score in each dataset
+      and provide concordance indices in orde to identify potential predictive biomarkers
+      in combination therapies. Users can selct a threshold to define two groups – synergy
+      score high and low – to carry out statitical testing between the two groups in terms
       of gene expression.
         {' '}
         <Link to="/biomarker?&drugId1=11&drugId2=97">http://SYNERGxDB.ca/biomarker?&drugId1=11&drugId2=97</Link>

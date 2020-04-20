@@ -12,6 +12,7 @@ import SynDoc from './FuncDocs/SynDoc';
 import SampleDoc from './FuncDocs/SampleDoc';
 import DrugDoc from './FuncDocs/DrugDoc';
 import DatasetDoc from './FuncDocs/DatasetDoc';
+import DownloadDoc from './FuncDocs/DownloadDoc';
 import PharmacoDoc from './FuncDocs/PharmacoDoc';
 import BiomarkerDoc from './FuncDocs/BiomarkerDoc';
 import SensitivityDoc from './FuncDocs/SensitivityDoc';
@@ -63,6 +64,7 @@ const FunctionalDoc = (props) => {
       {display === 'samples' ? <SampleDoc /> : null}
       {display === 'compounds' ? <DrugDoc /> : null}
       {display === 'datasets' ? <DatasetDoc /> : null}
+      {display === 'download' ? <DownloadDoc /> : null}
       {display === 'pharmaco' ? <PharmacoDoc /> : null}
       {display === 'biomarker' ? <BiomarkerDoc /> : null}
       {display === 'sensitivity' ? <SensitivityDoc /> : null}

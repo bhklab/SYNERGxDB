@@ -5,11 +5,7 @@ import React, { Fragment } from 'react';
 
 const UseCaseDoc = () => (
   <Fragment>
-    <ol>
-      <li>
-        <b>A Use-Case Scenario</b>
-      </li>
-    </ol>
+    <h3>A Use Case Scenerio</h3>
   </Fragment>
 );
 

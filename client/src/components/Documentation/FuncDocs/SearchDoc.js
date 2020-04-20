@@ -7,15 +7,11 @@ import img2 from '../../../images/docs/figure13.png';
 
 const SearchDoc = () => (
   <Fragment>
+    <h3>Search</h3>
     <ol>
       <li>
-        <b>Search</b>
-      </li>
-    </ol>
-    <ol>
-      <li>
-       The SYNERGxDB search engine allows users to identify potential biomarkers and novel drug combinations according to the predicted synergy scores, 
-       by querying for a subset of cell lines or one cell line, the first compound in combination, the second compound in combination, and/or dataset 
+       The SYNERGxDB search engine allows users to identify potential biomarkers and novel drug combinations according to the predicted synergy scores,
+       by querying for a subset of cell linesor one cell line, the first compound in combination, the second compound in combination, and/or dataset
        of choice to explore.
         {' '}
         <Link to="/">http://SYNERGxDB.ca/</Link>
