@@ -26,6 +26,7 @@
     "react-scripts": "3.0.1",
     "react-select": "^3.1.0",
     "react-table": "^6.11.5",
+    "react-tabs": "^3.1.0",
     "react-virtualized": "^9.21.2",
     "reactjs-popup": "^1.4.2",
     "redux": "^4.0.5",

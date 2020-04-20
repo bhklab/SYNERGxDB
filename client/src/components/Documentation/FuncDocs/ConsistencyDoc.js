@@ -6,15 +6,11 @@ import img from '../../../images/docs/figure11.png';
 
 const ConsistencyDoc = () => (
   <Fragment>
+    <h3>Consistency in Synergy Scores</h3>
     <ol>
       <li>
-        <b>Consistency in Synergy Scores</b>
-      </li>
-    </ol>
-    <ol>
-      <li>
-      Users can compare two methods of the synergy scores on a scatter plot and 
-      statistical testing will be carried out including concordance index, 
+      Users can compare two methods of the synergy scores on a scatter plot and
+      statistical testing will be carried out including concordance index,
       Spearman rho, and Pearson r.
         {' '}
         <Link to="/consistency?&drugId1=11&drugId2=97">http://SYNERGxDB.ca/consistency?&drugId1=11&drugId2=97</Link>

@@ -150,7 +150,7 @@ const GlobalStyles = createGlobalStyle`
   .ReactTable {
     width: 100%;
     text-align: left;
-    margin: 10px 0;
+    margin: 0 0 10px;
     color:${colors.nav_links};
     font-family: Nunito Sans, sans-serif;
 

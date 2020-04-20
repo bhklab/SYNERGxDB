@@ -6,11 +6,7 @@ import img from '../../../images/docs/figure05.png';
 
 const DrugDoc = () => (
   <Fragment>
-    <ol>
-      <li>
-        <b>Compounds</b>
-      </li>
-    </ol>
+    <h3>Compounds</h3>
     <ol>
       <li>
       Metadata is provided for each drug compound in
