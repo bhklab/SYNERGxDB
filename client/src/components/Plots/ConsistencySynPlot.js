@@ -6,10 +6,8 @@ import * as d3 from 'd3';
 import React, { useState, useEffect, Fragment } from 'react';
 import regression from 'regression';
 import colors from '../../styles/colors';
-import ConsistencyContainer from '../ConsistencyContainer';
 
-
-const ConsistencyPlot = (props) => {
+const ConsistencySynPlot = (props) => {
   const {
     data, datasets, xvalue, yvalue, plotId,
   } = props;
@@ -407,4 +405,4 @@ const ConsistencyPlot = (props) => {
   );
 };
 
-export default ConsistencyPlot;
+export default ConsistencySynPlot;
