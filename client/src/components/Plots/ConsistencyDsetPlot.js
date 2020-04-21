@@ -266,9 +266,9 @@ const ConsistencyDsetPlot = (props) => {
     // calculating C-Index - map json to arrays and call, pearson, spearman
     const firstArr = xvalArr;
     const secondArr = data.map(n => n.y);
-    const cindex = await findCIndex(firstArr, secondArr);
+    const cindex = firstArr.length === 1 ? 0 : await findCIndex(firstArr, secondArr);
     const pearson = findPearson(firstArr, secondArr);
-    const spearman = findSpearman([firstArr, secondArr], 0, 1);
+    const spearman = firstArr.length === 1 ? 0 : findSpearman([firstArr, secondArr], 0, 1);
 
     // append stats to dom
     svg.append('text')

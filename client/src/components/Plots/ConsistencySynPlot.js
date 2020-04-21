@@ -275,7 +275,7 @@ const ConsistencySynPlot = (props) => {
     // calculating C-Index - map json to arrays and call, pearson, spearman
     const firstArr = xvalArr;
     const secondArr = data.map(x => x[yvalue]);
-    const cindex = await findCIndex(firstArr, secondArr);
+    const cindex = 0;// await findCIndex(firstArr, secondArr);
     const pearson = findPearson(firstArr, secondArr);
     const spearman = findSpearman([firstArr, secondArr], 0, 1);
 
