@@ -254,14 +254,18 @@ const ConsistencyDsetPlot = (props) => {
     const x2 = Math.min(d3.max(xvalArr), d3.extent(data, d => d.x)[1]);
     const y1 = Math.max(m * x1 + b, d3.extent(data, d => d.y)[0]);
     const y2 = Math.min(m * x2 + b, d3.extent(data, d => d.y)[1]);
+    // const x1 = d3.min(xvalArr);
+    // const x2 = d3.max(xvalArr);
+    // const y1 = m * x1 + b;
+    // const y2 = m * x2 + b;
 
-    svg.append('line')
-      .attr('x1', xrange(x1))
-      .attr('x2', xrange(x2))
-      .attr('y1', yrange(y1))
-      .attr('y2', yrange(y2))
-      .attr('stroke-width', 2)
-      .attr('stroke', colors.color_accent_1);
+    // svg.append('line')
+    //   .attr('x1', xrange(x1))
+    //   .attr('x2', xrange(x2))
+    //   .attr('y1', yrange(y1))
+    //   .attr('y2', yrange(y2))
+    //   .attr('stroke-width', 2)
+    //   .attr('stroke', colors.color_accent_1);
 
     // calculating C-Index - map json to arrays and call, pearson, spearman
     const firstArr = xvalArr;
