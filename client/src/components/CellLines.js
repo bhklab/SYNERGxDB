@@ -265,7 +265,7 @@ class CellLines extends Component {
       sortable: false,
     }];
     const headers = [
-      { displayName: 'ID', id: 'idSample' },
+      { displayName: 'idSample', id: 'idSample' },
       { displayName: 'Name', id: 'name' },
       { displayName: 'Tissue', id: 'tissue' },
       { displayName: 'Sex', id: 'sex' },
