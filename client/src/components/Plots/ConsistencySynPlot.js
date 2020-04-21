@@ -259,10 +259,10 @@ const ConsistencySynPlot = (props) => {
 
     // finding the start and end by putting the min x value and max x value into y = mx+b
     const xvalArr = data.map(item => item[xvalue]);
-    const x1 = d3.min(xvalArr);
-    const x2 = d3.max(xvalArr);
-    const y1 = m * x1 + b;
-    const y2 = m * x2 + b;
+    const x1 = Math.max(d3.min(xvalArr), d3.extent(data, d => d[xvalue])[0]);
+    const x2 = Math.min(d3.max(xvalArr), d3.extent(data, d => d[xvalue])[1]);
+    const y1 = Math.max(m * x1 + b, d3.extent(data, d => d[yvalue])[0]);
+    const y2 = Math.min(m * x2 + b, d3.extent(data, d => d[yvalue])[1]);
 
     svg.append('line')
       .attr('x1', xrange(x1))
