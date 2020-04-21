@@ -44,9 +44,10 @@ const DownloadButton = (props) => {
         datas={data}
         columns={headers}
         filename={filename}
+        bom={false}
       >
         <button type="button">
-           Download Data
+          Download Data
           {'   '}
           <img src={downloadIcon} alt="download icon" />
         </button>
