@@ -37,6 +37,13 @@ const StyledWrapper = styled.div`
     }
   }
 
+  .compare {
+    padding: 5px;
+    background: ${colors.blue_main};
+    color: white;
+    margin-bottom:20px;
+  }
+
   .ReactTable a {
     colors: ${colors.color_main_5} !important;
   }
@@ -200,6 +207,7 @@ class Datasets extends Component {
                       )}
                     </Fragment>
                   )}
+                  <Link className="compare" to="/datasets/comparison">Comparison between datasets</Link>
                 </Fragment>
               )}
           </StyledWrapper>

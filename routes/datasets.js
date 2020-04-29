@@ -136,6 +136,28 @@ router.get('/filter', (req, res) => {
     });
 });
 
+router.get('/comparison', (req, res) => {
+  function subQueryA() {
+    return this.select('idCombo_Design AS cnt')
+      .from('Synergy_Score')
+      .groupBy('idCombo_Design')
+      .having(db.raw('count(*) > 1'));
+  }
+
+  db.select('idCombo_Design', 'bliss', 'loewe', 'hsa', 'zip', 'name AS sourceName')
+    .from('Synergy_Score AS SS')
+    .innerJoin('source', 'source.idSource', 'SS.idSource')
+    .whereIn('idCombo_Design', subQueryA)
+    .orderBy('idCombo_Design', 'SS.idSource')
+    .then((data) => {
+      res.json(data);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(400).json({ message: 'Bad Request' });
+    });
+});
+
 router.get('/:datasetId', (req, res) => {
   db.select('idSource', 'name', 'no_samples', 'no_drugs', 'pmID', 'author', 'combo')
     .from('Source')

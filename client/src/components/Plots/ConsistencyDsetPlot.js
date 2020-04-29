@@ -193,14 +193,14 @@ const ConsistencyDsetPlot = (props) => {
     if (!plotId.includes('All')) {
       svg.append('text')
         .attr('dx', width / 2 - 50)
-        .attr('dy', 0)
+        .attr('dy', -10)
         .attr('font-size', '17px')
         .style('font-weight', 'bold')
         .style('opacity', '1')
         .attr('fill', 'black')
-        .text(`N = ${data.length}`);
+        .text(`N = ${data.filter(n => n.x !== null && n.y !== null).length}`);
     }
-
+    console.log(data);
     // make group for dots
     const dots = svg.selectAll('dot')
       .data(data)
@@ -267,12 +267,20 @@ const ConsistencyDsetPlot = (props) => {
     //   .attr('stroke-width', 2)
     //   .attr('stroke', colors.color_accent_1);
 
-    // calculating C-Index - map json to arrays and call, pearson, spearman
-    const firstArr = xvalArr;
-    const secondArr = data.map(n => n.y);
-    const cindex = firstArr.length === 1 ? 0 : await findCIndex(firstArr, secondArr);
-    const pearson = findPearson(firstArr, secondArr);
-    const spearman = firstArr.length === 1 ? 0 : findSpearman([firstArr, secondArr], 0, 1);
+    let pearson; let spearman; let cindex;
+
+    if (props.stats === undefined) {
+      // calculating C-Index - map json to arrays and call, pearson, spearman
+      const firstArr = xvalArr;
+      const secondArr = data.map(n => n.y);
+      pearson = findPearson(firstArr, secondArr);
+      spearman = firstArr.length === 1 ? 0 : findSpearman([firstArr, secondArr], 0, 1);
+      cindex = firstArr.length === 1 ? 0 : await findCIndex(firstArr, secondArr);
+    } else {
+      pearson = props.stats.pearson;
+      cindex = props.stats.cindex;
+      spearman = props.stats.spearman;
+    }
 
     // append stats to dom
     svg.append('text')

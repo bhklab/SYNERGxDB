@@ -71,7 +71,6 @@ class Consistency extends Component {
           datasets.forEach((x) => {
             results[x] = [];
           });
-
           data.forEach((x) => {
             results[x.sourceName].push(x);
           });
@@ -100,7 +99,6 @@ class Consistency extends Component {
     }
 
     formatDsetData(data) {
-      console.log(data);
       // getting pairs of datasets
       const x = Object.keys(data);
       let y = Object.keys(data);

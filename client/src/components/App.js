@@ -34,6 +34,7 @@ const Sensitivity = lazy(() => import('./Sensitivity'));
 const Enrichment = lazy(() => import('./Enrichment'));
 const Consistency = lazy(() => import('./Consistency'));
 const Contact = lazy(() => import('./Contact'));
+const CompareDatasets = lazy(() => import('./CompareDatasets'));
 
 const App = () => (
   <Fragment>
@@ -47,6 +48,7 @@ const App = () => (
             <Route exact path="/cell-lines/" component={CellLines} />
             <Route exact path="/drugs/" component={Drugs} />
             <Route exact path="/datasets/" component={Datasets} />
+            <Route exact path="/datasets/comparison" component={CompareDatasets} />
             <Route exact path="/documentation/" component={Documentation} />
             <Route exact path="/pharmacogenomics/" component={Pharmacogenomics} />
             <Route exact path="/contact/" component={Contact} />
