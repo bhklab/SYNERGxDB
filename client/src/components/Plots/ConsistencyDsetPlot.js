@@ -83,7 +83,7 @@ const ConsistencyDsetPlot = (props) => {
     return r;
   };
 
-  const plotScatter = async (data, plotId, dsets, single) => {
+  const plotScatter = async (data, plotId, dsets, single, score) => {
     const pair = [dsets.substr(0, dsets.indexOf('+')), dsets.substr(dsets.indexOf('+') + 1, dsets.length)];
     const margin = {
       top: 50,
@@ -200,7 +200,6 @@ const ConsistencyDsetPlot = (props) => {
         .attr('fill', 'black')
         .text(`N = ${data.filter(n => n.x !== null && n.y !== null).length}`);
     }
-    console.log(data);
     // make group for dots
     const dots = svg.selectAll('dot')
       .data(data)
@@ -270,16 +269,16 @@ const ConsistencyDsetPlot = (props) => {
     let pearson; let spearman; let cindex;
 
     if (props.stats === undefined) {
-      // calculating C-Index - map json to arrays and call, pearson, spearman
+    // calculating C-Index - map json to arrays and call, pearson, spearman
       const firstArr = xvalArr;
       const secondArr = data.map(n => n.y);
       pearson = findPearson(firstArr, secondArr);
       spearman = firstArr.length === 1 ? 0 : findSpearman([firstArr, secondArr], 0, 1);
       cindex = firstArr.length === 1 ? 0 : await findCIndex(firstArr, secondArr);
     } else {
-      pearson = props.stats.pearson;
-      cindex = props.stats.cindex;
-      spearman = props.stats.spearman;
+      pearson = props.stats[score].pearson;
+      cindex = props.stats[score].cindex;
+      spearman = props.stats[score].spearman;
     }
 
     // append stats to dom
@@ -356,7 +355,7 @@ const ConsistencyDsetPlot = (props) => {
   useEffect(() => {
     // if all, big plot. Else, small
     d3.select(`#scatter${plotId}`).remove();
-    plotScatter(data[score], plotId, dsets, single);
+    plotScatter(data[score], plotId, dsets, single, score);
   }, [score]);
 
 
