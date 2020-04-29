@@ -38,7 +38,7 @@ const StyledWrapper = styled.div`
   }
 
   .compare {
-    padding: 5px;
+    padding: 5px 10px;
     background: ${colors.blue_main};
     color: white;
     margin-bottom:20px;

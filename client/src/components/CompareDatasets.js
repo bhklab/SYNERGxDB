@@ -13,8 +13,16 @@ import ConsistencyDsetPlot from './Plots/ConsistencyDsetPlot';
 const StyledWrapper = styled.div`
   width: 100%;
   background:white;
-  padding:20px;
+  padding:30px;
   margin-top: 120px;
+  
+  span {
+    line-height: 2em;
+  }
+
+  h1 {
+    margin-top: 1rem;
+  }
 
   .consistencyGrid {
     display: flex;
@@ -25,6 +33,7 @@ const StyledWrapper = styled.div`
       // flex: 1 45%;
       width: 45%;
     }
+    margin-bottom:30px;
   }
 
   .selectDset {
@@ -307,6 +316,7 @@ const CompareDatasets = () => {
   return (
     <Fragment>
       <StyledWrapper className="wrapper">
+        <h1>Comparison Across Datasets</h1>
         <div className="selectDset" />
         {state.loading ? (
           <div className="loading-container">
@@ -332,6 +342,13 @@ const CompareDatasets = () => {
             ))}
           </div>
         )}
+        <span>
+          Tuples (sample, drug A, drug B) do not overlap among these dataset combinations:
+          <br />
+          {state.emptyCombos.join(', ')}
+          .
+        </span>
+
       </StyledWrapper>
       <footer>
         <div className="footer-wrapper">
