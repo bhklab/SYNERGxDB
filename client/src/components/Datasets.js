@@ -207,7 +207,7 @@ class Datasets extends Component {
                       )}
                     </Fragment>
                   )}
-                  <Link className="compare" to="/datasets/comparison">Comparison between datasets</Link>
+                  <Link className="compare" to="/datasets/comparison">Comparison across datasets</Link>
                 </Fragment>
               )}
           </StyledWrapper>

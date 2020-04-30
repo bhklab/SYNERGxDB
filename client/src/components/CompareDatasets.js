@@ -140,7 +140,7 @@ const formatData = (data) => {
     }
   });
 
-  // hardcoding stats
+  // HARDCODED: stats
   const stats = {
     'MERCK+MIT-MELANOMA': {
       bliss: {
@@ -255,6 +255,7 @@ const formatData = (data) => {
       },
     },
   };
+
   return { result, emptyCombos, stats };
 };
 
@@ -313,10 +314,12 @@ const CompareDatasets = () => {
       .text(d => d);
   }, []);
 
+  // HARDCODED: order
+  const order = ['MERCK+NCI-ALMANAC', 'MIT-MELANOMA+NCI-ALMANAC', 'MERCK+MIT-MELANOMA', 'NCI-ALMANAC+YALE-TNBC', 'MERCK+YALE-TNBC', 'YALE-TNBC+DECREASE'];
   return (
     <Fragment>
       <StyledWrapper className="wrapper">
-        <h1>Comparison Across Datasets</h1>
+        <h1>Comparison across datasets</h1>
         <div className="selectDset" />
         {state.loading ? (
           <div className="loading-container">
@@ -324,7 +327,7 @@ const CompareDatasets = () => {
           </div>
         ) : (
           <div className="consistencyGrid">
-            {Object.keys(state.data).map((x, i) => (
+            {order.map((x, i) => (
               <Fragment key={x}>
                 {state.data[x][selected].every(n => n.x === null) || state.data[x][selected].every(n => n.y === null) ? null : (
                   <div className="consistencyDsetContainer">
@@ -343,7 +346,11 @@ const CompareDatasets = () => {
           </div>
         )}
         <span>
-          Tuples (sample, drug A, drug B) do not overlap among these dataset combinations:
+          Tuples (sample, drug A, drug B) in the CLOUD, STANFORD, VISAGE, YALE-PDAC datasets do not overlap among the datasets.
+          {' '}
+          <br />
+          As well, these dataset combinations had no data available:
+          {' '}
           <br />
           {state.emptyCombos.join(', ')}
           .

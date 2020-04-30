@@ -192,13 +192,14 @@ const ConsistencyDsetPlot = (props) => {
     // title
     if (!plotId.includes('All')) {
       svg.append('text')
-        .attr('dx', width / 2 - 50)
-        .attr('dy', -10)
-        .attr('font-size', '17px')
+        .attr('dx', width / 2)
+        .attr('dy', -20)
+        .attr('font-size', '16px')
+        .style('text-anchor', 'middle')
         .style('font-weight', 'bold')
         .style('opacity', '1')
         .attr('fill', 'black')
-        .text(`N = ${data.filter(n => n.x !== null && n.y !== null).length}`);
+        .text(`${pair[0]} vs ${pair[1]}, N = ${data.filter(n => n.x !== null && n.y !== null).length}`);
     }
     // make group for dots
     const dots = svg.selectAll('dot')
@@ -241,7 +242,7 @@ const ConsistencyDsetPlot = (props) => {
 
 
     // calculating regression
-    const regressionData = data.map(item => [item.x, item.x]);
+    const regressionData = data.map(item => [item.x, item.y]);
     const coeffs = regression.linear(regressionData);
     const m = coeffs.equation[0];
     const b = coeffs.equation[1];
@@ -258,16 +259,18 @@ const ConsistencyDsetPlot = (props) => {
     // const y1 = m * x1 + b;
     // const y2 = m * x2 + b;
 
-    // svg.append('line')
-    //   .attr('x1', xrange(x1))
-    //   .attr('x2', xrange(x2))
-    //   .attr('y1', yrange(y1))
-    //   .attr('y2', yrange(y2))
-    //   .attr('stroke-width', 2)
-    //   .attr('stroke', colors.color_accent_1);
+    svg.append('line')
+      .attr('x1', xrange(x1))
+      .attr('x2', xrange(x2))
+      .attr('y1', yrange(y1))
+      .attr('y2', yrange(y2))
+      .attr('stroke-width', 2)
+      .attr('stroke', colors.color_accent_1);
+
 
     let pearson; let spearman; let cindex;
 
+    // if consistency plot or comparison
     if (props.stats === undefined) {
     // calculating C-Index - map json to arrays and call, pearson, spearman
       const firstArr = xvalArr;
@@ -361,7 +364,6 @@ const ConsistencyDsetPlot = (props) => {
 
   return (
     <Fragment>
-      {/* <h2>Consistency in Synergy Scores, <i>N</i> = {data.length}</h2> */}
       <div id={plotId} className="plot" />
     </Fragment>
   );
