@@ -306,7 +306,12 @@ const ConsistencyDsetPlot = (props) => {
       })
       .style('opacity', '1')
       .attr('fill', 'black')
-      .text(() => `Concordance index: ${d3.format('.4f')(cindex)}`);
+      .text(() => {
+        if (typeof cindex === 'number') {
+          return `Concordance index: ${d3.format('.4f')(cindex)}`;
+        }
+        return `Concordance index: ${cindex}`;
+      });
 
     svg.append('text')
       .attr('dx', () => {
@@ -329,7 +334,12 @@ const ConsistencyDsetPlot = (props) => {
       })
       .style('opacity', '1')
       .attr('fill', 'black')
-      .text(d => `Spearman rho: ${d3.format('.4f')(spearman)}`);
+      .text(() => {
+        if (typeof spearman === 'number') {
+          return `Spearman rho: ${d3.format('.4f')(spearman)}`;
+        }
+        return `Spearman rho: ${spearman}`;
+      });
 
     svg.append('text')
       .attr('dx', () => {
@@ -352,7 +362,12 @@ const ConsistencyDsetPlot = (props) => {
       })
       .style('opacity', '1')
       .attr('fill', 'black')
-      .text(d => `Pearson r: ${d3.format('.4f')(pearson)}`);
+      .text(() => {
+        if (typeof pearson === 'number') {
+          return `Pearson r: ${d3.format('.4f')(pearson)}`;
+        }
+        return `Pearson r: ${pearson}`;
+      });
   };
 
   useEffect(() => {

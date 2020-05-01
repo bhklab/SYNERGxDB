@@ -165,24 +165,24 @@ const formatData = (data) => {
     },
     'MERCK+NCI-ALMANAC': {
       bliss: {
-        cindex: 0.6856,
-        spearman: 0.5270,
-        pearson: 0.5432,
+        cindex: 0.5189,
+        spearman: 0.0538,
+        pearson: 0.0126,
       },
       zip: {
-        cindex: 0.7018,
-        spearman: 0.5716,
-        pearson: 0.0803,
+        cindex: 0.5836,
+        spearman: 0.2453,
+        pearson: 0.0524,
       },
       loewe: {
-        cindex: 0.6524,
-        spearman: 0.4444,
-        pearson: 0.4413,
+        cindex: 0.5138,
+        spearman: 0.0410,
+        pearson: 0.0526,
       },
       hsa: {
-        cindex: 0.6255,
-        spearman: 0.3691,
-        pearson: 0.3802,
+        cindex: 0.5425,
+        spearman: 0.1268,
+        pearson: 0.1268,
       },
     },
     'MERCK+YALE-TNBC': {
@@ -204,19 +204,19 @@ const formatData = (data) => {
     },
     'MIT-MELANOMA+NCI-ALMANAC': {
       bliss: {
-        cindex: 0.4763,
-        spearman: -0.0708,
-        pearson: -0.0911,
+        cindex: 0.5358,
+        spearman: 0.1022,
+        pearson: 0.0415,
       },
       zip: {
-        cindex: 0.0000,
-        spearman: -0.3195,
-        pearson: 0.0177,
+        cindex: 0.4000,
+        spearman: -0.3243,
+        pearson: 0.0280,
       },
       loewe: {
-        cindex: 0.4633,
-        spearman: -0.1111,
-        pearson: -0.1357,
+        cindex: 0.5055,
+        spearman: 0.0143,
+        pearson: -0.0294,
       },
       hsa: {
         cindex: 0.4488,
@@ -226,36 +226,36 @@ const formatData = (data) => {
     },
     'NCI-ALMANAC+YALE-TNBC': {
       bliss: {
-        cindex: 0.4684,
-        spearman: -0.0940,
-        pearson: -0.1367,
+        cindex: 0.5824,
+        spearman: 0.2425,
+        pearson: 0.2384,
       },
       loewe: {
-        cindex: 0.5771,
-        spearman: 0.2304,
-        pearson: 0.2531,
+        cindex: 0.5276,
+        spearman: 0.0814,
+        pearson: 0.0412,
       },
       hsa: {
-        cindex: 0.5721,
-        spearman: 0.2035,
-        pearson: 0.2080,
+        cindex: 0.5506,
+        spearman: 0.1461,
+        pearson: 0.1057,
       },
     },
     'YALE-TNBC+DECREASE': {
       bliss: {
-        cindex: 0.0000,
-        spearman: 0.0000,
-        pearson: 0.0000,
+        cindex: 'N/A',
+        spearman: 'N/A',
+        pearson: 'N/A',
       },
       loewe: {
-        cindex: 0.0000,
-        spearman: 0.0000,
-        pearson: 0.0000,
+        cindex: 'N/A',
+        spearman: 'N/A',
+        pearson: 'N/A',
       },
       hsa: {
-        cindex: 0.0000,
-        spearman: 0.0000,
-        pearson: 0.0000,
+        cindex: 'N/A',
+        spearman: 'N/A',
+        pearson: 'N/A',
       },
     },
   };
@@ -289,7 +289,6 @@ const CompareDatasets = () => {
       .then(response => response.json())
       .then((data) => {
         const { result, emptyCombos, stats } = formatData(data);
-        console.log(result);
         setState({
           data: result,
           emptyCombos,
