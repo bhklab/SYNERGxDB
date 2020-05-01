@@ -26,12 +26,13 @@ const StyledWrapper = styled.div`
 
   .consistencyGrid {
     display: flex;
+    justify-content: space-between;
     flex-wrap: wrap;
     min-height: 0;
     min-width: 0;
     .consistencyDsetContainer {
       // flex: 1 45%;
-      width: 45%;
+      width: 49%;
     }
     margin-bottom:30px;
   }

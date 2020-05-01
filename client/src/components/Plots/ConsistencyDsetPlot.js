@@ -177,16 +177,16 @@ const ConsistencyDsetPlot = (props) => {
     const yAxisLabel = svg.append('text')
       .attr('fill', 'black')
       .attr('dy', height / 2 - 10)
-      .attr('dx', -50)
+      .attr('dx', -40)
       .style('text-anchor', 'end')
-      .style('font-size', 13)
+      .style('font-size', '13px')
       .text(pair[1]);
 
     const xAxisLabel = svg.append('text')
       .attr('fill', 'black')
       .attr('dy', height + 40)
       .attr('dx', width / 2 - 80)
-      .style('font-size', 13)
+      .style('font-size', '13px')
       .text(pair[0]);
 
     // title
