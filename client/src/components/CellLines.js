@@ -1,5 +1,7 @@
 /* eslint-disable react/prop-types */
-import React, { Fragment, useEffect, useState } from 'react';
+import React, {
+  Fragment, useEffect, useState, useRef,
+} from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import ReactTable from 'react-table';
@@ -59,6 +61,11 @@ const StyledWrapper = styled.div`
     background: transparent;
     font-weight: 300;
     cursor: pointer;
+
+    &:hover {
+      color: ${colors.color_main_5};
+      transition: ${transitions.main_trans}
+    }
   }
 `;
 
@@ -218,12 +225,39 @@ const CellLines = () => {
     donutData: [],
     csvData: [],
   });
-
   const [{
     cellSynScoreData, loadingSynScores, selectedCellLine,
   }, setCellSynScoreData] = useState({
-    cellSynScoreData: [], loadingSynScores: false, selectedCellLine: null,
+    cellSynScoreData: null, loadingSynScores: false, selectedCellLine: null,
   });
+  // reference to autodownload button
+  const downloadRef = useRef(null);
+
+  // retieves synergy scores for a given cell line
+  const fetchCellSynScores = (sample) => {
+    setCellSynScoreData({ cellSynScoreData, loadingSynScores: false, selectedCellLine: sample });
+    fetch(`/api/combos?sample=${sample}`)
+      .then(response => response.json())
+      .then((data) => {
+        const csvData = data.map((row) => {
+          const csvRow = { ...row };
+          if (csvRow.drugNameA.includes(',')) csvRow.drugNameA = `"${csvRow.drugNameA}"`;
+          if (csvRow.drugNameB.includes(',')) csvRow.drugNameB = `"${csvRow.drugNameB}"`;
+          if (csvRow.disease && csvRow.disease.includes(',')) csvRow.disease = `"${csvRow.disease}"`;
+          if (csvRow.atcCodeDrugA && csvRow.atcCodeDrugA.includes(',')) csvRow.atcCodeDrugA = `"${csvRow.atcCodeDrugA}"`;
+          if (csvRow.atcCodeDrugB && csvRow.atcCodeDrugB.includes(',')) csvRow.atcCodeDrugB = `"${csvRow.atcCodeDrugB}"`;
+          if (csvRow.inchikeyDrugA) csvRow.inchikeyDrugA = `"${csvRow.inchikeyDrugA}"`;
+          if (csvRow.inchikeyDrugB) csvRow.inchikeyDrugB = `"${csvRow.inchikeyDrugB}"`;
+          return csvRow;
+        });
+
+        setCellSynScoreData({
+          cellSynScoreData: csvData,
+          loadingSynScores: true,
+          selectedCellLine: sample,
+        });
+      });
+  };
 
   // react table/csv formatting
   const cellColumns = [{
@@ -298,6 +332,32 @@ const CellLines = () => {
     { displayName: 'Origin', id: 'origin' },
     { displayName: 'Cellosaurus', id: 'idCellosaurus' },
   ];
+  const synHeaders = [
+    { displayName: 'Tissue', id: 'tissue' },
+    { displayName: 'Cell Line', id: 'sampleName' },
+    { displayName: 'idSample', id: 'idSample' },
+    { displayName: 'Cellosaurus ID', id: 'idCellosaurus' },
+    { displayName: 'Sex', id: 'sex' },
+    { displayName: 'Age', id: 'age' },
+    { displayName: 'Cancer Type', id: 'disease' },
+    { displayName: 'Compound A', id: 'drugNameA' },
+    { displayName: 'ATC Code (Compound A)', id: 'atCodeDrugA' },
+    { displayName: 'DrugBank ID (Compound A)', id: 'idDrugBankA' },
+    { displayName: 'PubChem CID (Compound A)', id: 'idPubChemDrugA' },
+    { displayName: 'SMILES (Compound A)', id: 'smilesDrugA' },
+    { displayName: 'InChi Key (Compound A)', id: 'inchikeyDrugA' },
+    { displayName: 'Compound B', id: 'drugNameB' },
+    { displayName: 'ATC Code (Compound B)', id: 'atCodeDrugB' },
+    { displayName: 'DrugBank ID (Compound B)', id: 'idDrugBankB' },
+    { displayName: 'PubChem CID (Compound B)', id: 'idPubChemDrugB' },
+    { displayName: 'SMILES (Compound B)', id: 'smilesDrugB' },
+    { displayName: 'InChi Key (Compound B)', id: 'inchikeyDrugB' },
+    { displayName: 'Dataset', id: 'sourceName' },
+    { displayName: 'ZIP', id: 'zip' },
+    { displayName: 'Bliss', id: 'bliss' },
+    { displayName: 'Loewe', id: 'loewe' },
+    { displayName: 'HSA', id: 'hsa' },
+  ];
 
   useEffect(() => {
     fetch('/api/cell_lines/')
@@ -325,14 +385,12 @@ const CellLines = () => {
       });
   }, []);
 
-  const fetchCellSynScores = (sample) => {
-    console.log(sample);
-    fetch(`/api/combos?sample=${sample}`)
-      .then(response => response.json())
-      .then((data) => {
-        console.log(data);
-      });
-  };
+  useEffect(() => {
+    if (cellSynScoreData) {
+      downloadRef.current.handleClick();
+    }
+  }, [cellSynScoreData]);
+
 
   return (
     <Fragment>
@@ -431,6 +489,14 @@ const CellLines = () => {
           <p>Copyright © 2019. All rights reserved</p>
         </div>
       </footer>
+      <div style={{ visibility: 'hidden' }}>
+        <CsvDownloader
+          ref={downloadRef}
+          datas={cellSynScoreData}
+          columns={synHeaders}
+          filename={`${selectedCellLine}.csv`}
+        />
+      </div>
     </Fragment>
   );
 };
