@@ -37,7 +37,7 @@ const StyledButtonContainer = styled.div`
         margin-left: 5px;
     }
     &:hover {
-        background-color: ${colors.pagination_dark};
+        background-color: ${colors.blue_main};
     }
   }
 `;
@@ -50,6 +50,16 @@ const StyledWrapper = styled.div`
   text-align: center;
   background:white;
   padding:0px 30px;
+
+  .syn-button {
+    margin: 0;
+    padding: 0;
+    border: none;
+    color: ${colors.color_main_1}
+    background: transparent;
+    font-weight: 300;
+    cursor: pointer;
+  }
 `;
 
 const formatData = (data, keyName) => {
@@ -179,8 +189,43 @@ const filterCaseInsensitive = (filter, row) => {
 
 const legendCallBack = () => null;
 
+// plots formatting
+const miniDims = {
+  width: 300,
+  height: 230,
+  radius: 100,
+  rectY: -30,
+  textY: -30,
+  translate: 85,
+};
+const normalDims = {
+  width: 670,
+  height: 400,
+  radius: 230,
+  rectY: 20,
+  textY: 18,
+  translate: 5,
+};
+
 
 const CellLines = () => {
+  // Hooks
+  const [{
+    cellLineData, csvData, loading, donutData,
+  }, setCellLineData] = useState({
+    cellLineData: [],
+    loading: true,
+    donutData: [],
+    csvData: [],
+  });
+
+  const [{
+    cellSynScoreData, loadingSynScores, selectedCellLine,
+  }, setCellSynScoreData] = useState({
+    cellSynScoreData: [], loadingSynScores: false, selectedCellLine: null,
+  });
+
+  // react table/csv formatting
   const cellColumns = [{
     Header: 'Tissue',
     accessor: 'tissue', // String-based value accessors!
@@ -190,7 +235,19 @@ const CellLines = () => {
   }, {
     Header: 'Name',
     accessor: 'name',
-    Cell: props => props.value.toUpperCase(),
+    Cell: (props) => {
+      const { value, original } = props;
+      const { idSample } = original;
+      return (
+        <button
+          className="syn-button"
+          type="button"
+          onClick={() => fetchCellSynScores(idSample)}
+        >
+          { value }
+        </button>
+      );
+    },
     maxWidth: 125,
     sortable: true,
   }, {
@@ -231,7 +288,6 @@ const CellLines = () => {
     maxWidth: 125,
     sortable: false,
   }];
-
   const cellHeaders = [
     { displayName: 'idSample', id: 'idSample' },
     { displayName: 'Name', id: 'name' },
@@ -242,32 +298,6 @@ const CellLines = () => {
     { displayName: 'Origin', id: 'origin' },
     { displayName: 'Cellosaurus', id: 'idCellosaurus' },
   ];
-
-  const miniDims = {
-    width: 300,
-    height: 230,
-    radius: 100,
-    rectY: -30,
-    textY: -30,
-    translate: 85,
-  };
-  const normalDims = {
-    width: 670,
-    height: 400,
-    radius: 230,
-    rectY: 20,
-    textY: 18,
-    translate: 5,
-  };
-
-  const [{
-    cellLineData, csvData, loading, donutData,
-  }, setCellLineData] = useState({
-    cellLineData: [],
-    loading: true,
-    donutData: [],
-    csvData: [],
-  });
 
   useEffect(() => {
     fetch('/api/cell_lines/')
@@ -282,7 +312,7 @@ const CellLines = () => {
             idSample, tissue, name, sex, origin, age, disease, idCellosaurus,
           } = cell;
           newCellLineData.push({
-            tissue, name, sex, age, idCellosaurus, disease: { name: disease, origin },
+            idSample, tissue, name, sex, age, idCellosaurus, disease: { name: disease, origin },
           });
           newCSVData.push({
             idSample, tissue, name, sex, age, idCellosaurus, disease: disease ? disease.split(',')[0] : '', origin,
@@ -293,7 +323,16 @@ const CellLines = () => {
           cellLineData: newCellLineData, csvData: newCSVData, loading: false, donutData: data,
         });
       });
-  });
+  }, []);
+
+  const fetchCellSynScores = (sample) => {
+    console.log(sample);
+    fetch(`/api/combos?sample=${sample}`)
+      .then(response => response.json())
+      .then((data) => {
+        console.log(data);
+      });
+  };
 
   return (
     <Fragment>

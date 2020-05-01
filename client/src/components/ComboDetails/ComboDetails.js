@@ -258,12 +258,12 @@ export default class ComboDetails extends Component {
                   <h2>Combo Summary</h2>
                   <StyledSummary>
                     <p>
-                    Sample:
+                      Sample:
                       {' '}
                       <b>
                         {cellData.name ? cellData.name.toUpperCase() : null}
                       </b>
-                    ,
+                      ,
                       {' '}
                       {cellData.disease}
                       {' '}
@@ -273,14 +273,14 @@ export default class ComboDetails extends Component {
                       </a>
                     </p>
                     <p>
-                    Drug A:
+                      Drug A:
                       {' '}
                       {drugsData.length > 0 ? (
                         <span>
                           <b>
                             {drugsData[0].name}
                           </b>
-                        ,
+                          ,
                           {' '}
                           {drugsData[0].description}
                           {' '}
@@ -294,7 +294,7 @@ export default class ComboDetails extends Component {
                       ) : null}
                     </p>
                     <p>
-                    Drug B:
+                      Drug B:
                       {' '}
                       {drugsData.length > 0 ? (
                         <span>
@@ -315,7 +315,7 @@ export default class ComboDetails extends Component {
                       ) : null}
                     </p>
                     <p>
-                    Source:
+                      Source:
                       {' '}
                       <b>
                         {sourceData.name}
