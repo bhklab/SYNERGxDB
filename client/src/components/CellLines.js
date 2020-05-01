@@ -8,6 +8,7 @@ import ReactTable from 'react-table';
 // eslint-disable-next-line import/no-unresolved
 import CsvDownloader from 'react-csv-downloader';
 import 'react-table/react-table.css';
+import ReactLoading from 'react-loading';
 
 import LoadingComponent from './UtilComponents/Loading';
 // import DownloadButton from './UtilComponents/DownloadButton';
@@ -52,6 +53,7 @@ const StyledWrapper = styled.div`
   text-align: center;
   background:white;
   padding:0px 30px;
+  position: relative;
 
   .syn-button {
     margin: 0;
@@ -66,6 +68,21 @@ const StyledWrapper = styled.div`
       color: ${colors.color_main_5};
       transition: ${transitions.main_trans}
     }
+  }
+`;
+
+const LoadingContainer = styled.div`
+  opacity: 0.5;
+  background-color: white;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+
+  &.-loading.-active {
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 `;
 
@@ -235,7 +252,11 @@ const CellLines = () => {
 
   // retieves synergy scores for a given cell line
   const fetchCellSynScores = (sample) => {
-    setCellSynScoreData({ cellSynScoreData, loadingSynScores: false, selectedCellLine: sample.name });
+    setCellSynScoreData({
+      cellSynScoreData,
+      loadingSynScores: true,
+      selectedCellLine: sample.name,
+    });
     fetch(`/api/combos?sample=${sample.id}`)
       .then(response => response.json())
       .then((data) => {
@@ -253,7 +274,7 @@ const CellLines = () => {
 
         setCellSynScoreData({
           cellSynScoreData: updatedCSVData,
-          loadingSynScores: true,
+          loadingSynScores: false,
           selectedCellLine: sample.name,
         });
       });
@@ -446,6 +467,13 @@ const CellLines = () => {
 
         </StyledWrapper>
         <StyledWrapper className="wrapper">
+          {loadingSynScores ? (
+            <LoadingContainer className="-loading -active">
+              <div className="-loading-inner">
+                <ReactLoading type="bubbles" width={150} height={150} color={colors.color_main_2} />
+              </div>
+            </LoadingContainer>
+          ) : null}
           <h1>List of Cell Lines</h1>
           <StyledButtonContainer>
             <div>
@@ -491,6 +519,7 @@ const CellLines = () => {
       </footer>
       <div style={{ visibility: 'hidden' }}>
         <CsvDownloader
+          // ref is needed for autoclick
           ref={downloadRef}
           datas={cellSynScoreData}
           columns={synHeaders}

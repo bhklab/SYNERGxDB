@@ -15,7 +15,6 @@ const LoadingContainer = styled.div`
       top: calc(50% - 150px);
     }
   }
-
 `;
 
 
