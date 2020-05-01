@@ -235,11 +235,11 @@ const CellLines = () => {
 
   // retieves synergy scores for a given cell line
   const fetchCellSynScores = (sample) => {
-    setCellSynScoreData({ cellSynScoreData, loadingSynScores: false, selectedCellLine: sample });
-    fetch(`/api/combos?sample=${sample}`)
+    setCellSynScoreData({ cellSynScoreData, loadingSynScores: false, selectedCellLine: sample.name });
+    fetch(`/api/combos?sample=${sample.id}`)
       .then(response => response.json())
       .then((data) => {
-        const csvData = data.map((row) => {
+        const updatedCSVData = data.map((row) => {
           const csvRow = { ...row };
           if (csvRow.drugNameA.includes(',')) csvRow.drugNameA = `"${csvRow.drugNameA}"`;
           if (csvRow.drugNameB.includes(',')) csvRow.drugNameB = `"${csvRow.drugNameB}"`;
@@ -252,9 +252,9 @@ const CellLines = () => {
         });
 
         setCellSynScoreData({
-          cellSynScoreData: csvData,
+          cellSynScoreData: updatedCSVData,
           loadingSynScores: true,
-          selectedCellLine: sample,
+          selectedCellLine: sample.name,
         });
       });
   };
@@ -276,7 +276,7 @@ const CellLines = () => {
         <button
           className="syn-button"
           type="button"
-          onClick={() => fetchCellSynScores(idSample)}
+          onClick={() => fetchCellSynScores({ id: idSample, name: value })}
         >
           { value }
         </button>
