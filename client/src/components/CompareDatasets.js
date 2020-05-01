@@ -46,7 +46,10 @@ const StyledWrapper = styled.div`
 `;
 
 const formatData = (data) => {
-  const datasets = [...new Set(data.map(x => x.sourceName))];
+  // const datasets = [...new Set(data.map(x => x.sourceName))];
+  // HARDCODED for order
+  const datasets = ['MERCK', 'MIT-MELANOMA', 'NCI-ALMANAC', 'YALE-TNBC', 'DECREASE'];
+
   const dsetData = {};
   datasets.forEach((x) => {
     dsetData[x] = [];
@@ -286,6 +289,7 @@ const CompareDatasets = () => {
       .then(response => response.json())
       .then((data) => {
         const { result, emptyCombos, stats } = formatData(data);
+        console.log(result);
         setState({
           data: result,
           emptyCombos,
