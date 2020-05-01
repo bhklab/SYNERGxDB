@@ -1,4 +1,5 @@
-import React, { Component, Fragment } from 'react';
+/* eslint-disable react/prop-types */
+import React, { Fragment, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import ReactTable from 'react-table';
@@ -176,223 +177,224 @@ const filterCaseInsensitive = (filter, row) => {
   }
 };
 
+const legendCallBack = () => null;
 
-class CellLines extends Component {
-  constructor() {
-    super();
-    this.state = {
-      cellLineData: [],
-      loading: true,
-      donutData: [],
-      csvData: [],
-    };
-  }
 
-  componentDidMount() {
+const CellLines = () => {
+  const cellColumns = [{
+    Header: 'Tissue',
+    accessor: 'tissue', // String-based value accessors!
+    Cell: props => props.value.toUpperCase(),
+    maxWidth: 125,
+    sortable: true,
+  }, {
+    Header: 'Name',
+    accessor: 'name',
+    Cell: props => props.value.toUpperCase(),
+    maxWidth: 125,
+    sortable: true,
+  }, {
+    Header: 'Sex',
+    accessor: 'sex',
+    maxWidth: 55,
+    minWidth: 55,
+    // sortable: false,
+  }, {
+    Header: 'Age',
+    accessor: 'age',
+    style: { textAlign: 'right' },
+    maxWidth: 50,
+    sortable: true,
+  }, {
+    Header: 'Disease',
+    accessor: 'disease',
+    Cell: (disease) => {
+      const { value } = disease;
+      return value.origin ? (
+        <span>
+          {value.name}
+          <em> (metastasis)</em>
+        </span>
+      ) : <span>{value.name}</span>;
+    },
+    // filterable: false,
+    sortable: false,
+  }, {
+    Header: 'Cellosaurus',
+    accessor: 'idCellosaurus',
+    Cell: (props) => {
+      const { value } = props;
+      return (
+        <a className="hover" target="_blank" rel="noopener noreferrer" href={`https://web.expasy.org/cellosaurus/${value}`}>{value}</a>
+      );
+    },
+    maxWidth: 125,
+    sortable: false,
+  }];
+
+  const cellHeaders = [
+    { displayName: 'idSample', id: 'idSample' },
+    { displayName: 'Name', id: 'name' },
+    { displayName: 'Tissue', id: 'tissue' },
+    { displayName: 'Sex', id: 'sex' },
+    { displayName: 'Age', id: 'age' },
+    { displayName: 'Disease', id: 'disease' },
+    { displayName: 'Origin', id: 'origin' },
+    { displayName: 'Cellosaurus', id: 'idCellosaurus' },
+  ];
+
+  const miniDims = {
+    width: 300,
+    height: 230,
+    radius: 100,
+    rectY: -30,
+    textY: -30,
+    translate: 85,
+  };
+  const normalDims = {
+    width: 670,
+    height: 400,
+    radius: 230,
+    rectY: 20,
+    textY: 18,
+    translate: 5,
+  };
+
+  const [{
+    cellLineData, csvData, loading, donutData,
+  }, setCellLineData] = useState({
+    cellLineData: [],
+    loading: true,
+    donutData: [],
+    csvData: [],
+  });
+
+  useEffect(() => {
     fetch('/api/cell_lines/')
       .then(response => response.json())
       .then((data) => {
         // Restructures data for react table
-        const csvData = [];
-        const cellLineData = [];
+        const newCSVData = [];
+        const newCellLineData = [];
 
         data.forEach((cell) => {
           const {
             idSample, tissue, name, sex, origin, age, disease, idCellosaurus,
           } = cell;
-          cellLineData.push({
+          newCellLineData.push({
             tissue, name, sex, age, idCellosaurus, disease: { name: disease, origin },
           });
-          csvData.push({
+          newCSVData.push({
             idSample, tissue, name, sex, age, idCellosaurus, disease: disease ? disease.split(',')[0] : '', origin,
           });
         });
-        this.setState({
-          cellLineData, csvData, loading: false, donutData: data,
+
+        setCellLineData({
+          cellLineData: newCellLineData, csvData: newCSVData, loading: false, donutData: data,
         });
       });
-  }
+  });
 
-  legendCallBack = () => null
+  return (
+    <Fragment>
+      {/* <style>{'#root { background: #e7f3f8  !important; }'}</style> */}
+      <main className="summary">
+        <StyledWrapper className="wrapper">
+          <h1>
+            Cell Lines,
+            {' '}
+            <i>N</i>
+            {' '}
+            =
+            {' '}
+            {donutData.length.toLocaleString()}
+          </h1>
+          {donutData.length === 0 ? null : (
+            <Fragment>
+              <DonutPlot
+                keyName="tissue"
+                plotId="cellTissuePlot"
+                dimensions={normalDims}
+                formatData={formatData}
+                donutData={donutData}
+                legendCallBack={legendCallBack}
+              />
+              <DonutPlot
+                keyName="sex"
+                plotId="cellMiniPlot"
+                dimensions={miniDims}
+                formatData={formatData}
+                donutData={donutData}
+                legendCallBack={legendCallBack}
+              />
+              <DonutPlot
+                keyName="origin"
+                plotId="cellMiniPlot"
+                dimensions={miniDims}
+                formatData={formatData}
+                donutData={donutData}
+                legendCallBack={legendCallBack}
+              />
+              <DonutPlot
+                keyName="age"
+                plotId="cellMiniPlot"
+                dimensions={miniDims}
+                formatData={formatData}
+                donutData={donutData}
+                legendCallBack={legendCallBack}
+              />
+            </Fragment>
 
-  render() {
-    const {
-      cellLineData, csvData, loading, donutData,
-    } = this.state;
-    const columns = [{
-      Header: 'Tissue',
-      accessor: 'tissue', // String-based value accessors!
-      Cell: props => props.value.toUpperCase(),
-      maxWidth: 125,
-      sortable: true,
-    }, {
-      Header: 'Name',
-      accessor: 'name',
-      Cell: props => props.value.toUpperCase(),
-      maxWidth: 125,
-      sortable: true,
-    }, {
-      Header: 'Sex',
-      accessor: 'sex',
-      maxWidth: 55,
-      minWidth: 55,
-      // sortable: false,
-    }, {
-      Header: 'Age',
-      accessor: 'age',
-      style: { textAlign: 'right' },
-      maxWidth: 50,
-      sortable: true,
-    }, {
-      Header: 'Disease',
-      accessor: 'disease',
-      Cell: (disease) => {
-        const { value } = disease;
-        return value.origin ? (
-          <span>
-            {value.name}
-            <em> (metastasis)</em>
-          </span>
-        ) : <span>{value.name}</span>;
-      },
-      // filterable: false,
-      sortable: false,
-    }, {
-      Header: 'Cellosaurus',
-      accessor: 'idCellosaurus',
-      Cell: props => <a className="hover" target="_blank" rel="noopener noreferrer" href={`https://web.expasy.org/cellosaurus/${props.value}`}>{props.value}</a>,
-      maxWidth: 125,
-      sortable: false,
-    }];
-    const headers = [
-      { displayName: 'idSample', id: 'idSample' },
-      { displayName: 'Name', id: 'name' },
-      { displayName: 'Tissue', id: 'tissue' },
-      { displayName: 'Sex', id: 'sex' },
-      { displayName: 'Age', id: 'age' },
-      { displayName: 'Disease', id: 'disease' },
-      { displayName: 'Origin', id: 'origin' },
-      { displayName: 'Cellosaurus', id: 'idCellosaurus' },
-    ];
+          )}
 
-    const miniDims = {
-      width: 300,
-      height: 230,
-      radius: 100,
-      rectY: -30,
-      textY: -30,
-      translate: 85,
-    };
-    const normalDims = {
-      width: 670,
-      height: 400,
-      radius: 230,
-      rectY: 20,
-      textY: 18,
-      translate: 5,
-    };
-
-    return (
-      <Fragment>
-        {/* <style>{'#root { background: #e7f3f8  !important; }'}</style> */}
-        <main className="summary">
-          <StyledWrapper className="wrapper">
-            <h1>
-              Cell Lines,
-              {' '}
-              <i>N</i>
-              {' '}
-              =
-              {' '}
-              {donutData.length.toLocaleString()}
-            </h1>
-            {donutData.length === 0 ? null : (
-              <Fragment>
-                <DonutPlot
-                  keyName="tissue"
-                  plotId="cellTissuePlot"
-                  dimensions={normalDims}
-                  formatData={formatData}
-                  donutData={donutData}
-                  legendCallBack={this.legendCallBack}
-                />
-                <DonutPlot
-                  keyName="sex"
-                  plotId="cellMiniPlot"
-                  dimensions={miniDims}
-                  formatData={formatData}
-                  donutData={donutData}
-                  legendCallBack={this.legendCallBack}
-                />
-                <DonutPlot
-                  keyName="origin"
-                  plotId="cellMiniPlot"
-                  dimensions={miniDims}
-                  formatData={formatData}
-                  donutData={donutData}
-                  legendCallBack={this.legendCallBack}
-                />
-                <DonutPlot
-                  keyName="age"
-                  plotId="cellMiniPlot"
-                  dimensions={miniDims}
-                  formatData={formatData}
-                  donutData={donutData}
-                  legendCallBack={this.legendCallBack}
-                />
-              </Fragment>
-
-            )}
-
-          </StyledWrapper>
-          <StyledWrapper className="wrapper">
-            <h1>List of Cell Lines</h1>
-            <StyledButtonContainer>
-              <div>
+        </StyledWrapper>
+        <StyledWrapper className="wrapper">
+          <h1>List of Cell Lines</h1>
+          <StyledButtonContainer>
+            <div>
+              <button type="button">
+                <Link style={{ color: 'white' }} to="/dataset_zips/molecular_data.zip" target="_blank" download>
+                  Download Molecular Data
+                  {'   '}
+                  <img src={downloadIcon} alt="download icon" />
+                </Link>
+              </button>
+            </div>
+            <div>
+              <CsvDownloader
+                datas={csvData}
+                columns={cellHeaders}
+                filename="samples"
+              >
                 <button type="button">
-                  <Link style={{ color: 'white' }} to="/dataset_zips/molecular_data.zip" target="_blank" download>
-                    Download Molecular Data
-                    {'   '}
-                    <img src={downloadIcon} alt="download icon" />
-                  </Link>
+                  Download Cell Line Data
+                  {'   '}
+                  <img src={downloadIcon} alt="download icon" />
                 </button>
-              </div>
-              <div>
-                <CsvDownloader
-                  datas={csvData}
-                  columns={headers}
-                  filename="samples"
-                >
-                  <button type="button">
-                    Download Cell Line Data
-                    {'   '}
-                    <img src={downloadIcon} alt="download icon" />
-                  </button>
-                </CsvDownloader>
-              </div>
-            </StyledButtonContainer>
-            <ReactTable
-              data={cellLineData}
-              columns={columns}
-              defaultPageSize={25}
-              filterable
-              defaultFilterMethod={filterCaseInsensitive}
-              className="-highlight"
-              loading={loading}
-              LoadingComponent={LoadingComponent}
-            />
+              </CsvDownloader>
+            </div>
+          </StyledButtonContainer>
+          <ReactTable
+            data={cellLineData}
+            columns={cellColumns}
+            defaultPageSize={25}
+            filterable
+            defaultFilterMethod={filterCaseInsensitive}
+            className="-highlight"
+            loading={loading}
+            LoadingComponent={LoadingComponent}
+          />
 
-          </StyledWrapper>
-        </main>
-        <footer>
-          <div className="footer-wrapper">
-            <p>Copyright © 2019. All rights reserved</p>
-          </div>
-        </footer>
-      </Fragment>
-    );
-  }
-}
+        </StyledWrapper>
+      </main>
+      <footer>
+        <div className="footer-wrapper">
+          <p>Copyright © 2019. All rights reserved</p>
+        </div>
+      </footer>
+    </Fragment>
+  );
+};
 
 
 export default CellLines;
