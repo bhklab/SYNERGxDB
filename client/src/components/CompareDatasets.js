@@ -209,9 +209,9 @@ const formatData = (data) => {
         pearson: 'Pearson r = 0.0415, P-value = 0.3621',
       },
       zip: {
-        somers: "Somers' D = 0.2000, P-value = 1.0000",
-        spearman: 'Spearman rho = -0.4285, P-value = 0.4408',
-        pearson: 'Pearson r = -0.5577, P-value = 0.2895',
+        somers: "Somers' D = N/A, P-value = N/A",
+        spearman: 'Spearman rho = N/A, P-value = N/A',
+        pearson: 'Pearson r = N/A, P-value = N/A',
       },
       loewe: {
         somers: "Somers' D = -0.0111, P-value = 0.7132",
