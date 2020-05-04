@@ -185,7 +185,7 @@ const ConsistencyDsetPlot = (props) => {
     const xAxisLabel = svg.append('text')
       .attr('fill', 'black')
       .attr('dy', height + 40)
-      .attr('dx', width / 2 - 80)
+      .attr('dx', width / 2 - 100)
       .style('font-size', '13px')
       .text(pair[0]);
 
@@ -268,19 +268,21 @@ const ConsistencyDsetPlot = (props) => {
       .attr('stroke', colors.color_accent_1);
 
 
-    let pearson; let spearman; let cindex;
+    let pearson; let spearman; let cindex; let somers;
 
     // if consistency plot or comparison
     if (props.stats === undefined) {
-    // calculating C-Index - map json to arrays and call, pearson, spearman
+      // calculating C-Index - map json to arrays and call, pearson, spearman
       const firstArr = xvalArr;
       const secondArr = data.map(n => n.y);
       pearson = findPearson(firstArr, secondArr);
       spearman = firstArr.length === 1 ? 0 : findSpearman([firstArr, secondArr], 0, 1);
       cindex = firstArr.length === 1 ? 0 : await findCIndex(firstArr, secondArr);
     } else {
+      const firstArr = xvalArr;
+      const secondArr = data.map(n => n.y);
       pearson = props.stats[score].pearson;
-      cindex = props.stats[score].cindex;
+      somers = props.stats[score].somers;
       spearman = props.stats[score].spearman;
     }
 
@@ -290,7 +292,7 @@ const ConsistencyDsetPlot = (props) => {
         if (single) {
           return width + 10;
         }
-        return width / 2 + 30;
+        return width / 2 + 10;
       })
       .attr('dy', () => {
         if (single) {
@@ -310,6 +312,9 @@ const ConsistencyDsetPlot = (props) => {
         if (typeof cindex === 'number') {
           return `Concordance index: ${d3.format('.4f')(cindex)}`;
         }
+        if (props.stats !== undefined) {
+          return somers;
+        }
         return `Concordance index: ${cindex}`;
       });
 
@@ -318,7 +323,7 @@ const ConsistencyDsetPlot = (props) => {
         if (single) {
           return width + 10;
         }
-        return width / 2 + 30;
+        return width / 2 + 10;
       })
       .attr('dy', () => {
         if (single) {
@@ -338,6 +343,9 @@ const ConsistencyDsetPlot = (props) => {
         if (typeof spearman === 'number') {
           return `Spearman rho: ${d3.format('.4f')(spearman)}`;
         }
+        if (props.stats !== undefined) {
+          return spearman;
+        }
         return `Spearman rho: ${spearman}`;
       });
 
@@ -346,7 +354,7 @@ const ConsistencyDsetPlot = (props) => {
         if (single) {
           return width + 10;
         }
-        return width / 2 + 30;
+        return width / 2 + 10;
       })
       .attr('dy', () => {
         if (single) {
@@ -365,6 +373,9 @@ const ConsistencyDsetPlot = (props) => {
       .text(() => {
         if (typeof pearson === 'number') {
           return `Pearson r: ${d3.format('.4f')(pearson)}`;
+        }
+        if (props.stats !== undefined) {
+          return pearson;
         }
         return `Pearson r: ${pearson}`;
       });
