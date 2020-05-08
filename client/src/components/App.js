@@ -1,4 +1,7 @@
-import React, { Fragment, lazy, Suspense } from 'react';
+import React, {
+  Fragment, lazy, Suspense, useEffect,
+} from 'react';
+import ReactGA from 'react-ga';
 import { Route, Switch } from 'react-router-dom';
 import styled from 'styled-components';
 import { Normalize } from 'styled-normalize';
@@ -22,6 +25,7 @@ const StyledApp = styled.div`
   z-index:1;
 `;
 
+
 const CellLines = lazy(() => import('./CellLines'));
 const Drugs = lazy(() => import('./Drugs'));
 const Datasets = lazy(() => import('./Datasets'));
@@ -36,34 +40,44 @@ const Consistency = lazy(() => import('./Consistency'));
 const Contact = lazy(() => import('./Contact'));
 const CompareDatasets = lazy(() => import('./CompareDatasets'));
 
-const App = () => (
-  <Fragment>
-    <Normalize />
-    <GlobalStyles />
-    <div className="main-wrapper">
-      <StyledApp className="app">
-        <Switch>
-          <Suspense fallback={<div />}>
-            <Route exact path="/" component={SearchCombos} />
-            <Route exact path="/cell-lines/" component={CellLines} />
-            <Route exact path="/drugs/" component={Drugs} />
-            <Route exact path="/datasets/" component={Datasets} />
-            <Route exact path="/datasets/comparison" component={CompareDatasets} />
-            <Route exact path="/documentation/" component={Documentation} />
-            <Route exact path="/pharmacogenomics/" component={Pharmacogenomics} />
-            <Route exact path="/contact/" component={Contact} />
-            <Route path="/synergy_score" component={ComboResults} />
-            <Route path="/drug_combo" component={ComboDetails} />
-            <Route path="/biomarker" component={Biomarkers} />
-            <Route path="/sensitivity" component={Sensitivity} />
-            <Route path="/enrichment" component={Enrichment} />
-            <Route path="/consistency" component={Consistency} />
-          </Suspense>
-        </Switch>
-      </StyledApp>
-    </div>
-    <TopNav />
-  </Fragment>
-);
+const App = () => {
+  // Google analytics setup.
+  useEffect(() => {
+    ReactGA.initialize('UA-102362625-3');
+    // To Report Page View
+    ReactGA.pageview(window.location.pathname + window.location.search);
+  }, []);
+
+  return (
+    <Fragment>
+      <Normalize />
+      <GlobalStyles />
+      <div className="main-wrapper">
+        <StyledApp className="app">
+          <Switch>
+            <Suspense fallback={<div />}>
+              <Route exact path="/" component={SearchCombos} />
+              <Route exact path="/cell-lines/" component={CellLines} />
+              <Route exact path="/drugs/" component={Drugs} />
+              <Route exact path="/datasets/" component={Datasets} />
+              <Route exact path="/datasets/comparison" component={CompareDatasets} />
+              <Route exact path="/documentation/" component={Documentation} />
+              <Route exact path="/pharmacogenomics/" component={Pharmacogenomics} />
+              <Route exact path="/contact/" component={Contact} />
+              <Route path="/synergy_score" component={ComboResults} />
+              <Route path="/drug_combo" component={ComboDetails} />
+              <Route path="/biomarker" component={Biomarkers} />
+              <Route path="/sensitivity" component={Sensitivity} />
+              <Route path="/enrichment" component={Enrichment} />
+              <Route path="/consistency" component={Consistency} />
+            </Suspense>
+          </Switch>
+        </StyledApp>
+      </div>
+      <TopNav />
+    </Fragment>
+  );
+};
+
 
 export default App;
