@@ -55,14 +55,14 @@ router.get('/', (req, res) => {
   }
   // Subquery to get idDrugA name(s)
   function subqueryD1() {
-    this.select('idCombo_Design', 'idSample', 'name as drugNameA', 'idDrugA', 'idDrugB', 'sampleName', 'tissue', 'idCellosaurus', 'sex', 'age', 'disease', 'origin', 'atcCode as atCodeDrugA', 'idDrugBank as idDrugBankA', 'idPubChem as idPubChemDrugA', 'description as descriptionDrugA', 'smiles as smilesDrugA', 'inchikey as inchikeyDrugA')
+    this.select('idCombo_Design', 'idSample', 'name as drugNameA', 'idDrugA', 'idDrugB', 'sampleName', 'tissue', 'idCellosaurus', 'sex', 'age', 'disease', 'origin', 'atcCode as atCodeDrugA', 'idDrugBank as idDrugBankA', 'idPubChem as idPubChemDrugA', 'smiles as smilesDrugA', 'inchikey as inchikeyDrugA')
       .from(subqueryS)
       .join('Drug', 'S.idDrugA', '=', 'Drug.idDrug')
       .as('D1');
   }
   // Subquery to get idDrugB name(s)
   function subqueryD2() {
-    this.select('idCombo_Design', 'idSample', 'drugNameA', 'idDrugA', 'name as drugNameB', 'idDrugB', 'sampleName', 'tissue', 'idCellosaurus', 'sex', 'age', 'disease', 'origin', 'atCodeDrugA', 'idDrugBankA', 'idPubChemDrugA', 'descriptionDrugA', 'atcCode as atCodeDrugB', 'idDrugBank as idDrugBankB', 'idPubChem as idPubChemDrugB', 'description as descriptionDrugB', 'smilesDrugA', 'inchikeyDrugA', 'smiles as smilesDrugB', 'inchikey as inchikeyDrugB')
+    this.select('idCombo_Design', 'idSample', 'drugNameA', 'idDrugA', 'name as drugNameB', 'idDrugB', 'sampleName', 'tissue', 'idCellosaurus', 'sex', 'age', 'disease', 'origin', 'atCodeDrugA', 'idDrugBankA', 'idPubChemDrugA', 'atcCode as atCodeDrugB', 'idDrugBank as idDrugBankB', 'idPubChem as idPubChemDrugB', 'smilesDrugA', 'inchikeyDrugA', 'smiles as smilesDrugB', 'inchikey as inchikeyDrugB')
       .from(subqueryD1)
       .join('Drug', 'D1.idDrugB', '=', 'Drug.idDrug')
       .as('D2');
@@ -70,19 +70,19 @@ router.get('/', (req, res) => {
   // Links synergy scores to existing data
   function subquerySS() {
     if (dataset) {
-      return this.select('D2.idCombo_Design as comboId', 'idSample', 'bliss', 'loewe', 'hsa', 'zip', 'comboscore', 'sampleName', 'drugNameA', 'drugNameB', 'tissue', 'idSource as sourceId', 'idDrugA', 'idDrugB', 'idCellosaurus', 'sex', 'age', 'disease', 'origin', 'atCodeDrugA', 'idDrugBankA', 'idPubChemDrugA', 'descriptionDrugA', 'atCodeDrugB', 'idDrugBankB', 'idPubChemDrugB', 'descriptionDrugB', 'smilesDrugA', 'inchikeyDrugA', 'smilesDrugB', 'inchikeyDrugB')
+      return this.select('D2.idCombo_Design as comboId', 'idSample', 'bliss', 'loewe', 'hsa', 'zip', 'comboscore', 'sampleName', 'drugNameA', 'drugNameB', 'tissue', 'idSource as sourceId', 'idDrugA', 'idDrugB', 'idCellosaurus', 'sex', 'age', 'disease', 'origin', 'atCodeDrugA', 'idDrugBankA', 'idPubChemDrugA', 'atCodeDrugB', 'idDrugBankB', 'idPubChemDrugB', 'smilesDrugA', 'inchikeyDrugA', 'smilesDrugB', 'inchikeyDrugB')
         .from(subqueryD2)
         .join('Synergy_Score', 'D2.idCombo_Design', '=', 'Synergy_Score.idCombo_Design')
         .where({ idSource: dataset })
         .as('SS');
     }
-    return this.select('D2.idCombo_Design as comboId', 'idSample', 'bliss', 'loewe', 'hsa', 'zip', 'comboscore', 'sampleName', 'drugNameA', 'drugNameB', 'tissue', 'idSource as sourceId', 'idDrugA', 'idDrugB', 'idCellosaurus', 'sex', 'age', 'disease', 'origin', 'atCodeDrugA', 'idDrugBankA', 'idPubChemDrugA', 'descriptionDrugA', 'atCodeDrugB', 'idDrugBankB', 'idPubChemDrugB', 'descriptionDrugB', 'smilesDrugA', 'inchikeyDrugA', 'smilesDrugB', 'inchikeyDrugB')
+    return this.select('D2.idCombo_Design as comboId', 'idSample', 'bliss', 'loewe', 'hsa', 'zip', 'comboscore', 'sampleName', 'drugNameA', 'drugNameB', 'tissue', 'idSource as sourceId', 'idDrugA', 'idDrugB', 'idCellosaurus', 'sex', 'age', 'disease', 'origin', 'atCodeDrugA', 'idDrugBankA', 'idPubChemDrugA', 'atCodeDrugB', 'idDrugBankB', 'idPubChemDrugB', 'smilesDrugA', 'inchikeyDrugA', 'smilesDrugB', 'inchikeyDrugB')
       .from(subqueryD2)
       .join('Synergy_Score', 'D2.idCombo_Design', '=', 'Synergy_Score.idCombo_Design')
       .as('SS');
   }
   // Adds source name to the results and sends it to the client
-  db.select('comboId', 'idSample', 'bliss', 'loewe', 'hsa', 'zip', 'comboscore', 'name as sourceName', 'sampleName', 'drugNameA', 'drugNameB', 'tissue', 'idSource', 'idDrugA', 'idDrugB', 'idCellosaurus', 'sex', 'age', 'disease', 'origin', 'atCodeDrugA', 'idDrugBankA', 'idPubChemDrugA', 'descriptionDrugA', 'atCodeDrugB', 'idDrugBankB', 'idPubChemDrugB', 'descriptionDrugB', 'smilesDrugA', 'inchikeyDrugA', 'smilesDrugB', 'inchikeyDrugB')
+  db.select('comboId', 'idSample', 'bliss', 'loewe', 'hsa', 'zip', 'comboscore', 'name as sourceName', 'sampleName', 'drugNameA', 'drugNameB', 'tissue', 'idSource', 'idDrugA', 'idDrugB', 'idCellosaurus', 'sex', 'age', 'disease', 'origin', 'atCodeDrugA', 'idDrugBankA', 'idPubChemDrugA', 'atCodeDrugB', 'idDrugBankB', 'idPubChemDrugB', 'smilesDrugA', 'inchikeyDrugA', 'smilesDrugB', 'inchikeyDrugB')
     .from(subquerySS)
     .join('Source', 'SS.sourceId', '=', 'Source.idSource')
     .orderBy('zip', 'desc')

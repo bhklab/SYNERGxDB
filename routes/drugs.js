@@ -6,7 +6,7 @@ const db = require('../db');
 const router = express.Router();
 
 router.get('/', (req, res) => {
-  db.select('Drug.name as name', 'atcCode', 'idDrugBank', 'idPubChem', 'drug.idDrug as idDrug', 'description', 'smiles', 'inchikey',
+  db.select('Drug.name as name', 'atcCode', 'idDrugBank', 'idPubChem', 'drug.idDrug as idDrug', 'smiles', 'inchikey',
     db.raw('group_concat(??) as ??', ['source.name', 'dataset_names']))
     .from('drug', 'drug_source', 'source')
     .join('drug_source', 'drug.idDrug', '=', 'drug_source.idDrug')
@@ -27,7 +27,7 @@ router.get('/info', (req, res) => {
   const {
     idDrugA, idDrugB,
   } = req.query;
-  db('Drug').select('idDrug', 'name', 'idPubChem', 'idDrugBank', 'description')
+  db('Drug').select('idDrug', 'name', 'idPubChem', 'idDrugBank')
     .where({ idDrug: idDrugA })
     .orWhere({ idDrug: idDrugB })
     .then((data) => {
