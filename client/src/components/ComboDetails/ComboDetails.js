@@ -154,6 +154,7 @@ export default class ComboDetails extends Component {
           compoundA: drugsData[0].name,
           compoundB: drugsData[1].name,
           ...row,
+          combo_score: row.combo_score !== null ? row.combo_score : 'N/A',
           idSample: cellData.idSample,
           sampleName: cellData.name,
           sourceName: sourceData.name,
