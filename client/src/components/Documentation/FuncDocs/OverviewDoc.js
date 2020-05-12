@@ -47,8 +47,8 @@ const OverviewDoc = () => (
             </a>
           </li>
           <li>
-            <a href="http://doi.org/10.5281/zenodo.3780920">
-              <img className="doi" src="https://zenodo.org/badge/DOI/10.5281/zenodo.3780920.svg" alt="DOI" />
+            <a href="http://doi.org/10.5281/zenodo.3823346">
+              <img className="doi" src="https://zenodo.org/badge/DOI/10.5281/zenodo.3823346.svg" alt="DOI" />
             </a>
           </li>
         </ol>
