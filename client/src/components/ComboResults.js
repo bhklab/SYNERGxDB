@@ -118,18 +118,17 @@ class ComboResults extends Component {
     })
       .then(response => response.json())
       .then((data) => {
-        // inserts quatations for drug names that have commas in its names
-        // and updates comboscore values from null to 'N/A'
+        // inserts quatations for drug names and other entries that have commas in them
+        // and updates values from null to 'N/A'
         const csvData = data.map((row) => {
           const csvRow = { ...row };
-          if (csvRow.drugNameA.includes(',')) csvRow.drugNameA = `"${csvRow.drugNameA}"`;
-          if (csvRow.drugNameB.includes(',')) csvRow.drugNameB = `"${csvRow.drugNameB}"`;
-          if (csvRow.disease && csvRow.disease.includes(',')) csvRow.disease = `"${csvRow.disease}"`;
-          if (csvRow.atcCodeDrugA && csvRow.atcCodeDrugA.includes(',')) csvRow.atcCodeDrugA = `"${csvRow.atcCodeDrugA}"`;
-          if (csvRow.atcCodeDrugB && csvRow.atcCodeDrugB.includes(',')) csvRow.atcCodeDrugB = `"${csvRow.atcCodeDrugB}"`;
-          if (csvRow.inchikeyDrugA) csvRow.inchikeyDrugA = `"${csvRow.inchikeyDrugA}"`;
-          if (csvRow.inchikeyDrugB) csvRow.inchikeyDrugB = `"${csvRow.inchikeyDrugB}"`;
-          if (csvRow.comboscore === null) csvRow.comboscore = 'N/A';
+          Object.entries(csvRow).forEach((el) => {
+            if (el[1] === null) {
+              csvRow[el[0]] = 'N/A';
+            } else if (typeof el[1] === 'string' && el[1].includes(',')) {
+              csvRow[el[0]] = `"${el[1]}"`;
+            }
+          });
           return csvRow;
         });
         this.setState({ csvData, results: data, loading: false });

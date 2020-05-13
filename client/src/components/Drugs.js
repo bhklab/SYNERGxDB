@@ -103,10 +103,13 @@ class Drugs extends Component {
         });
         const csvData = data.map((row) => {
           const csvRow = { ...row };
-          if (csvRow.name.includes(',')) csvRow.name = `"${csvRow.name}"`;
-          if (csvRow.disease && csvRow.disease.includes(',')) csvRow.disease = `"${csvRow.disease}"`;
-          if (csvRow.atcCode && csvRow.atcCode.includes(',')) csvRow.atcCode = `"${csvRow.atcCode}"`;
-          if (csvRow.inchikey) csvRow.inchikey = `"${csvRow.inchikey}"`;
+          Object.entries(csvRow).forEach((el) => {
+            if (el[1] === null) {
+              csvRow[el[0]] = 'N/A';
+            } else if (typeof el[1] === 'string' && el[1].includes(',')) {
+              csvRow[el[0]] = `"${el[1]}"`;
+            }
+          });
           return csvRow;
         });
 
