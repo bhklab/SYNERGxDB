@@ -9,11 +9,11 @@ const SynDoc = () => (
     <h3>Synergy Scores</h3>
     <ol>
       <li>
-      Synergy scores are calculated for each drug combination experiment in SYNERGxDB (N = 477,839), which includes: tissue, cell line,
-      the first/second compounds, ZIP, Bliss,Loewe, and HSA. Users can provide ‘Bortezomib’ and ‘Topotecan’ to pull out all synergy scores
-      tested in any cell lines/datasets.
+        Synergy scores are calculated for each drug combination experiment in SYNERGxDB (N = 477,839), which includes: tissue, cell line,
+        the first/second compounds, ZIP, Bliss,Loewe, and HSA. Users can provide ‘Bortezomib’ and ‘Topotecan’ to pull out all synergy scores
+        tested in any cell lines/datasets.
         {' '}
-        <Link to="/synergy_score?drugId1=11&drugId2=97">http://SYNERGxDB.ca/synergy_score?drugId1=11&drugId2=97</Link>
+        <Link to="/synergy_score?drugId1=11&drugId2=97">https://www.SYNERGxDB.ca/synergy_score?drugId1=11&drugId2=97</Link>
       </li>
     </ol>
     <Link className="doc-img" to="/synergy_score?drugId1=11&drugId2=97">

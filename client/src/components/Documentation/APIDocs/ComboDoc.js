@@ -46,7 +46,7 @@ const ComboDoc = () => (
         <span>
           curl
           {' '}
-          {'http://synergxdb.ca/api/combos?&sample=skin&dataset=2&drugId1=11&drugId2=97'}
+          {'https://www.synergxdb.ca/api/combos?&sample=skin&dataset=2&drugId1=11&drugId2=97'}
         </span>
       </p>
       <p>Output: </p>

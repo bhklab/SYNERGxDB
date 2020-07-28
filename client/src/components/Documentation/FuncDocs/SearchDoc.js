@@ -10,11 +10,11 @@ const SearchDoc = () => (
     <h3>Search</h3>
     <ol>
       <li>
-       The SYNERGxDB search engine allows users to identify potential biomarkers and novel drug combinations according to the predicted synergy scores,
-       by querying for a subset of cell linesor one cell line, the first compound in combination, the second compound in combination, and/or dataset
-       of choice to explore.
+        The SYNERGxDB search engine allows users to identify potential biomarkers and novel drug combinations according to the predicted synergy scores,
+        by querying for a subset of cell linesor one cell line, the first compound in combination, the second compound in combination, and/or dataset
+        of choice to explore.
         {' '}
-        <Link to="/">http://SYNERGxDB.ca/</Link>
+        <Link to="/">https://www.SYNERGxDB.ca/</Link>
       </li>
     </ol>
     <Link to="/">

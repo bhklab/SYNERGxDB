@@ -9,17 +9,17 @@ const PharmacoDoc = () => (
     <h3>Pharmacogenomic Analysis</h3>
     <ol>
       <li>
-      Users can select a type of molecular/metabolomic profile (e.g., gene
-      expression) and a gene symbol along wit a set of cell lines in one
-      specific tissue or a set of user-prefered cell lines across multiple
-      tissues. Subsequently, one or two componds (maximum) are selected, which
-      results in just one or all possible dru combinations to be analyzed with
-      the respective cell lines. Lastly, synegy scores are selected to be analyzed
-      that will carry out an association testbetween genomic characteristics and
-      synergy scores. Here, we showed an examle in an association between ATP6V1B2
-      expression and synergy scores in ‘Borteomib + Topotecan’.
+        Users can select a type of molecular/metabolomic profile (e.g., gene
+        expression) and a gene symbol along wit a set of cell lines in one
+        specific tissue or a set of user-prefered cell lines across multiple
+        tissues. Subsequently, one or two componds (maximum) are selected, which
+        results in just one or all possible dru combinations to be analyzed with
+        the respective cell lines. Lastly, synegy scores are selected to be analyzed
+        that will carry out an association testbetween genomic characteristics and
+        synergy scores. Here, we showed an examle in an association between ATP6V1B2
+        expression and synergy scores in ‘Borteomib + Topotecan’.
         {' '}
-        <Link to="/pharmacogenomics?example=true">http://SYNERGxDB.ca/pharmacogenomics?example=true</Link>
+        <Link to="/pharmacogenomics?example=true">https://www.SYNERGxDB.ca/pharmacogenomics?example=true</Link>
       </li>
     </ol>
     <Link className="doc-img" to="/pharmacogenomics?example=true">

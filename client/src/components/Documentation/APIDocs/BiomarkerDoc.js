@@ -57,7 +57,7 @@ const BiomarkerData = () => (
         </span>
       </p>
       <p className="code">
-        <span>http://synergxdb.ca/api/biomarkers/synergy?type=zip&drugId1=11&drugId2=97&dataset=2</span>
+        <span>https://www.synergxdb.ca/api/biomarkers/synergy?type=zip&drugId1=11&drugId2=97&dataset=2</span>
       </p>
       <p>Output: </p>
       <div><pre className="output">{JSON.stringify(synData, null, 2)}</pre></div>
@@ -72,7 +72,7 @@ const BiomarkerData = () => (
       </p>
       <p className="code">
         <span>
-          http://synergxdb.ca/api/biomarkers/association?&dataset=2&drugId1=11&drugId2=97&gene=ANGPTL8
+          https://www.synergxdb.ca/api/biomarkers/association?&dataset=2&drugId1=11&drugId2=97&gene=ANGPTL8
         </span>
       </p>
       <p>Output: </p>

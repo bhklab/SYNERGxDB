@@ -90,7 +90,7 @@ const SampleDoc = () => (
       </p>
       <p className="code">
         <span>
-          http://synergxdb.ca/api/cell_lines/enrichment?sample=skin&drugId1=11&drugId2=97&dataset=2
+          https://www.synergxdb.ca/api/cell_lines/enrichment?sample=skin&drugId1=11&drugId2=97&dataset=2
         </span>
       </p>
       <p>Output: </p>

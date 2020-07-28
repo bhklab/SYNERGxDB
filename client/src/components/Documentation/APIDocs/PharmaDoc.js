@@ -64,7 +64,7 @@ const PharmaDoc = () => (
         </span>
       </p>
       <p className="code">
-        <span>http://synergxdb.ca/api/pharmacogenomics/metabolomics?drugId1=11&drugId2=97&sample=1,3,4,5,6,7,8,9,10&molecule=adenine</span>
+        <span>https://www.synergxdb.ca/api/pharmacogenomics/metabolomics?drugId1=11&drugId2=97&sample=1,3,4,5,6,7,8,9,10&molecule=adenine</span>
       </p>
       <p>Output: </p>
       <div><pre className="output">{JSON.stringify(metabolomicData, null, 2)}</pre></div>
@@ -79,7 +79,7 @@ const PharmaDoc = () => (
       </p>
       <p className="code">
         <span>
-          http://synergxdb.ca/api/pharmacogenomics/cna?drugId1=11&drugId2=97&sample=6,9,28,38,39,47,83,94,116&gene=FANK1%20(92565)
+          https://www.synergxdb.ca/api/pharmacogenomics/cna?drugId1=11&drugId2=97&sample=6,9,28,38,39,47,83,94,116&gene=FANK1%20(92565)
         </span>
       </p>
       <p>Output: </p>

@@ -27,7 +27,7 @@ const DrugDoc = () => (
       <h3>Get drug information</h3>
       <p>Retrieves data about all compounds that have been tested in the analysis</p>
       <p className="code">
-        <span>curl http://synergxdb.ca/api/drugs/</span>
+        <span>curl https://www.synergxdb.ca/api/drugs/</span>
       </p>
       <p>Output: </p>
       <div><pre className="output">{JSON.stringify(drugData, null, 2)}</pre></div>

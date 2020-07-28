@@ -29,7 +29,7 @@ const DatasetDoc = () => (
       <h3>Get dataset information</h3>
       <p>Retrieves data about datasets that have been used for data analysis</p>
       <p className="code">
-        <span>curl http://synergxdb.ca/api/datasets/</span>
+        <span>curl https://www.synergxdb.ca/api/datasets/</span>
       </p>
       <p>Output: </p>
       <div><pre className="output">{JSON.stringify(datasetData, null, 2)}</pre></div>

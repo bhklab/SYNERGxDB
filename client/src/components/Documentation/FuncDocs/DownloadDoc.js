@@ -17,7 +17,7 @@ const DownloadDoc = () => (
       <li>
         Users can download molecular profile data, as well as detailed cell line data, in a csv format from the cell line page:
         {' '}
-        <Link to="/cell-lines/">http://SYNERGxDB.ca/cell-lines/</Link>
+        <Link to="/cell-lines/">https://www.SYNERGxDB.ca/cell-lines/</Link>
         <br />
       </li>
     </ol>
@@ -33,7 +33,7 @@ const DownloadDoc = () => (
       <li>
         Users can download drug combinations screening data for a specific dataset from the dataset page by clicking on a specific dataset name in the table:
         {' '}
-        <Link to="/datasets/">http://SYNERGxDB.ca/datasets/</Link>
+        <Link to="/datasets/">https://www.SYNERGxDB.ca/datasets/</Link>
         <br />
       </li>
     </ol>
