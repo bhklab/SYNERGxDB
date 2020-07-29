@@ -13,16 +13,22 @@ const ConsistencyDsetPlot = (props) => {
   } = props;
 
   const findCIndex = async (x, y) => {
-    const response = await fetch('/api/wCI', {
-      method: 'post',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        prediction: x,
-        observation: y,
-      }),
-    });
-    const resData = await response.json();
-    return resData.cindex[0];
+    try {
+      const response = await fetch('/api/wCI', {
+        method: 'post',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          prediction: x,
+          observation: y,
+        }),
+      });
+      const resData = await response.json();
+      return resData.cindex[0];
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.log(err);
+      return null;
+    }
   };
 
 
