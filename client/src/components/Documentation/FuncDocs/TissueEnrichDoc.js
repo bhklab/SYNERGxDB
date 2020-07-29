@@ -18,7 +18,7 @@ const TissueEnrichDoc = () => (
         right side, synergy scores will be dislayed in a waterfall plot along with ROC
         curve(s) for the selected tissue type.
         {' '}
-        <Link to="/enrichment?&drugId1=11&drugId2=97">http://SYNERGxDB.ca/enrichment?&drugId1=11&drugId2=97</Link>
+        <Link to="/enrichment?&drugId1=11&drugId2=97">https://www.SYNERGxDB.ca/enrichment?&drugId1=11&drugId2=97</Link>
       </li>
     </ol>
     <Link className="doc-img" to="/enrichment?&drugId1=11&drugId2=97">

@@ -14,6 +14,7 @@ const comboRouter = require('./routes/combos');
 const biomarkerRouter = require('./routes/biomarkers');
 const datasetRouter = require('./routes/datasets');
 const pharmacogenomicsRouter = require('./routes/pharmacogenomics');
+const wciRouter = require('./routes/wCI');
 
 const app = express();
 
@@ -40,6 +41,7 @@ app.use('/api/combos/', comboRouter);
 app.use('/api/biomarkers/', biomarkerRouter);
 app.use('/api/datasets/', datasetRouter);
 app.use('/api/pharmacogenomics/', pharmacogenomicsRouter);
+app.use('/api/wci/', wciRouter);
 
 app.get('/api/*', (req, res) => {
   res.status(400).json({ message: 'Incorrectly specified endpoint' });

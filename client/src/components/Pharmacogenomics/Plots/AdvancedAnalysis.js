@@ -51,13 +51,12 @@ async function findCIndex(x, y) {
     return { cIndex: null, pValue: null };
   }
   try {
-    const response = await fetch('http://52.138.39.182/ocpu/library/wCI/R/paired.concordance.index/json', {
+    const response = await fetch('/api/wci', {
       method: 'post',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         prediction: x,
         observation: y,
-        CPP: false,
       }),
     });
     const data = await response.json();
@@ -171,24 +170,6 @@ class AdvancedAnalysis extends React.Component {
       hovertext: biomarkerData.map(item => `${item[accessor]} (${item.cellName})`),
     };
     const data = [datapoints];
-
-    // Regression line (temprorarily disabled)
-    // // Renders best fit line using previously calculated coefficients
-    // const bestFitLine = {
-    //   x: xRange,
-    //   y: [
-    //     xRange[0] * bestFitCoefficients.equation[0] + bestFitCoefficients.equation[1],
-    //     xRange[1] * bestFitCoefficients.equation[0] + bestFitCoefficients.equation[1],
-    //   ],
-    //   mode: 'lines',
-    //   type: 'scatter',
-    //   showlegend: false,
-    //   marker: {
-    //     color: colors.color_accent_1,
-    //   },
-    //   hoverinfo: 'none',
-    // };
-    // data.unshift(bestFitLine);
 
     const layout = {
       height: 600,
