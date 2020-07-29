@@ -3,7 +3,7 @@
 /* eslint-disable no-restricted-properties */
 /* eslint-disable class-methods-use-this */
 import * as d3 from 'd3';
-import React, { useState, useEffect, Fragment } from 'react';
+import React, { useEffect, Fragment } from 'react';
 import regression from 'regression';
 import colors from '../../styles/colors';
 
@@ -13,17 +13,16 @@ const ConsistencyDsetPlot = (props) => {
   } = props;
 
   const findCIndex = async (x, y) => {
-    const response = await fetch('http://52.138.39.182/ocpu/library/wCI/R/paired.concordance.index/json', {
+    const response = await fetch('/api/wCI', {
       method: 'post',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         prediction: x,
         observation: y,
-        CPP: false,
       }),
     });
-    const data = await response.json();
-    return data.cindex[0];
+    const resData = await response.json();
+    return resData.cindex[0];
   };
 
 
@@ -281,9 +280,7 @@ const ConsistencyDsetPlot = (props) => {
     } else {
       const firstArr = xvalArr;
       const secondArr = data.map(n => n.y);
-      pearson = props.stats[score].pearson;
-      somers = props.stats[score].somers;
-      spearman = props.stats[score].spearman;
+      ({ pearson, somers, spearman } = props.stats[score]);
     }
 
     // append stats to dom

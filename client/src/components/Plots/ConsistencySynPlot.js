@@ -16,17 +16,16 @@ const ConsistencySynPlot = (props) => {
   let height;
 
   const findCIndex = async (x, y) => {
-    const response = await fetch('http://52.138.39.182/ocpu/library/wCI/R/paired.concordance.index/json', {
+    const response = await fetch('/api/wCI', {
       method: 'post',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         prediction: x,
         observation: y,
-        CPP: false,
       }),
     });
-    const data = await response.json();
-    return data.cindex[0];
+    const resData = await response.json();
+    return resData.cindex[0];
   };
 
 
