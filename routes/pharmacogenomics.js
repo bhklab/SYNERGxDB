@@ -77,15 +77,21 @@ router.get('/samples', (req, res) => {
     });
 });
 
-router.get('/metabolomics', (req, res) => {
-  const { molecule, sample } = req.query;
+router.get('/metabolomics', async (req, res) => {
   let {
     drugId1, drugId2,
   } = req.query;
+  const { molecule, sample } = req.query;
+
+  if (!drugId1 || !drugId2 || !molecule) {
+    return res.status(400).json({ error: 'Request must contain drugId1, drugId2 and molecule query parameters' });
+  }
   drugId1 = drugId1 && parseInt(drugId1, 10);
   drugId2 = drugId2 && parseInt(drugId2, 10);
+  if (!drugId1 || !drugId2) {
+    return res.status(400).json({ error: 'drugId1 and drugId2 query parameters must be integers' });
+  }
 
-  console.log(sample);
   let sampleArray;
   if (sample) {
     sampleArray = sample.includes(',')
@@ -119,6 +125,7 @@ router.get('/metabolomics', (req, res) => {
       .from('metabolomics');
     return sample ? query.whereIn('idSample', sampleArray).as('M') : query.as('M');
   }
+
   function subqueryBiomarkerData() {
     this.select('SS.idSample', 'bliss', 'hsa', 'zip', 'loewe', molecule)
       .from(subqueryMetabolomics)
@@ -126,12 +133,16 @@ router.get('/metabolomics', (req, res) => {
       .as('BD');
   }
 
-  db.select(molecule, 'name as cellName', 'bliss', 'hsa', 'zip', 'loewe')
-    .from(subqueryBiomarkerData)
-    .join('sample', 'sample.idSample', '=', 'BD.idSample')
-    .then((data) => {
-      res.json(data);
-    });
+  try {
+    const data = await db.select(molecule, 'name as cellName', 'bliss', 'hsa', 'zip', 'loewe')
+      .from(subqueryBiomarkerData)
+      .join('sample', 'sample.idSample', '=', 'BD.idSample');
+    if (data.length === 0) return res.status(404).json({ message: 'No data found for a given set of parameters' });
+    return res.status(200).json(data);
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({ error: 'Unknown error has occured' });
+  }
 });
 
 
