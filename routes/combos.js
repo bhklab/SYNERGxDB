@@ -90,8 +90,8 @@ router.get('/', (req, res) => {
       res.json(data);
     })
     .catch((err) => {
-      console.log(err);
-      res.status(400).json({ message: 'Bad Request' });
+      console.log('Error processing combo request ', err);
+      return res.status(500).json({ error: 'Unknown error has occured while processing request' });
     });
 });
 
@@ -106,8 +106,8 @@ router.get('/matrix', (req, res) => {
       res.json(data);
     })
     .catch((err) => {
-      console.log(err);
-      res.status(400).json({ message: 'Bad Request' });
+      console.log('Error processing matrix request ', err);
+      return res.status(500).json({ error: 'Unknown error has occured while processing request' });
     });
 });
 
@@ -142,8 +142,8 @@ router.get('/stats', (req, res) => {
       res.json(data);
     })
     .catch((err) => {
-      console.log(err);
-      res.status(400).json({ message: 'Bad Request' });
+      console.log('Error processing stats request ', err);
+      return res.status(500).json({ error: 'Unknown error has occured while processing request' });
     });
 });
 
@@ -181,8 +181,8 @@ router.get('/heatmap', (req, res) => {
       res.json(data);
     })
     .catch((err) => {
-      console.log(err);
-      res.status(400).json({ message: 'Bad Request' });
+      console.log('Error processing heatmap request ', err);
+      return res.status(500).json({ error: 'Unknown error has occured while processing request' });
     });
 });
 

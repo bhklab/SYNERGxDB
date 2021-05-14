@@ -64,7 +64,7 @@ const BiomarkerData = () => (
     </div>
     <div className="api-section">
       <h3>Get Biomarker Association Data</h3>
-      <p>Retrieves expression data for a given gene across different cell lines. The API request requires you to specify `gene` request parameter. The API request can take 4 optional request paramaters: dataset (dataset id, integer), sample (tissue name, string, cell line id(s), integer(s)), drugId1 (integer), drugId2 (integer)</p>
+      <p>Retrieves expression data for a given gene across different cell lines. The API request requires you to specify `gene` request parameter. The API request can take 4 optional request paramaters: dataset (dataset id, integer), sample (tissue name, string, or cell line id(s), integer(s)), drugId1 (integer), drugId2 (integer)</p>
       <p className="code">
         <span>
           curl

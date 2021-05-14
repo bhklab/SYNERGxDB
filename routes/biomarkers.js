@@ -24,26 +24,22 @@ router.get('/', (req, res) => {
     .from(subqueryAnova)
     .join('source', 'source.idSource', '=', 'biomarker.id')
     .then((data) => {
-      res.json(data);
+      res.statius(200).json(data);
     })
     .catch((err) => {
       console.log(err);
-      res.status(400).json({ message: 'Bad Request' });
+      res.status(500).json({ message: 'Unknown error has occured while processing request' });
     });
 });
 
-router.get('/association', (req, res) => {
+router.get('/association', async (req, res) => {
   const { gene, sample } = req.query;
   let {
     drugId1, drugId2, dataset,
   } = req.query;
-  console.log('Initial Dataset value is ', dataset);
   drugId1 = drugId1 && parseInt(drugId1, 10);
   drugId2 = drugId2 && parseInt(drugId2, 10);
   dataset = dataset && parseInt(dataset, 10);
-
-  console.log(sample);
-  console.log('Dataset ', dataset);
   let sampleArray;
   let tissue;
   if (sample) {
@@ -52,13 +48,13 @@ router.get('/association', (req, res) => {
       : [Number.isNaN(parseInt(sample, 10)) ? sample : parseInt(sample, 10)];
     if (Number.isNaN(parseInt(sampleArray[0], 10))) [tissue] = sampleArray;
   }
-  console.log('tissue', tissue);
 
   function subqueryGeneIdentifier() {
     this.select('gene_id')
       .from('gene_identifiers')
       .where({ hgnc_symbol: gene });
   }
+
   function subqueryFPKM() {
     this.select('model_id', 'fpkm')
       .from('rnaseq')
@@ -83,6 +79,7 @@ router.get('/association', (req, res) => {
     }
     return subquery.as('S');
   }
+
   function subqueryAssociations() {
     this.select('idSample', 'fpkm', 'name')
       .from(subqueryFPKM)
@@ -107,6 +104,7 @@ router.get('/association', (req, res) => {
     if (drugId1) subquery = subquery.where(subqueryDrugs);
     return subquery.as('CD');
   }
+
   function subquerySynergyScores() {
     let subquery = this.select('fpkm', 'cellName', 'bliss', 'loewe', 'hsa', 'zip')
       .from(subqueryComboDesign)
@@ -116,20 +114,21 @@ router.get('/association', (req, res) => {
       .orderBy('cellName')
       .as('SS');
   }
-  db.select('fpkm', 'cellName')
-    .avg('bliss as bliss')
-    .avg('loewe as loewe')
-    .avg('hsa as hsa')
-    .avg('zip as zip')
-    .from(subquerySynergyScores)
-    .groupBy('fpkm', 'cellName')
-    .then((data) => {
-      res.json(data);
-    })
-    .catch((err) => {
-      console.log(err);
-      res.status(400).json({ message: 'Bad Request' });
-    });
+
+  try {
+    const data = await db.select('fpkm', 'cellName')
+      .avg('bliss as bliss')
+      .avg('loewe as loewe')
+      .avg('hsa as hsa')
+      .avg('zip as zip')
+      .from(subquerySynergyScores)
+      .groupBy('fpkm', 'cellName');
+    if (data.length === 0) return res.status(404).json({ message: 'No data found for a given set of parameters' });
+    return res.status(200).json(data);
+  } catch (e) {
+    console.log('Error processing association request ', e);
+    return res.status(500).json({ error: 'Unknown error has occured while processing request' });
+  }
 });
 
 // Retrieves data for the biomarker table
@@ -248,7 +247,7 @@ router.get('/synergy', async (req, res) => {
     if (data.length === 0) return res.status(404).json({ message: 'No data found for a given set of parameters' });
     return res.status(200).json(data);
   } catch (e) {
-    console.log(e);
+    console.log('Error processing biomarker synergy request ', e);
     return res.status(500).json({ error: 'Unknown error has occured while processing request' });
   }
 });
