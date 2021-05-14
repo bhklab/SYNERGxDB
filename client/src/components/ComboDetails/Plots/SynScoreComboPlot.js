@@ -37,7 +37,7 @@ class SynScoreComboPlot extends React.Component {
       drugsData, idSource, cellData,
     } = this.context;
 
-    fetch(`/api/combos?drugId1=${drugsData[0].idDrug}&drugId2=${drugsData[1].idDrug}&dataset=${idSource}`, {
+    fetch(`/api/combos?allowAll=true&drugId1=${drugsData[0].idDrug}&drugId2=${drugsData[1].idDrug}&dataset=${idSource}`, {
       method: 'GET',
       headers: {
         Accept: 'application/json',

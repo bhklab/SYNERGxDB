@@ -2,10 +2,13 @@
 /* eslint-disable func-names */
 const express = require('express');
 const db = require('../db');
+const calcLimitOffset = require('../utils/calcLimitOffset');
 
 const router = express.Router();
 
 router.get('/', (req, res) => {
+  const { page, perPage, allowAll } = req.query;
+  const { limit, offset } = calcLimitOffset(page, perPage);
   let {
     sample, drugId1, drugId2, dataset,
   } = req.query;
@@ -13,6 +16,8 @@ router.get('/', (req, res) => {
   drugId2 = drugId2 && parseInt(drugId2, 10);
   dataset = dataset && parseInt(dataset, 10);
   sample = Number.isNaN(parseInt(sample, 10)) ? sample : parseInt(sample, 10);
+
+  // if (!allowAll && !drugId1 && drugId)
   // Subquery to link combo designs to respective synergy scores
   function subqueryCD() {
     let baseQuery = this.select('idCombo_Design', 'idDrugA', 'idDrugB', 'idSample as sampleId')

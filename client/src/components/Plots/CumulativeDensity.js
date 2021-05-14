@@ -70,7 +70,7 @@ class CumulativeDensity extends React.Component {
     } = this.context;
     const scatterSize = 10;
 
-    fetch(`/api/combos?drugId1=${drugsData[0].idDrug}&drugId2=${drugsData[1].idDrug}&dataset=${idSource}`, {
+    fetch(`/api/combos?allowAll=true&drugId1=${drugsData[0].idDrug}&drugId2=${drugsData[1].idDrug}&dataset=${idSource}`, {
       method: 'GET',
       headers: {
         Accept: 'application/json',
@@ -79,7 +79,6 @@ class CumulativeDensity extends React.Component {
     })
       .then(response => response.json())
       .then((comboData) => {
-        console.log(comboData)
         if (comboData.length > 1) {
           const blissCoordinates = generateCoordinates(comboData, 'bliss', comboId);
           const zipCoordinates = generateCoordinates(comboData, 'zip', comboId);

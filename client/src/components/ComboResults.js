@@ -109,7 +109,7 @@ class ComboResults extends Component {
 
     this.setState({ queryParams });
 
-    fetch('/api/combos'.concat(queryParams), {
+    fetch('/api/combos?allowAll=true&'.concat(queryParams), {
       method: 'GET',
       headers: {
         Accept: 'application/json',

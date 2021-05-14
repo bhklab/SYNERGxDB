@@ -22,12 +22,6 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-
-
-app.use(bodyParser.urlencoded({
-  extended: true,
-}));
-app.use(bodyParser.json());
 app.use(knexLogger(db));
 
 
@@ -44,7 +38,7 @@ app.use('/api/pharmacogenomics/', pharmacogenomicsRouter);
 app.use('/api/wci/', wciRouter);
 
 app.get('/api/*', (req, res) => {
-  res.status(400).json({ message: 'Incorrectly specified endpoint' });
+  res.status(400).json({ error: 'Incorrectly specified endpoint' });
 });
 
 app.get('/*', (req, res) => {

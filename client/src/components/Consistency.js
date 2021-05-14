@@ -51,7 +51,7 @@ class Consistency extends Component {
         sample, drugId1, drugId2, dataset,
       } = requestParams;
 
-      let queryParams = `?drugId1=${drugId1}`;
+      let queryParams = `?allowAll=true&drugId1=${drugId1}`;
       if (sample) queryParams = queryParams.concat(`&sample=${sample}`);
       if (dataset) queryParams = queryParams.concat(`&dataset=${dataset}`);
       if (drugId2) queryParams = queryParams.concat(`&drugId2=${drugId2}`);

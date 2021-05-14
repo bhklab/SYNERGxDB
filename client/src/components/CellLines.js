@@ -257,7 +257,7 @@ const CellLines = () => {
       loadingSynScores: true,
       selectedCellLine: sample.name,
     });
-    fetch(`/api/combos?sample=${sample.id}`)
+    fetch(`/api/combos?allowAll=true&sample=${sample.id}`)
       .then(response => response.json())
       .then((data) => {
         const updatedCSVData = data.map((row) => {
