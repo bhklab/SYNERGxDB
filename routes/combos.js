@@ -6,16 +6,23 @@ const calcLimitOffset = require('../utils/calcLimitOffset');
 
 const router = express.Router();
 
-router.get('/', (req, res) => {
-  const { page, perPage, allowAll } = req.query;
-  const { limit, offset } = calcLimitOffset(page, perPage);
+router.get('/', async (req, res) => {
+  const { allowAll } = req.query;
   let {
-    sample, drugId1, drugId2, dataset,
+    sample, drugId1, drugId2, dataset, page, perPage,
   } = req.query;
   drugId1 = drugId1 && parseInt(drugId1, 10);
   drugId2 = drugId2 && parseInt(drugId2, 10);
   dataset = dataset && parseInt(dataset, 10);
+  page = page ? parseInt(page, 10) : 1;
+  if (!page) return res.status(400).json({ error: 'page request parameter must be an integer' });
+  perPage = perPage ? parseInt(perPage, 10) : 20;
+  if (!perPage) return res.status(400).json({ error: 'perPage request parameter must be an integer' });
+  if (perPage > 100) return res.status(400).json({ error: 'perPage request parameter cannot exceed 100' });
   sample = Number.isNaN(parseInt(sample, 10)) ? sample : parseInt(sample, 10);
+
+  // calculates limit and offset values for knex queries
+  const { limit, offset } = calcLimitOffset(page, perPage);
 
   // if (!allowAll && !drugId1 && drugId)
   // Subquery to link combo designs to respective synergy scores
@@ -86,18 +93,21 @@ router.get('/', (req, res) => {
       .join('Synergy_Score', 'D2.idCombo_Design', '=', 'Synergy_Score.idCombo_Design')
       .as('SS');
   }
-  // Adds source name to the results and sends it to the client
-  db.select('comboId', 'idSample', 'bliss', 'loewe', 'hsa', 'zip', 'comboscore', 'name as sourceName', 'sampleName', 'drugNameA', 'drugNameB', 'tissue', 'idSource', 'idDrugA', 'idDrugB', 'idCellosaurus', 'sex', 'age', 'disease', 'origin', 'atCodeDrugA', 'idDrugBankA', 'idPubChemDrugA', 'atCodeDrugB', 'idDrugBankB', 'idPubChemDrugB', 'smilesDrugA', 'inchikeyDrugA', 'smilesDrugB', 'inchikeyDrugB')
-    .from(subquerySS)
-    .join('Source', 'SS.sourceId', '=', 'Source.idSource')
-    .orderBy('zip', 'desc')
-    .then((data) => {
-      res.json(data);
-    })
-    .catch((err) => {
-      console.log('Error processing combo request ', err);
-      return res.status(500).json({ error: 'Unknown error has occured while processing request' });
-    });
+  try {
+    // Adds source name to the results and sends it to the client
+    let query = db.select('comboId', 'idSample', 'bliss', 'loewe', 'hsa', 'zip', 'comboscore', 'name as sourceName', 'sampleName', 'drugNameA', 'drugNameB', 'tissue', 'idSource', 'idDrugA', 'idDrugB', 'idCellosaurus', 'sex', 'age', 'disease', 'origin', 'atCodeDrugA', 'idDrugBankA', 'idPubChemDrugA', 'atCodeDrugB', 'idDrugBankB', 'idPubChemDrugB', 'smilesDrugA', 'inchikeyDrugA', 'smilesDrugB', 'inchikeyDrugB')
+      .from(subquerySS)
+      .join('Source', 'SS.sourceId', '=', 'Source.idSource')
+      .orderBy('zip', 'desc');
+
+    if (!allowAll) query = query.limit(limit).offset(offset);
+    const data = await query;
+    if (data.length === 0) return res.status(404).json({ message: 'No data found for a given set of parameters' });
+    return res.status(200).json(data);
+  } catch (e) {
+    console.log('Error processing combo request ', e);
+    return res.status(500).json({ error: 'Unknown error has occured while processing request' });
+  }
 });
 
 router.get('/matrix', (req, res) => {

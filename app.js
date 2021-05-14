@@ -1,13 +1,12 @@
 const express = require('express');
 const path = require('path');
-const bodyParser = require('body-parser');
 const createError = require('http-errors');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const knexLogger = require('knex-logger');
 const db = require('./db');
 
-const indexRouter = require('./routes/index');
+const statsRouter = require('./routes/stats');
 const drugRouter = require('./routes/drugs');
 const cellRouter = require('./routes/cells');
 const comboRouter = require('./routes/combos');
@@ -28,7 +27,7 @@ app.use(knexLogger(db));
 // Serve the static files from the React app
 app.use(express.static(path.join(__dirname, 'client/build')));
 
-app.use('/api/', indexRouter);
+app.use('/api/stats', statsRouter);
 app.use('/api/cell_lines/', cellRouter);
 app.use('/api/drugs/', drugRouter);
 app.use('/api/combos/', comboRouter);

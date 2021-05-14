@@ -41,12 +41,46 @@ const ComboDoc = () => (
     <h2>Combo API</h2>
     <div className="api-section">
       <h3>Get combo information</h3>
-      <p>Retrieves synergy score data for drug combinations. The API request can take 4 optional request paramaters: dataset (dataset id, integer), sample (tissue name, string, or cell line id, integer), drugId1 (integer), drugId2 (integer)</p>
+      <p>
+        Retrieves synergy score data for drug combinations. The API request can take 4 optional request paramaters to specify the query:
+        <em>dataset</em>
+        (dataset id, integer),
+        {' '}
+        <em>sample</em>
+        {' '}
+        (tissue name, string, or cell line id, integer),
+        {' '}
+        <em>drugId1</em>
+        {' '}
+        (integer),
+        {' '}
+        <em>drugId2</em>
+        {' '}
+        (integer).
+      </p>
+      <p>
+        API supports data pagination to help programatically retrieve large sets of data in batches.
+        {' '}
+        <em>page</em>
+        {' '}
+        query parameter (integer, default value is 1) specifies page number and
+        {' '}
+        <em>perPage</em>
+        {' '}
+        parameter (integer, default value is 20, maximum value is 100) sets number of records retrieved per page. For example,
+        {' '}
+        <em>...page=2&perPage=10...</em>
+        {' '}
+        query would retrieve records from 11 to 20
+      </p>
       <p className="code">
         <span>
           curl
           {' '}
-          {'https://www.synergxdb.ca/api/combos?&sample=skin&dataset=2&drugId1=11&drugId2=97'}
+        </span>
+        <br />
+        <span>
+          https://www.synergxdb.ca/api/combos?page=2&perPage=30&sample=skin&dataset=2&drugId1=11
         </span>
       </p>
       <p>Output: </p>

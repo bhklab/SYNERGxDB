@@ -10,6 +10,4 @@ const calcLimitOffset = (page, perPage) => {
   return { limit, offset };
 };
 
-module.exports = {
-  calcLimitOffset,
-};
+module.exports = calcLimitOffset;
