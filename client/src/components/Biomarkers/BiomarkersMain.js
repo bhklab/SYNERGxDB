@@ -185,7 +185,7 @@ class Biomarkers extends Component {
     }
 
     if (biomarkerCheck) {
-      let url = `/api/biomarkers/synergy?type=${score}`;
+      let url = `/api/biomarkers/synergy?allowAll=true&type=${score}`;
       if (drugId1) url = url.concat(`&drugId1=${drugId1}`);
       if (drugId2) url = url.concat(`&drugId2=${drugId2}`);
       if (dataset) url = url.concat(`&dataset=${dataset}`);

@@ -142,7 +142,6 @@ router.get('/metabolomics', async (req, res) => {
   }
 });
 
-
 router.get('/cna', async (req, res) => {
   const { gene, sample } = req.query;
   let { drugId1, drugId2 } = req.query;

@@ -134,18 +134,20 @@ router.get('/association', (req, res) => {
 
 // Retrieves data for the biomarker table
 router.get('/synergy', async (req, res) => {
-  const { type } = req.query;
+  const { type, allowAll } = req.query;
   if (!type || !(type === 'zip' || type === 'bliss' || type === 'hsa' || type === 'loewe')) {
-    res.status(400).json({ message: 'Synergy type is not specified correctly' });
-    return;
+    return res.status(400).json({ error: 'Synergy type is not specified correctly' });
   }
-
   let {
     dataset, drugId1, drugId2,
   } = req.query;
   dataset = dataset && parseInt(dataset, 10);
   drugId1 = drugId1 && parseInt(drugId1, 10);
   drugId2 = drugId2 && parseInt(drugId2, 10);
+
+  if (!allowAll && (!drugId1 || !drugId2)) {
+    return res.status(400).json({ error: 'drugId1 and drugId2 query parameters must be specified' });
+  }
 
   function drugFiltering() {
     if (drugId2) {
@@ -217,12 +219,14 @@ router.get('/synergy', async (req, res) => {
       .innerJoin('source', 'source.idSource', '=', 'biomark.idSource')
       .as('DS');
   }
+
   function subqueryDrugA() {
     this.select('gene', 'concordanceIndex', 'pValue', 'dataset', 'idSource', 'idDrugA', 'name as drugA', 'idDrugB')
       .from(subqueryDataset)
       .innerJoin('drug', 'drug.idDrug', '=', 'DS.idDrugA')
       .as('D1');
   }
+
   function subqueryDrugB() {
     this.select('gene', 'concordanceIndex', 'pValue', 'dataset', 'idSource', 'idDrugA', 'idDrugB', 'drugA', 'name as drugB')
       .from(subqueryDrugA)
@@ -230,23 +234,23 @@ router.get('/synergy', async (req, res) => {
       .as('D2');
   }
 
-  db.select('occurrences', 'D2.gene as gene', 'concordanceIndex', 'pValue', 'dataset', 'idSource', 'drugA', 'drugB')
-    .from(subqueryDrugB)
-    .innerJoin(subqueryOccurrences, function () {
-      this.on('O.gene', '=', 'D2.gene');
-      this.andOn('O.idDrugA', '=', 'D2.idDrugA');
-      this.andOn('O.idDrugB', '=', 'D2.idDrugB');
-    })
-    .orderBy('occurrences', 'desc')
-    .orderBy('pValue')
-    .orderBy('gene')
-    .then((data) => {
-      res.json(data);
-    })
-    .catch((err) => {
-      console.log(err);
-      res.status(400).json({ message: 'Bad Request' });
-    });
+  try {
+    const data = await db.select('occurrences', 'D2.gene as gene', 'concordanceIndex', 'pValue', 'dataset', 'idSource', 'drugA', 'drugB')
+      .from(subqueryDrugB)
+      .innerJoin(subqueryOccurrences, function () {
+        this.on('O.gene', '=', 'D2.gene');
+        this.andOn('O.idDrugA', '=', 'D2.idDrugA');
+        this.andOn('O.idDrugB', '=', 'D2.idDrugB');
+      })
+      .orderBy('occurrences', 'desc')
+      .orderBy('pValue')
+      .orderBy('gene');
+    if (data.length === 0) return res.status(404).json({ message: 'No data found for a given set of parameters' });
+    return res.status(200).json(data);
+  } catch (e) {
+    console.log(e);
+    return res.status(500).json({ error: 'Unknown error has occured while processing request' });
+  }
 });
 
 // Checks if there is any biomarker data available for a given dataset
@@ -303,122 +307,3 @@ router.get('/dataset/:id/:type', (req, res) => {
 });
 
 module.exports = router;
-
-
-// ////////////////////////////////////////////////////
-// Synergy route, old implementation with minPValue //
-// ////////////////////////////////////////////////////
-
-// router.get('/synergy', async (req, res) => {
-//   const { type } = req.query;
-//   if (!type || !(type === 'zip' || type === 'bliss' || type === 'hsa' || type === 'loewe')) {
-//     res.status(400).json({ message: 'Synergy type is not specified correctly' });
-//     return;
-//   }
-
-//   let {
-//     dataset, drugId1, drugId2,
-//   } = req.query;
-//   dataset = dataset && parseInt(dataset, 10);
-//   drugId1 = drugId1 && parseInt(drugId1, 10);
-//   drugId2 = drugId2 && parseInt(drugId2, 10);
-
-//   function drugFiltering() {
-//     if (drugId2) {
-//       return this.where({ idDrugA: drugId1, idDrugB: drugId2 })
-//         .orWhere({ idDrugB: drugId1, idDrugA: drugId2 });
-//     }
-//     return this.where({ idDrugA: drugId1 })
-//       .orWhere({ idDrugB: drugId1 });
-//   }
-
-//   function subqueryPValueGene() {
-//     let subquery = this.select('gene').min('pValue as minPValue');
-//     switch (type) {
-//       case 'zip':
-//         subquery = subquery.from('zip_significant');
-//         break;
-//       case 'bliss':
-//         subquery = subquery.from('bliss_significant');
-//         break;
-//       case 'hsa':
-//         subquery = subquery.from('hsa_significant');
-//         break;
-//       case 'loewe':
-//         subquery = subquery.from('loewe_significant');
-//         break;
-//       default:
-//         break;
-//     }
-//     if (drugId1) subquery = subquery.where(drugFiltering);
-//     if (dataset) subquery = subquery.andWhere({ idSource: dataset });
-//     return subquery.groupBy('gene').as('t1');
-//   }
-
-//   function subqueryBiomarkers() {
-//     let query;
-//     switch (type) {
-//       case 'zip':
-//         query = this.select('zip_significant.*')
-//           .from(subqueryPValueGene)
-//           .innerJoin('zip_significant', function () {
-//             this.on('zip_significant.gene', '=', 't1.gene');
-//             this.andOn('zip_significant.pValue', '=', 't1.minPValue');
-//           });
-//         break;
-//       case 'bliss':
-//         query = this.select('bliss_significant.*')
-//           .from(subqueryPValueGene)
-//           .innerJoin('bliss_significant', function () {
-//             this.on('bliss_significant.gene', '=', 't1.gene');
-//             this.andOn('bliss_significant.pValue', '=', 't1.minPValue');
-//           });
-//         break;
-//       case 'hsa':
-//         query = this.select('hsa_significant.*')
-//           .from(subqueryPValueGene)
-//           .innerJoin('hsa_significant', function () {
-//             this.on('hsa_significant.gene', '=', 't1.gene');
-//             this.andOn('hsa_significant.pValue', '=', 't1.minPValue');
-//           });
-//         break;
-//       case 'loewe':
-//         query = this.select('loewe_significant.*')
-//           .from(subqueryPValueGene)
-//           .innerJoin('loewe_significant', function () {
-//             this.on('loewe_significant.gene', '=', 't1.gene');
-//             this.andOn('loewe_significant.pValue', '=', 't1.minPValue');
-//           });
-//         break;
-//       default:
-//         break;
-//     }
-//     return query.groupBy('gene').as('biomark');
-//   }
-
-//   function subqueryDataset() {
-//     this.select('gene', 'concordanceIndex', 'pValue', 'name as dataset', 'idDrugA', 'idDrugB')
-//       .from(subqueryBiomarkers)
-//       .innerJoin('source', 'source.idSource', '=', 'biomark.idSource')
-//       .as('DS');
-//   }
-//   function subqueryDrugA() {
-//     this.select('gene', 'concordanceIndex', 'pValue', 'dataset', 'name as drugA', 'idDrugB')
-//       .from(subqueryDataset)
-//       .innerJoin('drug', 'drug.idDrug', '=', 'DS.idDrugA')
-//       .as('D1');
-//   }
-
-//   db.select('gene', 'concordanceIndex', 'pValue', 'dataset', 'drugA', 'name as drugB')
-//     .from(subqueryDrugA)
-//     .innerJoin('drug', 'drug.idDrug', '=', 'D1.idDrugB')
-//     .orderBy('pValue')
-//     .orderBy('concordanceIndex')
-//     .then((data) => {
-//       res.json(data);
-//     })
-//     .catch((err) => {
-//       console.log(err);
-//       res.status(400).json({ message: 'Bad Request' });
-//     });
-// });

@@ -50,7 +50,7 @@ const BiomarkerData = () => (
     <h2>Biomarker API</h2>
     <div className="api-section">
       <h3>Get Potential Biomarkers</h3>
-      <p>Retrieves list of potential biomarkers. The API request requires you to specify `type` request parameter, which indicates type of synergy score used for the analysis (values can be `zip`, `hsa`, `loewe` and `bliss`). Also, API can take 3 optional request paramaters: dataset (dataset id, integer), drugId1 (integer), drugId2 (integer)</p>
+      <p>Retrieves list of potential biomarkers. The API request requires you to specify `type` request parameter, which indicates type of synergy score used for the analysis (values can be `zip`, `hsa`, `loewe` and `bliss`), along with drugId1 (integer) and drugId2 (integer) request paramaters. Also, API can take 1 optional request paramater, dataset (dataset id, integer), </p>
       <p className="code">
         <span>
           curl
