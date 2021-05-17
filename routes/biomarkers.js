@@ -1,6 +1,7 @@
 /* eslint-disable func-names */
 const express = require('express');
 const db = require('../db');
+const calcLimitOffset = require('../utils/calcLimitOffset');
 
 const router = express.Router();
 
@@ -138,15 +139,18 @@ router.get('/synergy', async (req, res) => {
     return res.status(400).json({ error: 'Synergy type is not specified correctly' });
   }
   let {
-    dataset, drugId1, drugId2,
+    dataset, drugId1, drugId2, page, perPage,
   } = req.query;
   dataset = dataset && parseInt(dataset, 10);
   drugId1 = drugId1 && parseInt(drugId1, 10);
   drugId2 = drugId2 && parseInt(drugId2, 10);
-
-  if (!allowAll && (!drugId1 || !drugId2)) {
-    return res.status(400).json({ error: 'drugId1 and drugId2 query parameters must be specified' });
-  }
+  page = page ? parseInt(page, 10) : 1;
+  if (!page) return res.status(400).json({ error: 'page request parameter must be an integer' });
+  perPage = perPage ? parseInt(perPage, 10) : 20;
+  if (!perPage) return res.status(400).json({ error: 'perPage request parameter must be an integer' });
+  if (perPage > 100) return res.status(400).json({ error: 'perPage request parameter cannot exceed 100' });
+  // calculates limit and offset values for knex queries
+  const { limit, offset } = calcLimitOffset(page, perPage);
 
   function drugFiltering() {
     if (drugId2) {
@@ -234,7 +238,7 @@ router.get('/synergy', async (req, res) => {
   }
 
   try {
-    const data = await db.select('occurrences', 'D2.gene as gene', 'concordanceIndex', 'pValue', 'dataset', 'idSource', 'drugA', 'drugB')
+    let query = db.select('occurrences', 'D2.gene as gene', 'concordanceIndex', 'pValue', 'dataset', 'idSource', 'drugA', 'drugB')
       .from(subqueryDrugB)
       .innerJoin(subqueryOccurrences, function () {
         this.on('O.gene', '=', 'D2.gene');
@@ -244,6 +248,8 @@ router.get('/synergy', async (req, res) => {
       .orderBy('occurrences', 'desc')
       .orderBy('pValue')
       .orderBy('gene');
+    if (!allowAll) query = query.limit(limit).offset(offset);
+    const data = await query;
     if (data.length === 0) return res.status(404).json({ message: 'No data found for a given set of parameters' });
     return res.status(200).json(data);
   } catch (e) {
