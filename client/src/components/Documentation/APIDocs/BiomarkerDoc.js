@@ -50,14 +50,29 @@ const BiomarkerData = () => (
     <h2>Biomarker API</h2>
     <div className="api-section">
       <h3>Get Potential Biomarkers</h3>
-      <p>Retrieves list of potential biomarkers. The API request requires you to specify `type` request parameter, which indicates type of synergy score used for the analysis (values can be `zip`, `hsa`, `loewe` and `bliss`), along with drugId1 (integer) and drugId2 (integer) request paramaters. Also, API can take 1 optional request paramater, dataset (dataset id, integer), </p>
+      <p>Retrieves list of potential biomarkers. The API request requires you to specify `type` request parameter, which indicates type of synergy score used for the analysis (values can be `zip`, `hsa`, `loewe` and `bliss`). Also, API can take 3 optional request paramaters: dataset (dataset id, integer), drugId1 (integer) and drugId2 (integer)</p>
+      <p>
+        API supports data pagination to help programatically retrieve large sets of data in batches.
+        {' '}
+        <em>page</em>
+        {' '}
+        query parameter (integer, default value is 1) specifies page number and
+        {' '}
+        <em>perPage</em>
+        {' '}
+        parameter (integer, default value is 20, maximum value is 500) sets number of records retrieved per page. For example,
+        {' '}
+        <em>...page=2&perPage=10...</em>
+        {' '}
+        query would retrieve records from 11 to 20
+      </p>
       <p className="code">
         <span>
           curl
         </span>
       </p>
       <p className="code">
-        <span>https://www.synergxdb.ca/api/biomarkers/synergy?type=zip&drugId1=11&drugId2=97&dataset=2</span>
+        <span>https://www.synergxdb.ca/api/biomarkers/synergy?type=zip&drugId1=11&drugId2=97&dataset=2&page=1&perPage=20</span>
       </p>
       <p>Output: </p>
       <div><pre className="output">{JSON.stringify(synData, null, 2)}</pre></div>

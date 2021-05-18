@@ -67,7 +67,7 @@ const ComboDoc = () => (
         {' '}
         <em>perPage</em>
         {' '}
-        parameter (integer, default value is 20, maximum value is 100) sets number of records retrieved per page. For example,
+        parameter (integer, default value is 20, maximum value is 500) sets number of records retrieved per page. For example,
         {' '}
         <em>...page=2&perPage=10...</em>
         {' '}
@@ -80,7 +80,7 @@ const ComboDoc = () => (
         </span>
         <br />
         <span>
-          https://www.synergxdb.ca/api/combos?page=2&perPage=30&sample=skin&dataset=2&drugId1=11
+          https://www.synergxdb.ca/api/combos?sample=skin&dataset=2&drugId1=11&page=1&perPage=20
         </span>
       </p>
       <p>Output: </p>

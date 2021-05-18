@@ -14,11 +14,14 @@ router.get('/', async (req, res) => {
   drugId1 = drugId1 && parseInt(drugId1, 10);
   drugId2 = drugId2 && parseInt(drugId2, 10);
   dataset = dataset && parseInt(dataset, 10);
+  if (!dataset || !drugId1 || !drugId2) {
+    return res.status(400).json({ error: 'Please specify at least one of the following parameters: dataset, drugId1, drugId2' });
+  }
   page = page ? parseInt(page, 10) : 1;
   if (!page) return res.status(400).json({ error: 'page request parameter must be an integer' });
   perPage = perPage ? parseInt(perPage, 10) : 20;
   if (!perPage) return res.status(400).json({ error: 'perPage request parameter must be an integer' });
-  if (perPage > 100) return res.status(400).json({ error: 'perPage request parameter cannot exceed 100' });
+  if (perPage > 500) return res.status(400).json({ error: 'perPage request parameter cannot exceed 100' });
   sample = Number.isNaN(parseInt(sample, 10)) ? sample : parseInt(sample, 10);
 
   // calculates limit and offset values for knex queries
