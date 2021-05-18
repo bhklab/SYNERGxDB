@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable react/no-array-index-key */
 import React, { Component } from 'react';
 import styled from 'styled-components';
@@ -6,7 +7,6 @@ import queryString from 'query-string';
 import ReactLoading from 'react-loading';
 import 'react-table/react-table.css';
 import ReactTable from 'react-table';
-
 import colors from '../../styles/colors';
 import transitions from '../../styles/transitions';
 
@@ -179,7 +179,6 @@ class Biomarkers extends Component {
           biomarkerCheck = data.biomarkers;
         })
         .catch(() => {
-          // eslint-disable-next-line no-console
           console.log('Unable to check biomarker data availability');
         });
     }
@@ -200,38 +199,59 @@ class Biomarkers extends Component {
         })
         .then(response => response.json())
         .then((data) => {
+          console.log(data);
+          const occurenceObj = {};
+          data.forEach((row) => {
+            const { gene, drugA, drugB } = row;
+            const key = `${gene}-${drugA}-${drugB}`;
+            if (!occurenceObj[key]) {
+              occurenceObj[key] = 1;
+            } else {
+              occurenceObj[key] += 1;
+            }
+          });
+          const processedData = data.map((row) => {
+            const { gene, drugA, drugB } = row;
+            const key = `${gene}-${drugA}-${drugB}`;
+            return { ...row, occurrences: occurenceObj[key] };
+          });
+          processedData.sort((a, b) => {
+            if (a.occurrences > b.occurrences) return -1;
+            if (a.occurrences < b.occurrences) return 1;
+            return 0;
+          });
+          console.log(processedData);
           switch (score) {
             case 'zip':
               this.setState({
-                zipBiomarkers: data,
+                zipBiomarkers: processedData,
                 loadingTable: false,
               });
               break;
             case 'bliss':
               this.setState({
-                blissBiomarkers: data,
+                blissBiomarkers: processedData,
                 loadingTable: false,
               });
               break;
             case 'hsa':
               this.setState({
-                hsaBiomarkers: data,
+                hsaBiomarkers: processedData,
                 loadingTable: false,
               });
               break;
             case 'loewe':
               this.setState({
-                loeweBiomarkers: data,
+                loeweBiomarkers: processedData,
                 loadingTable: false,
               });
               break;
             default:
               break;
           }
-          getPlotData(data[0].gene, score, { name: data[0].dataset, id: data[0].idSource });
+          getPlotData(processedData[0].gene, score, { name: processedData[0].dataset, id: processedData[0].idSource });
         })
         .catch((err) => {
-        // eslint-disable-next-line no-console
           console.log(err);
           this.setState({
             loadingTable: false,
@@ -302,7 +322,6 @@ class Biomarkers extends Component {
         biomarkersAvailable: true,
       });
     } catch (err) {
-      // eslint-disable-next-line no-console
       console.log(err);
       this.setState({
         loadingGraph: false,
@@ -352,21 +371,8 @@ class Biomarkers extends Component {
       }
       updatedGeneStorage[selectedScore][dataset.name][gene] = synergyArray;
       this.setState({ biomarkerGeneStorage: updatedGeneStorage });
-      // this.setState({
-      //   biomarkerGeneStorage: {
-      //     ...biomarkerGeneStorage,
-      //     [selectedScore]: {
-      //       ...biomarkerGeneStorage[selectedScore],
-      //       [dataset.name]: {
-      //         ...biomarkerGeneStorage[selectedScore][dataset.name],
-      //         [gene]: synergyArray,
-      //       },
-      //     },
-      //   },
-      // });
       return synergyArray;
     } catch (err) {
-      // eslint-disable-next-line no-console
       console.log(err);
       return [];
     }
