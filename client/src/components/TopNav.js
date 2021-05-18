@@ -20,7 +20,7 @@ const StyledNav = styled.div`
   font-size: calc(1em + 0.2vw);
   font-family: 'Montserrat', sans-serif;
 
-  @media (max-width : 1023px) {
+  @media (max-width : 1279px) {
     height:75px;
   }
 
@@ -47,10 +47,10 @@ const StyledNav = styled.div`
       margin-left:5vw;
       margin-top:5px;
     }
-    @media (min-width : 1024px) {
+    @media (min-width : 1280px) {
       display: block;
     }
-    @media (max-width : 1023px) {
+    @media (max-width : 1279px) {
       display: none;
     }
   }
@@ -58,10 +58,10 @@ const StyledNav = styled.div`
     a {
       padding:0em 2.5vw;
     }
-    @media (min-width : 1024px) {
+    @media (min-width : 1280px) {
       display: none;
     }
-    @media (max-width : 1023px) {
+    @media (max-width : 1279px) {
       display: block;
     }
   }
