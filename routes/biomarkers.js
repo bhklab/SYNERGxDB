@@ -184,38 +184,6 @@ router.get('/synergy', async (req, res) => {
     return subquery.as('biomark');
   }
 
-  function subqueryGeneDatasetPairs() {
-    let query = this.distinct('gene', 'idSource', 'idDrugA', 'idDrugB');
-    switch (type) {
-      case 'zip':
-        query = query.from('zip_significant');
-        break;
-      case 'bliss':
-        query = query.from('bliss_significant');
-        break;
-      case 'hsa':
-        query = query.from('hsa_significant');
-        break;
-      case 'loewe':
-        query = query.from('loewe_significant');
-        break;
-      default:
-        break;
-    }
-    if (drugId1) query = query.where(drugFiltering);
-    return query.as('GDP');
-  }
-
-  function subqueryOccurrences() {
-    let query;
-    if (dataset) {
-      query = this.select(db.raw('gene, idDrugA, idDrugB, 1 as \'occurrences\''));
-    } else {
-      query = this.select('gene', 'idDrugA', 'idDrugB').count('idSource as occurrences');
-    }
-    return query.from(subqueryGeneDatasetPairs).groupBy('gene', 'idDrugA', 'idDrugB').as('O');
-  }
-
   function subqueryDataset() {
     this.select('gene', 'concordanceIndex', 'pValue', 'name as dataset', 'source.idSource', 'idDrugA', 'idDrugB')
       .from(subqueryBiomarkers)
@@ -238,14 +206,8 @@ router.get('/synergy', async (req, res) => {
   }
 
   try {
-    let query = db.select('occurrences', 'D2.gene as gene', 'concordanceIndex', 'pValue', 'dataset', 'idSource', 'drugA', 'drugB')
+    let query = db.select('D2.gene as gene', 'concordanceIndex', 'pValue', 'dataset', 'idSource', 'drugA', 'drugB')
       .from(subqueryDrugB)
-      .innerJoin(subqueryOccurrences, function () {
-        this.on('O.gene', '=', 'D2.gene');
-        this.andOn('O.idDrugA', '=', 'D2.idDrugA');
-        this.andOn('O.idDrugB', '=', 'D2.idDrugB');
-      })
-      .orderBy('occurrences', 'desc')
       .orderBy('pValue')
       .orderBy('gene');
     if (!allowAll) query = query.limit(limit).offset(offset);
