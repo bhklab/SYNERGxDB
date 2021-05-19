@@ -8,7 +8,7 @@
 /* eslint-disable max-len */
 /* eslint-disable no-plusplus */
 import React, { Component, Fragment } from 'react';
-import { withRouter, Link } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import styled from 'styled-components';
 import Select, { components } from 'react-select';
 import Popup from 'reactjs-popup';
@@ -248,7 +248,7 @@ const ExampleSpan = styled.span`
 const PopupBox = styled.div`
   div {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
     margin: 0 20px 10px;
   }
   button {
@@ -356,7 +356,6 @@ class SearchCombos extends Component {
     this.handleEnterPress = this.handleEnterPress.bind(this);
     this.checkUserInput = this.checkUserInput.bind(this);
     this.exampleClick = this.exampleClick.bind(this);
-
     // New Search/Filtering UI
     this.filterDrugAData = this.filterDrugAData.bind(this);
     this.filterDrugBData = this.filterDrugBData.bind(this);
@@ -431,20 +430,12 @@ class SearchCombos extends Component {
       default:
         return;
     }
-    let ind1;
-    let ind2;
     const event1 = drugsData1.find((item, i) => {
-      if (item.label === drug1) {
-        ind1 = i;
-        return i;
-      }
+      if (item.label === drug1) return i;
     });
 
     const event2 = drugsData2.find((item, i) => {
-      if (item.label === drug2) {
-        ind2 = i;
-        return i;
-      }
+      if (item.label === drug2) return i;
     });
     this.handleDrug1Search(event1);
     this.handleDrug2Search(event2);
@@ -575,7 +566,6 @@ class SearchCombos extends Component {
     const { sample, dataset, drugId2 } = this.state;
     const { filterDatasetData, filterSampleData, filterDrugBData } = this;
     this.setState({ drugId1: value, selectedDrug1: { value, label } });
-
     // Filtering for other option boxes
     filterDatasetData(sample, value, drugId2);
     filterSampleData(value, drugId2, dataset);
@@ -587,7 +577,6 @@ class SearchCombos extends Component {
     const { filterDatasetData, filterSampleData, filterDrugAData } = this;
     const { sample, dataset, drugId1 } = this.state;
     this.setState({ drugId2: value, selectedDrug2: { value, label } });
-
     // Filtering for other option boxes
     filterDatasetData(sample, drugId1, value);
     filterSampleData(drugId1, value, dataset);
@@ -599,7 +588,6 @@ class SearchCombos extends Component {
     const { dataset, drugId1, drugId2 } = this.state;
     const { filterDatasetData, filterDrugAData, filterDrugBData } = this;
     this.setState({ sample: value, selectedSample: { value, label } });
-
     // Filtering for other option boxes
     filterDatasetData(value, drugId1, drugId2);
     filterDrugAData(value, drugId2, dataset);
@@ -611,7 +599,6 @@ class SearchCombos extends Component {
     const { sample, drugId1, drugId2 } = this.state;
     const { filterSampleData, filterDrugAData, filterDrugBData } = this;
     this.setState({ dataset: value, selectedDataset: { value, label } });
-
     // Filtering for other option boxes
     filterSampleData(drugId1, drugId2, value);
     filterDrugAData(sample, drugId2, value);
@@ -628,35 +615,6 @@ class SearchCombos extends Component {
       handleSampleSearch, handleDrug1Search, handleDrug2Search, userRedirect,
       handleDatasetSearch, handleEnterPress, checkUserInput, exampleClick,
     } = this;
-
-    const exampleSynergy = {
-      pathname: '/synergy_score',
-      search: '?drugId1=11&drugId2=97',
-    };
-    const exampleBiomarker = {
-      pathname: '/biomarker',
-      search: '?drugId1=11&drugId2=97',
-    };
-    const exampleCompare = {
-      pathname: '/sensitivity',
-      search: '?drugId1=11&drugId2=97',
-    };
-    const exampleConsistency = {
-      pathname: '/consistency',
-      search: '?drugId1=11&drugId2=97',
-    };
-    const examplePharmUrl = {
-      pathname: '/pharmacogenomics',
-      search: '?example=true',
-    };
-    // const exampleDatasetUrl = {
-    //   pathname: '/synergy_score',
-    //   search: '?&dataset=5',
-    // };
-    // const exampleSampleUrl = {
-    //   pathname: '/synergy_score',
-    //   search: '?&sample=pancreas',
-    // };z
     const searchForm = (
       <Fragment>
         <h1>
@@ -728,11 +686,11 @@ class SearchCombos extends Component {
             <ExampleSpan>
               Examples:
               <p>
-                <a onClick={e => exampleClick(1)}>Bortezomib + Topotecan</a>
+                <a onClick={() => exampleClick(1)}>Bortezomib + Topotecan</a>
                 &nbsp;&nbsp;|&nbsp;&nbsp;
-                <a onClick={e => exampleClick(2)}>Lapatinib + Erlotinib</a>
+                <a onClick={() => exampleClick(2)}>Lapatinib + Erlotinib</a>
                 &nbsp;&nbsp;|&nbsp;&nbsp;
-                <a onClick={e => exampleClick(3)}>Fluorouracil + Vorinostat</a>
+                <a onClick={() => exampleClick(3)}>Fluorouracil + Vorinostat</a>
               </p>
             </ExampleSpan>
             { checkUserInput() ? (
@@ -749,12 +707,10 @@ class SearchCombos extends Component {
                       &times;
                     </a>
                     <p>
-                      None of the request parameters has been specified and it may take longer
-                      to retrieve your results. Do you want to proceed?
+                      None of the request parameters have been specified, please provide at least one parameter for your query
                     </p>
                     <div>
-                      <button type="button" onClick={userRedirect}>Yes</button>
-                      <button type="button" onClick={close}>No</button>
+                      <button type="button" onClick={close}>Close</button>
                     </div>
                   </PopupBox>
                 )}

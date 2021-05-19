@@ -199,7 +199,6 @@ class Biomarkers extends Component {
         })
         .then(response => response.json())
         .then((data) => {
-          console.log(data);
           const occurenceObj = {};
           data.forEach((row) => {
             const { gene, drugA, drugB } = row;
@@ -214,13 +213,11 @@ class Biomarkers extends Component {
             const { gene, drugA, drugB } = row;
             const key = `${gene}-${drugA}-${drugB}`;
             return { ...row, occurrences: occurenceObj[key] };
-          });
-          processedData.sort((a, b) => {
+          }).sort((a, b) => {
             if (a.occurrences > b.occurrences) return -1;
             if (a.occurrences < b.occurrences) return 1;
             return 0;
           });
-          console.log(processedData);
           switch (score) {
             case 'zip':
               this.setState({
@@ -249,7 +246,10 @@ class Biomarkers extends Component {
             default:
               break;
           }
-          getPlotData(processedData[0].gene, score, { name: processedData[0].dataset, id: processedData[0].idSource });
+          getPlotData(
+            processedData[0].gene,
+            score, { name: processedData[0].dataset, id: processedData[0].idSource },
+          );
         })
         .catch((err) => {
           console.log(err);

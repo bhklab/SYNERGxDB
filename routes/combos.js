@@ -14,7 +14,7 @@ router.get('/', async (req, res) => {
   drugId1 = drugId1 && parseInt(drugId1, 10);
   drugId2 = drugId2 && parseInt(drugId2, 10);
   dataset = dataset && parseInt(dataset, 10);
-  if (!dataset || !drugId1 || !drugId2) {
+  if (!dataset && !drugId1 && !drugId2 && !allowAll) {
     return res.status(400).json({ error: 'Please specify at least one of the following parameters: dataset, drugId1, drugId2' });
   }
   page = page ? parseInt(page, 10) : 1;
