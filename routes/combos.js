@@ -14,20 +14,21 @@ router.get('/', async (req, res) => {
   drugId1 = drugId1 && parseInt(drugId1, 10);
   drugId2 = drugId2 && parseInt(drugId2, 10);
   dataset = dataset && parseInt(dataset, 10);
+  sample = Number.isNaN(parseInt(sample, 10)) ? sample : parseInt(sample, 10);
   if (!dataset && !drugId1 && !drugId2 && !allowAll) {
     return res.status(400).json({ error: 'Please specify at least one of the following parameters: dataset, drugId1, drugId2' });
+  }
+  if (!dataset && !drugId1 && !drugId2 && !sample) {
+    return res.status(400).json({ error: 'No request parameters provided to narrow down the query' });
   }
   page = page ? parseInt(page, 10) : 1;
   if (!page) return res.status(400).json({ error: 'page request parameter must be an integer' });
   perPage = perPage ? parseInt(perPage, 10) : 20;
   if (!perPage) return res.status(400).json({ error: 'perPage request parameter must be an integer' });
   if (perPage > 500) return res.status(400).json({ error: 'perPage request parameter cannot exceed 100' });
-  sample = Number.isNaN(parseInt(sample, 10)) ? sample : parseInt(sample, 10);
 
   // calculates limit and offset values for knex queries
   const { limit, offset } = calcLimitOffset(page, perPage);
-
-  // if (!allowAll && !drugId1 && drugId)
   // Subquery to link combo designs to respective synergy scores
   function subqueryCD() {
     let baseQuery = this.select('idCombo_Design', 'idDrugA', 'idDrugB', 'idSample as sampleId')

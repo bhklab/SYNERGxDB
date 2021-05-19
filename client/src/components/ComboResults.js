@@ -170,10 +170,6 @@ class ComboResults extends Component {
         // eslint-disable-next-line no-console
         err => console.log(err),
       );
-    // console.log(cellLineCheck, biomarkerCheck)
-    // if (cellLineCheck && biomarkerCheck) {
-    //   this.setState({ displayOptions: true });
-    // }
   }
 
   handleCombo(index) {
@@ -202,7 +198,6 @@ class ComboResults extends Component {
     } = requestParams;
 
     const { handleCombo } = this;
-    // const showBiomarker = typeof drugId2 === 'number' && <Biomarkers drugId1={drugId1} drugId2={drugId2} sourceName={results} dataset={dataset} />;
     const totalSynergyScores = results.length;
     // Process zip, hsa, loewe and bliss scores into renderable format
     const showScore = (props) => {
@@ -305,7 +300,6 @@ class ComboResults extends Component {
     if (dataset) filename = filename.concat(`_${dataset}`);
     if (drugId1) filename = filename.concat(`_${drugId1}`);
     if (drugId2) filename = filename.concat(`_${drugId2}`);
-
     return (
       <main>
         <QueryCard
@@ -318,13 +312,15 @@ class ComboResults extends Component {
           <ButtonsDiv>
             <h2>Analysis </h2>
             <div className="buttonsContainer">
-              <a href={`/biomarker${queryParams}`}>
-                Biomarker
-                {' '}
-                <br />
-                {' '}
-                Discovery
-              </a>
+              {(dataset || drugId1 || drugId2) ? (
+                <a href={`/biomarker${queryParams}`}>
+                  Biomarker
+                  {' '}
+                  <br />
+                  {' '}
+                  Discovery
+                </a>
+              ) : null }
               {drugId1 ? (
                 <Fragment>
                   <a href={`/sensitivity${queryParams}`}>
