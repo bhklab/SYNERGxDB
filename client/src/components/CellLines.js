@@ -262,13 +262,13 @@ const CellLines = () => {
       .then((data) => {
         const updatedCSVData = data.map((row) => {
           const csvRow = { ...row };
-          Object.entries(csvRow).forEach((el) => {
-            if (el[1] === null) {
-              csvRow[el[0]] = 'N/A';
-            } else if (typeof el[1] === 'string' && el[1].includes(',')) {
-              csvRow[el[0]] = `"${el[1]}"`;
-            }
-          });
+          if (csvRow.drugNameA.includes(',')) csvRow.drugNameA = `"${csvRow.drugNameA}"`;
+          if (csvRow.drugNameB.includes(',')) csvRow.drugNameB = `"${csvRow.drugNameB}"`;
+          if (csvRow.disease && csvRow.disease.includes(',')) csvRow.disease = `"${csvRow.disease}"`;
+          if (csvRow.atcCodeDrugA && csvRow.atcCodeDrugA.includes(',')) csvRow.atcCodeDrugA = `"${csvRow.atcCodeDrugA}"`;
+          if (csvRow.atcCodeDrugB && csvRow.atcCodeDrugB.includes(',')) csvRow.atcCodeDrugB = `"${csvRow.atcCodeDrugB}"`;
+          if (csvRow.inchikeyDrugA) csvRow.inchikeyDrugA = `"${csvRow.inchikeyDrugA}"`;
+          if (csvRow.inchikeyDrugB) csvRow.inchikeyDrugB = `"${csvRow.inchikeyDrugB}"`;
           return csvRow;
         });
 
@@ -396,23 +396,7 @@ const CellLines = () => {
             idSample, tissue, name, sex, age, idCellosaurus, disease: { name: disease, origin },
           });
           newCSVData.push({
-            idSample,
-            tissue,
-            name,
-            sex,
-            age,
-            idCellosaurus,
-            disease: disease ? disease.split(',')[0] : '',
-            origin,
-          });
-          newCSVData.forEach((row, index) => {
-            Object.entries(row).forEach((el) => {
-              if (el[1] === null) {
-                newCSVData[index][el[0]] = 'N/A';
-              } else if (typeof el[1] === 'string' && el[1].includes(',')) {
-                newCSVData[index][el[0]] = `"${el[1]}"`;
-              }
-            });
+            idSample, tissue, name, sex, age, idCellosaurus, disease: disease ? disease.split(',')[0] : '', origin,
           });
         });
 
