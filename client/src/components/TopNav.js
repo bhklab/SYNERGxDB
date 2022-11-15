@@ -6,6 +6,8 @@ import logo from '../images/logo-2.png';
 import colors from '../styles/colors';
 import transitions from '../styles/transitions';
 
+const GOOGLE_FORM = 'https://docs.google.com/forms/d/1wTZMVh4jzRZ9yKjYZP8bvVLw7YG6K9h6AbeFxzMXd28/edit';
+
 const StyledNav = styled.div`  
   width: 100%;
   white-space: nowrap;
@@ -177,7 +179,7 @@ class TopNav extends Component {
             </nav>
           </div>
           <div className="feedback">
-            <Link to="/contact/">Feedback</Link>
+            <a href={GOOGLE_FORM} rel="noopener noreferrer" target="_blank">Feedback</a>
           </div>
         </div>
         <div role="presentation" className="burger-nav" onClick={() => closeMenu()}>
