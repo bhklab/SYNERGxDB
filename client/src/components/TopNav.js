@@ -6,29 +6,14 @@ import logo from '../images/logo-2.png';
 import colors from '../styles/colors';
 import transitions from '../styles/transitions';
 
-const StyledNav = styled.div`   
+const StyledNav = styled.div`  
   width: 100%;
-  right:0px;
-  height:85px;
-  line-height:3em;
-  order:1;
-  white-space:nowrap;
+  white-space: nowrap;
+  height: 85px;
   background-color: ${colors.nav_bg};
   position: fixed;
-  white-space:nowrap;
-  background-color: ${colors.nav_bg};
   font-size: calc(1em + 0.2vw);
   font-family: 'Montserrat', sans-serif;
-
-  @media (max-width : 1279px) {
-    height:75px;
-  }
-
-  @media (max-height : 900px) {
-    font-size: calc(0.2vw + 0.9em);
-    height: 70px;
-    line-height: 2.5em;
-  }
 
   a {
     color: ${colors.nav_links};
@@ -41,22 +26,19 @@ const StyledNav = styled.div`
   }
 
   .standard-nav {
-    img {
-      position:fixed;
-      float:left;
-      margin-left:5vw;
-      margin-top:5px;
-    }
-    @media (min-width : 1280px) {
-      display: block;
-    }
+    height: inherit;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+   
     @media (max-width : 1279px) {
       display: none;
     }
   }
+
   .burger-nav {
     a {
-      padding:0em 2.5vw;
+      padding: 0em 2.5vw;
     }
     @media (min-width : 1280px) {
       display: none;
@@ -65,14 +47,37 @@ const StyledNav = styled.div`
       display: block;
     }
   }
+
   .top-nav {
-    z-index: 10;
-    text-align: center;
-    padding: 15px 0px 0px 0px;
-    margin-left: 175px;
-    a {
-      padding:0em 2.5vw;
+    height: inherit;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: calc(100vw/25);
+  }
+
+  .feedback {
+    background-color: ${colors.nav_link_hov};
+    padding: 10px;
+    border-radius: 5px;
+    opacity: 0.9;
+
+    :hover {
+      opacity: 1.0;
     }
+  }
+
+  .feedback > a {
+    color: ${colors.nav_links} !important;
+  }
+
+  @media (max-width : 1279px) {
+    height: 75px;
+  }
+
+  @media (max-height : 900px) {
+    font-size: calc(0.2vw + 0.9em);
+    height: 70px;
   }
 `;
 
@@ -156,17 +161,24 @@ class TopNav extends Component {
     return (
       <StyledNav>
         <div className="standard-nav">
-          <Link to="/">
-            <StyledLogo src={logo} alt="logo" />
-          </Link>
-          <nav className="top-nav">
-            <Link to="/documentation/">Documentation</Link>
-            <Link to="/cell-lines/">Cell lines</Link>
-            <Link to="/drugs/">Compounds</Link>
-            <Link to="/datasets/">Datasets</Link>
-            <Link to="/pharmacogenomics/">Pharmacogenomics</Link>
-            <Link to="/contact/">Contact Us</Link>
-          </nav>
+          <div>
+            <Link to="/">
+              <StyledLogo src={logo} alt="logo" />
+            </Link>
+          </div>
+          <div>
+            <nav className="top-nav">
+              <Link to="/documentation/">Documentation</Link>
+              <Link to="/cell-lines/">Cell lines</Link>
+              <Link to="/drugs/">Compounds</Link>
+              <Link to="/datasets/">Datasets</Link>
+              <Link to="/pharmacogenomics/">Pharmacogenomics</Link>
+              <Link to="/contact/">Contact Us</Link>
+            </nav>
+          </div>
+          <div className="feedback">
+            <Link to="/contact/">Feedback</Link>
+          </div>
         </div>
         <div className="burger-nav">
           <Menu
@@ -216,6 +228,12 @@ class TopNav extends Component {
               onClick={() => closeMenu()}
             >
               Contact Us
+            </Link>
+            <Link
+              to="/contact/"
+              onClick={() => closeMenu()}
+            >
+              Feedback
             </Link>
           </Menu>
         </div>
