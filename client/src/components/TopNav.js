@@ -180,7 +180,7 @@ class TopNav extends Component {
             <Link to="/contact/">Feedback</Link>
           </div>
         </div>
-        <div className="burger-nav">
+        <div role="presentation" className="burger-nav" onClick={() => closeMenu()}>
           <Menu
             styles={BurgerMenuStyles}
             right
@@ -189,49 +189,41 @@ class TopNav extends Component {
           >
             <Link
               to="/"
-              onClick={() => closeMenu()}
             >
               <StyledLogo src={logo} alt="logo" />
             </Link>
             <Link
               to="/documentation/"
-              onClick={() => closeMenu()}
             >
               Documentation
             </Link>
             <Link
               to="/cell-lines/"
-              onClick={() => closeMenu()}
             >
               Cell lines
             </Link>
             <Link
               to="/drugs/"
-              onClick={() => closeMenu()}
             >
               Compounds
             </Link>
             <Link
               to="/datasets/"
-              onClick={() => closeMenu()}
             >
               Datasets
             </Link>
             <Link
               to="/pharmacogenomics/"
-              onClick={() => closeMenu()}
             >
               Pharmacogenomics
             </Link>
             <Link
               to="/contact/"
-              onClick={() => closeMenu()}
             >
               Contact Us
             </Link>
             <Link
               to="/contact/"
-              onClick={() => closeMenu()}
             >
               Feedback
             </Link>
