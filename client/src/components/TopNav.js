@@ -6,7 +6,8 @@ import logo from '../images/logo-2.png';
 import colors from '../styles/colors';
 import transitions from '../styles/transitions';
 
-const GOOGLE_FORM = 'https://docs.google.com/forms/d/1wTZMVh4jzRZ9yKjYZP8bvVLw7YG6K9h6AbeFxzMXd28/edit';
+const GOOGLE_FORM = 'https://docs.google.com/forms/d/e/1FAIpQLScJB3pknNnHEQS6BKzVrxDpce05ATAPo2QKKpNLQY2PXctvqA/viewform?usp=sf_link';
+
 
 const StyledNav = styled.div`  
   width: 100%;
