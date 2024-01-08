@@ -100,7 +100,7 @@ router.get('/association', async (req, res) => {
   function subqueryComboDesign() {
     let subquery = this.select('fpkm', 'name as cellName', 'idCombo_Design')
       .from(subqueryAssociations)
-      .join('Combo_design', 'Combo_design.idSample', '=', 'A.idSample');
+      .join('combo_design', 'combo_design.idSample', '=', 'A.idSample');
 
     if (drugId1) subquery = subquery.where(subqueryDrugs);
     return subquery.as('CD');
@@ -109,7 +109,7 @@ router.get('/association', async (req, res) => {
   function subquerySynergyScores() {
     let subquery = this.select('fpkm', 'cellName', 'bliss', 'loewe', 'hsa', 'zip')
       .from(subqueryComboDesign)
-      .join('Synergy_score', 'Synergy_score.idCombo_design', '=', 'CD.idCombo_design');
+      .join('synergy_score', 'synergy_score.idCombo_design', '=', 'CD.idCombo_design');
     if (dataset) subquery = subquery.where({ idSource: dataset });
     return subquery
       .orderBy('cellName')

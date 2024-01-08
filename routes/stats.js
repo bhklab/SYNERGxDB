@@ -6,7 +6,7 @@ const router = express.Router();
 router.get('/stats', (req, res) => {
   const responseObject = {};
   const getCellsAndTissues = new Promise((resolve, reject) => {
-    db('Sample')
+    db('sample')
       .count('idSample as cells')
       .countDistinct('tissue as tissues')
       .then((data) => {
@@ -30,7 +30,7 @@ router.get('/stats', (req, res) => {
       });
   });
   const getExperiments = new Promise((resolve, reject) => {
-    db('Combo_design')
+    db('combo_design')
       .count('idCombo_Design as experiments')
       .then((data) => {
         responseObject.experiments = data[0].experiments;
@@ -41,7 +41,7 @@ router.get('/stats', (req, res) => {
       });
   });
   const getDatapoints = new Promise((resolve, reject) => {
-    db('Combo_matrix')
+    db('combo_matrix')
       .count('idCombo_Matrix as datapoints')
       .then((data) => {
         responseObject.datapoints = data[0].datapoints;
