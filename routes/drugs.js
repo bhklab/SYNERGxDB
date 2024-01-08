@@ -6,7 +6,7 @@ const db = require('../db');
 const router = express.Router();
 
 router.get('/', (req, res) => {
-  db.select('Drug.name as name', 'atcCode', 'idDrugBank', 'idPubChem', 'drug.idDrug as idDrug', 'smiles', 'inchikey',
+  db.select('drug.name as name', 'atcCode', 'idDrugBank', 'idPubChem', 'drug.idDrug as idDrug', 'smiles', 'inchikey',
     db.raw('group_concat(??) as ??', ['source.name', 'dataset_names']))
     .from('drug', 'drug_source', 'source')
     .join('drug_source', 'drug.idDrug', '=', 'drug_source.idDrug')
@@ -27,7 +27,7 @@ router.get('/info', (req, res) => {
   const {
     idDrugA, idDrugB,
   } = req.query;
-  db('Drug').select('idDrug', 'name', 'idPubChem', 'idDrugBank')
+  db('drug').select('idDrug', 'name', 'idPubChem', 'idDrugBank')
     .where({ idDrug: idDrugA })
     .orWhere({ idDrug: idDrugB })
     .then((data) => {
@@ -117,7 +117,7 @@ router.get('/filter', (req, res) => {
   // query to get relevant cell lines
   function subqueryTissue() {
     return this.select('idSample')
-      .from('Sample')
+      .from('sample')
       .where({ tissue }).as('t');
   }
   // Checks all drug A entries
@@ -131,9 +131,9 @@ router.get('/filter', (req, res) => {
           this.select('idDrug').from('drug_source').where({ idSource: dataset });
         });
       }
-      baseQuery = baseQuery.join('Combo_Design', 't.idSample', '=', 'Combo_Design.idSample');
+      baseQuery = baseQuery.join('combo_design', 't.idSample', '=', 'combo_design.idSample');
     } else {
-      baseQuery = baseQuery.from('Combo_Design');
+      baseQuery = baseQuery.from('combo_design');
       if (dataset) {
         baseQuery = baseQuery.whereIn('idDrugA', function () {
           this.select('idDrug').from('drug_source').where({ idSource: dataset });
@@ -155,9 +155,9 @@ router.get('/filter', (req, res) => {
           this.select('idDrug').from('drug_source').where({ idSource: dataset });
         });
       }
-      baseQuery = baseQuery.join('Combo_Design', 't.idSample', '=', 'Combo_Design.idSample');
+      baseQuery = baseQuery.join('combo_design', 't.idSample', '=', 'combo_design.idSample');
     } else {
-      baseQuery = baseQuery.from('Combo_Design');
+      baseQuery = baseQuery.from('combo_design');
       if (dataset) {
         baseQuery = baseQuery.whereIn('idDrugB', function () {
           this.select('idDrug').from('drug_source').where({ idSource: dataset });
@@ -171,16 +171,16 @@ router.get('/filter', (req, res) => {
 
   // Checks for all drugs that go before the drugId (main query)
   function queryB() {
-    this.select('idDrug', 'name').from(subqueryDrugB).join('Drug', 'b1.idDrugB', '=', 'Drug.idDrug');
+    this.select('idDrug', 'name').from(subqueryDrugB).join('drug', 'b1.idDrugB', '=', 'drug.idDrug');
   }
   // query optimization for dataset only requests
   let query;
   if (!drugId && !sampleArray && dataset) {
-    query = db.select('idDrug', 'name').from('Drug').whereIn('idDrug', function () {
+    query = db.select('idDrug', 'name').from('drug').whereIn('idDrug', function () {
       this.select('idDrug').from('drug_source').where({ idSource: dataset });
     });
   } else {
-    query = db.select('idDrug', 'name').from(subqueryDrugA).join('Drug', 'a1.idDrugA', '=', 'Drug.idDrug')
+    query = db.select('idDrug', 'name').from(subqueryDrugA).join('drug', 'a1.idDrugA', '=', 'drug.idDrug')
       .union(queryB);
   }
 
@@ -197,7 +197,7 @@ router.get('/filter', (req, res) => {
 
 router.get('/:drugId', (req, res) => {
   db.select('name', 'atcCode', 'idDrugBank', 'idPubChem', 'idDrug')
-    .from('Drug')
+    .from('drug')
     .where({ idDrug: req.params.drugId })
     .then((data) => {
       res.json(data);

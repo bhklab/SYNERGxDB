@@ -5,7 +5,7 @@ const db = require('../db');
 const router = express.Router();
 
 router.get('/', (req, res) => {
-  db('Sample').select('name', 'idSample', 'tissue', 'sex', 'age', 'disease', 'idCellosaurus', 'origin')
+  db('sample').select('name', 'idSample', 'tissue', 'sex', 'age', 'disease', 'idCellosaurus', 'origin')
     .then((cellList) => {
       res.json(cellList);
     });
@@ -18,7 +18,7 @@ router.get('/info', (req, res) => {
   } = req.query;
   db.select('idSample', 'name', 'idCellosaurus', 'disease')
     .first()
-    .from('Sample')
+    .from('sample')
     .where({ idSample })
     .then((data) => {
       res.json(data);
@@ -128,7 +128,7 @@ router.get('/filter', (req, res) => {
   // filters data based on given drugs
   function subqueryCD() {
     let subquery = this.select('idCombo_Design', 'idSample')
-      .from('Combo_Design');
+      .from('combo_design');
 
     if (drugId1 || drugId2) {
       subquery = subquery.where(function () {
@@ -156,7 +156,7 @@ router.get('/filter', (req, res) => {
   // subquery combo-matrix table (optional, only used when dataset is given)
   function subquerySS() {
     return this.select('idCombo_Design', 'idSource')
-      .from('Synergy_score')
+      .from('synergy_score')
       .where({ idSource: dataset })
       .as('SS');
   }
@@ -169,7 +169,7 @@ router.get('/filter', (req, res) => {
         .from(subqueryCD);
     } else {
       baseQuery = baseQuery
-        .from('Combo_Design');
+        .from('combo_design');
     }
 
     if (dataset) {
@@ -177,16 +177,16 @@ router.get('/filter', (req, res) => {
       if (drugId1 || drugId2) {
         baseQuery = baseQuery.join(subquerySS, 'SS.idCombo_Design', '=', 'CD.idCombo_Design');
       } else {
-        baseQuery = baseQuery.join(subquerySS, 'SS.idCombo_Design', '=', 'Combo_Design.idCombo_Design');
+        baseQuery = baseQuery.join(subquerySS, 'SS.idCombo_Design', '=', 'combo_design.idCombo_Design');
       }
     }
     return baseQuery.as('S');
   }
 
   // Retrieves cell line names and tissue names
-  db.select('Sample.idSample as idSample', 'tissue', 'name')
+  db.select('sample.idSample as idSample', 'tissue', 'name')
     .from(subqueryGetSampleIds)
-    .join('Sample', 'S.idSample', '=', 'Sample.idSample')
+    .join('sample', 'S.idSample', '=', 'sample.idSample')
     .then((data) => {
       res.json(data);
     })
@@ -198,7 +198,7 @@ router.get('/filter', (req, res) => {
 
 router.get('/:cellId', (req, res) => {
   db.select('name', 'idSample', 'tissue', 'sex', 'age', 'disease', 'idCellosaurus', 'origin')
-    .from('Sample')
+    .from('sample')
     .where({ idSample: req.params.cellId })
     .then((data) => {
       res.json(data);

@@ -8,7 +8,7 @@ router.get('/', (req, res) => {
   const {
     idSource,
   } = req.query;
-  const baseQuery = db('Source')
+  const baseQuery = db('source')
     .select();
 
   if (idSource) {
@@ -51,7 +51,7 @@ router.get('/filter', (req, res) => {
 
   function subqueryCD() {
     let baseQuery = this.select('idCombo_Design', 'idSample as sampleId')
-      .from('Combo_Design');
+      .from('combo_design');
 
     // Checks type of the request and modifies the query accordingly
     // Query builder when drug(s) are given
@@ -108,24 +108,24 @@ router.get('/filter', (req, res) => {
       // Tissue specific requests
     if (typeof (sample) === 'string') baseQuery = baseQuery.where({ tissue: sample });
     return baseQuery
-      .join('Sample', 'CD.sampleId', '=', 'Sample.idSample')
+      .join('sample', 'CD.sampleId', '=', 'sample.idSample')
       .as('S');
   }
 
   function subquerySrc() {
     return this.distinct('idSource as sourceId')
       .from(subqueryS)
-      .join('Synergy_score', 'Synergy_score.idCombo_Design', '=', 'S.idCombo_Design')
+      .join('synergy_score', 'synergy_score.idCombo_Design', '=', 'S.idCombo_Design')
       .as('Src');
   }
 
   let mainQuery = db.select('idSource', 'name');
   if (!drugId1 && !drugId2 && !sample) {
-    mainQuery = mainQuery.from('Source');
+    mainQuery = mainQuery.from('source');
   } else {
     mainQuery = mainQuery
       .from(subquerySrc)
-      .join('Source', 'Src.sourceId', '=', 'Source.idSource');
+      .join('source', 'Src.sourceId', '=', 'source.idSource');
   }
   mainQuery.then((data) => {
     res.json(data);
@@ -139,13 +139,13 @@ router.get('/filter', (req, res) => {
 router.get('/comparison', (req, res) => {
   function subQueryA() {
     return this.select('idCombo_Design AS cnt')
-      .from('Synergy_Score')
+      .from('synergy_score')
       .groupBy('idCombo_Design')
       .having(db.raw('count(*) > 1'));
   }
 
   db.select('idCombo_Design', 'bliss', 'loewe', 'hsa', 'zip', 'name AS sourceName')
-    .from('Synergy_Score AS SS')
+    .from('synergy_score AS SS')
     .innerJoin('source', 'source.idSource', 'SS.idSource')
     .whereIn('idCombo_Design', subQueryA)
     .orderBy('idCombo_Design', 'SS.idSource')
@@ -160,7 +160,7 @@ router.get('/comparison', (req, res) => {
 
 router.get('/:datasetId', (req, res) => {
   db.select('idSource', 'name', 'no_samples', 'no_drugs', 'pmID', 'author', 'combo')
-    .from('Source')
+    .from('source')
     .where({ idSource: req.params.datasetId })
     .then((data) => {
       res.json(data);

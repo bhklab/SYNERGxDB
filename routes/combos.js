@@ -32,7 +32,7 @@ router.get('/', async (req, res) => {
   // Subquery to link combo designs to respective synergy scores
   function subqueryCD() {
     let baseQuery = this.select('idCombo_Design', 'idDrugA', 'idDrugB', 'idSample as sampleId')
-      .from('Combo_Design');
+      .from('combo_design');
 
     // Checks type of the request and modifies the query accordingly
     // Query builder when drug(s) are given
@@ -66,21 +66,21 @@ router.get('/', async (req, res) => {
       // Tissue specific requests
     if (typeof (sample) === 'string') baseQuery = baseQuery.where({ tissue: sample });
     return baseQuery
-      .join('Sample', 'CD.sampleId', '=', 'Sample.idSample')
+      .join('sample', 'CD.sampleId', '=', 'sample.idSample')
       .as('S');
   }
   // Subquery to get idDrugA name(s)
   function subqueryD1() {
     this.select('idCombo_Design', 'idSample', 'name as drugNameA', 'idDrugA', 'idDrugB', 'sampleName', 'tissue', 'idCellosaurus', 'sex', 'age', 'disease', 'origin', 'atcCode as atCodeDrugA', 'idDrugBank as idDrugBankA', 'idPubChem as idPubChemDrugA', 'smiles as smilesDrugA', 'inchikey as inchikeyDrugA')
       .from(subqueryS)
-      .join('Drug', 'S.idDrugA', '=', 'Drug.idDrug')
+      .join('drug', 'S.idDrugA', '=', 'drug.idDrug')
       .as('D1');
   }
   // Subquery to get idDrugB name(s)
   function subqueryD2() {
     this.select('idCombo_Design', 'idSample', 'drugNameA', 'idDrugA', 'name as drugNameB', 'idDrugB', 'sampleName', 'tissue', 'idCellosaurus', 'sex', 'age', 'disease', 'origin', 'atCodeDrugA', 'idDrugBankA', 'idPubChemDrugA', 'atcCode as atCodeDrugB', 'idDrugBank as idDrugBankB', 'idPubChem as idPubChemDrugB', 'smilesDrugA', 'inchikeyDrugA', 'smiles as smilesDrugB', 'inchikey as inchikeyDrugB')
       .from(subqueryD1)
-      .join('Drug', 'D1.idDrugB', '=', 'Drug.idDrug')
+      .join('drug', 'D1.idDrugB', '=', 'drug.idDrug')
       .as('D2');
   }
   // Links synergy scores to existing data
@@ -88,20 +88,20 @@ router.get('/', async (req, res) => {
     if (dataset) {
       return this.select('D2.idCombo_Design as comboId', 'idSample', 'bliss', 'loewe', 'hsa', 'zip', 'comboscore', 'sampleName', 'drugNameA', 'drugNameB', 'tissue', 'idSource as sourceId', 'idDrugA', 'idDrugB', 'idCellosaurus', 'sex', 'age', 'disease', 'origin', 'atCodeDrugA', 'idDrugBankA', 'idPubChemDrugA', 'atCodeDrugB', 'idDrugBankB', 'idPubChemDrugB', 'smilesDrugA', 'inchikeyDrugA', 'smilesDrugB', 'inchikeyDrugB')
         .from(subqueryD2)
-        .join('Synergy_Score', 'D2.idCombo_Design', '=', 'Synergy_Score.idCombo_Design')
+        .join('synergy_score', 'D2.idCombo_Design', '=', 'synergy_score.idCombo_Design')
         .where({ idSource: dataset })
         .as('SS');
     }
     return this.select('D2.idCombo_Design as comboId', 'idSample', 'bliss', 'loewe', 'hsa', 'zip', 'comboscore', 'sampleName', 'drugNameA', 'drugNameB', 'tissue', 'idSource as sourceId', 'idDrugA', 'idDrugB', 'idCellosaurus', 'sex', 'age', 'disease', 'origin', 'atCodeDrugA', 'idDrugBankA', 'idPubChemDrugA', 'atCodeDrugB', 'idDrugBankB', 'idPubChemDrugB', 'smilesDrugA', 'inchikeyDrugA', 'smilesDrugB', 'inchikeyDrugB')
       .from(subqueryD2)
-      .join('Synergy_Score', 'D2.idCombo_Design', '=', 'Synergy_Score.idCombo_Design')
+      .join('synergy_score', 'D2.idCombo_Design', '=', 'synergy_score.idCombo_Design')
       .as('SS');
   }
   try {
     // Adds source name to the results and sends it to the client
     let query = db.select('comboId', 'idSample', 'bliss', 'loewe', 'hsa', 'zip', 'comboscore', 'name as sourceName', 'sampleName', 'drugNameA', 'drugNameB', 'tissue', 'idSource', 'idDrugA', 'idDrugB', 'idCellosaurus', 'sex', 'age', 'disease', 'origin', 'atCodeDrugA', 'idDrugBankA', 'idPubChemDrugA', 'atCodeDrugB', 'idDrugBankB', 'idPubChemDrugB', 'smilesDrugA', 'inchikeyDrugA', 'smilesDrugB', 'inchikeyDrugB')
       .from(subquerySS)
-      .join('Source', 'SS.sourceId', '=', 'Source.idSource')
+      .join('source', 'SS.sourceId', '=', 'source.idSource')
       .orderBy('zip', 'desc');
 
     if (!allowAll) query = query.limit(limit).offset(offset);
@@ -134,8 +134,8 @@ router.get('/stats', (req, res) => {
   // COMBOS
   function subqueryCombos() {
     const baseQuery = this.select('idSource', db.raw('count(distinct concat(??, ?, ??)) as ??', ['CD.idDrugA', '--', 'CD.idDrugB', 'nCombos']))
-      .from('Combo_Design as CD')
-      .innerJoin('Synergy_Score as SS', 'CD.idCombo_Design', '=', 'SS.idCombo_Design')
+      .from('combo_design as CD')
+      .innerJoin('synergy_score as SS', 'CD.idCombo_Design', '=', 'SS.idCombo_Design')
       .groupBy('SS.idSource');
 
     return baseQuery.as('CMBS');
@@ -144,7 +144,7 @@ router.get('/stats', (req, res) => {
   // EXPERIMENTS
   function subqueryExperiments() {
     const baseQuery = this.select('idSource', db.raw('count(*) as ??', ['nExperiments']))
-      .from('Synergy_Score')
+      .from('synergy_score')
       .groupBy('idSource');
 
     return baseQuery.as('EXPS');
@@ -152,10 +152,10 @@ router.get('/stats', (req, res) => {
 
   // major query + DATAPOINTS
   db.select('CM.idSource as idSource', 'name', db.raw('count(*) as ??', ['nDatapoints']), 'nCombos', 'nExperiments')
-    .from('Combo_Matrix as CM', subqueryCombos)
+    .from('combo_matrix as CM', subqueryCombos)
     .join(subqueryCombos, 'CM.idSource', '=', 'CMBS.idSource')
     .join(subqueryExperiments, 'CM.idSource', '=', 'EXPS.idSource')
-    .join('Source', 'CM.idSource', '=', 'Source.idSource')
+    .join('source', 'CM.idSource', '=', 'source.idSource')
     .groupBy('idSource', 'nCombos', 'nExperiments')
     .then((data) => {
       res.json(data);
