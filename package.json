@@ -17,8 +17,7 @@
     "knex": "^0.17.5",
     "knex-logger": "^0.1.0",
     "morgan": "~1.9.1",
-    "mysql": "^2.17.1",
-    "opencpu": "^1.1.1"
+    "mysql": "^2.17.1"
   },
   "devDependencies": {
     "eslint": "^5.16.0",
